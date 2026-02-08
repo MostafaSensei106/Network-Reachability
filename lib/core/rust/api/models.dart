@@ -6,13 +6,61 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `NetworkError`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`
+
+class CaptivePortalStatus {
+  final bool isCaptivePortal;
+  final String? redirectUrl;
+
+  const CaptivePortalStatus({required this.isCaptivePortal, this.redirectUrl});
+
+  @override
+  int get hashCode => isCaptivePortal.hashCode ^ redirectUrl.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CaptivePortalStatus &&
+          runtimeType == other.runtimeType &&
+          isCaptivePortal == other.isCaptivePortal &&
+          redirectUrl == other.redirectUrl;
+}
 
 enum CheckStrategy { race, consensus }
 
-enum ConnectionQuality { excellent, good, moderate, poor, dead }
+enum ConnectionQuality {
+  excellent,
+  great,
+  good,
+  moderate,
+  poor,
+  unstable,
+  dead,
+}
 
 enum ConnectionType { wifi, cellular, ethernet, vpn, bluetooth, unknown }
+
+class LocalDevice {
+  final String ipAddress;
+  final String? hostname;
+  final String? macAddress;
+
+  const LocalDevice({required this.ipAddress, this.hostname, this.macAddress});
+
+  @override
+  int get hashCode =>
+      ipAddress.hashCode ^ hostname.hashCode ^ macAddress.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LocalDevice &&
+          runtimeType == other.runtimeType &&
+          ipAddress == other.ipAddress &&
+          hostname == other.hostname &&
+          macAddress == other.macAddress;
+}
 
 class NetworkMetadata {
   final bool isVpn;
@@ -72,12 +120,20 @@ class NetworkStatus {
   final ConnectionQuality quality;
   final BigInt latencyMs;
   final String winnerTarget;
+  final BigInt? minLatencyMs;
+  final BigInt? maxLatencyMs;
+  final BigInt? meanLatencyMs;
+  final double? stdDevLatencyMs;
 
   const NetworkStatus({
     required this.isConnected,
     required this.quality,
     required this.latencyMs,
     required this.winnerTarget,
+    this.minLatencyMs,
+    this.maxLatencyMs,
+    this.meanLatencyMs,
+    this.stdDevLatencyMs,
   });
 
   @override
@@ -85,7 +141,11 @@ class NetworkStatus {
       isConnected.hashCode ^
       quality.hashCode ^
       latencyMs.hashCode ^
-      winnerTarget.hashCode;
+      winnerTarget.hashCode ^
+      minLatencyMs.hashCode ^
+      maxLatencyMs.hashCode ^
+      meanLatencyMs.hashCode ^
+      stdDevLatencyMs.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -95,7 +155,11 @@ class NetworkStatus {
           isConnected == other.isConnected &&
           quality == other.quality &&
           latencyMs == other.latencyMs &&
-          winnerTarget == other.winnerTarget;
+          winnerTarget == other.winnerTarget &&
+          minLatencyMs == other.minLatencyMs &&
+          maxLatencyMs == other.maxLatencyMs &&
+          meanLatencyMs == other.meanLatencyMs &&
+          stdDevLatencyMs == other.stdDevLatencyMs;
 }
 
 class NetworkTarget {
@@ -105,7 +169,7 @@ class NetworkTarget {
   final TargetProtocol protocol;
   final BigInt timeoutMs;
   final int priority;
-  final bool isRequired;
+  final bool isEssential;
 
   const NetworkTarget({
     required this.label,
@@ -114,7 +178,7 @@ class NetworkTarget {
     required this.protocol,
     required this.timeoutMs,
     required this.priority,
-    required this.isRequired,
+    required this.isEssential,
   });
 
   @override
@@ -125,7 +189,7 @@ class NetworkTarget {
       protocol.hashCode ^
       timeoutMs.hashCode ^
       priority.hashCode ^
-      isRequired.hashCode;
+      isEssential.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -138,7 +202,7 @@ class NetworkTarget {
           protocol == other.protocol &&
           timeoutMs == other.timeoutMs &&
           priority == other.priority &&
-          isRequired == other.isRequired;
+          isEssential == other.isEssential;
 }
 
 class NetwrokConfiguration {
@@ -147,6 +211,8 @@ class NetwrokConfiguration {
   final QualityThresholds qualityThreshold;
   final BigInt checkIntervalMs;
   final bool blockRequestWhenPoor;
+  final int numJitterSamples;
+  final double jitterThresholdPercent;
 
   const NetwrokConfiguration({
     required this.targets,
@@ -154,6 +220,8 @@ class NetwrokConfiguration {
     required this.qualityThreshold,
     required this.checkIntervalMs,
     required this.blockRequestWhenPoor,
+    required this.numJitterSamples,
+    required this.jitterThresholdPercent,
   });
 
   static Future<NetwrokConfiguration> default_() =>
@@ -165,7 +233,9 @@ class NetwrokConfiguration {
       checkStrategy.hashCode ^
       qualityThreshold.hashCode ^
       checkIntervalMs.hashCode ^
-      blockRequestWhenPoor.hashCode;
+      blockRequestWhenPoor.hashCode ^
+      numJitterSamples.hashCode ^
+      jitterThresholdPercent.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -176,7 +246,9 @@ class NetwrokConfiguration {
           checkStrategy == other.checkStrategy &&
           qualityThreshold == other.qualityThreshold &&
           checkIntervalMs == other.checkIntervalMs &&
-          blockRequestWhenPoor == other.blockRequestWhenPoor;
+          blockRequestWhenPoor == other.blockRequestWhenPoor &&
+          numJitterSamples == other.numJitterSamples &&
+          jitterThresholdPercent == other.jitterThresholdPercent;
 }
 
 class QualityThresholds {
@@ -252,4 +324,35 @@ class TargetReport {
           latencyMs == other.latencyMs &&
           error == other.error &&
           isEssential == other.isEssential;
+}
+
+class TraceHop {
+  final int hopNumber;
+  final String ipAddress;
+  final String? hostname;
+  final BigInt? latencyMs;
+
+  const TraceHop({
+    required this.hopNumber,
+    required this.ipAddress,
+    this.hostname,
+    this.latencyMs,
+  });
+
+  @override
+  int get hashCode =>
+      hopNumber.hashCode ^
+      ipAddress.hashCode ^
+      hostname.hashCode ^
+      latencyMs.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TraceHop &&
+          runtimeType == other.runtimeType &&
+          hopNumber == other.hopNumber &&
+          ipAddress == other.ipAddress &&
+          hostname == other.hostname &&
+          latencyMs == other.latencyMs;
 }

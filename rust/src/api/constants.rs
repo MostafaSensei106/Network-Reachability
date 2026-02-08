@@ -16,4 +16,11 @@ impl AppConstants {
     pub const DEFAULT_GOOD_THRESHOLD: u64 = 200;
     pub const DEFAULT_MODERATE_THRESHOLD: u64 = 400;
     pub const DEFAULT_POOR_THRESHOLD: u64 = 1000;
+
+    pub const DEFAULT_JITTER_SAMPLES: u8 = 5;
+    pub const DEFAULT_JITTER_THRESHOLD_PERCENT: f64 = 0.2;
+
+    pub const CAPTIVE_PORTAL_DETECTION_URL: &'static str = "http://neverssl.com";
+
+    pub const DEFAULT_MAX_TRACEROUTE_HOPS: u8 = 30;
 }

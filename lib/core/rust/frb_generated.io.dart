@@ -27,6 +27,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  double dco_decode_box_autoadd_f_64(dynamic raw);
+
+  @protected
   NetwrokConfiguration dco_decode_box_autoadd_netwrok_configuration(
     dynamic raw,
   );
@@ -38,6 +41,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
   @protected
+  CaptivePortalStatus dco_decode_captive_portal_status(dynamic raw);
+
+  @protected
   CheckStrategy dco_decode_check_strategy(dynamic raw);
 
   @protected
@@ -47,7 +53,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ConnectionType dco_decode_connection_type(dynamic raw);
 
   @protected
+  double dco_decode_f_64(dynamic raw);
+
+  @protected
   int dco_decode_i_32(dynamic raw);
+
+  @protected
+  List<LocalDevice> dco_decode_list_local_device(dynamic raw);
 
   @protected
   List<NetworkTarget> dco_decode_list_network_target(dynamic raw);
@@ -57,6 +69,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<TargetReport> dco_decode_list_target_report(dynamic raw);
+
+  @protected
+  List<TraceHop> dco_decode_list_trace_hop(dynamic raw);
+
+  @protected
+  LocalDevice dco_decode_local_device(dynamic raw);
 
   @protected
   NetworkMetadata dco_decode_network_metadata(dynamic raw);
@@ -77,6 +95,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
+  double? dco_decode_opt_box_autoadd_f_64(dynamic raw);
+
+  @protected
   BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
 
   @protected
@@ -91,6 +112,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TargetReport dco_decode_target_report(dynamic raw);
+
+  @protected
+  TraceHop dco_decode_trace_hop(dynamic raw);
 
   @protected
   int dco_decode_u_16(dynamic raw);
@@ -111,6 +135,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
+
+  @protected
   NetwrokConfiguration sse_decode_box_autoadd_netwrok_configuration(
     SseDeserializer deserializer,
   );
@@ -124,6 +151,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
+  CaptivePortalStatus sse_decode_captive_portal_status(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   CheckStrategy sse_decode_check_strategy(SseDeserializer deserializer);
 
   @protected
@@ -133,7 +165,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ConnectionType sse_decode_connection_type(SseDeserializer deserializer);
 
   @protected
+  double sse_decode_f_64(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
+  List<LocalDevice> sse_decode_list_local_device(SseDeserializer deserializer);
 
   @protected
   List<NetworkTarget> sse_decode_list_network_target(
@@ -147,6 +185,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<TargetReport> sse_decode_list_target_report(
     SseDeserializer deserializer,
   );
+
+  @protected
+  List<TraceHop> sse_decode_list_trace_hop(SseDeserializer deserializer);
+
+  @protected
+  LocalDevice sse_decode_local_device(SseDeserializer deserializer);
 
   @protected
   NetworkMetadata sse_decode_network_metadata(SseDeserializer deserializer);
@@ -169,6 +213,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
+  double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer);
+
+  @protected
   BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
@@ -185,6 +232,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TargetReport sse_decode_target_report(SseDeserializer deserializer);
+
+  @protected
+  TraceHop sse_decode_trace_hop(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_16(SseDeserializer deserializer);
@@ -205,6 +255,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_netwrok_configuration(
     NetwrokConfiguration self,
     SseSerializer serializer,
@@ -218,6 +271,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_captive_portal_status(
+    CaptivePortalStatus self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_check_strategy(CheckStrategy self, SseSerializer serializer);
@@ -235,7 +294,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_f_64(double self, SseSerializer serializer);
+
+  @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_local_device(
+    List<LocalDevice> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_network_target(
@@ -254,6 +322,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     List<TargetReport> self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_list_trace_hop(List<TraceHop> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_local_device(LocalDevice self, SseSerializer serializer);
 
   @protected
   void sse_encode_network_metadata(
@@ -280,6 +354,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
 
   @protected
@@ -302,6 +379,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_target_report(TargetReport self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_trace_hop(TraceHop self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_16(int self, SseSerializer serializer);
