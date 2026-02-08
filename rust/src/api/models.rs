@@ -1,3 +1,5 @@
+use crate::api::constants::AppConstants;
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum TargetProtocol {
     Tcp, // Connect (Reliable)
@@ -15,19 +17,21 @@ pub enum ConnectionQuality {
 
 #[derive(Debug, Clone, Copy)]
 pub struct QualityThresholds {
-    pub excellent: u64,
-    pub good: u64,
-    pub moderate: u64,
-    pub poor: u64,
+    pub excellent: u32,
+    pub great: u32,
+    pub good: u32,
+    pub moderate: u32,
+    pub poor: u32,
 }
 
 impl Default for QualityThresholds {
     fn default() -> Self {
         Self {
-            excellent: 50,
-            good: 150,
-            moderate: 300,
-            poor: 1000,
+            excellent: AppConstants::DEFAULT_EXCELLENT_THRESHOLD,
+            great: AppConstants::DEFAULT_GREAT_THRESHOLD,
+            good: AppConstants::DEFAULT_GOOD_THRESHOLD,
+            moderate: AppConstants::DEFAULT_MODERATE_THRESHOLD,
+            poor: AppConstants::DEFAULT_POOR_THRESHOLD,
         }
     }
 }
@@ -48,7 +52,7 @@ pub struct NetworkTarget {
     pub host: String,
     pub port: u16,
     pub protocol: TargetProtocol,
-    pub timeout_ms: u64,
+    pub timeout_ms: u32,
     pub priority: u8,      // 1 = High, 2 = Low
     pub is_required: bool, // true = Required, false = Optional
 }
@@ -78,7 +82,7 @@ pub struct Configuration {
     pub targets: Vec<NetworkTarget>,
     pub check_strategy: CheckStrategy,
     pub quality_threshold: QualityThresholds,
-    pub check_interval_ms: u64,
+    pub check_interval_ms: u32,
     pub block_request_when_poor: bool,
 }
 
@@ -87,27 +91,27 @@ impl Default for Configuration {
         Self {
             targets: vec![
                 NetworkTarget {
-                    label: "Cloudflare".into(),
-                    host: "1.1.1.1".into(),
-                    port: 53,
+                    label: AppConstants::CLOUDFLARE_NAME.into(),
+                    host: AppConstants::CLOUDFLARE_DNS.into(),
+                    port: AppConstants::DEFAULT_PORT,
                     protocol: TargetProtocol::Tcp,
-                    timeout_ms: 1000,
+                    timeout_ms: AppConstants::DEFAULT_TIMEOUT_MS,
                     priority: 1,
                     is_required: false,
                 },
                 NetworkTarget {
-                    label: "Google".into(),
-                    host: "8.8.8.8".into(),
-                    port: 53,
+                    label: AppConstants::GOOGLE_NAME.into(),
+                    host: AppConstants::GOOGLE_DNS.into(),
+                    port: AppConstants::DEFAULT_PORT,
                     protocol: TargetProtocol::Tcp,
-                    timeout_ms: 1000,
+                    timeout_ms: AppConstants::DEFAULT_TIMEOUT_MS,
                     priority: 1,
                     is_required: false,
                 },
             ],
             check_strategy: CheckStrategy::Race,
             quality_threshold: QualityThresholds::default(),
-            check_interval_ms: 5000,
+            check_interval_ms: AppConstants::DEFAULT_CHECK_INTERVAL_MS,
             block_request_when_poor: false,
         }
     }

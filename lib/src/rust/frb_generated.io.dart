@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/models.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -18,16 +19,144 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
+  String dco_decode_String(dynamic raw);
+
+  @protected
+  bool dco_decode_bool(dynamic raw);
+
+  @protected
+  CheckStrategy dco_decode_check_strategy(dynamic raw);
+
+  @protected
+  Configuration dco_decode_configuration(dynamic raw);
+
+  @protected
+  int dco_decode_i_32(dynamic raw);
+
+  @protected
+  List<NetworkTarget> dco_decode_list_network_target(dynamic raw);
+
+  @protected
+  Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  NetworkTarget dco_decode_network_target(dynamic raw);
+
+  @protected
+  QualityThresholds dco_decode_quality_thresholds(dynamic raw);
+
+  @protected
+  TargetProtocol dco_decode_target_protocol(dynamic raw);
+
+  @protected
+  int dco_decode_u_16(dynamic raw);
+
+  @protected
+  int dco_decode_u_32(dynamic raw);
+
+  @protected
+  int dco_decode_u_8(dynamic raw);
+
+  @protected
+  void dco_decode_unit(dynamic raw);
+
+  @protected
+  String sse_decode_String(SseDeserializer deserializer);
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
+  CheckStrategy sse_decode_check_strategy(SseDeserializer deserializer);
+
+  @protected
+  Configuration sse_decode_configuration(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
+  List<NetworkTarget> sse_decode_list_network_target(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  NetworkTarget sse_decode_network_target(SseDeserializer deserializer);
+
+  @protected
+  QualityThresholds sse_decode_quality_thresholds(SseDeserializer deserializer);
+
+  @protected
+  TargetProtocol sse_decode_target_protocol(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_8(SseDeserializer deserializer);
+
+  @protected
+  void sse_decode_unit(SseDeserializer deserializer);
+
+  @protected
+  void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_check_strategy(CheckStrategy self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_configuration(Configuration self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_network_target(
+    List<NetworkTarget> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_prim_u_8_strict(
+    Uint8List self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_network_target(NetworkTarget self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_quality_thresholds(
+    QualityThresholds self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_target_protocol(
+    TargetProtocol self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_8(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_unit(void self, SseSerializer serializer);
 }
 
 // Section: wire_class

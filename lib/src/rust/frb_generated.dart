@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/models.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -63,7 +64,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -291292710;
+  int get rustContentHash => 1705338511;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -73,7 +74,11 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
       );
 }
 
-abstract class RustLibApi extends BaseApi {}
+abstract class RustLibApi extends BaseApi {
+  Future<Configuration> crateApiModelsConfigurationDefault();
+
+  Future<QualityThresholds> crateApiModelsQualityThresholdsDefault();
+}
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RustLibApiImpl({
@@ -83,10 +88,181 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required super.portManager,
   });
 
+  @override
+  Future<Configuration> crateApiModelsConfigurationDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 1,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_configuration,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiModelsConfigurationDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiModelsConfigurationDefaultConstMeta =>
+      const TaskConstMeta(debugName: "configuration_default", argNames: []);
+
+  @override
+  Future<QualityThresholds> crateApiModelsQualityThresholdsDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 2,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_quality_thresholds,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiModelsQualityThresholdsDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiModelsQualityThresholdsDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "quality_thresholds_default",
+        argNames: [],
+      );
+
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
+  String dco_decode_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as String;
+  }
+
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
+  CheckStrategy dco_decode_check_strategy(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CheckStrategy.values[raw as int];
+  }
+
+  @protected
+  Configuration dco_decode_configuration(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return Configuration(
+      targets: dco_decode_list_network_target(arr[0]),
+      checkStrategy: dco_decode_check_strategy(arr[1]),
+      qualityThreshold: dco_decode_quality_thresholds(arr[2]),
+      checkIntervalMs: dco_decode_u_32(arr[3]),
+      blockRequestWhenPoor: dco_decode_bool(arr[4]),
+    );
+  }
+
+  @protected
+  int dco_decode_i_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  List<NetworkTarget> dco_decode_list_network_target(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_network_target).toList();
+  }
+
+  @protected
+  Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as Uint8List;
+  }
+
+  @protected
+  NetworkTarget dco_decode_network_target(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    return NetworkTarget(
+      label: dco_decode_String(arr[0]),
+      host: dco_decode_String(arr[1]),
+      port: dco_decode_u_16(arr[2]),
+      protocol: dco_decode_target_protocol(arr[3]),
+      timeoutMs: dco_decode_u_32(arr[4]),
+      priority: dco_decode_u_8(arr[5]),
+      isRequired: dco_decode_bool(arr[6]),
+    );
+  }
+
+  @protected
+  QualityThresholds dco_decode_quality_thresholds(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return QualityThresholds(
+      excellent: dco_decode_u_32(arr[0]),
+      great: dco_decode_u_32(arr[1]),
+      good: dco_decode_u_32(arr[2]),
+      moderate: dco_decode_u_32(arr[3]),
+      poor: dco_decode_u_32(arr[4]),
+    );
+  }
+
+  @protected
+  TargetProtocol dco_decode_target_protocol(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return TargetProtocol.values[raw as int];
+  }
+
+  @protected
+  int dco_decode_u_16(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  int dco_decode_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  int dco_decode_u_8(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  void dco_decode_unit(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return;
+  }
+
+  @protected
+  String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return utf8.decoder.convert(inner);
   }
 
   @protected
@@ -96,14 +272,236 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
+  CheckStrategy sse_decode_check_strategy(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
+    var inner = sse_decode_i_32(deserializer);
+    return CheckStrategy.values[inner];
+  }
+
+  @protected
+  Configuration sse_decode_configuration(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_targets = sse_decode_list_network_target(deserializer);
+    var var_checkStrategy = sse_decode_check_strategy(deserializer);
+    var var_qualityThreshold = sse_decode_quality_thresholds(deserializer);
+    var var_checkIntervalMs = sse_decode_u_32(deserializer);
+    var var_blockRequestWhenPoor = sse_decode_bool(deserializer);
+    return Configuration(
+      targets: var_targets,
+      checkStrategy: var_checkStrategy,
+      qualityThreshold: var_qualityThreshold,
+      checkIntervalMs: var_checkIntervalMs,
+      blockRequestWhenPoor: var_blockRequestWhenPoor,
+    );
+  }
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
+  }
+
+  @protected
+  List<NetworkTarget> sse_decode_list_network_target(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <NetworkTarget>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_network_target(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  NetworkTarget sse_decode_network_target(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_label = sse_decode_String(deserializer);
+    var var_host = sse_decode_String(deserializer);
+    var var_port = sse_decode_u_16(deserializer);
+    var var_protocol = sse_decode_target_protocol(deserializer);
+    var var_timeoutMs = sse_decode_u_32(deserializer);
+    var var_priority = sse_decode_u_8(deserializer);
+    var var_isRequired = sse_decode_bool(deserializer);
+    return NetworkTarget(
+      label: var_label,
+      host: var_host,
+      port: var_port,
+      protocol: var_protocol,
+      timeoutMs: var_timeoutMs,
+      priority: var_priority,
+      isRequired: var_isRequired,
+    );
+  }
+
+  @protected
+  QualityThresholds sse_decode_quality_thresholds(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_excellent = sse_decode_u_32(deserializer);
+    var var_great = sse_decode_u_32(deserializer);
+    var var_good = sse_decode_u_32(deserializer);
+    var var_moderate = sse_decode_u_32(deserializer);
+    var var_poor = sse_decode_u_32(deserializer);
+    return QualityThresholds(
+      excellent: var_excellent,
+      great: var_great,
+      good: var_good,
+      moderate: var_moderate,
+      poor: var_poor,
+    );
+  }
+
+  @protected
+  TargetProtocol sse_decode_target_protocol(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return TargetProtocol.values[inner];
+  }
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint16();
+  }
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint32();
+  }
+
+  @protected
+  int sse_decode_u_8(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8();
+  }
+
+  @protected
+  void sse_decode_unit(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_String(String self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
   }
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_check_strategy(CheckStrategy self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_configuration(Configuration self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_network_target(self.targets, serializer);
+    sse_encode_check_strategy(self.checkStrategy, serializer);
+    sse_encode_quality_thresholds(self.qualityThreshold, serializer);
+    sse_encode_u_32(self.checkIntervalMs, serializer);
+    sse_encode_bool(self.blockRequestWhenPoor, serializer);
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
+  }
+
+  @protected
+  void sse_encode_list_network_target(
+    List<NetworkTarget> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_network_target(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_prim_u_8_strict(
+    Uint8List self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_network_target(NetworkTarget self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.label, serializer);
+    sse_encode_String(self.host, serializer);
+    sse_encode_u_16(self.port, serializer);
+    sse_encode_target_protocol(self.protocol, serializer);
+    sse_encode_u_32(self.timeoutMs, serializer);
+    sse_encode_u_8(self.priority, serializer);
+    sse_encode_bool(self.isRequired, serializer);
+  }
+
+  @protected
+  void sse_encode_quality_thresholds(
+    QualityThresholds self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_32(self.excellent, serializer);
+    sse_encode_u_32(self.great, serializer);
+    sse_encode_u_32(self.good, serializer);
+    sse_encode_u_32(self.moderate, serializer);
+    sse_encode_u_32(self.poor, serializer);
+  }
+
+  @protected
+  void sse_encode_target_protocol(
+    TargetProtocol self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint16(self);
+  }
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint32(self);
+  }
+
+  @protected
+  void sse_encode_u_8(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self);
+  }
+
+  @protected
+  void sse_encode_unit(void self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
   }
 }
