@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flux_net/main.dart';
-import 'package:flux_net/src/rust/frb_generated.dart';
+import 'package:network_reachability/main.dart';
+import 'package:network_reachability/src/rust/frb_generated.dart';
 import 'package:integration_test/integration_test.dart';
 
 void main() {
