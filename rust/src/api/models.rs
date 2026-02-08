@@ -17,11 +17,11 @@ pub enum ConnectionQuality {
 
 #[derive(Debug, Clone, Copy)]
 pub struct QualityThresholds {
-    pub excellent: u32,
-    pub great: u32,
-    pub good: u32,
-    pub moderate: u32,
-    pub poor: u32,
+    pub excellent: u64,
+    pub great: u64,
+    pub good: u64,
+    pub moderate: u64,
+    pub poor: u64,
 }
 
 impl Default for QualityThresholds {
@@ -52,7 +52,7 @@ pub struct NetworkTarget {
     pub host: String,
     pub port: u16,
     pub protocol: TargetProtocol,
-    pub timeout_ms: u32,
+    pub timeout_ms: u64,
     pub priority: u8,      // 1 = High, 2 = Low
     pub is_required: bool, // true = Required, false = Optional
 }
@@ -78,15 +78,15 @@ pub struct NetworkMetadata {
 }
 
 #[derive(Debug, Clone)]
-pub struct Configuration {
+pub struct NetwrokConfiguration {
     pub targets: Vec<NetworkTarget>,
     pub check_strategy: CheckStrategy,
     pub quality_threshold: QualityThresholds,
-    pub check_interval_ms: u32,
+    pub check_interval_ms: u64,
     pub block_request_when_poor: bool,
 }
 
-impl Default for Configuration {
+impl Default for NetwrokConfiguration {
     fn default() -> Self {
         Self {
             targets: vec![

@@ -6,47 +6,96 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `ConnectionQuality`, `ConnectionType`, `NetworkMetadata`, `NetworkReport`, `NetworkStatus`, `TargetReport`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
 
 enum CheckStrategy { race, consensus }
 
-class Configuration {
-  final List<NetworkTarget> targets;
-  final CheckStrategy checkStrategy;
-  final QualityThresholds qualityThreshold;
-  final int checkIntervalMs;
-  final bool blockRequestWhenPoor;
+enum ConnectionQuality { excellent, good, moderate, poor, dead }
 
-  const Configuration({
-    required this.targets,
-    required this.checkStrategy,
-    required this.qualityThreshold,
-    required this.checkIntervalMs,
-    required this.blockRequestWhenPoor,
-  });
+enum ConnectionType { wifi, cellular, ethernet, vpn, bluetooth, unknown }
 
-  static Future<Configuration> default_() =>
-      RustLib.instance.api.crateApiModelsConfigurationDefault();
+class NetworkMetadata {
+  final bool isVpn;
+  final String interfaceName;
+
+  const NetworkMetadata({required this.isVpn, required this.interfaceName});
 
   @override
-  int get hashCode =>
-      targets.hashCode ^
-      checkStrategy.hashCode ^
-      qualityThreshold.hashCode ^
-      checkIntervalMs.hashCode ^
-      blockRequestWhenPoor.hashCode;
+  int get hashCode => isVpn.hashCode ^ interfaceName.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Configuration &&
+      other is NetworkMetadata &&
           runtimeType == other.runtimeType &&
-          targets == other.targets &&
-          checkStrategy == other.checkStrategy &&
-          qualityThreshold == other.qualityThreshold &&
-          checkIntervalMs == other.checkIntervalMs &&
-          blockRequestWhenPoor == other.blockRequestWhenPoor;
+          isVpn == other.isVpn &&
+          interfaceName == other.interfaceName;
+}
+
+class NetworkReport {
+  final BigInt timestampMs;
+  final NetworkStatus status;
+  final ConnectionType connectionType;
+  final NetworkMetadata metadata;
+  final List<TargetReport> targetReports;
+
+  const NetworkReport({
+    required this.timestampMs,
+    required this.status,
+    required this.connectionType,
+    required this.metadata,
+    required this.targetReports,
+  });
+
+  @override
+  int get hashCode =>
+      timestampMs.hashCode ^
+      status.hashCode ^
+      connectionType.hashCode ^
+      metadata.hashCode ^
+      targetReports.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NetworkReport &&
+          runtimeType == other.runtimeType &&
+          timestampMs == other.timestampMs &&
+          status == other.status &&
+          connectionType == other.connectionType &&
+          metadata == other.metadata &&
+          targetReports == other.targetReports;
+}
+
+class NetworkStatus {
+  final bool isConnected;
+  final ConnectionQuality quality;
+  final BigInt latencyMs;
+  final String winnerTarget;
+
+  const NetworkStatus({
+    required this.isConnected,
+    required this.quality,
+    required this.latencyMs,
+    required this.winnerTarget,
+  });
+
+  @override
+  int get hashCode =>
+      isConnected.hashCode ^
+      quality.hashCode ^
+      latencyMs.hashCode ^
+      winnerTarget.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NetworkStatus &&
+          runtimeType == other.runtimeType &&
+          isConnected == other.isConnected &&
+          quality == other.quality &&
+          latencyMs == other.latencyMs &&
+          winnerTarget == other.winnerTarget;
 }
 
 class NetworkTarget {
@@ -54,7 +103,7 @@ class NetworkTarget {
   final String host;
   final int port;
   final TargetProtocol protocol;
-  final int timeoutMs;
+  final BigInt timeoutMs;
   final int priority;
   final bool isRequired;
 
@@ -92,12 +141,50 @@ class NetworkTarget {
           isRequired == other.isRequired;
 }
 
+class NetwrokConfiguration {
+  final List<NetworkTarget> targets;
+  final CheckStrategy checkStrategy;
+  final QualityThresholds qualityThreshold;
+  final BigInt checkIntervalMs;
+  final bool blockRequestWhenPoor;
+
+  const NetwrokConfiguration({
+    required this.targets,
+    required this.checkStrategy,
+    required this.qualityThreshold,
+    required this.checkIntervalMs,
+    required this.blockRequestWhenPoor,
+  });
+
+  static Future<NetwrokConfiguration> default_() =>
+      RustLib.instance.api.crateApiModelsNetwrokConfigurationDefault();
+
+  @override
+  int get hashCode =>
+      targets.hashCode ^
+      checkStrategy.hashCode ^
+      qualityThreshold.hashCode ^
+      checkIntervalMs.hashCode ^
+      blockRequestWhenPoor.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NetwrokConfiguration &&
+          runtimeType == other.runtimeType &&
+          targets == other.targets &&
+          checkStrategy == other.checkStrategy &&
+          qualityThreshold == other.qualityThreshold &&
+          checkIntervalMs == other.checkIntervalMs &&
+          blockRequestWhenPoor == other.blockRequestWhenPoor;
+}
+
 class QualityThresholds {
-  final int excellent;
-  final int great;
-  final int good;
-  final int moderate;
-  final int poor;
+  final BigInt excellent;
+  final BigInt great;
+  final BigInt good;
+  final BigInt moderate;
+  final BigInt poor;
 
   const QualityThresholds({
     required this.excellent,
@@ -131,3 +218,38 @@ class QualityThresholds {
 }
 
 enum TargetProtocol { tcp, udp }
+
+class TargetReport {
+  final String label;
+  final bool success;
+  final BigInt? latencyMs;
+  final String? error;
+  final bool isEssential;
+
+  const TargetReport({
+    required this.label,
+    required this.success,
+    this.latencyMs,
+    this.error,
+    required this.isEssential,
+  });
+
+  @override
+  int get hashCode =>
+      label.hashCode ^
+      success.hashCode ^
+      latencyMs.hashCode ^
+      error.hashCode ^
+      isEssential.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TargetReport &&
+          runtimeType == other.runtimeType &&
+          label == other.label &&
+          success == other.success &&
+          latencyMs == other.latencyMs &&
+          error == other.error &&
+          isEssential == other.isEssential;
+}

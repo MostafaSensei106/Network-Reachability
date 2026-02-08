@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1705338511;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 632618340;
 
 // Section: executor
 
@@ -45,7 +45,46 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
-fn wire__crate__api__models__configuration_default_impl(
+fn wire__crate__api__engine__check_network_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "check_network",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_config =
+                <crate::api::models::NetwrokConfiguration>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, ()>(
+                    (move || async move {
+                        let output_ok = Result::<_, ()>::Ok(
+                            crate::api::engine::check_network(api_config).await,
+                        )?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__utils__detect_network_metadata_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -53,7 +92,7 @@ fn wire__crate__api__models__configuration_default_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "configuration_default",
+            debug_name: "detect_network_metadata",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -71,7 +110,78 @@ fn wire__crate__api__models__configuration_default_impl(
             move |context| {
                 transform_result_sse::<_, ()>((move || {
                     let output_ok =
-                        Result::<_, ()>::Ok(crate::api::models::Configuration::default())?;
+                        Result::<_, ()>::Ok(crate::api::utils::detect_network_metadata())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__utils__evaluate_quality_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "evaluate_quality",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_latency = <u64>::sse_decode(&mut deserializer);
+            let api_threshold =
+                <crate::api::models::QualityThresholds>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(crate::api::utils::evaluate_quality(
+                        api_latency,
+                        &api_threshold,
+                    ))?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__models__netwrok_configuration_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "netwrok_configuration_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::models::NetwrokConfiguration::default())?;
                     Ok(output_ok)
                 })())
             }
@@ -141,21 +251,33 @@ impl SseDecode for crate::api::models::CheckStrategy {
     }
 }
 
-impl SseDecode for crate::api::models::Configuration {
+impl SseDecode for crate::api::models::ConnectionQuality {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_targets = <Vec<crate::api::models::NetworkTarget>>::sse_decode(deserializer);
-        let mut var_checkStrategy = <crate::api::models::CheckStrategy>::sse_decode(deserializer);
-        let mut var_qualityThreshold =
-            <crate::api::models::QualityThresholds>::sse_decode(deserializer);
-        let mut var_checkIntervalMs = <u32>::sse_decode(deserializer);
-        let mut var_blockRequestWhenPoor = <bool>::sse_decode(deserializer);
-        return crate::api::models::Configuration {
-            targets: var_targets,
-            check_strategy: var_checkStrategy,
-            quality_threshold: var_qualityThreshold,
-            check_interval_ms: var_checkIntervalMs,
-            block_request_when_poor: var_blockRequestWhenPoor,
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::models::ConnectionQuality::Excellent,
+            1 => crate::api::models::ConnectionQuality::Good,
+            2 => crate::api::models::ConnectionQuality::Moderate,
+            3 => crate::api::models::ConnectionQuality::Poor,
+            4 => crate::api::models::ConnectionQuality::Dead,
+            _ => unreachable!("Invalid variant for ConnectionQuality: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::models::ConnectionType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::models::ConnectionType::Wifi,
+            1 => crate::api::models::ConnectionType::Cellular,
+            2 => crate::api::models::ConnectionType::Ethernet,
+            3 => crate::api::models::ConnectionType::Vpn,
+            4 => crate::api::models::ConnectionType::Bluetooth,
+            5 => crate::api::models::ConnectionType::Unknown,
+            _ => unreachable!("Invalid variant for ConnectionType: {}", inner),
         };
     }
 }
@@ -193,6 +315,65 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<crate::api::models::TargetReport> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::models::TargetReport>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for crate::api::models::NetworkMetadata {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_isVpn = <bool>::sse_decode(deserializer);
+        let mut var_interfaceName = <String>::sse_decode(deserializer);
+        return crate::api::models::NetworkMetadata {
+            is_vpn: var_isVpn,
+            interface_name: var_interfaceName,
+        };
+    }
+}
+
+impl SseDecode for crate::api::models::NetworkReport {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_timestampMs = <u64>::sse_decode(deserializer);
+        let mut var_status = <crate::api::models::NetworkStatus>::sse_decode(deserializer);
+        let mut var_connectionType = <crate::api::models::ConnectionType>::sse_decode(deserializer);
+        let mut var_metadata = <crate::api::models::NetworkMetadata>::sse_decode(deserializer);
+        let mut var_targetReports =
+            <Vec<crate::api::models::TargetReport>>::sse_decode(deserializer);
+        return crate::api::models::NetworkReport {
+            timestamp_ms: var_timestampMs,
+            status: var_status,
+            connection_type: var_connectionType,
+            metadata: var_metadata,
+            target_reports: var_targetReports,
+        };
+    }
+}
+
+impl SseDecode for crate::api::models::NetworkStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_isConnected = <bool>::sse_decode(deserializer);
+        let mut var_quality = <crate::api::models::ConnectionQuality>::sse_decode(deserializer);
+        let mut var_latencyMs = <u64>::sse_decode(deserializer);
+        let mut var_winnerTarget = <String>::sse_decode(deserializer);
+        return crate::api::models::NetworkStatus {
+            is_connected: var_isConnected,
+            quality: var_quality,
+            latency_ms: var_latencyMs,
+            winner_target: var_winnerTarget,
+        };
+    }
+}
+
 impl SseDecode for crate::api::models::NetworkTarget {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -200,7 +381,7 @@ impl SseDecode for crate::api::models::NetworkTarget {
         let mut var_host = <String>::sse_decode(deserializer);
         let mut var_port = <u16>::sse_decode(deserializer);
         let mut var_protocol = <crate::api::models::TargetProtocol>::sse_decode(deserializer);
-        let mut var_timeoutMs = <u32>::sse_decode(deserializer);
+        let mut var_timeoutMs = <u64>::sse_decode(deserializer);
         let mut var_priority = <u8>::sse_decode(deserializer);
         let mut var_isRequired = <bool>::sse_decode(deserializer);
         return crate::api::models::NetworkTarget {
@@ -215,14 +396,55 @@ impl SseDecode for crate::api::models::NetworkTarget {
     }
 }
 
+impl SseDecode for crate::api::models::NetwrokConfiguration {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_targets = <Vec<crate::api::models::NetworkTarget>>::sse_decode(deserializer);
+        let mut var_checkStrategy = <crate::api::models::CheckStrategy>::sse_decode(deserializer);
+        let mut var_qualityThreshold =
+            <crate::api::models::QualityThresholds>::sse_decode(deserializer);
+        let mut var_checkIntervalMs = <u64>::sse_decode(deserializer);
+        let mut var_blockRequestWhenPoor = <bool>::sse_decode(deserializer);
+        return crate::api::models::NetwrokConfiguration {
+            targets: var_targets,
+            check_strategy: var_checkStrategy,
+            quality_threshold: var_qualityThreshold,
+            check_interval_ms: var_checkIntervalMs,
+            block_request_when_poor: var_blockRequestWhenPoor,
+        };
+    }
+}
+
+impl SseDecode for Option<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<u64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<u64>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for crate::api::models::QualityThresholds {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_excellent = <u32>::sse_decode(deserializer);
-        let mut var_great = <u32>::sse_decode(deserializer);
-        let mut var_good = <u32>::sse_decode(deserializer);
-        let mut var_moderate = <u32>::sse_decode(deserializer);
-        let mut var_poor = <u32>::sse_decode(deserializer);
+        let mut var_excellent = <u64>::sse_decode(deserializer);
+        let mut var_great = <u64>::sse_decode(deserializer);
+        let mut var_good = <u64>::sse_decode(deserializer);
+        let mut var_moderate = <u64>::sse_decode(deserializer);
+        let mut var_poor = <u64>::sse_decode(deserializer);
         return crate::api::models::QualityThresholds {
             excellent: var_excellent,
             great: var_great,
@@ -230,6 +452,20 @@ impl SseDecode for crate::api::models::QualityThresholds {
             moderate: var_moderate,
             poor: var_poor,
         };
+    }
+}
+
+impl SseDecode
+    for (
+        crate::api::models::NetworkMetadata,
+        crate::api::models::ConnectionType,
+    )
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <crate::api::models::NetworkMetadata>::sse_decode(deserializer);
+        let mut var_field1 = <crate::api::models::ConnectionType>::sse_decode(deserializer);
+        return (var_field0, var_field1);
     }
 }
 
@@ -245,6 +481,24 @@ impl SseDecode for crate::api::models::TargetProtocol {
     }
 }
 
+impl SseDecode for crate::api::models::TargetReport {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_label = <String>::sse_decode(deserializer);
+        let mut var_success = <bool>::sse_decode(deserializer);
+        let mut var_latencyMs = <Option<u64>>::sse_decode(deserializer);
+        let mut var_error = <Option<String>>::sse_decode(deserializer);
+        let mut var_isEssential = <bool>::sse_decode(deserializer);
+        return crate::api::models::TargetReport {
+            label: var_label,
+            success: var_success,
+            latency_ms: var_latencyMs,
+            error: var_error,
+            is_essential: var_isEssential,
+        };
+    }
+}
+
 impl SseDecode for u16 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -252,10 +506,10 @@ impl SseDecode for u16 {
     }
 }
 
-impl SseDecode for u32 {
+impl SseDecode for u64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_u32::<NativeEndian>().unwrap()
+        deserializer.cursor.read_u64::<NativeEndian>().unwrap()
     }
 }
 
@@ -280,10 +534,18 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => {
-            wire__crate__api__models__configuration_default_impl(port, ptr, rust_vec_len, data_len)
+        1 => wire__crate__api__engine__check_network_impl(port, ptr, rust_vec_len, data_len),
+        2 => {
+            wire__crate__api__utils__detect_network_metadata_impl(port, ptr, rust_vec_len, data_len)
         }
-        2 => wire__crate__api__models__quality_thresholds_default_impl(
+        3 => wire__crate__api__utils__evaluate_quality_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire__crate__api__models__netwrok_configuration_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        5 => wire__crate__api__models__quality_thresholds_default_impl(
             port,
             ptr,
             rust_vec_len,
@@ -329,26 +591,119 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::CheckStrategy>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::models::Configuration {
+impl flutter_rust_bridge::IntoDart for crate::api::models::ConnectionQuality {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Excellent => 0.into_dart(),
+            Self::Good => 1.into_dart(),
+            Self::Moderate => 2.into_dart(),
+            Self::Poor => 3.into_dart(),
+            Self::Dead => 4.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::models::ConnectionQuality
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::ConnectionQuality>
+    for crate::api::models::ConnectionQuality
+{
+    fn into_into_dart(self) -> crate::api::models::ConnectionQuality {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::models::ConnectionType {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Wifi => 0.into_dart(),
+            Self::Cellular => 1.into_dart(),
+            Self::Ethernet => 2.into_dart(),
+            Self::Vpn => 3.into_dart(),
+            Self::Bluetooth => 4.into_dart(),
+            Self::Unknown => 5.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::models::ConnectionType
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::ConnectionType>
+    for crate::api::models::ConnectionType
+{
+    fn into_into_dart(self) -> crate::api::models::ConnectionType {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::models::NetworkMetadata {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.targets.into_into_dart().into_dart(),
-            self.check_strategy.into_into_dart().into_dart(),
-            self.quality_threshold.into_into_dart().into_dart(),
-            self.check_interval_ms.into_into_dart().into_dart(),
-            self.block_request_when_poor.into_into_dart().into_dart(),
+            self.is_vpn.into_into_dart().into_dart(),
+            self.interface_name.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::models::Configuration
+    for crate::api::models::NetworkMetadata
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::api::models::Configuration>
-    for crate::api::models::Configuration
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::NetworkMetadata>
+    for crate::api::models::NetworkMetadata
 {
-    fn into_into_dart(self) -> crate::api::models::Configuration {
+    fn into_into_dart(self) -> crate::api::models::NetworkMetadata {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::models::NetworkReport {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.timestamp_ms.into_into_dart().into_dart(),
+            self.status.into_into_dart().into_dart(),
+            self.connection_type.into_into_dart().into_dart(),
+            self.metadata.into_into_dart().into_dart(),
+            self.target_reports.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::models::NetworkReport
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::NetworkReport>
+    for crate::api::models::NetworkReport
+{
+    fn into_into_dart(self) -> crate::api::models::NetworkReport {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::models::NetworkStatus {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.is_connected.into_into_dart().into_dart(),
+            self.quality.into_into_dart().into_dart(),
+            self.latency_ms.into_into_dart().into_dart(),
+            self.winner_target.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::models::NetworkStatus
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::NetworkStatus>
+    for crate::api::models::NetworkStatus
+{
+    fn into_into_dart(self) -> crate::api::models::NetworkStatus {
         self
     }
 }
@@ -375,6 +730,30 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::NetworkTarget>
     for crate::api::models::NetworkTarget
 {
     fn into_into_dart(self) -> crate::api::models::NetworkTarget {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::models::NetwrokConfiguration {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.targets.into_into_dart().into_dart(),
+            self.check_strategy.into_into_dart().into_dart(),
+            self.quality_threshold.into_into_dart().into_dart(),
+            self.check_interval_ms.into_into_dart().into_dart(),
+            self.block_request_when_poor.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::models::NetwrokConfiguration
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::NetwrokConfiguration>
+    for crate::api::models::NetwrokConfiguration
+{
+    fn into_into_dart(self) -> crate::api::models::NetwrokConfiguration {
         self
     }
 }
@@ -423,6 +802,30 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::TargetProtocol>
         self
     }
 }
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::models::TargetReport {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.label.into_into_dart().into_dart(),
+            self.success.into_into_dart().into_dart(),
+            self.latency_ms.into_into_dart().into_dart(),
+            self.error.into_into_dart().into_dart(),
+            self.is_essential.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::models::TargetReport
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::TargetReport>
+    for crate::api::models::TargetReport
+{
+    fn into_into_dart(self) -> crate::api::models::TargetReport {
+        self
+    }
+}
 
 impl SseEncode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -454,14 +857,42 @@ impl SseEncode for crate::api::models::CheckStrategy {
     }
 }
 
-impl SseEncode for crate::api::models::Configuration {
+impl SseEncode for crate::api::models::ConnectionQuality {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Vec<crate::api::models::NetworkTarget>>::sse_encode(self.targets, serializer);
-        <crate::api::models::CheckStrategy>::sse_encode(self.check_strategy, serializer);
-        <crate::api::models::QualityThresholds>::sse_encode(self.quality_threshold, serializer);
-        <u32>::sse_encode(self.check_interval_ms, serializer);
-        <bool>::sse_encode(self.block_request_when_poor, serializer);
+        <i32>::sse_encode(
+            match self {
+                crate::api::models::ConnectionQuality::Excellent => 0,
+                crate::api::models::ConnectionQuality::Good => 1,
+                crate::api::models::ConnectionQuality::Moderate => 2,
+                crate::api::models::ConnectionQuality::Poor => 3,
+                crate::api::models::ConnectionQuality::Dead => 4,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::models::ConnectionType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::models::ConnectionType::Wifi => 0,
+                crate::api::models::ConnectionType::Cellular => 1,
+                crate::api::models::ConnectionType::Ethernet => 2,
+                crate::api::models::ConnectionType::Vpn => 3,
+                crate::api::models::ConnectionType::Bluetooth => 4,
+                crate::api::models::ConnectionType::Unknown => 5,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 
@@ -492,6 +923,45 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<crate::api::models::TargetReport> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::models::TargetReport>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for crate::api::models::NetworkMetadata {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_vpn, serializer);
+        <String>::sse_encode(self.interface_name, serializer);
+    }
+}
+
+impl SseEncode for crate::api::models::NetworkReport {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u64>::sse_encode(self.timestamp_ms, serializer);
+        <crate::api::models::NetworkStatus>::sse_encode(self.status, serializer);
+        <crate::api::models::ConnectionType>::sse_encode(self.connection_type, serializer);
+        <crate::api::models::NetworkMetadata>::sse_encode(self.metadata, serializer);
+        <Vec<crate::api::models::TargetReport>>::sse_encode(self.target_reports, serializer);
+    }
+}
+
+impl SseEncode for crate::api::models::NetworkStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_connected, serializer);
+        <crate::api::models::ConnectionQuality>::sse_encode(self.quality, serializer);
+        <u64>::sse_encode(self.latency_ms, serializer);
+        <String>::sse_encode(self.winner_target, serializer);
+    }
+}
+
 impl SseEncode for crate::api::models::NetworkTarget {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -499,20 +969,64 @@ impl SseEncode for crate::api::models::NetworkTarget {
         <String>::sse_encode(self.host, serializer);
         <u16>::sse_encode(self.port, serializer);
         <crate::api::models::TargetProtocol>::sse_encode(self.protocol, serializer);
-        <u32>::sse_encode(self.timeout_ms, serializer);
+        <u64>::sse_encode(self.timeout_ms, serializer);
         <u8>::sse_encode(self.priority, serializer);
         <bool>::sse_encode(self.is_required, serializer);
+    }
+}
+
+impl SseEncode for crate::api::models::NetwrokConfiguration {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<crate::api::models::NetworkTarget>>::sse_encode(self.targets, serializer);
+        <crate::api::models::CheckStrategy>::sse_encode(self.check_strategy, serializer);
+        <crate::api::models::QualityThresholds>::sse_encode(self.quality_threshold, serializer);
+        <u64>::sse_encode(self.check_interval_ms, serializer);
+        <bool>::sse_encode(self.block_request_when_poor, serializer);
+    }
+}
+
+impl SseEncode for Option<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <String>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<u64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <u64>::sse_encode(value, serializer);
+        }
     }
 }
 
 impl SseEncode for crate::api::models::QualityThresholds {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <u32>::sse_encode(self.excellent, serializer);
-        <u32>::sse_encode(self.great, serializer);
-        <u32>::sse_encode(self.good, serializer);
-        <u32>::sse_encode(self.moderate, serializer);
-        <u32>::sse_encode(self.poor, serializer);
+        <u64>::sse_encode(self.excellent, serializer);
+        <u64>::sse_encode(self.great, serializer);
+        <u64>::sse_encode(self.good, serializer);
+        <u64>::sse_encode(self.moderate, serializer);
+        <u64>::sse_encode(self.poor, serializer);
+    }
+}
+
+impl SseEncode
+    for (
+        crate::api::models::NetworkMetadata,
+        crate::api::models::ConnectionType,
+    )
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::api::models::NetworkMetadata>::sse_encode(self.0, serializer);
+        <crate::api::models::ConnectionType>::sse_encode(self.1, serializer);
     }
 }
 
@@ -532,6 +1046,17 @@ impl SseEncode for crate::api::models::TargetProtocol {
     }
 }
 
+impl SseEncode for crate::api::models::TargetReport {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.label, serializer);
+        <bool>::sse_encode(self.success, serializer);
+        <Option<u64>>::sse_encode(self.latency_ms, serializer);
+        <Option<String>>::sse_encode(self.error, serializer);
+        <bool>::sse_encode(self.is_essential, serializer);
+    }
+}
+
 impl SseEncode for u16 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -539,10 +1064,10 @@ impl SseEncode for u16 {
     }
 }
 
-impl SseEncode for u32 {
+impl SseEncode for u64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_u32::<NativeEndian>(self).unwrap();
+        serializer.cursor.write_u64::<NativeEndian>(self).unwrap();
     }
 }
 

@@ -3,7 +3,9 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/engine.dart';
 import 'api/models.dart';
+import 'api/utils.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -64,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 1705338511;
+  int get rustContentHash => 632618340;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -75,7 +77,19 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<Configuration> crateApiModelsConfigurationDefault();
+  Future<NetworkReport> crateApiEngineCheckNetwork({
+    required NetwrokConfiguration config,
+  });
+
+  Future<(NetworkMetadata, ConnectionType)>
+  crateApiUtilsDetectNetworkMetadata();
+
+  Future<ConnectionQuality> crateApiUtilsEvaluateQuality({
+    required BigInt latency,
+    required QualityThresholds threshold,
+  });
+
+  Future<NetwrokConfiguration> crateApiModelsNetwrokConfigurationDefault();
 
   Future<QualityThresholds> crateApiModelsQualityThresholdsDefault();
 }
@@ -89,11 +103,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<Configuration> crateApiModelsConfigurationDefault() {
+  Future<NetworkReport> crateApiEngineCheckNetwork({
+    required NetwrokConfiguration config,
+  }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_box_autoadd_netwrok_configuration(config, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -102,18 +119,111 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_configuration,
+          decodeSuccessData: sse_decode_network_report,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiModelsConfigurationDefaultConstMeta,
+        constMeta: kCrateApiEngineCheckNetworkConstMeta,
+        argValues: [config],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineCheckNetworkConstMeta =>
+      const TaskConstMeta(debugName: "check_network", argNames: ["config"]);
+
+  @override
+  Future<(NetworkMetadata, ConnectionType)>
+  crateApiUtilsDetectNetworkMetadata() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 2,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_record_network_metadata_connection_type,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiUtilsDetectNetworkMetadataConstMeta,
         argValues: [],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiModelsConfigurationDefaultConstMeta =>
-      const TaskConstMeta(debugName: "configuration_default", argNames: []);
+  TaskConstMeta get kCrateApiUtilsDetectNetworkMetadataConstMeta =>
+      const TaskConstMeta(debugName: "detect_network_metadata", argNames: []);
+
+  @override
+  Future<ConnectionQuality> crateApiUtilsEvaluateQuality({
+    required BigInt latency,
+    required QualityThresholds threshold,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_u_64(latency, serializer);
+          sse_encode_box_autoadd_quality_thresholds(threshold, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 3,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_connection_quality,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiUtilsEvaluateQualityConstMeta,
+        argValues: [latency, threshold],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiUtilsEvaluateQualityConstMeta =>
+      const TaskConstMeta(
+        debugName: "evaluate_quality",
+        argNames: ["latency", "threshold"],
+      );
+
+  @override
+  Future<NetwrokConfiguration> crateApiModelsNetwrokConfigurationDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 4,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_netwrok_configuration,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiModelsNetwrokConfigurationDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiModelsNetwrokConfigurationDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "netwrok_configuration_default",
+        argNames: [],
+      );
 
   @override
   Future<QualityThresholds> crateApiModelsQualityThresholdsDefault() {
@@ -124,7 +234,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 2,
+            funcId: 5,
             port: port_,
           );
         },
@@ -158,24 +268,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  NetwrokConfiguration dco_decode_box_autoadd_netwrok_configuration(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_netwrok_configuration(raw);
+  }
+
+  @protected
+  QualityThresholds dco_decode_box_autoadd_quality_thresholds(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_quality_thresholds(raw);
+  }
+
+  @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_u_64(raw);
+  }
+
+  @protected
   CheckStrategy dco_decode_check_strategy(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return CheckStrategy.values[raw as int];
   }
 
   @protected
-  Configuration dco_decode_configuration(dynamic raw) {
+  ConnectionQuality dco_decode_connection_quality(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
-    return Configuration(
-      targets: dco_decode_list_network_target(arr[0]),
-      checkStrategy: dco_decode_check_strategy(arr[1]),
-      qualityThreshold: dco_decode_quality_thresholds(arr[2]),
-      checkIntervalMs: dco_decode_u_32(arr[3]),
-      blockRequestWhenPoor: dco_decode_bool(arr[4]),
-    );
+    return ConnectionQuality.values[raw as int];
+  }
+
+  @protected
+  ConnectionType dco_decode_connection_type(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ConnectionType.values[raw as int];
   }
 
   @protected
@@ -197,6 +324,53 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<TargetReport> dco_decode_list_target_report(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_target_report).toList();
+  }
+
+  @protected
+  NetworkMetadata dco_decode_network_metadata(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return NetworkMetadata(
+      isVpn: dco_decode_bool(arr[0]),
+      interfaceName: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  NetworkReport dco_decode_network_report(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return NetworkReport(
+      timestampMs: dco_decode_u_64(arr[0]),
+      status: dco_decode_network_status(arr[1]),
+      connectionType: dco_decode_connection_type(arr[2]),
+      metadata: dco_decode_network_metadata(arr[3]),
+      targetReports: dco_decode_list_target_report(arr[4]),
+    );
+  }
+
+  @protected
+  NetworkStatus dco_decode_network_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return NetworkStatus(
+      isConnected: dco_decode_bool(arr[0]),
+      quality: dco_decode_connection_quality(arr[1]),
+      latencyMs: dco_decode_u_64(arr[2]),
+      winnerTarget: dco_decode_String(arr[3]),
+    );
+  }
+
+  @protected
   NetworkTarget dco_decode_network_target(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -207,10 +381,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       host: dco_decode_String(arr[1]),
       port: dco_decode_u_16(arr[2]),
       protocol: dco_decode_target_protocol(arr[3]),
-      timeoutMs: dco_decode_u_32(arr[4]),
+      timeoutMs: dco_decode_u_64(arr[4]),
       priority: dco_decode_u_8(arr[5]),
       isRequired: dco_decode_bool(arr[6]),
     );
+  }
+
+  @protected
+  NetwrokConfiguration dco_decode_netwrok_configuration(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return NetwrokConfiguration(
+      targets: dco_decode_list_network_target(arr[0]),
+      checkStrategy: dco_decode_check_strategy(arr[1]),
+      qualityThreshold: dco_decode_quality_thresholds(arr[2]),
+      checkIntervalMs: dco_decode_u_64(arr[3]),
+      blockRequestWhenPoor: dco_decode_bool(arr[4]),
+    );
+  }
+
+  @protected
+  String? dco_decode_opt_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_64(raw);
   }
 
   @protected
@@ -220,11 +421,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (arr.length != 5)
       throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return QualityThresholds(
-      excellent: dco_decode_u_32(arr[0]),
-      great: dco_decode_u_32(arr[1]),
-      good: dco_decode_u_32(arr[2]),
-      moderate: dco_decode_u_32(arr[3]),
-      poor: dco_decode_u_32(arr[4]),
+      excellent: dco_decode_u_64(arr[0]),
+      great: dco_decode_u_64(arr[1]),
+      good: dco_decode_u_64(arr[2]),
+      moderate: dco_decode_u_64(arr[3]),
+      poor: dco_decode_u_64(arr[4]),
+    );
+  }
+
+  @protected
+  (NetworkMetadata, ConnectionType)
+  dco_decode_record_network_metadata_connection_type(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_network_metadata(arr[0]),
+      dco_decode_connection_type(arr[1]),
     );
   }
 
@@ -235,15 +450,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TargetReport dco_decode_target_report(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return TargetReport(
+      label: dco_decode_String(arr[0]),
+      success: dco_decode_bool(arr[1]),
+      latencyMs: dco_decode_opt_box_autoadd_u_64(arr[2]),
+      error: dco_decode_opt_String(arr[3]),
+      isEssential: dco_decode_bool(arr[4]),
+    );
+  }
+
+  @protected
   int dco_decode_u_16(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
   }
 
   @protected
-  int dco_decode_u_32(dynamic raw) {
+  BigInt dco_decode_u_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as int;
+    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -272,6 +502,28 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  NetwrokConfiguration sse_decode_box_autoadd_netwrok_configuration(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_netwrok_configuration(deserializer));
+  }
+
+  @protected
+  QualityThresholds sse_decode_box_autoadd_quality_thresholds(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_quality_thresholds(deserializer));
+  }
+
+  @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_64(deserializer));
+  }
+
+  @protected
   CheckStrategy sse_decode_check_strategy(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
@@ -279,20 +531,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Configuration sse_decode_configuration(SseDeserializer deserializer) {
+  ConnectionQuality sse_decode_connection_quality(
+    SseDeserializer deserializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_targets = sse_decode_list_network_target(deserializer);
-    var var_checkStrategy = sse_decode_check_strategy(deserializer);
-    var var_qualityThreshold = sse_decode_quality_thresholds(deserializer);
-    var var_checkIntervalMs = sse_decode_u_32(deserializer);
-    var var_blockRequestWhenPoor = sse_decode_bool(deserializer);
-    return Configuration(
-      targets: var_targets,
-      checkStrategy: var_checkStrategy,
-      qualityThreshold: var_qualityThreshold,
-      checkIntervalMs: var_checkIntervalMs,
-      blockRequestWhenPoor: var_blockRequestWhenPoor,
-    );
+    var inner = sse_decode_i_32(deserializer);
+    return ConnectionQuality.values[inner];
+  }
+
+  @protected
+  ConnectionType sse_decode_connection_type(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return ConnectionType.values[inner];
   }
 
   @protected
@@ -323,13 +574,67 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<TargetReport> sse_decode_list_target_report(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <TargetReport>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_target_report(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  NetworkMetadata sse_decode_network_metadata(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_isVpn = sse_decode_bool(deserializer);
+    var var_interfaceName = sse_decode_String(deserializer);
+    return NetworkMetadata(isVpn: var_isVpn, interfaceName: var_interfaceName);
+  }
+
+  @protected
+  NetworkReport sse_decode_network_report(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_timestampMs = sse_decode_u_64(deserializer);
+    var var_status = sse_decode_network_status(deserializer);
+    var var_connectionType = sse_decode_connection_type(deserializer);
+    var var_metadata = sse_decode_network_metadata(deserializer);
+    var var_targetReports = sse_decode_list_target_report(deserializer);
+    return NetworkReport(
+      timestampMs: var_timestampMs,
+      status: var_status,
+      connectionType: var_connectionType,
+      metadata: var_metadata,
+      targetReports: var_targetReports,
+    );
+  }
+
+  @protected
+  NetworkStatus sse_decode_network_status(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_isConnected = sse_decode_bool(deserializer);
+    var var_quality = sse_decode_connection_quality(deserializer);
+    var var_latencyMs = sse_decode_u_64(deserializer);
+    var var_winnerTarget = sse_decode_String(deserializer);
+    return NetworkStatus(
+      isConnected: var_isConnected,
+      quality: var_quality,
+      latencyMs: var_latencyMs,
+      winnerTarget: var_winnerTarget,
+    );
+  }
+
+  @protected
   NetworkTarget sse_decode_network_target(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_label = sse_decode_String(deserializer);
     var var_host = sse_decode_String(deserializer);
     var var_port = sse_decode_u_16(deserializer);
     var var_protocol = sse_decode_target_protocol(deserializer);
-    var var_timeoutMs = sse_decode_u_32(deserializer);
+    var var_timeoutMs = sse_decode_u_64(deserializer);
     var var_priority = sse_decode_u_8(deserializer);
     var var_isRequired = sse_decode_bool(deserializer);
     return NetworkTarget(
@@ -344,15 +649,56 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  NetwrokConfiguration sse_decode_netwrok_configuration(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_targets = sse_decode_list_network_target(deserializer);
+    var var_checkStrategy = sse_decode_check_strategy(deserializer);
+    var var_qualityThreshold = sse_decode_quality_thresholds(deserializer);
+    var var_checkIntervalMs = sse_decode_u_64(deserializer);
+    var var_blockRequestWhenPoor = sse_decode_bool(deserializer);
+    return NetwrokConfiguration(
+      targets: var_targets,
+      checkStrategy: var_checkStrategy,
+      qualityThreshold: var_qualityThreshold,
+      checkIntervalMs: var_checkIntervalMs,
+      blockRequestWhenPoor: var_blockRequestWhenPoor,
+    );
+  }
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_64(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   QualityThresholds sse_decode_quality_thresholds(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_excellent = sse_decode_u_32(deserializer);
-    var var_great = sse_decode_u_32(deserializer);
-    var var_good = sse_decode_u_32(deserializer);
-    var var_moderate = sse_decode_u_32(deserializer);
-    var var_poor = sse_decode_u_32(deserializer);
+    var var_excellent = sse_decode_u_64(deserializer);
+    var var_great = sse_decode_u_64(deserializer);
+    var var_good = sse_decode_u_64(deserializer);
+    var var_moderate = sse_decode_u_64(deserializer);
+    var var_poor = sse_decode_u_64(deserializer);
     return QualityThresholds(
       excellent: var_excellent,
       great: var_great,
@@ -363,10 +709,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  (NetworkMetadata, ConnectionType)
+  sse_decode_record_network_metadata_connection_type(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_network_metadata(deserializer);
+    var var_field1 = sse_decode_connection_type(deserializer);
+    return (var_field0, var_field1);
+  }
+
+  @protected
   TargetProtocol sse_decode_target_protocol(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
     return TargetProtocol.values[inner];
+  }
+
+  @protected
+  TargetReport sse_decode_target_report(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_label = sse_decode_String(deserializer);
+    var var_success = sse_decode_bool(deserializer);
+    var var_latencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_error = sse_decode_opt_String(deserializer);
+    var var_isEssential = sse_decode_bool(deserializer);
+    return TargetReport(
+      label: var_label,
+      success: var_success,
+      latencyMs: var_latencyMs,
+      error: var_error,
+      isEssential: var_isEssential,
+    );
   }
 
   @protected
@@ -376,9 +750,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int sse_decode_u_32(SseDeserializer deserializer) {
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint32();
+    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -405,19 +779,51 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_netwrok_configuration(
+    NetwrokConfiguration self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_netwrok_configuration(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_quality_thresholds(
+    QualityThresholds self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_quality_thresholds(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self, serializer);
+  }
+
+  @protected
   void sse_encode_check_strategy(CheckStrategy self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
   }
 
   @protected
-  void sse_encode_configuration(Configuration self, SseSerializer serializer) {
+  void sse_encode_connection_quality(
+    ConnectionQuality self,
+    SseSerializer serializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_network_target(self.targets, serializer);
-    sse_encode_check_strategy(self.checkStrategy, serializer);
-    sse_encode_quality_thresholds(self.qualityThreshold, serializer);
-    sse_encode_u_32(self.checkIntervalMs, serializer);
-    sse_encode_bool(self.blockRequestWhenPoor, serializer);
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_connection_type(
+    ConnectionType self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected
@@ -449,15 +855,89 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_target_report(
+    List<TargetReport> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_target_report(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_network_metadata(
+    NetworkMetadata self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.isVpn, serializer);
+    sse_encode_String(self.interfaceName, serializer);
+  }
+
+  @protected
+  void sse_encode_network_report(NetworkReport self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.timestampMs, serializer);
+    sse_encode_network_status(self.status, serializer);
+    sse_encode_connection_type(self.connectionType, serializer);
+    sse_encode_network_metadata(self.metadata, serializer);
+    sse_encode_list_target_report(self.targetReports, serializer);
+  }
+
+  @protected
+  void sse_encode_network_status(NetworkStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.isConnected, serializer);
+    sse_encode_connection_quality(self.quality, serializer);
+    sse_encode_u_64(self.latencyMs, serializer);
+    sse_encode_String(self.winnerTarget, serializer);
+  }
+
+  @protected
   void sse_encode_network_target(NetworkTarget self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.label, serializer);
     sse_encode_String(self.host, serializer);
     sse_encode_u_16(self.port, serializer);
     sse_encode_target_protocol(self.protocol, serializer);
-    sse_encode_u_32(self.timeoutMs, serializer);
+    sse_encode_u_64(self.timeoutMs, serializer);
     sse_encode_u_8(self.priority, serializer);
     sse_encode_bool(self.isRequired, serializer);
+  }
+
+  @protected
+  void sse_encode_netwrok_configuration(
+    NetwrokConfiguration self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_network_target(self.targets, serializer);
+    sse_encode_check_strategy(self.checkStrategy, serializer);
+    sse_encode_quality_thresholds(self.qualityThreshold, serializer);
+    sse_encode_u_64(self.checkIntervalMs, serializer);
+    sse_encode_bool(self.blockRequestWhenPoor, serializer);
+  }
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_String(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_64(self, serializer);
+    }
   }
 
   @protected
@@ -466,11 +946,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_u_32(self.excellent, serializer);
-    sse_encode_u_32(self.great, serializer);
-    sse_encode_u_32(self.good, serializer);
-    sse_encode_u_32(self.moderate, serializer);
-    sse_encode_u_32(self.poor, serializer);
+    sse_encode_u_64(self.excellent, serializer);
+    sse_encode_u_64(self.great, serializer);
+    sse_encode_u_64(self.good, serializer);
+    sse_encode_u_64(self.moderate, serializer);
+    sse_encode_u_64(self.poor, serializer);
+  }
+
+  @protected
+  void sse_encode_record_network_metadata_connection_type(
+    (NetworkMetadata, ConnectionType) self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_network_metadata(self.$1, serializer);
+    sse_encode_connection_type(self.$2, serializer);
   }
 
   @protected
@@ -483,15 +973,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_target_report(TargetReport self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.label, serializer);
+    sse_encode_bool(self.success, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.latencyMs, serializer);
+    sse_encode_opt_String(self.error, serializer);
+    sse_encode_bool(self.isEssential, serializer);
+  }
+
+  @protected
   void sse_encode_u_16(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint16(self);
   }
 
   @protected
-  void sse_encode_u_32(int self, SseSerializer serializer) {
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint32(self);
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected
