@@ -6,8 +6,7 @@ class PoorConnectionException implements Exception {
   PoorConnectionException(this.report);
 
   @override
-  String toString() =>
-      'PoorConnectionException: '
+  String toString() => 'PoorConnectionException: '
       'timestampMs: ${report.timestampMs}, '
       'status: ${report.status.quality}, latency ${report.status.latencyMs}ms, '
       'connectionType: ${report.connectionType}, '

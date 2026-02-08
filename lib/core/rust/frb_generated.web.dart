@@ -3,7 +3,6 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-
 // Static analysis wrongly picks the IO variant, thus ignore this
 // ignore_for_file: argument_type_not_assignable
 
@@ -15,254 +14,396 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 
+abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
+  RustLibApiImplPlatform({
+    required super.handler,
+    required super.wire,
+    required super.generalizedFrbRustBinding,
+    required super.portManager,
+  });
 
+  @protected
+  String dco_decode_String(dynamic raw);
 
+  @protected
+  bool dco_decode_bool(dynamic raw);
 
-                abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
-                  RustLibApiImplPlatform({
-                    required super.handler,
-                    required super.wire,
-                    required super.generalizedFrbRustBinding,
-                    required super.portManager,
-                  });
+  @protected
+  double dco_decode_box_autoadd_f_64(dynamic raw);
 
-                  
+  @protected
+  NetwrokConfiguration dco_decode_box_autoadd_netwrok_configuration(
+      dynamic raw);
 
-                  @protected String dco_decode_String(dynamic raw);
+  @protected
+  QualityThresholds dco_decode_box_autoadd_quality_thresholds(dynamic raw);
 
-@protected bool dco_decode_bool(dynamic raw);
+  @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
-@protected double dco_decode_box_autoadd_f_64(dynamic raw);
+  @protected
+  CaptivePortalStatus dco_decode_captive_portal_status(dynamic raw);
 
-@protected NetwrokConfiguration dco_decode_box_autoadd_netwrok_configuration(dynamic raw);
+  @protected
+  CheckStrategy dco_decode_check_strategy(dynamic raw);
 
-@protected QualityThresholds dco_decode_box_autoadd_quality_thresholds(dynamic raw);
+  @protected
+  ConnectionQuality dco_decode_connection_quality(dynamic raw);
 
-@protected BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+  @protected
+  ConnectionType dco_decode_connection_type(dynamic raw);
 
-@protected CaptivePortalStatus dco_decode_captive_portal_status(dynamic raw);
+  @protected
+  double dco_decode_f_64(dynamic raw);
 
-@protected CheckStrategy dco_decode_check_strategy(dynamic raw);
+  @protected
+  int dco_decode_i_32(dynamic raw);
 
-@protected ConnectionQuality dco_decode_connection_quality(dynamic raw);
+  @protected
+  List<LocalDevice> dco_decode_list_local_device(dynamic raw);
 
-@protected ConnectionType dco_decode_connection_type(dynamic raw);
+  @protected
+  List<NetworkTarget> dco_decode_list_network_target(dynamic raw);
 
-@protected double dco_decode_f_64(dynamic raw);
+  @protected
+  Uint64List dco_decode_list_prim_u_64_strict(dynamic raw);
 
-@protected int dco_decode_i_32(dynamic raw);
+  @protected
+  Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
-@protected List<LocalDevice> dco_decode_list_local_device(dynamic raw);
+  @protected
+  List<TargetReport> dco_decode_list_target_report(dynamic raw);
 
-@protected List<NetworkTarget> dco_decode_list_network_target(dynamic raw);
+  @protected
+  List<TraceHop> dco_decode_list_trace_hop(dynamic raw);
 
-@protected Uint64List dco_decode_list_prim_u_64_strict(dynamic raw);
+  @protected
+  LocalDevice dco_decode_local_device(dynamic raw);
 
-@protected Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+  @protected
+  NetworkMetadata dco_decode_network_metadata(dynamic raw);
 
-@protected List<TargetReport> dco_decode_list_target_report(dynamic raw);
+  @protected
+  NetworkReport dco_decode_network_report(dynamic raw);
 
-@protected List<TraceHop> dco_decode_list_trace_hop(dynamic raw);
+  @protected
+  NetworkStatus dco_decode_network_status(dynamic raw);
 
-@protected LocalDevice dco_decode_local_device(dynamic raw);
+  @protected
+  NetworkTarget dco_decode_network_target(dynamic raw);
 
-@protected NetworkMetadata dco_decode_network_metadata(dynamic raw);
+  @protected
+  NetwrokConfiguration dco_decode_netwrok_configuration(dynamic raw);
 
-@protected NetworkReport dco_decode_network_report(dynamic raw);
+  @protected
+  String? dco_decode_opt_String(dynamic raw);
 
-@protected NetworkStatus dco_decode_network_status(dynamic raw);
+  @protected
+  double? dco_decode_opt_box_autoadd_f_64(dynamic raw);
 
-@protected NetworkTarget dco_decode_network_target(dynamic raw);
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
 
-@protected NetwrokConfiguration dco_decode_netwrok_configuration(dynamic raw);
+  @protected
+  QualityThresholds dco_decode_quality_thresholds(dynamic raw);
 
-@protected String? dco_decode_opt_String(dynamic raw);
+  @protected
+  (NetworkMetadata, ConnectionType)
+      dco_decode_record_network_metadata_connection_type(dynamic raw);
 
-@protected double? dco_decode_opt_box_autoadd_f_64(dynamic raw);
+  @protected
+  (
+    BigInt?,
+    BigInt?,
+    BigInt?,
+    double?
+  ) dco_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
+      dynamic raw);
 
-@protected BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
+  @protected
+  TargetProtocol dco_decode_target_protocol(dynamic raw);
 
-@protected QualityThresholds dco_decode_quality_thresholds(dynamic raw);
+  @protected
+  TargetReport dco_decode_target_report(dynamic raw);
 
-@protected (NetworkMetadata,ConnectionType) dco_decode_record_network_metadata_connection_type(dynamic raw);
+  @protected
+  TraceHop dco_decode_trace_hop(dynamic raw);
 
-@protected (BigInt?,BigInt?,BigInt?,double?) dco_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(dynamic raw);
+  @protected
+  int dco_decode_u_16(dynamic raw);
 
-@protected TargetProtocol dco_decode_target_protocol(dynamic raw);
+  @protected
+  BigInt dco_decode_u_64(dynamic raw);
 
-@protected TargetReport dco_decode_target_report(dynamic raw);
+  @protected
+  int dco_decode_u_8(dynamic raw);
 
-@protected TraceHop dco_decode_trace_hop(dynamic raw);
+  @protected
+  void dco_decode_unit(dynamic raw);
 
-@protected int dco_decode_u_16(dynamic raw);
+  @protected
+  String sse_decode_String(SseDeserializer deserializer);
 
-@protected BigInt dco_decode_u_64(dynamic raw);
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
 
-@protected int dco_decode_u_8(dynamic raw);
+  @protected
+  double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
 
-@protected void dco_decode_unit(dynamic raw);
+  @protected
+  NetwrokConfiguration sse_decode_box_autoadd_netwrok_configuration(
+      SseDeserializer deserializer);
 
-@protected String sse_decode_String(SseDeserializer deserializer);
+  @protected
+  QualityThresholds sse_decode_box_autoadd_quality_thresholds(
+      SseDeserializer deserializer);
 
-@protected bool sse_decode_bool(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
 
-@protected double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
+  @protected
+  CaptivePortalStatus sse_decode_captive_portal_status(
+      SseDeserializer deserializer);
 
-@protected NetwrokConfiguration sse_decode_box_autoadd_netwrok_configuration(SseDeserializer deserializer);
+  @protected
+  CheckStrategy sse_decode_check_strategy(SseDeserializer deserializer);
 
-@protected QualityThresholds sse_decode_box_autoadd_quality_thresholds(SseDeserializer deserializer);
+  @protected
+  ConnectionQuality sse_decode_connection_quality(SseDeserializer deserializer);
 
-@protected BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+  @protected
+  ConnectionType sse_decode_connection_type(SseDeserializer deserializer);
 
-@protected CaptivePortalStatus sse_decode_captive_portal_status(SseDeserializer deserializer);
+  @protected
+  double sse_decode_f_64(SseDeserializer deserializer);
 
-@protected CheckStrategy sse_decode_check_strategy(SseDeserializer deserializer);
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
 
-@protected ConnectionQuality sse_decode_connection_quality(SseDeserializer deserializer);
+  @protected
+  List<LocalDevice> sse_decode_list_local_device(SseDeserializer deserializer);
 
-@protected ConnectionType sse_decode_connection_type(SseDeserializer deserializer);
+  @protected
+  List<NetworkTarget> sse_decode_list_network_target(
+      SseDeserializer deserializer);
 
-@protected double sse_decode_f_64(SseDeserializer deserializer);
+  @protected
+  Uint64List sse_decode_list_prim_u_64_strict(SseDeserializer deserializer);
 
-@protected int sse_decode_i_32(SseDeserializer deserializer);
+  @protected
+  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
-@protected List<LocalDevice> sse_decode_list_local_device(SseDeserializer deserializer);
+  @protected
+  List<TargetReport> sse_decode_list_target_report(
+      SseDeserializer deserializer);
 
-@protected List<NetworkTarget> sse_decode_list_network_target(SseDeserializer deserializer);
+  @protected
+  List<TraceHop> sse_decode_list_trace_hop(SseDeserializer deserializer);
 
-@protected Uint64List sse_decode_list_prim_u_64_strict(SseDeserializer deserializer);
+  @protected
+  LocalDevice sse_decode_local_device(SseDeserializer deserializer);
 
-@protected Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+  @protected
+  NetworkMetadata sse_decode_network_metadata(SseDeserializer deserializer);
 
-@protected List<TargetReport> sse_decode_list_target_report(SseDeserializer deserializer);
+  @protected
+  NetworkReport sse_decode_network_report(SseDeserializer deserializer);
 
-@protected List<TraceHop> sse_decode_list_trace_hop(SseDeserializer deserializer);
+  @protected
+  NetworkStatus sse_decode_network_status(SseDeserializer deserializer);
 
-@protected LocalDevice sse_decode_local_device(SseDeserializer deserializer);
+  @protected
+  NetworkTarget sse_decode_network_target(SseDeserializer deserializer);
 
-@protected NetworkMetadata sse_decode_network_metadata(SseDeserializer deserializer);
+  @protected
+  NetwrokConfiguration sse_decode_netwrok_configuration(
+      SseDeserializer deserializer);
 
-@protected NetworkReport sse_decode_network_report(SseDeserializer deserializer);
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
 
-@protected NetworkStatus sse_decode_network_status(SseDeserializer deserializer);
+  @protected
+  double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer);
 
-@protected NetworkTarget sse_decode_network_target(SseDeserializer deserializer);
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
 
-@protected NetwrokConfiguration sse_decode_netwrok_configuration(SseDeserializer deserializer);
+  @protected
+  QualityThresholds sse_decode_quality_thresholds(SseDeserializer deserializer);
 
-@protected String? sse_decode_opt_String(SseDeserializer deserializer);
+  @protected
+  (NetworkMetadata, ConnectionType)
+      sse_decode_record_network_metadata_connection_type(
+          SseDeserializer deserializer);
 
-@protected double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer);
+  @protected
+  (
+    BigInt?,
+    BigInt?,
+    BigInt?,
+    double?
+  ) sse_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
+      SseDeserializer deserializer);
 
-@protected BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
+  @protected
+  TargetProtocol sse_decode_target_protocol(SseDeserializer deserializer);
 
-@protected QualityThresholds sse_decode_quality_thresholds(SseDeserializer deserializer);
+  @protected
+  TargetReport sse_decode_target_report(SseDeserializer deserializer);
 
-@protected (NetworkMetadata,ConnectionType) sse_decode_record_network_metadata_connection_type(SseDeserializer deserializer);
+  @protected
+  TraceHop sse_decode_trace_hop(SseDeserializer deserializer);
 
-@protected (BigInt?,BigInt?,BigInt?,double?) sse_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(SseDeserializer deserializer);
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer);
 
-@protected TargetProtocol sse_decode_target_protocol(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
-@protected TargetReport sse_decode_target_report(SseDeserializer deserializer);
+  @protected
+  int sse_decode_u_8(SseDeserializer deserializer);
 
-@protected TraceHop sse_decode_trace_hop(SseDeserializer deserializer);
+  @protected
+  void sse_decode_unit(SseDeserializer deserializer);
 
-@protected int sse_decode_u_16(SseDeserializer deserializer);
+  @protected
+  void sse_encode_String(String self, SseSerializer serializer);
 
-@protected BigInt sse_decode_u_64(SseDeserializer deserializer);
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
 
-@protected int sse_decode_u_8(SseDeserializer deserializer);
+  @protected
+  void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
 
-@protected void sse_decode_unit(SseDeserializer deserializer);
+  @protected
+  void sse_encode_box_autoadd_netwrok_configuration(
+      NetwrokConfiguration self, SseSerializer serializer);
 
-@protected void sse_encode_String(String self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_quality_thresholds(
+      QualityThresholds self, SseSerializer serializer);
 
-@protected void sse_encode_bool(bool self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
+  @protected
+  void sse_encode_captive_portal_status(
+      CaptivePortalStatus self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_netwrok_configuration(NetwrokConfiguration self, SseSerializer serializer);
+  @protected
+  void sse_encode_check_strategy(CheckStrategy self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_quality_thresholds(QualityThresholds self, SseSerializer serializer);
+  @protected
+  void sse_encode_connection_quality(
+      ConnectionQuality self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+  @protected
+  void sse_encode_connection_type(
+      ConnectionType self, SseSerializer serializer);
 
-@protected void sse_encode_captive_portal_status(CaptivePortalStatus self, SseSerializer serializer);
+  @protected
+  void sse_encode_f_64(double self, SseSerializer serializer);
 
-@protected void sse_encode_check_strategy(CheckStrategy self, SseSerializer serializer);
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
 
-@protected void sse_encode_connection_quality(ConnectionQuality self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_local_device(
+      List<LocalDevice> self, SseSerializer serializer);
 
-@protected void sse_encode_connection_type(ConnectionType self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_network_target(
+      List<NetworkTarget> self, SseSerializer serializer);
 
-@protected void sse_encode_f_64(double self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_prim_u_64_strict(
+      Uint64List self, SseSerializer serializer);
 
-@protected void sse_encode_i_32(int self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_prim_u_8_strict(
+      Uint8List self, SseSerializer serializer);
 
-@protected void sse_encode_list_local_device(List<LocalDevice> self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_target_report(
+      List<TargetReport> self, SseSerializer serializer);
 
-@protected void sse_encode_list_network_target(List<NetworkTarget> self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_trace_hop(List<TraceHop> self, SseSerializer serializer);
 
-@protected void sse_encode_list_prim_u_64_strict(Uint64List self, SseSerializer serializer);
+  @protected
+  void sse_encode_local_device(LocalDevice self, SseSerializer serializer);
 
-@protected void sse_encode_list_prim_u_8_strict(Uint8List self, SseSerializer serializer);
+  @protected
+  void sse_encode_network_metadata(
+      NetworkMetadata self, SseSerializer serializer);
 
-@protected void sse_encode_list_target_report(List<TargetReport> self, SseSerializer serializer);
+  @protected
+  void sse_encode_network_report(NetworkReport self, SseSerializer serializer);
 
-@protected void sse_encode_list_trace_hop(List<TraceHop> self, SseSerializer serializer);
+  @protected
+  void sse_encode_network_status(NetworkStatus self, SseSerializer serializer);
 
-@protected void sse_encode_local_device(LocalDevice self, SseSerializer serializer);
+  @protected
+  void sse_encode_network_target(NetworkTarget self, SseSerializer serializer);
 
-@protected void sse_encode_network_metadata(NetworkMetadata self, SseSerializer serializer);
+  @protected
+  void sse_encode_netwrok_configuration(
+      NetwrokConfiguration self, SseSerializer serializer);
 
-@protected void sse_encode_network_report(NetworkReport self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
 
-@protected void sse_encode_network_status(NetworkStatus self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer);
 
-@protected void sse_encode_network_target(NetworkTarget self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
 
-@protected void sse_encode_netwrok_configuration(NetwrokConfiguration self, SseSerializer serializer);
+  @protected
+  void sse_encode_quality_thresholds(
+      QualityThresholds self, SseSerializer serializer);
 
-@protected void sse_encode_opt_String(String? self, SseSerializer serializer);
+  @protected
+  void sse_encode_record_network_metadata_connection_type(
+      (NetworkMetadata, ConnectionType) self, SseSerializer serializer);
 
-@protected void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer);
+  @protected
+  void
+      sse_encode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
+          (BigInt?, BigInt?, BigInt?, double?) self, SseSerializer serializer);
 
-@protected void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
+  @protected
+  void sse_encode_target_protocol(
+      TargetProtocol self, SseSerializer serializer);
 
-@protected void sse_encode_quality_thresholds(QualityThresholds self, SseSerializer serializer);
+  @protected
+  void sse_encode_target_report(TargetReport self, SseSerializer serializer);
 
-@protected void sse_encode_record_network_metadata_connection_type((NetworkMetadata,ConnectionType) self, SseSerializer serializer);
+  @protected
+  void sse_encode_trace_hop(TraceHop self, SseSerializer serializer);
 
-@protected void sse_encode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64((BigInt?,BigInt?,BigInt?,double?) self, SseSerializer serializer);
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer);
 
-@protected void sse_encode_target_protocol(TargetProtocol self, SseSerializer serializer);
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
-@protected void sse_encode_target_report(TargetReport self, SseSerializer serializer);
+  @protected
+  void sse_encode_u_8(int self, SseSerializer serializer);
 
-@protected void sse_encode_trace_hop(TraceHop self, SseSerializer serializer);
-
-@protected void sse_encode_u_16(int self, SseSerializer serializer);
-
-@protected void sse_encode_u_64(BigInt self, SseSerializer serializer);
-
-@protected void sse_encode_u_8(int self, SseSerializer serializer);
-
-@protected void sse_encode_unit(void self, SseSerializer serializer);
-                }
-                
-
+  @protected
+  void sse_encode_unit(void self, SseSerializer serializer);
+}
 
 // Section: wire_class
 
 class RustLibWire implements BaseWire {
-            RustLibWire.fromExternalLibrary(ExternalLibrary lib);
+  RustLibWire.fromExternalLibrary(ExternalLibrary lib);
+}
 
-            
-        }
-        @JS('wasm_bindgen') external RustLibWasmModule get wasmModule;
+@JS('wasm_bindgen')
+external RustLibWasmModule get wasmModule;
 
-        @JS() @anonymous extension type RustLibWasmModule._(JSObject _) implements JSObject {
-            
-        }
-        
+@JS()
+@anonymous
+extension type RustLibWasmModule._(JSObject _) implements JSObject {}
