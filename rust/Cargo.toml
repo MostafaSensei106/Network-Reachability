@@ -19,5 +19,8 @@ reqwest = "0.13.2"
 
 network-interface = "2.0.5"
 chrono = "0.4"
+
+[dev-dependencies]
+mockito = "1.2.0"
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

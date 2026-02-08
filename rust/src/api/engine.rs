@@ -87,7 +87,7 @@ async fn check_target_internal(target: &NetworkTarget) -> TargetReport {
 }
 
 // Helper function to calculate jitter metrics
-fn _calculate_jitter(latencies: &[u64]) -> (Option<u64>, Option<u64>, Option<u64>, Option<f64>) {
+pub fn _calculate_jitter(latencies: &[u64]) -> (Option<u64>, Option<u64>, Option<u64>, Option<f64>) {
     if latencies.is_empty() {
         return (None, None, None, None);
     }

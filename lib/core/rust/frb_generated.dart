@@ -37,8 +37,12 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 
   /// Initialize flutter_rust_bridge in mock mode.
   /// No libraries for FFI are loaded.
-  static void initMock({required RustLibApi api}) {
-    instance.initMockImpl(api: api);
+  static void initMock({
+    required RustLibApi api,
+  }) {
+    instance.initMockImpl(
+      api: api,
+    );
   }
 
   /// Dispose flutter_rust_bridge
@@ -66,48 +70,45 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -968959924;
+  int get rustContentHash => 967474185;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
-        stem: 'rust_lib_network_reachability',
-        ioDirectory: 'rust/target/release/',
-        webPrefix: 'pkg/',
-      );
+    stem: 'rust_lib_network_reachability',
+    ioDirectory: 'rust/target/release/',
+    webPrefix: 'pkg/',
+  );
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<CaptivePortalStatus> crateApiUtilsCheckForCaptivePortal({
-    required BigInt timeoutMs,
-  });
+  Future<(BigInt?, BigInt?, BigInt?, double?)> crateApiEngineCalculateJitter(
+      {required Uint64List latencies});
 
-  Future<NetworkReport> crateApiEngineCheckNetwork({
-    required NetwrokConfiguration config,
-  });
+  Future<CaptivePortalStatus> crateApiUtilsCheckForCaptivePortal(
+      {required BigInt timeoutMs});
+
+  Future<NetworkReport> crateApiEngineCheckNetwork(
+      {required NetwrokConfiguration config});
 
   Future<(NetworkMetadata, ConnectionType)>
-  crateApiUtilsDetectNetworkMetadata();
+      crateApiUtilsDetectNetworkMetadata();
 
-  Future<ConnectionQuality> crateApiUtilsEvaluateQuality({
-    required BigInt latency,
-    required QualityThresholds threshold,
-  });
+  Future<ConnectionQuality> crateApiUtilsEvaluateQuality(
+      {required BigInt latency, required QualityThresholds threshold});
 
   Future<NetwrokConfiguration> crateApiModelsNetwrokConfigurationDefault();
 
   Future<QualityThresholds> crateApiModelsQualityThresholdsDefault();
 
-  Future<List<LocalDevice>> crateApiUtilsScanLocalNetwork({
-    required String subnet,
-    required int scanPort,
-    required BigInt timeoutMs,
-  });
+  Future<List<LocalDevice>> crateApiUtilsScanLocalNetwork(
+      {required String subnet,
+      required int scanPort,
+      required BigInt timeoutMs});
 
-  Future<List<TraceHop>> crateApiUtilsTraceRoute({
-    required String host,
-    required int maxHops,
-    required BigInt timeoutPerHopMs,
-  });
+  Future<List<TraceHop>> crateApiUtilsTraceRoute(
+      {required String host,
+      required int maxHops,
+      required BigInt timeoutPerHopMs});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -119,30 +120,50 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<CaptivePortalStatus> crateApiUtilsCheckForCaptivePortal({
-    required BigInt timeoutMs,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_u_64(timeoutMs, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 1,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_captive_portal_status,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiUtilsCheckForCaptivePortalConstMeta,
-        argValues: [timeoutMs],
-        apiImpl: this,
+  Future<(BigInt?, BigInt?, BigInt?, double?)> crateApiEngineCalculateJitter(
+      {required Uint64List latencies}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_64_strict(latencies, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 1, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64,
+        decodeErrorData: null,
       ),
-    );
+      constMeta: kCrateApiEngineCalculateJitterConstMeta,
+      argValues: [latencies],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEngineCalculateJitterConstMeta =>
+      const TaskConstMeta(
+        debugName: "_calculate_jitter",
+        argNames: ["latencies"],
+      );
+
+  @override
+  Future<CaptivePortalStatus> crateApiUtilsCheckForCaptivePortal(
+      {required BigInt timeoutMs}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(timeoutMs, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_captive_portal_status,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiUtilsCheckForCaptivePortalConstMeta,
+      argValues: [timeoutMs],
+      apiImpl: this,
+    ));
   }
 
   TaskConstMeta get kCrateApiUtilsCheckForCaptivePortalConstMeta =>
@@ -152,90 +173,74 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<NetworkReport> crateApiEngineCheckNetwork({
-    required NetwrokConfiguration config,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_box_autoadd_netwrok_configuration(config, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 2,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_network_report,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiEngineCheckNetworkConstMeta,
-        argValues: [config],
-        apiImpl: this,
+  Future<NetworkReport> crateApiEngineCheckNetwork(
+      {required NetwrokConfiguration config}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_netwrok_configuration(config, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_network_report,
+        decodeErrorData: null,
       ),
-    );
+      constMeta: kCrateApiEngineCheckNetworkConstMeta,
+      argValues: [config],
+      apiImpl: this,
+    ));
   }
 
-  TaskConstMeta get kCrateApiEngineCheckNetworkConstMeta =>
-      const TaskConstMeta(debugName: "check_network", argNames: ["config"]);
+  TaskConstMeta get kCrateApiEngineCheckNetworkConstMeta => const TaskConstMeta(
+        debugName: "check_network",
+        argNames: ["config"],
+      );
 
   @override
   Future<(NetworkMetadata, ConnectionType)>
-  crateApiUtilsDetectNetworkMetadata() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 3,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_record_network_metadata_connection_type,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiUtilsDetectNetworkMetadataConstMeta,
-        argValues: [],
-        apiImpl: this,
+      crateApiUtilsDetectNetworkMetadata() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_record_network_metadata_connection_type,
+        decodeErrorData: null,
       ),
-    );
+      constMeta: kCrateApiUtilsDetectNetworkMetadataConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
   }
 
   TaskConstMeta get kCrateApiUtilsDetectNetworkMetadataConstMeta =>
-      const TaskConstMeta(debugName: "detect_network_metadata", argNames: []);
+      const TaskConstMeta(
+        debugName: "detect_network_metadata",
+        argNames: [],
+      );
 
   @override
-  Future<ConnectionQuality> crateApiUtilsEvaluateQuality({
-    required BigInt latency,
-    required QualityThresholds threshold,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_u_64(latency, serializer);
-          sse_encode_box_autoadd_quality_thresholds(threshold, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 4,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_connection_quality,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiUtilsEvaluateQualityConstMeta,
-        argValues: [latency, threshold],
-        apiImpl: this,
+  Future<ConnectionQuality> crateApiUtilsEvaluateQuality(
+      {required BigInt latency, required QualityThresholds threshold}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(latency, serializer);
+        sse_encode_box_autoadd_quality_thresholds(threshold, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_connection_quality,
+        decodeErrorData: null,
       ),
-    );
+      constMeta: kCrateApiUtilsEvaluateQualityConstMeta,
+      argValues: [latency, threshold],
+      apiImpl: this,
+    ));
   }
 
   TaskConstMeta get kCrateApiUtilsEvaluateQualityConstMeta =>
@@ -246,26 +251,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<NetwrokConfiguration> crateApiModelsNetwrokConfigurationDefault() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 5,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_netwrok_configuration,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiModelsNetwrokConfigurationDefaultConstMeta,
-        argValues: [],
-        apiImpl: this,
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_netwrok_configuration,
+        decodeErrorData: null,
       ),
-    );
+      constMeta: kCrateApiModelsNetwrokConfigurationDefaultConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
   }
 
   TaskConstMeta get kCrateApiModelsNetwrokConfigurationDefaultConstMeta =>
@@ -276,26 +275,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<QualityThresholds> crateApiModelsQualityThresholdsDefault() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 6,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_quality_thresholds,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiModelsQualityThresholdsDefaultConstMeta,
-        argValues: [],
-        apiImpl: this,
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_quality_thresholds,
+        decodeErrorData: null,
       ),
-    );
+      constMeta: kCrateApiModelsQualityThresholdsDefaultConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
   }
 
   TaskConstMeta get kCrateApiModelsQualityThresholdsDefaultConstMeta =>
@@ -305,34 +298,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<List<LocalDevice>> crateApiUtilsScanLocalNetwork({
-    required String subnet,
-    required int scanPort,
-    required BigInt timeoutMs,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_String(subnet, serializer);
-          sse_encode_u_16(scanPort, serializer);
-          sse_encode_u_64(timeoutMs, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 7,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_local_device,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiUtilsScanLocalNetworkConstMeta,
-        argValues: [subnet, scanPort, timeoutMs],
-        apiImpl: this,
+  Future<List<LocalDevice>> crateApiUtilsScanLocalNetwork(
+      {required String subnet,
+      required int scanPort,
+      required BigInt timeoutMs}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(subnet, serializer);
+        sse_encode_u_16(scanPort, serializer);
+        sse_encode_u_64(timeoutMs, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 8, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_local_device,
+        decodeErrorData: null,
       ),
-    );
+      constMeta: kCrateApiUtilsScanLocalNetworkConstMeta,
+      argValues: [subnet, scanPort, timeoutMs],
+      apiImpl: this,
+    ));
   }
 
   TaskConstMeta get kCrateApiUtilsScanLocalNetworkConstMeta =>
@@ -342,40 +328,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<List<TraceHop>> crateApiUtilsTraceRoute({
-    required String host,
-    required int maxHops,
-    required BigInt timeoutPerHopMs,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_String(host, serializer);
-          sse_encode_u_8(maxHops, serializer);
-          sse_encode_u_64(timeoutPerHopMs, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 8,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_trace_hop,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiUtilsTraceRouteConstMeta,
-        argValues: [host, maxHops, timeoutPerHopMs],
-        apiImpl: this,
+  Future<List<TraceHop>> crateApiUtilsTraceRoute(
+      {required String host,
+      required int maxHops,
+      required BigInt timeoutPerHopMs}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(host, serializer);
+        sse_encode_u_8(maxHops, serializer);
+        sse_encode_u_64(timeoutPerHopMs, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 9, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_trace_hop,
+        decodeErrorData: null,
       ),
-    );
+      constMeta: kCrateApiUtilsTraceRouteConstMeta,
+      argValues: [host, maxHops, timeoutPerHopMs],
+      apiImpl: this,
+    ));
   }
 
   TaskConstMeta get kCrateApiUtilsTraceRouteConstMeta => const TaskConstMeta(
-    debugName: "trace_route",
-    argNames: ["host", "maxHops", "timeoutPerHopMs"],
-  );
+        debugName: "trace_route",
+        argNames: ["host", "maxHops", "timeoutPerHopMs"],
+      );
 
   @protected
   String dco_decode_String(dynamic raw) {
@@ -397,8 +376,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   NetwrokConfiguration dco_decode_box_autoadd_netwrok_configuration(
-    dynamic raw,
-  ) {
+      dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_netwrok_configuration(raw);
   }
@@ -467,6 +445,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<NetworkTarget> dco_decode_list_network_target(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_network_target).toList();
+  }
+
+  @protected
+  Uint64List dco_decode_list_prim_u_64_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeUint64List(raw);
   }
 
   @protected
@@ -614,7 +598,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   (NetworkMetadata, ConnectionType)
-  dco_decode_record_network_metadata_connection_type(dynamic raw) {
+      dco_decode_record_network_metadata_connection_type(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
     if (arr.length != 2) {
@@ -623,6 +607,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return (
       dco_decode_network_metadata(arr[0]),
       dco_decode_connection_type(arr[1]),
+    );
+  }
+
+  @protected
+  (
+    BigInt?,
+    BigInt?,
+    BigInt?,
+    double?
+  ) dco_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4) {
+      throw Exception('Expected 4 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_opt_box_autoadd_u_64(arr[0]),
+      dco_decode_opt_box_autoadd_u_64(arr[1]),
+      dco_decode_opt_box_autoadd_u_64(arr[2]),
+      dco_decode_opt_box_autoadd_f_64(arr[3]),
     );
   }
 
@@ -706,16 +711,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   NetwrokConfiguration sse_decode_box_autoadd_netwrok_configuration(
-    SseDeserializer deserializer,
-  ) {
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_netwrok_configuration(deserializer));
   }
 
   @protected
   QualityThresholds sse_decode_box_autoadd_quality_thresholds(
-    SseDeserializer deserializer,
-  ) {
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_quality_thresholds(deserializer));
   }
@@ -728,15 +731,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   CaptivePortalStatus sse_decode_captive_portal_status(
-    SseDeserializer deserializer,
-  ) {
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_isCaptivePortal = sse_decode_bool(deserializer);
     var var_redirectUrl = sse_decode_opt_String(deserializer);
     return CaptivePortalStatus(
-      isCaptivePortal: var_isCaptivePortal,
-      redirectUrl: var_redirectUrl,
-    );
+        isCaptivePortal: var_isCaptivePortal, redirectUrl: var_redirectUrl);
   }
 
   @protected
@@ -748,8 +748,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   ConnectionQuality sse_decode_connection_quality(
-    SseDeserializer deserializer,
-  ) {
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
     return ConnectionQuality.values[inner];
@@ -788,8 +787,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   List<NetworkTarget> sse_decode_list_network_target(
-    SseDeserializer deserializer,
-  ) {
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     var len_ = sse_decode_i_32(deserializer);
@@ -801,6 +799,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Uint64List sse_decode_list_prim_u_64_strict(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint64List(len_);
+  }
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
@@ -809,8 +814,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   List<TargetReport> sse_decode_list_target_report(
-    SseDeserializer deserializer,
-  ) {
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     var len_ = sse_decode_i_32(deserializer);
@@ -840,10 +844,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_hostname = sse_decode_opt_String(deserializer);
     var var_macAddress = sse_decode_opt_String(deserializer);
     return LocalDevice(
-      ipAddress: var_ipAddress,
-      hostname: var_hostname,
-      macAddress: var_macAddress,
-    );
+        ipAddress: var_ipAddress,
+        hostname: var_hostname,
+        macAddress: var_macAddress);
   }
 
   @protected
@@ -863,12 +866,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_metadata = sse_decode_network_metadata(deserializer);
     var var_targetReports = sse_decode_list_target_report(deserializer);
     return NetworkReport(
-      timestampMs: var_timestampMs,
-      status: var_status,
-      connectionType: var_connectionType,
-      metadata: var_metadata,
-      targetReports: var_targetReports,
-    );
+        timestampMs: var_timestampMs,
+        status: var_status,
+        connectionType: var_connectionType,
+        metadata: var_metadata,
+        targetReports: var_targetReports);
   }
 
   @protected
@@ -883,15 +885,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_meanLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
     var var_stdDevLatencyMs = sse_decode_opt_box_autoadd_f_64(deserializer);
     return NetworkStatus(
-      isConnected: var_isConnected,
-      quality: var_quality,
-      latencyMs: var_latencyMs,
-      winnerTarget: var_winnerTarget,
-      minLatencyMs: var_minLatencyMs,
-      maxLatencyMs: var_maxLatencyMs,
-      meanLatencyMs: var_meanLatencyMs,
-      stdDevLatencyMs: var_stdDevLatencyMs,
-    );
+        isConnected: var_isConnected,
+        quality: var_quality,
+        latencyMs: var_latencyMs,
+        winnerTarget: var_winnerTarget,
+        minLatencyMs: var_minLatencyMs,
+        maxLatencyMs: var_maxLatencyMs,
+        meanLatencyMs: var_meanLatencyMs,
+        stdDevLatencyMs: var_stdDevLatencyMs);
   }
 
   @protected
@@ -905,20 +906,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_priority = sse_decode_u_8(deserializer);
     var var_isEssential = sse_decode_bool(deserializer);
     return NetworkTarget(
-      label: var_label,
-      host: var_host,
-      port: var_port,
-      protocol: var_protocol,
-      timeoutMs: var_timeoutMs,
-      priority: var_priority,
-      isEssential: var_isEssential,
-    );
+        label: var_label,
+        host: var_host,
+        port: var_port,
+        protocol: var_protocol,
+        timeoutMs: var_timeoutMs,
+        priority: var_priority,
+        isEssential: var_isEssential);
   }
 
   @protected
   NetwrokConfiguration sse_decode_netwrok_configuration(
-    SseDeserializer deserializer,
-  ) {
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_targets = sse_decode_list_network_target(deserializer);
     var var_checkStrategy = sse_decode_check_strategy(deserializer);
@@ -928,14 +927,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_numJitterSamples = sse_decode_u_8(deserializer);
     var var_jitterThresholdPercent = sse_decode_f_64(deserializer);
     return NetwrokConfiguration(
-      targets: var_targets,
-      checkStrategy: var_checkStrategy,
-      qualityThreshold: var_qualityThreshold,
-      checkIntervalMs: var_checkIntervalMs,
-      blockRequestWhenPoor: var_blockRequestWhenPoor,
-      numJitterSamples: var_numJitterSamples,
-      jitterThresholdPercent: var_jitterThresholdPercent,
-    );
+        targets: var_targets,
+        checkStrategy: var_checkStrategy,
+        qualityThreshold: var_qualityThreshold,
+        checkIntervalMs: var_checkIntervalMs,
+        blockRequestWhenPoor: var_blockRequestWhenPoor,
+        numJitterSamples: var_numJitterSamples,
+        jitterThresholdPercent: var_jitterThresholdPercent);
   }
 
   @protected
@@ -973,8 +971,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   QualityThresholds sse_decode_quality_thresholds(
-    SseDeserializer deserializer,
-  ) {
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_excellent = sse_decode_u_64(deserializer);
     var var_great = sse_decode_u_64(deserializer);
@@ -982,23 +979,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_moderate = sse_decode_u_64(deserializer);
     var var_poor = sse_decode_u_64(deserializer);
     return QualityThresholds(
-      excellent: var_excellent,
-      great: var_great,
-      good: var_good,
-      moderate: var_moderate,
-      poor: var_poor,
-    );
+        excellent: var_excellent,
+        great: var_great,
+        good: var_good,
+        moderate: var_moderate,
+        poor: var_poor);
   }
 
   @protected
   (NetworkMetadata, ConnectionType)
-  sse_decode_record_network_metadata_connection_type(
-    SseDeserializer deserializer,
-  ) {
+      sse_decode_record_network_metadata_connection_type(
+          SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_field0 = sse_decode_network_metadata(deserializer);
     var var_field1 = sse_decode_connection_type(deserializer);
     return (var_field0, var_field1);
+  }
+
+  @protected
+  (
+    BigInt?,
+    BigInt?,
+    BigInt?,
+    double?
+  ) sse_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_field1 = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_field2 = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_field3 = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return (var_field0, var_field1, var_field2, var_field3);
   }
 
   @protected
@@ -1017,12 +1028,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_error = sse_decode_opt_String(deserializer);
     var var_isEssential = sse_decode_bool(deserializer);
     return TargetReport(
-      label: var_label,
-      success: var_success,
-      latencyMs: var_latencyMs,
-      error: var_error,
-      isEssential: var_isEssential,
-    );
+        label: var_label,
+        success: var_success,
+        latencyMs: var_latencyMs,
+        error: var_error,
+        isEssential: var_isEssential);
   }
 
   @protected
@@ -1033,11 +1043,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_hostname = sse_decode_opt_String(deserializer);
     var var_latencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
     return TraceHop(
-      hopNumber: var_hopNumber,
-      ipAddress: var_ipAddress,
-      hostname: var_hostname,
-      latencyMs: var_latencyMs,
-    );
+        hopNumber: var_hopNumber,
+        ipAddress: var_ipAddress,
+        hostname: var_hostname,
+        latencyMs: var_latencyMs);
   }
 
   @protected
@@ -1083,18 +1092,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_box_autoadd_netwrok_configuration(
-    NetwrokConfiguration self,
-    SseSerializer serializer,
-  ) {
+      NetwrokConfiguration self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_netwrok_configuration(self, serializer);
   }
 
   @protected
   void sse_encode_box_autoadd_quality_thresholds(
-    QualityThresholds self,
-    SseSerializer serializer,
-  ) {
+      QualityThresholds self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_quality_thresholds(self, serializer);
   }
@@ -1107,9 +1112,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_captive_portal_status(
-    CaptivePortalStatus self,
-    SseSerializer serializer,
-  ) {
+      CaptivePortalStatus self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_bool(self.isCaptivePortal, serializer);
     sse_encode_opt_String(self.redirectUrl, serializer);
@@ -1123,18 +1126,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_connection_quality(
-    ConnectionQuality self,
-    SseSerializer serializer,
-  ) {
+      ConnectionQuality self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
   }
 
   @protected
   void sse_encode_connection_type(
-    ConnectionType self,
-    SseSerializer serializer,
-  ) {
+      ConnectionType self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
   }
@@ -1153,9 +1152,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_list_local_device(
-    List<LocalDevice> self,
-    SseSerializer serializer,
-  ) {
+      List<LocalDevice> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
@@ -1165,9 +1162,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_list_network_target(
-    List<NetworkTarget> self,
-    SseSerializer serializer,
-  ) {
+      List<NetworkTarget> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
@@ -1176,10 +1171,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_prim_u_64_strict(
+      Uint64List self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer.putUint64List(self);
+  }
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
-    Uint8List self,
-    SseSerializer serializer,
-  ) {
+      Uint8List self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
@@ -1187,9 +1188,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_list_target_report(
-    List<TargetReport> self,
-    SseSerializer serializer,
-  ) {
+      List<TargetReport> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
@@ -1199,9 +1198,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_list_trace_hop(
-    List<TraceHop> self,
-    SseSerializer serializer,
-  ) {
+      List<TraceHop> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
@@ -1219,9 +1216,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_network_metadata(
-    NetworkMetadata self,
-    SseSerializer serializer,
-  ) {
+      NetworkMetadata self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_bool(self.isVpn, serializer);
     sse_encode_String(self.interfaceName, serializer);
@@ -1264,9 +1259,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_netwrok_configuration(
-    NetwrokConfiguration self,
-    SseSerializer serializer,
-  ) {
+      NetwrokConfiguration self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_network_target(self.targets, serializer);
     sse_encode_check_strategy(self.checkStrategy, serializer);
@@ -1309,9 +1302,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_quality_thresholds(
-    QualityThresholds self,
-    SseSerializer serializer,
-  ) {
+      QualityThresholds self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_64(self.excellent, serializer);
     sse_encode_u_64(self.great, serializer);
@@ -1322,19 +1313,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_record_network_metadata_connection_type(
-    (NetworkMetadata, ConnectionType) self,
-    SseSerializer serializer,
-  ) {
+      (NetworkMetadata, ConnectionType) self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_network_metadata(self.$1, serializer);
     sse_encode_connection_type(self.$2, serializer);
   }
 
   @protected
+  void
+      sse_encode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
+          (BigInt?, BigInt?, BigInt?, double?) self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_u_64(self.$1, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.$2, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.$3, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.$4, serializer);
+  }
+
+  @protected
   void sse_encode_target_protocol(
-    TargetProtocol self,
-    SseSerializer serializer,
-  ) {
+      TargetProtocol self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
   }

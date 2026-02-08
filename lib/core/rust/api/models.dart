@@ -13,7 +13,10 @@ class CaptivePortalStatus {
   final bool isCaptivePortal;
   final String? redirectUrl;
 
-  const CaptivePortalStatus({required this.isCaptivePortal, this.redirectUrl});
+  const CaptivePortalStatus({
+    required this.isCaptivePortal,
+    this.redirectUrl,
+  });
 
   @override
   int get hashCode => isCaptivePortal.hashCode ^ redirectUrl.hashCode;
@@ -27,7 +30,11 @@ class CaptivePortalStatus {
           redirectUrl == other.redirectUrl;
 }
 
-enum CheckStrategy { race, consensus }
+enum CheckStrategy {
+  race,
+  consensus,
+  ;
+}
 
 enum ConnectionQuality {
   excellent,
@@ -37,16 +44,29 @@ enum ConnectionQuality {
   poor,
   unstable,
   dead,
+  ;
 }
 
-enum ConnectionType { wifi, cellular, ethernet, vpn, bluetooth, unknown }
+enum ConnectionType {
+  wifi,
+  cellular,
+  ethernet,
+  vpn,
+  bluetooth,
+  unknown,
+  ;
+}
 
 class LocalDevice {
   final String ipAddress;
   final String? hostname;
   final String? macAddress;
 
-  const LocalDevice({required this.ipAddress, this.hostname, this.macAddress});
+  const LocalDevice({
+    required this.ipAddress,
+    this.hostname,
+    this.macAddress,
+  });
 
   @override
   int get hashCode =>
@@ -66,7 +86,10 @@ class NetworkMetadata {
   final bool isVpn;
   final String interfaceName;
 
-  const NetworkMetadata({required this.isVpn, required this.interfaceName});
+  const NetworkMetadata({
+    required this.isVpn,
+    required this.interfaceName,
+  });
 
   @override
   int get hashCode => isVpn.hashCode ^ interfaceName.hashCode;
@@ -289,7 +312,11 @@ class QualityThresholds {
           poor == other.poor;
 }
 
-enum TargetProtocol { tcp, udp }
+enum TargetProtocol {
+  tcp,
+  udp,
+  ;
+}
 
 class TargetReport {
   final String label;

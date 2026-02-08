@@ -10,36 +10,26 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<(NetworkMetadata, ConnectionType)> detectNetworkMetadata() =>
     RustLib.instance.api.crateApiUtilsDetectNetworkMetadata();
 
-Future<ConnectionQuality> evaluateQuality({
-  required BigInt latency,
-  required QualityThresholds threshold,
-}) => RustLib.instance.api.crateApiUtilsEvaluateQuality(
-  latency: latency,
-  threshold: threshold,
-);
+Future<ConnectionQuality> evaluateQuality(
+        {required BigInt latency, required QualityThresholds threshold}) =>
+    RustLib.instance.api
+        .crateApiUtilsEvaluateQuality(latency: latency, threshold: threshold);
 
-Future<List<LocalDevice>> scanLocalNetwork({
-  required String subnet,
-  required int scanPort,
-  required BigInt timeoutMs,
-}) => RustLib.instance.api.crateApiUtilsScanLocalNetwork(
-  subnet: subnet,
-  scanPort: scanPort,
-  timeoutMs: timeoutMs,
-);
+Future<List<LocalDevice>> scanLocalNetwork(
+        {required String subnet,
+        required int scanPort,
+        required BigInt timeoutMs}) =>
+    RustLib.instance.api.crateApiUtilsScanLocalNetwork(
+        subnet: subnet, scanPort: scanPort, timeoutMs: timeoutMs);
 
-Future<CaptivePortalStatus> checkForCaptivePortal({
-  required BigInt timeoutMs,
-}) => RustLib.instance.api.crateApiUtilsCheckForCaptivePortal(
-  timeoutMs: timeoutMs,
-);
+Future<CaptivePortalStatus> checkForCaptivePortal(
+        {required BigInt timeoutMs}) =>
+    RustLib.instance.api
+        .crateApiUtilsCheckForCaptivePortal(timeoutMs: timeoutMs);
 
-Future<List<TraceHop>> traceRoute({
-  required String host,
-  required int maxHops,
-  required BigInt timeoutPerHopMs,
-}) => RustLib.instance.api.crateApiUtilsTraceRoute(
-  host: host,
-  maxHops: maxHops,
-  timeoutPerHopMs: timeoutPerHopMs,
-);
+Future<List<TraceHop>> traceRoute(
+        {required String host,
+        required int maxHops,
+        required BigInt timeoutPerHopMs}) =>
+    RustLib.instance.api.crateApiUtilsTraceRoute(
+        host: host, maxHops: maxHops, timeoutPerHopMs: timeoutPerHopMs);

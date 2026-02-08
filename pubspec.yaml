@@ -4,18 +4,17 @@ version: 1.0.0
 # repository: https://github.com/my_org/my_repo
 
 environment:
-  sdk: ^3.10.8
+  sdk: ">=3.3.0 <4.0.0"
 
 # Add regular dependencies here.
-dependencies:
-  rust_lib_network_reachability:
-    path: rust_builder
-  flutter_rust_bridge: 2.11.1
-  # path: ^1.9.0
+
 
 dev_dependencies:
+
   build_runner: ^2.11.0
   integration_test:
     sdk: flutter
   lints: ^6.0.0
   test: ^1.25.6
+dependencies:
+  flutter_rust_bridge: 2.11.1
