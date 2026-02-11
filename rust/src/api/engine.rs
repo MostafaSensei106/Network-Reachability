@@ -6,7 +6,7 @@ use crate::api::{
     models::{
         CheckStrategy, ConnectionQuality, NetworkConfiguration, NetworkReport, NetworkStatus,
     },
-    probes::{check_target, detect_security_and_network_type},
+    probes::{self, check_target, detect_security_and_network_type},
 };
 
 /// The main entry point for running a comprehensive network check.
@@ -70,6 +70,14 @@ pub async fn check_network(config: NetworkConfiguration) -> NetworkReport {
     }
 
     let is_connected = !all_sample_latencies.is_empty();
+
+    let packet_loss_percent = if num_samples > 0 {
+        let successful_samples = all_sample_latencies.len() as f32;
+        100.0 * (1.0 - (successful_samples / num_samples as f32))
+    } else {
+        0.0
+    };
+
     let (min_lat, max_lat, mean_lat, std_dev_lat) = calculate_jitter_stats(&all_sample_latencies);
     let final_latency = mean_lat.unwrap_or(0);
     let final_jitter = std_dev_lat.unwrap_or(0.0) as u64;
@@ -88,9 +96,22 @@ pub async fn check_network(config: NetworkConfiguration) -> NetworkReport {
         }
     }
 
-    let (security_flags, conn_type) = detect_security_and_network_type();
+    let (mut security_flags, conn_type) = detect_security_and_network_type();
 
-    // TODO: Add logic for SecurityConfig checks (block_vpn, dns_hijack, etc.)
+    // --- Security Checks ---
+    if config.security.detect_dns_hijack {
+        // Use the first essential target, or the first target overall, as a heuristic for the check.
+        if let Some(target) = config
+            .targets
+            .iter()
+            .find(|t| t.is_essential)
+            .or_else(|| config.targets.first())
+        {
+            if probes::detect_dns_hijacking(&target.host).await {
+                security_flags.is_dns_spoofed = true;
+            }
+        }
+    }
 
     NetworkReport {
         timestamp_ms: start_time,
@@ -99,7 +120,7 @@ pub async fn check_network(config: NetworkConfiguration) -> NetworkReport {
             quality,
             latency_ms: final_latency,
             jitter_ms: final_jitter,
-            packet_loss_percent: 0.0, // Placeholder
+            packet_loss_percent,
             winner_target: if is_connected {
                 final_reports
                     .iter()

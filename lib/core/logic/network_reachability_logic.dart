@@ -11,7 +11,7 @@ import '../rust/api/models/report.dart';
 ///
 /// This class provides a high-level API for network checks, monitoring, and guarding operations.
 /// It should be initialized once using the static `init` method.
-final class NetworkReachability {
+class NetworkReachability {
   static NetworkReachability? _instance;
 
   /// The singleton instance of the network reachability engine.
@@ -43,13 +43,13 @@ final class NetworkReachability {
 
   /// Initializes the network reachability engine.
   ///
+  /// This must be called once before accessing the singleton instance.
   /// The user of this library is responsible for calling `RustLib.init()` *before* this.
   ///
   /// [config]: The configuration for the engine. If not provided, a default configuration is used.
   static Future<void> init({NetworkConfiguration? config}) async {
     if (_instance != null) {
-      // If called again, dispose the old instance to re-configure.
-      _instance!.dispose();
+      _instance?.dispose();
     }
 
     // Fetch the default config from Rust if none is provided.
@@ -96,11 +96,46 @@ final class NetworkReachability {
 
   /// A wrapper to protect network-dependent operations.
   ///
-  /// Before executing the [action], this method performs a network check
-  /// and validates it against the provided [requirements].
+  /// Before executing the [action], this method performs a fresh network check
+  /// and validates it against the provided [requirements] and the active [NetworkConfiguration].
+  ///
+  
+  /// It serves as a single point of truth to ensure that an operation is only
+  /// attempted when the network state is acceptable.
   ///
   /// Throws a [PoorConnectionException], [SecurityException], or [CircuitBreakerOpenException]
   /// if the conditions are not met.
+  ///
+  /// ### Example: Basic Usage
+  ///
+  /// ```dart
+  /// try {
+  ///   final data = await NetworkReachability.instance.guard(
+  ///     action: () => myApi.fetchSensitiveData(),
+  ///   );
+  ///   print('Data fetched successfully: $data');
+  /// } on PoorConnectionException catch (e) {
+  ///   print('Could not fetch data due to poor connection: $e');
+  /// } on SecurityException catch (e) {
+  ///   print('Security alert! Cannot perform action: $e');
+  /// } on CircuitBreakerOpenException catch (e) {
+  ///   print('Backend is unstable. Please try again later: $e');
+  /// }
+  /// ```
+  ///
+  /// ### Example: Requiring Excellent Quality
+  ///
+  /// ```dart
+  /// try {
+  ///   await NetworkReachability.instance.guard(
+  ///     action: () => streamingService.start4KStream(),
+  ///     minQuality: ConnectionQuality.excellent,
+  ///   );
+  /// } on PoorConnectionException {
+  ///   // Handle case where connection is good, but not excellent
+  ///   print('4K streaming requires an excellent connection.');
+  /// }
+  /// ```
   Future<T> guard<T>({
     required Future<T> Function() action,
     ConnectionQuality minQuality = ConnectionQuality.good,
@@ -125,6 +160,19 @@ final class NetworkReachability {
     if (_config.security.blockVpn && report.securityFlags.isVpnDetected) {
       throw SecurityException(
           SecurityAlert.vpnDetected, 'VPN connection is not allowed.');
+    }
+    if (_config.security.detectDnsHijack && report.securityFlags.isDnsSpoofed) {
+      throw SecurityException(SecurityAlert.dnsHijackDetected,
+          'DNS hijacking was detected. Connection is insecure.');
+    }
+    if (_config.security.allowedInterfaces.isNotEmpty &&
+        report.securityFlags.interfaceName.isNotEmpty) {
+      final isAllowed = _config.security.allowedInterfaces
+          .any((prefix) => report.securityFlags.interfaceName.startsWith(prefix));
+      if (!isAllowed) {
+        throw SecurityException(SecurityAlert.unallowedInterface,
+            'The active network interface (${report.securityFlags.interfaceName}) is not in the list of allowed interfaces.');
+      }
     }
 
     // 4. Validate quality requirements
