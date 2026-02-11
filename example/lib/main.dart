@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:network_reachability/core/logic/network_reachability_logic.dart';
 
 void main() {
   runApp(const MyApp());
-  NetworkReachability.init();
 }
 
 class MyApp extends StatelessWidget {
