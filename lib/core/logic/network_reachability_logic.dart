@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:network_reachability/core/constants/enums.dart';
+import 'package:network_reachability/core/rust/frb_generated.dart';
 
 import '../err/exceptions.dart';
 import '../rust/api/engine.dart' as rust_engine;
@@ -48,6 +49,8 @@ class NetworkReachability {
   ///
   /// [config]: The configuration for the engine. If not provided, a default configuration is used.
   static Future<void> init({NetworkConfiguration? config}) async {
+    await RustLib.init();
+
     if (_instance != null) {
       _instance?.dispose();
     }
@@ -99,7 +102,7 @@ class NetworkReachability {
   /// Before executing the [action], this method performs a fresh network check
   /// and validates it against the provided [requirements] and the active [NetworkConfiguration].
   ///
-  
+
   /// It serves as a single point of truth to ensure that an operation is only
   /// attempted when the network state is acceptable.
   ///
@@ -167,8 +170,8 @@ class NetworkReachability {
     }
     if (_config.security.allowedInterfaces.isNotEmpty &&
         report.securityFlags.interfaceName.isNotEmpty) {
-      final isAllowed = _config.security.allowedInterfaces
-          .any((prefix) => report.securityFlags.interfaceName.startsWith(prefix));
+      final isAllowed = _config.security.allowedInterfaces.any(
+          (prefix) => report.securityFlags.interfaceName.startsWith(prefix));
       if (!isAllowed) {
         throw SecurityException(SecurityAlert.unallowedInterface,
             'The active network interface (${report.securityFlags.interfaceName}) is not in the list of allowed interfaces.');

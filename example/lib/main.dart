@@ -1,121 +1,368 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-void main() {
+import 'package:flutter/material.dart';
+import 'package:network_reachability/network_reachability.dart';
+
+// Ensure you have run `flutter_rust_bridge_codegen` to generate this file.
+
+Future<void> main() async {
+  // Mandatory setup for Flutter apps.
+  WidgetsFlutterBinding.ensureInitialized();
+  RustLib.init();
+  final defaultConfig = await NetworkConfiguration.default_();
+  final customConfig = defaultConfig;
+  await NetworkReachability.init(config: customConfig);
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Netwrok Reachability Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const FluxNetDemoPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class FluxNetDemoPage extends StatefulWidget {
+  const FluxNetDemoPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<FluxNetDemoPage> createState() => _FluxNetDemoPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _FluxNetDemoPageState extends State<FluxNetDemoPage> {
+  NetworkReport? _report;
+  StreamSubscription? _statusSubscription;
+  bool _isLoading = true;
+  String _guardResult = 'Press "Guarded Action" to test.';
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+  @override
+  void initState() {
+    super.initState();
+    _manualCheck(); // Perform an initial check.
+    // Subscribe to periodic updates.
+    _statusSubscription = NetworkReachability.instance.onStatusChange.listen((
+      status,
+    ) {
+      // The stream only gives a NetworkStatus, so we run a full check
+      // to get the complete report when a change is detected.
+      _manualCheck();
     });
   }
 
   @override
+  void dispose() {
+    // Clean up the subscription to prevent memory leaks.
+    _statusSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _manualCheck() async {
+    if (!mounted) return;
+    setState(() {
+      _isLoading = true;
+    });
+    final report = await NetworkReachability.instance.check();
+    if (!mounted) return;
+    setState(() {
+      _report = report;
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _performGuardedAction() async {
+    setState(() {
+      _guardResult = 'Checking network and performing action...';
+    });
+    try {
+      // The guard will throw an exception if requirements are not met.
+      final result = await NetworkReachability.instance.guard(
+        action: () async {
+          // Simulate a network call that takes 1 second.
+          await Future.delayed(const Duration(seconds: 1));
+          return "Data fetched successfully at ${DateTime.now().toIso8601String()}";
+        },
+        minQuality: ConnectionQuality.good,
+      );
+      setState(() {
+        _guardResult = result;
+      });
+    } on NetworkReachabilityException catch (e) {
+      setState(() {
+        _guardResult = 'Action Failed!\n${e.runtimeType}: ${e.message}';
+      });
+    } catch (e) {
+      setState(() {
+        _guardResult = 'An unexpected error occurred: $e';
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text('Flux Net Demo'),
+        actions: [
+          if (_isLoading)
+            const Padding(
+              padding: EdgeInsets.only(right: 16.0),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
+      body: RefreshIndicator(
+        onRefresh: _manualCheck,
+        child: ListView(
+          padding: const EdgeInsets.all(12.0),
           children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            if (_report != null) ...[
+              _StatusCard(status: _report!.status),
+              const SizedBox(height: 12),
+              _DetailsCard(
+                connectionType: _report!.connectionType,
+                securityFlags: _report!.securityFlags,
+              ),
+              const SizedBox(height: 12),
+              _GuardActionCard(
+                result: _guardResult,
+                onPressed: _performGuardedAction,
+              ),
+              const SizedBox(height: 12),
+              _TargetReportsCard(reports: _report!.targetReports),
+            ] else if (_isLoading)
+              const Center(child: Text("Performing initial network check..."))
+            else
+              const Center(
+                child: Text("Failed to get initial network report."),
+              ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _manualCheck,
+        label: const Text('Manual Refresh'),
+        icon: const Icon(Icons.refresh),
+      ),
+    );
+  }
+}
+
+// --- UI Helper Widgets ---
+
+class _StatusCard extends StatelessWidget {
+  final NetworkStatus status;
+  const _StatusCard({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = _getQualityColors(status.quality, context);
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  status.isConnected ? Icons.wifi : Icons.wifi_off,
+                  color: status.isConnected ? Colors.greenAccent : Colors.red,
+                  size: 28,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  status.isConnected ? 'Connected' : 'Disconnected',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Divider(),
+            ListTile(
+              title: const Text('Quality'),
+              trailing: Text(
+                status.quality.name,
+                style: TextStyle(color: colors.$1, fontWeight: FontWeight.bold),
+              ),
+            ),
+            ListTile(
+              title: const Text('Latency (Mean)'),
+              trailing: Text('${status.latencyMs} ms'),
+            ),
+            ListTile(
+              title: const Text('Jitter (Std Dev)'),
+              trailing: Text('${status.jitterMs} ms'),
+            ),
+            ListTile(
+              title: const Text('Packet Loss'),
+              trailing: Text('${status.packetLossPercent.toStringAsFixed(1)}%'),
+            ),
+            ListTile(
+              title: const Text('Winning Target'),
+              trailing: Text(
+                status.winnerTarget.isEmpty ? 'N/A' : status.winnerTarget,
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+
+  (Color, Color) _getQualityColors(
+    ConnectionQuality quality,
+    BuildContext context,
+  ) {
+    switch (quality) {
+      case ConnectionQuality.excellent:
+        return (Colors.greenAccent, Colors.green.shade900);
+      case ConnectionQuality.great:
+        return (Colors.lightGreen, Colors.lightGreen.shade900);
+      case ConnectionQuality.good:
+        return (Colors.yellow, Colors.yellow.shade900);
+      case ConnectionQuality.moderate:
+        return (Colors.orange, Colors.orange.shade900);
+      case ConnectionQuality.poor:
+        return (Colors.red, Colors.red.shade900);
+      case ConnectionQuality.unstable:
+        return (Colors.purpleAccent, Colors.purple.shade900);
+      case ConnectionQuality.dead:
+        return (Colors.grey, Colors.grey.shade800);
+    }
+  }
+}
+
+class _DetailsCard extends StatelessWidget {
+  final ConnectionType connectionType;
+  final SecurityFlags securityFlags;
+  const _DetailsCard({
+    required this.connectionType,
+    required this.securityFlags,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Details', style: Theme.of(context).textTheme.titleLarge),
+            const Divider(),
+            ListTile(
+              title: const Text('Connection Type'),
+              trailing: Text(connectionType.name),
+            ),
+            ListTile(
+              title: const Text('Interface Name'),
+              trailing: Text(securityFlags.interfaceName),
+            ),
+            ListTile(
+              title: const Text('VPN Detected'),
+              trailing: _boolIcon(securityFlags.isVpnDetected),
+            ),
+            ListTile(
+              title: const Text('DNS Spoofed'),
+              trailing: _boolIcon(securityFlags.isDnsSpoofed),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _boolIcon(bool value) {
+    return Icon(
+      value ? Icons.verified_user : Icons.gpp_bad,
+      color: value ? Colors.red : Colors.green,
+    );
+  }
+}
+
+class _GuardActionCard extends StatelessWidget {
+  final String result;
+  final VoidCallback onPressed;
+  const _GuardActionCard({required this.result, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text('Guard Demo', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 12),
+            Text(
+              result,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: onPressed,
+              child: const Text('Perform Guarded Action'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TargetReportsCard extends StatelessWidget {
+  final List<TargetReport> reports;
+  const _TargetReportsCard({required this.reports});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Target Reports',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const Divider(),
+            ...reports.map(
+              (r) => ListTile(
+                leading: Icon(
+                  r.success ? Icons.check_circle : Icons.cancel,
+                  color: r.success ? Colors.green : Colors.red,
+                ),
+                title: Text(r.label),
+                subtitle: r.success
+                    ? Text('Latency: ${r.latencyMs} ms')
+                    : Text(r.error ?? 'Unknown error'),
+                isThreeLine: !r.success,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

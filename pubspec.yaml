@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   flutter_rust_bridge: 2.11.1
+  rust_lib_network_reachability:
+    path: rust_builder
 
 
 dev_dependencies:
