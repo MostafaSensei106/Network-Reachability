@@ -3,9 +3,18 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/analysis/quality.dart';
 import 'api/engine.dart';
-import 'api/models.dart';
-import 'api/utils.dart';
+import 'api/models/config.dart';
+import 'api/models/net_info.dart';
+import 'api/models/report.dart';
+import 'api/models/target.dart';
+import 'api/probes/captive_portal.dart';
+import 'api/probes/dns.dart';
+import 'api/probes/interface.dart';
+import 'api/probes/local_scan.dart';
+import 'api/probes/target.dart';
+import 'api/probes/traceroute.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -30,8 +39,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double dco_decode_box_autoadd_f_64(dynamic raw);
 
   @protected
-  NetwrokConfiguration dco_decode_box_autoadd_netwrok_configuration(
+  NetworkConfiguration dco_decode_box_autoadd_network_configuration(
       dynamic raw);
+
+  @protected
+  NetworkTarget dco_decode_box_autoadd_network_target(dynamic raw);
 
   @protected
   QualityThresholds dco_decode_box_autoadd_quality_thresholds(dynamic raw);
@@ -52,10 +64,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ConnectionType dco_decode_connection_type(dynamic raw);
 
   @protected
+  double dco_decode_f_32(dynamic raw);
+
+  @protected
   double dco_decode_f_64(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw);
 
   @protected
   List<LocalDevice> dco_decode_list_local_device(dynamic raw);
@@ -79,7 +97,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   LocalDevice dco_decode_local_device(dynamic raw);
 
   @protected
-  NetworkMetadata dco_decode_network_metadata(dynamic raw);
+  NetworkConfiguration dco_decode_network_configuration(dynamic raw);
 
   @protected
   NetworkReport dco_decode_network_report(dynamic raw);
@@ -89,9 +107,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   NetworkTarget dco_decode_network_target(dynamic raw);
-
-  @protected
-  NetwrokConfiguration dco_decode_netwrok_configuration(dynamic raw);
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
@@ -106,10 +121,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   QualityThresholds dco_decode_quality_thresholds(dynamic raw);
 
   @protected
-  (NetworkMetadata, ConnectionType)
-      dco_decode_record_network_metadata_connection_type(dynamic raw);
-
-  @protected
   (
     BigInt?,
     BigInt?,
@@ -117,6 +128,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     double?
   ) dco_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
       dynamic raw);
+
+  @protected
+  (SecurityFlags, ConnectionType)
+      dco_decode_record_security_flags_connection_type(dynamic raw);
+
+  @protected
+  ResilienceConfig dco_decode_resilience_config(dynamic raw);
+
+  @protected
+  SecurityConfig dco_decode_security_config(dynamic raw);
+
+  @protected
+  SecurityFlags dco_decode_security_flags(dynamic raw);
 
   @protected
   TargetProtocol dco_decode_target_protocol(dynamic raw);
@@ -149,7 +173,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
 
   @protected
-  NetwrokConfiguration sse_decode_box_autoadd_netwrok_configuration(
+  NetworkConfiguration sse_decode_box_autoadd_network_configuration(
+      SseDeserializer deserializer);
+
+  @protected
+  NetworkTarget sse_decode_box_autoadd_network_target(
       SseDeserializer deserializer);
 
   @protected
@@ -173,10 +201,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ConnectionType sse_decode_connection_type(SseDeserializer deserializer);
 
   @protected
+  double sse_decode_f_32(SseDeserializer deserializer);
+
+  @protected
   double sse_decode_f_64(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer);
 
   @protected
   List<LocalDevice> sse_decode_list_local_device(SseDeserializer deserializer);
@@ -202,7 +236,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   LocalDevice sse_decode_local_device(SseDeserializer deserializer);
 
   @protected
-  NetworkMetadata sse_decode_network_metadata(SseDeserializer deserializer);
+  NetworkConfiguration sse_decode_network_configuration(
+      SseDeserializer deserializer);
 
   @protected
   NetworkReport sse_decode_network_report(SseDeserializer deserializer);
@@ -212,10 +247,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   NetworkTarget sse_decode_network_target(SseDeserializer deserializer);
-
-  @protected
-  NetwrokConfiguration sse_decode_netwrok_configuration(
-      SseDeserializer deserializer);
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
@@ -230,11 +261,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   QualityThresholds sse_decode_quality_thresholds(SseDeserializer deserializer);
 
   @protected
-  (NetworkMetadata, ConnectionType)
-      sse_decode_record_network_metadata_connection_type(
-          SseDeserializer deserializer);
-
-  @protected
   (
     BigInt?,
     BigInt?,
@@ -242,6 +268,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     double?
   ) sse_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
       SseDeserializer deserializer);
+
+  @protected
+  (SecurityFlags, ConnectionType)
+      sse_decode_record_security_flags_connection_type(
+          SseDeserializer deserializer);
+
+  @protected
+  ResilienceConfig sse_decode_resilience_config(SseDeserializer deserializer);
+
+  @protected
+  SecurityConfig sse_decode_security_config(SseDeserializer deserializer);
+
+  @protected
+  SecurityFlags sse_decode_security_flags(SseDeserializer deserializer);
 
   @protected
   TargetProtocol sse_decode_target_protocol(SseDeserializer deserializer);
@@ -274,8 +314,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_netwrok_configuration(
-      NetwrokConfiguration self, SseSerializer serializer);
+  void sse_encode_box_autoadd_network_configuration(
+      NetworkConfiguration self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_network_target(
+      NetworkTarget self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_quality_thresholds(
@@ -300,10 +344,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ConnectionType self, SseSerializer serializer);
 
   @protected
+  void sse_encode_f_32(double self, SseSerializer serializer);
+
+  @protected
   void sse_encode_f_64(double self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_local_device(
@@ -332,8 +382,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_local_device(LocalDevice self, SseSerializer serializer);
 
   @protected
-  void sse_encode_network_metadata(
-      NetworkMetadata self, SseSerializer serializer);
+  void sse_encode_network_configuration(
+      NetworkConfiguration self, SseSerializer serializer);
 
   @protected
   void sse_encode_network_report(NetworkReport self, SseSerializer serializer);
@@ -343,10 +393,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_network_target(NetworkTarget self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_netwrok_configuration(
-      NetwrokConfiguration self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
@@ -362,13 +408,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       QualityThresholds self, SseSerializer serializer);
 
   @protected
-  void sse_encode_record_network_metadata_connection_type(
-      (NetworkMetadata, ConnectionType) self, SseSerializer serializer);
-
-  @protected
   void
       sse_encode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
           (BigInt?, BigInt?, BigInt?, double?) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_security_flags_connection_type(
+      (SecurityFlags, ConnectionType) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_resilience_config(
+      ResilienceConfig self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_security_config(
+      SecurityConfig self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_security_flags(SecurityFlags self, SseSerializer serializer);
 
   @protected
   void sse_encode_target_protocol(
