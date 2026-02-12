@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:network_reachability/core/rust/api/models/report.dart';
 import 'package:network_reachability/network_reachability.dart';
 import 'package:network_reachability/core/rust/frb_generated.dart';
 import 'package:test/test.dart';
@@ -36,19 +37,22 @@ class MockRustLibApi implements RustLibApi {
       circuitBreakerThreshold: 3,
       numJitterSamples: 3,
       jitterThresholdPercent: 0.2,
+      stabilityThershold: 70,
+      criticalPacketLossPrecent: 15,
     );
 
     mockNetworkReport = NetworkReport(
       timestampMs: BigInt.from(DateTime.now().millisecondsSinceEpoch),
       status: NetworkStatus(
         isConnected: true,
-        quality: ConnectionQuality.excellent,
-        latencyMs: BigInt.from(30),
-        jitterMs: BigInt.from(5),
-        packetLossPercent: 0.0,
         winnerTarget: 'cloudflare',
-        minLatencyMs: BigInt.from(25),
-        maxLatencyMs: BigInt.from(35),
+        quality: ConnectionQuality.excellent,
+        latencyStats: LatencyStats(
+          latencyMs: BigInt.from(30),
+          jitterMs: BigInt.from(10),
+          packetLossPercent: 0,
+          stabilityScore: 85,
+        ),
       ),
       connectionType: ConnectionType.wifi,
       securityFlags: SecurityFlags(
@@ -323,6 +327,8 @@ extension on ResilienceConfig {
           circuitBreakerThreshold ?? this.circuitBreakerThreshold,
       numJitterSamples: numJitterSamples,
       jitterThresholdPercent: jitterThresholdPercent,
+      stabilityThershold: 70,
+      criticalPacketLossPrecent: 15,
     );
   }
 }
@@ -347,11 +353,13 @@ extension on ConnectionQuality {
   // Helper to create a status with a specific quality for mocking
   NetworkStatus asStatus() {
     return NetworkStatus(
-      isConnected: this != ConnectionQuality.dead,
+      isConnected: this != ConnectionQuality.offline,
       quality: this,
-      latencyMs: BigInt.from(300),
-      jitterMs: BigInt.from(50),
-      packetLossPercent: 0,
+      latencyStats: LatencyStats(
+        latencyMs: BigInt.from(300), // 300ms target latency
+        jitterMs: BigInt.from(50), // 50ms target jitter
+        packetLossPercent: 0, stabilityScore: 0, // 0% packet loss target
+      ),
       winnerTarget: 'mock',
     );
   }

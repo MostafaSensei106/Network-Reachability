@@ -13,7 +13,7 @@ pub fn evaluate_quality(latency: u64, threshold: &QualityThresholds) -> Connecti
     } else if latency <= threshold.poor {
         ConnectionQuality::Poor
     } else {
-        ConnectionQuality::Dead
+        ConnectionQuality::Offline
     }
 }
 
@@ -89,7 +89,10 @@ mod tests {
             evaluate_quality(250, &thresholds),
             ConnectionQuality::Moderate
         );
-        assert_eq!(evaluate_quality(1001, &thresholds), ConnectionQuality::Dead);
+        assert_eq!(
+            evaluate_quality(1001, &thresholds),
+            ConnectionQuality::Offline
+        );
     }
 
     #[test]

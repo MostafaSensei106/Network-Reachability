@@ -10,6 +10,8 @@ import 'models/report.dart';
 import 'models/target.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These functions are ignored because they are not marked as `pub`: `analyze_single_sample`, `collect_network_samples`, `compute_latency_stats`, `evaluate_network_quality`, `get_winner_target`, `perform_dns_security_check`
+
 /// The main entry point for running a comprehensive network check.
 ///
 /// This function orchestrates the various probes and analyses based on the provided configuration.

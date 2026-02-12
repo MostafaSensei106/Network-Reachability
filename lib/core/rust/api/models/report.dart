@@ -8,7 +8,50 @@ import 'config.dart';
 import 'net_info.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`, `fmt`
+
+class LatencyStats {
+  final BigInt latencyMs;
+  final BigInt jitterMs;
+  final double packetLossPercent;
+  final BigInt? minLatencyMs;
+  final BigInt? avgLatencyMs;
+  final BigInt? maxLatencyMs;
+  final int stabilityScore;
+
+  const LatencyStats({
+    required this.latencyMs,
+    required this.jitterMs,
+    required this.packetLossPercent,
+    this.minLatencyMs,
+    this.avgLatencyMs,
+    this.maxLatencyMs,
+    required this.stabilityScore,
+  });
+
+  @override
+  int get hashCode =>
+      latencyMs.hashCode ^
+      jitterMs.hashCode ^
+      packetLossPercent.hashCode ^
+      minLatencyMs.hashCode ^
+      avgLatencyMs.hashCode ^
+      maxLatencyMs.hashCode ^
+      stabilityScore.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LatencyStats &&
+          runtimeType == other.runtimeType &&
+          latencyMs == other.latencyMs &&
+          jitterMs == other.jitterMs &&
+          packetLossPercent == other.packetLossPercent &&
+          minLatencyMs == other.minLatencyMs &&
+          avgLatencyMs == other.avgLatencyMs &&
+          maxLatencyMs == other.maxLatencyMs &&
+          stabilityScore == other.stabilityScore;
+}
 
 /// The top-level report containing all information about a network check.
 class NetworkReport {
@@ -57,51 +100,24 @@ class NetworkReport {
 
 /// A comprehensive snapshot of the network state at a given time.
 class NetworkStatus {
-  /// The final, overall result: true if the network is usable.
   final bool isConnected;
-
-  /// The evaluated quality of the connection (Excellent, Good, Poor, etc.).
   final ConnectionQuality quality;
-
-  /// The mean latency in milliseconds from the winning target(s).
-  final BigInt latencyMs;
-
-  /// The standard deviation of latency in milliseconds, indicating stability.
-  final BigInt jitterMs;
-
-  /// The percentage of packets lost during the check (future implementation).
-  final double packetLossPercent;
-
-  /// The label of the target that responded first in a 'Race' strategy.
+  final LatencyStats latencyStats;
   final String winnerTarget;
-
-  /// Minimum latency recorded during jitter analysis.
-  final BigInt? minLatencyMs;
-
-  /// Maximum latency recorded during jitter analysis.
-  final BigInt? maxLatencyMs;
 
   const NetworkStatus({
     required this.isConnected,
     required this.quality,
-    required this.latencyMs,
-    required this.jitterMs,
-    required this.packetLossPercent,
+    required this.latencyStats,
     required this.winnerTarget,
-    this.minLatencyMs,
-    this.maxLatencyMs,
   });
 
   @override
   int get hashCode =>
       isConnected.hashCode ^
       quality.hashCode ^
-      latencyMs.hashCode ^
-      jitterMs.hashCode ^
-      packetLossPercent.hashCode ^
-      winnerTarget.hashCode ^
-      minLatencyMs.hashCode ^
-      maxLatencyMs.hashCode;
+      latencyStats.hashCode ^
+      winnerTarget.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -110,12 +126,8 @@ class NetworkStatus {
           runtimeType == other.runtimeType &&
           isConnected == other.isConnected &&
           quality == other.quality &&
-          latencyMs == other.latencyMs &&
-          jitterMs == other.jitterMs &&
-          packetLossPercent == other.packetLossPercent &&
-          winnerTarget == other.winnerTarget &&
-          minLatencyMs == other.minLatencyMs &&
-          maxLatencyMs == other.maxLatencyMs;
+          latencyStats == other.latencyStats &&
+          winnerTarget == other.winnerTarget;
 }
 
 class TargetReport {

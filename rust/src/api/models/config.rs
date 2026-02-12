@@ -19,7 +19,7 @@ pub enum ConnectionQuality {
     /// Connection is active but latency is highly variable.
     Unstable,
     /// No connection.
-    Dead,
+    Offline,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -65,6 +65,10 @@ pub struct ResilienceConfig {
     pub num_jitter_samples: u8,
     /// The percentage of mean latency that the standard deviation must exceed to be marked as 'Unstable'.
     pub jitter_threshold_percent: f64,
+    /// if score is less than this value, the target is considered unstable for examples 70-80%
+    pub stability_thershold: u8,
+    /// The maximum percentage of packetloss that can not be ignored
+    pub critical_packet_loss_precent: f32,
 }
 
 impl Default for ResilienceConfig {
@@ -74,6 +78,8 @@ impl Default for ResilienceConfig {
             circuit_breaker_threshold: 0, // Disabled by default
             num_jitter_samples: AppConstants::DEFAULT_JITTER_SAMPLES,
             jitter_threshold_percent: AppConstants::DEFAULT_JITTER_THRESHOLD_PERCENT,
+            stability_thershold: AppConstants::DEFAULT_STABILITY_THRESHOLD,
+            critical_packet_loss_precent: 0.0,
         }
     }
 }

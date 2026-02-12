@@ -622,7 +622,7 @@ impl SseDecode for crate::api::models::config::ConnectionQuality {
             3 => crate::api::models::config::ConnectionQuality::Moderate,
             4 => crate::api::models::config::ConnectionQuality::Poor,
             5 => crate::api::models::config::ConnectionQuality::Unstable,
-            6 => crate::api::models::config::ConnectionQuality::Dead,
+            6 => crate::api::models::config::ConnectionQuality::Offline,
             _ => unreachable!("Invalid variant for ConnectionQuality: {}", inner),
         };
     }
@@ -662,6 +662,28 @@ impl SseDecode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_i32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for crate::api::models::report::LatencyStats {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_latencyMs = <u64>::sse_decode(deserializer);
+        let mut var_jitterMs = <u64>::sse_decode(deserializer);
+        let mut var_packetLossPercent = <f32>::sse_decode(deserializer);
+        let mut var_minLatencyMs = <Option<u64>>::sse_decode(deserializer);
+        let mut var_avgLatencyMs = <Option<u64>>::sse_decode(deserializer);
+        let mut var_maxLatencyMs = <Option<u64>>::sse_decode(deserializer);
+        let mut var_stabilityScore = <u8>::sse_decode(deserializer);
+        return crate::api::models::report::LatencyStats {
+            latency_ms: var_latencyMs,
+            jitter_ms: var_jitterMs,
+            packet_loss_percent: var_packetLossPercent,
+            min_latency_ms: var_minLatencyMs,
+            avg_latency_ms: var_avgLatencyMs,
+            max_latency_ms: var_maxLatencyMs,
+            stability_score: var_stabilityScore,
+        };
     }
 }
 
@@ -820,21 +842,14 @@ impl SseDecode for crate::api::models::report::NetworkStatus {
         let mut var_isConnected = <bool>::sse_decode(deserializer);
         let mut var_quality =
             <crate::api::models::config::ConnectionQuality>::sse_decode(deserializer);
-        let mut var_latencyMs = <u64>::sse_decode(deserializer);
-        let mut var_jitterMs = <u64>::sse_decode(deserializer);
-        let mut var_packetLossPercent = <f32>::sse_decode(deserializer);
+        let mut var_latencyStats =
+            <crate::api::models::report::LatencyStats>::sse_decode(deserializer);
         let mut var_winnerTarget = <String>::sse_decode(deserializer);
-        let mut var_minLatencyMs = <Option<u64>>::sse_decode(deserializer);
-        let mut var_maxLatencyMs = <Option<u64>>::sse_decode(deserializer);
         return crate::api::models::report::NetworkStatus {
             is_connected: var_isConnected,
             quality: var_quality,
-            latency_ms: var_latencyMs,
-            jitter_ms: var_jitterMs,
-            packet_loss_percent: var_packetLossPercent,
+            latency_stats: var_latencyStats,
             winner_target: var_winnerTarget,
-            min_latency_ms: var_minLatencyMs,
-            max_latency_ms: var_maxLatencyMs,
         };
     }
 }
@@ -948,11 +963,15 @@ impl SseDecode for crate::api::models::config::ResilienceConfig {
         let mut var_circuitBreakerThreshold = <u8>::sse_decode(deserializer);
         let mut var_numJitterSamples = <u8>::sse_decode(deserializer);
         let mut var_jitterThresholdPercent = <f64>::sse_decode(deserializer);
+        let mut var_stabilityThershold = <u8>::sse_decode(deserializer);
+        let mut var_criticalPacketLossPrecent = <f32>::sse_decode(deserializer);
         return crate::api::models::config::ResilienceConfig {
             strategy: var_strategy,
             circuit_breaker_threshold: var_circuitBreakerThreshold,
             num_jitter_samples: var_numJitterSamples,
             jitter_threshold_percent: var_jitterThresholdPercent,
+            stability_thershold: var_stabilityThershold,
+            critical_packet_loss_precent: var_criticalPacketLossPrecent,
         };
     }
 }
@@ -1212,7 +1231,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::config::ConnectionQua
             Self::Moderate => 3.into_dart(),
             Self::Poor => 4.into_dart(),
             Self::Unstable => 5.into_dart(),
-            Self::Dead => 6.into_dart(),
+            Self::Offline => 6.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1250,6 +1269,32 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::net_info::ConnectionT
     for crate::api::models::net_info::ConnectionType
 {
     fn into_into_dart(self) -> crate::api::models::net_info::ConnectionType {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::models::report::LatencyStats {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.latency_ms.into_into_dart().into_dart(),
+            self.jitter_ms.into_into_dart().into_dart(),
+            self.packet_loss_percent.into_into_dart().into_dart(),
+            self.min_latency_ms.into_into_dart().into_dart(),
+            self.avg_latency_ms.into_into_dart().into_dart(),
+            self.max_latency_ms.into_into_dart().into_dart(),
+            self.stability_score.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::models::report::LatencyStats
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::report::LatencyStats>
+    for crate::api::models::report::LatencyStats
+{
+    fn into_into_dart(self) -> crate::api::models::report::LatencyStats {
         self
     }
 }
@@ -1329,12 +1374,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::report::NetworkStatus
         [
             self.is_connected.into_into_dart().into_dart(),
             self.quality.into_into_dart().into_dart(),
-            self.latency_ms.into_into_dart().into_dart(),
-            self.jitter_ms.into_into_dart().into_dart(),
-            self.packet_loss_percent.into_into_dart().into_dart(),
+            self.latency_stats.into_into_dart().into_dart(),
             self.winner_target.into_into_dart().into_dart(),
-            self.min_latency_ms.into_into_dart().into_dart(),
-            self.max_latency_ms.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -1408,6 +1449,10 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::config::ResilienceCon
             self.circuit_breaker_threshold.into_into_dart().into_dart(),
             self.num_jitter_samples.into_into_dart().into_dart(),
             self.jitter_threshold_percent.into_into_dart().into_dart(),
+            self.stability_thershold.into_into_dart().into_dart(),
+            self.critical_packet_loss_precent
+                .into_into_dart()
+                .into_dart(),
         ]
         .into_dart()
     }
@@ -1586,7 +1631,7 @@ impl SseEncode for crate::api::models::config::ConnectionQuality {
                 crate::api::models::config::ConnectionQuality::Moderate => 3,
                 crate::api::models::config::ConnectionQuality::Poor => 4,
                 crate::api::models::config::ConnectionQuality::Unstable => 5,
-                crate::api::models::config::ConnectionQuality::Dead => 6,
+                crate::api::models::config::ConnectionQuality::Offline => 6,
                 _ => {
                     unimplemented!("");
                 }
@@ -1634,6 +1679,19 @@ impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for crate::api::models::report::LatencyStats {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u64>::sse_encode(self.latency_ms, serializer);
+        <u64>::sse_encode(self.jitter_ms, serializer);
+        <f32>::sse_encode(self.packet_loss_percent, serializer);
+        <Option<u64>>::sse_encode(self.min_latency_ms, serializer);
+        <Option<u64>>::sse_encode(self.avg_latency_ms, serializer);
+        <Option<u64>>::sse_encode(self.max_latency_ms, serializer);
+        <u8>::sse_encode(self.stability_score, serializer);
     }
 }
 
@@ -1752,12 +1810,8 @@ impl SseEncode for crate::api::models::report::NetworkStatus {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <bool>::sse_encode(self.is_connected, serializer);
         <crate::api::models::config::ConnectionQuality>::sse_encode(self.quality, serializer);
-        <u64>::sse_encode(self.latency_ms, serializer);
-        <u64>::sse_encode(self.jitter_ms, serializer);
-        <f32>::sse_encode(self.packet_loss_percent, serializer);
+        <crate::api::models::report::LatencyStats>::sse_encode(self.latency_stats, serializer);
         <String>::sse_encode(self.winner_target, serializer);
-        <Option<u64>>::sse_encode(self.min_latency_ms, serializer);
-        <Option<u64>>::sse_encode(self.max_latency_ms, serializer);
     }
 }
 
@@ -1845,6 +1899,8 @@ impl SseEncode for crate::api::models::config::ResilienceConfig {
         <u8>::sse_encode(self.circuit_breaker_threshold, serializer);
         <u8>::sse_encode(self.num_jitter_samples, serializer);
         <f64>::sse_encode(self.jitter_threshold_percent, serializer);
+        <u8>::sse_encode(self.stability_thershold, serializer);
+        <f32>::sse_encode(self.critical_packet_loss_precent, serializer);
     }
 }
 

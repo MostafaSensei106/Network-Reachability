@@ -1,5 +1,6 @@
 name: network_reachability
 description: A starting point for Dart libraries or applications.
+publish_to: "pub.dev"
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
 

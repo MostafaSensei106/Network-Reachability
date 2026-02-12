@@ -598,6 +598,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  LatencyStats dco_decode_latency_stats(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    return LatencyStats(
+      latencyMs: dco_decode_u_64(arr[0]),
+      jitterMs: dco_decode_u_64(arr[1]),
+      packetLossPercent: dco_decode_f_32(arr[2]),
+      minLatencyMs: dco_decode_opt_box_autoadd_u_64(arr[3]),
+      avgLatencyMs: dco_decode_opt_box_autoadd_u_64(arr[4]),
+      maxLatencyMs: dco_decode_opt_box_autoadd_u_64(arr[5]),
+      stabilityScore: dco_decode_u_8(arr[6]),
+    );
+  }
+
+  @protected
   List<String> dco_decode_list_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_String).toList();
@@ -686,17 +703,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   NetworkStatus dco_decode_network_status(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 8)
-      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
     return NetworkStatus(
       isConnected: dco_decode_bool(arr[0]),
       quality: dco_decode_connection_quality(arr[1]),
-      latencyMs: dco_decode_u_64(arr[2]),
-      jitterMs: dco_decode_u_64(arr[3]),
-      packetLossPercent: dco_decode_f_32(arr[4]),
-      winnerTarget: dco_decode_String(arr[5]),
-      minLatencyMs: dco_decode_opt_box_autoadd_u_64(arr[6]),
-      maxLatencyMs: dco_decode_opt_box_autoadd_u_64(arr[7]),
+      latencyStats: dco_decode_latency_stats(arr[2]),
+      winnerTarget: dco_decode_String(arr[3]),
     );
   }
 
@@ -789,13 +802,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ResilienceConfig dco_decode_resilience_config(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return ResilienceConfig(
       strategy: dco_decode_check_strategy(arr[0]),
       circuitBreakerThreshold: dco_decode_u_8(arr[1]),
       numJitterSamples: dco_decode_u_8(arr[2]),
       jitterThresholdPercent: dco_decode_f_64(arr[3]),
+      stabilityThershold: dco_decode_u_8(arr[4]),
+      criticalPacketLossPrecent: dco_decode_f_32(arr[5]),
     );
   }
 
@@ -982,6 +997,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  LatencyStats sse_decode_latency_stats(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_latencyMs = sse_decode_u_64(deserializer);
+    var var_jitterMs = sse_decode_u_64(deserializer);
+    var var_packetLossPercent = sse_decode_f_32(deserializer);
+    var var_minLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_avgLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_maxLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_stabilityScore = sse_decode_u_8(deserializer);
+    return LatencyStats(
+        latencyMs: var_latencyMs,
+        jitterMs: var_jitterMs,
+        packetLossPercent: var_packetLossPercent,
+        minLatencyMs: var_minLatencyMs,
+        avgLatencyMs: var_avgLatencyMs,
+        maxLatencyMs: var_maxLatencyMs,
+        stabilityScore: var_stabilityScore);
+  }
+
+  @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -1107,21 +1142,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_isConnected = sse_decode_bool(deserializer);
     var var_quality = sse_decode_connection_quality(deserializer);
-    var var_latencyMs = sse_decode_u_64(deserializer);
-    var var_jitterMs = sse_decode_u_64(deserializer);
-    var var_packetLossPercent = sse_decode_f_32(deserializer);
+    var var_latencyStats = sse_decode_latency_stats(deserializer);
     var var_winnerTarget = sse_decode_String(deserializer);
-    var var_minLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
-    var var_maxLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
     return NetworkStatus(
         isConnected: var_isConnected,
         quality: var_quality,
-        latencyMs: var_latencyMs,
-        jitterMs: var_jitterMs,
-        packetLossPercent: var_packetLossPercent,
-        winnerTarget: var_winnerTarget,
-        minLatencyMs: var_minLatencyMs,
-        maxLatencyMs: var_maxLatencyMs);
+        latencyStats: var_latencyStats,
+        winnerTarget: var_winnerTarget);
   }
 
   @protected
@@ -1227,11 +1254,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_circuitBreakerThreshold = sse_decode_u_8(deserializer);
     var var_numJitterSamples = sse_decode_u_8(deserializer);
     var var_jitterThresholdPercent = sse_decode_f_64(deserializer);
+    var var_stabilityThershold = sse_decode_u_8(deserializer);
+    var var_criticalPacketLossPrecent = sse_decode_f_32(deserializer);
     return ResilienceConfig(
         strategy: var_strategy,
         circuitBreakerThreshold: var_circuitBreakerThreshold,
         numJitterSamples: var_numJitterSamples,
-        jitterThresholdPercent: var_jitterThresholdPercent);
+        jitterThresholdPercent: var_jitterThresholdPercent,
+        stabilityThershold: var_stabilityThershold,
+        criticalPacketLossPrecent: var_criticalPacketLossPrecent);
   }
 
   @protected
@@ -1412,6 +1443,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_latency_stats(LatencyStats self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.latencyMs, serializer);
+    sse_encode_u_64(self.jitterMs, serializer);
+    sse_encode_f_32(self.packetLossPercent, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.minLatencyMs, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.avgLatencyMs, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.maxLatencyMs, serializer);
+    sse_encode_u_8(self.stabilityScore, serializer);
+  }
+
+  @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
@@ -1510,12 +1553,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_bool(self.isConnected, serializer);
     sse_encode_connection_quality(self.quality, serializer);
-    sse_encode_u_64(self.latencyMs, serializer);
-    sse_encode_u_64(self.jitterMs, serializer);
-    sse_encode_f_32(self.packetLossPercent, serializer);
+    sse_encode_latency_stats(self.latencyStats, serializer);
     sse_encode_String(self.winnerTarget, serializer);
-    sse_encode_opt_box_autoadd_u_64(self.minLatencyMs, serializer);
-    sse_encode_opt_box_autoadd_u_64(self.maxLatencyMs, serializer);
   }
 
   @protected
@@ -1598,6 +1637,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_8(self.circuitBreakerThreshold, serializer);
     sse_encode_u_8(self.numJitterSamples, serializer);
     sse_encode_f_64(self.jitterThresholdPercent, serializer);
+    sse_encode_u_8(self.stabilityThershold, serializer);
+    sse_encode_f_32(self.criticalPacketLossPrecent, serializer);
   }
 
   @protected

@@ -29,7 +29,7 @@ enum ConnectionQuality {
   unstable,
 
   /// No connection.
-  dead,
+  offline,
   ;
 }
 
@@ -133,11 +133,19 @@ class ResilienceConfig {
   /// The percentage of mean latency that the standard deviation must exceed to be marked as 'Unstable'.
   final double jitterThresholdPercent;
 
+  /// if score is less than this value, the target is considered unstable for examples 70-80%
+  final int stabilityThershold;
+
+  /// The maximum percentage of packetloss that can not be ignored
+  final double criticalPacketLossPrecent;
+
   const ResilienceConfig({
     required this.strategy,
     required this.circuitBreakerThreshold,
     required this.numJitterSamples,
     required this.jitterThresholdPercent,
+    required this.stabilityThershold,
+    required this.criticalPacketLossPrecent,
   });
 
   static Future<ResilienceConfig> default_() =>
@@ -148,7 +156,9 @@ class ResilienceConfig {
       strategy.hashCode ^
       circuitBreakerThreshold.hashCode ^
       numJitterSamples.hashCode ^
-      jitterThresholdPercent.hashCode;
+      jitterThresholdPercent.hashCode ^
+      stabilityThershold.hashCode ^
+      criticalPacketLossPrecent.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -158,7 +168,9 @@ class ResilienceConfig {
           strategy == other.strategy &&
           circuitBreakerThreshold == other.circuitBreakerThreshold &&
           numJitterSamples == other.numJitterSamples &&
-          jitterThresholdPercent == other.jitterThresholdPercent;
+          jitterThresholdPercent == other.jitterThresholdPercent &&
+          stabilityThershold == other.stabilityThershold &&
+          criticalPacketLossPrecent == other.criticalPacketLossPrecent;
 }
 
 /// Configuration for security-related checks.

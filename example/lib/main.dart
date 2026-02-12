@@ -201,24 +201,30 @@ class _StatusCard extends StatelessWidget {
               ),
             ),
             ListTile(
+              title: const Text('Stability Score 0 - 100'),
+              trailing: Text('${status.latencyStats.stabilityScore}%'),
+            ),
+            ListTile(
               title: const Text('Latency'),
-              trailing: Text('${status.latencyMs} ms'),
+              trailing: Text('${status.latencyStats.latencyMs} ms'),
             ),
             ListTile(
               title: const Text('Max Latency'),
-              trailing: Text('${status.maxLatencyMs} ms'),
+              trailing: Text('${status.latencyStats.maxLatencyMs} ms'),
             ),
             ListTile(
               title: const Text('Min Latency'),
-              trailing: Text('${status.minLatencyMs} ms'),
+              trailing: Text('${status.latencyStats.minLatencyMs} ms'),
             ),
             ListTile(
               title: const Text('Jitter (Std Dev)'),
-              trailing: Text('${status.jitterMs} ms'),
+              trailing: Text('${status.latencyStats.jitterMs} ms'),
             ),
             ListTile(
               title: const Text('Packet Loss'),
-              trailing: Text('${status.packetLossPercent.toStringAsFixed(1)}%'),
+              trailing: Text(
+                '${status.latencyStats.packetLossPercent.toStringAsFixed(1)}%',
+              ),
             ),
 
             ListTile(
@@ -250,7 +256,7 @@ class _StatusCard extends StatelessWidget {
         return (Colors.red, Colors.red.shade900);
       case ConnectionQuality.unstable:
         return (Colors.purpleAccent, Colors.purple.shade900);
-      case ConnectionQuality.dead:
+      case ConnectionQuality.offline:
         return (Colors.grey, Colors.grey.shade800);
     }
   }

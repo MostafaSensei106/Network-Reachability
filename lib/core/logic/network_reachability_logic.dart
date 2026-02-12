@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:network_reachability/core/constants/enums.dart';
-import 'package:network_reachability/core/rust/frb_generated.dart';
 
 import '../err/exceptions.dart';
 import '../rust/api/engine.dart' as rust_engine;
