@@ -1,73 +1,129 @@
-# Flux-Net (formerly Network Reachability)
+<h1 align="center">Network-Reachability</h1>
+<p align="center">
+  <img src="https://socialify.git.ci/MostafaSensei106/Network-Reachability/image?font=KoHo&language=1&logo=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F138288138%3Fv%3D4&name=1&owner=1&pattern=Floating+Cogs&theme=Light" alt="Banner">
+</p>
 
-A powerful and robust network monitoring and reachability library for Flutter, backed by a high-performance Rust core. Designed for applications that require reliable, detailed, and secure network state awareness, such as banking and enterprise apps.
+<p align="center">
+  <strong>A powerful and robust network monitoring and reachability library for Flutter, backed by a high-performance Rust core.</strong><br>
+  Designed for applications that require reliable, detailed, and secure network state awareness.
+</p>
 
-This library provides a rich set of features including:
+<p align="center">
+  <a href="#-about">About</a> •
+  <a href="#-features">Features</a> •
+  <a href="#-installation">Installation</a> •
+  <a href="#-usage">Usage</a> •
+  <a href="#-api-reference">API Reference</a> •
+  <a href="#-contributing">Contributing</a> •
+  <a href="#-license">License</a>
+</p>
 
-- **Comprehensive Network Reports:** Get detailed information about connection quality, latency, jitter, and packet loss.
-- **Smart Guard Function:** Protect critical network operations by ensuring connection quality and security policies are met before execution.
-- **Circuit Breaker:** Automatically halt requests to unstable backends to prevent cascading failures.
-- **Advanced Security Probes:** Detect VPNs, DNS spoofing, and restrictive network interfaces.
-- **High-Level Dart API:** Enjoy a clean, easy-to-use Dart interface over a powerful Rust engine.
-- **Configurable & Extensible:** Fine-tune the engine's behavior with detailed configuration for targets, quality thresholds, and security policies.
+---
 
-## Getting Started
+## 📖 About
 
-Follow these steps to integrate Flux-Net into your Flutter project.
+Welcome to **Network-Reachability** — a powerful and robust network monitoring library for Flutter, backed by a high-performance Rust core. It is designed for applications that require reliable, detailed, and secure network state awareness, such as banking, enterprise, and real-time apps.
 
-### 1. Installation
+This library provides a rich set of features including comprehensive network reports, a smart `guard` function to protect critical operations, a built-in circuit breaker, and advanced security probes to create a resilient and secure networking layer for your application.
 
-First, you need to add the library to your `pubspec.yaml`.
+---
 
-_(Note: This library is not yet published on pub.dev. The following is a placeholder for when it is.)_
+## ✨ Features
 
-You will also need to set up `flutter_rust_bridge` according to its documentation to link the Rust core with your Flutter application.
+### Core Engine & Functionality
 
-### 2. Initialize the Library
+- **Comprehensive Network Reports**: Get a detailed `NetworkReport` with information on connection quality, latency, jitter, packet loss, and more.
+- **On-Demand & Periodic Checks**: Perform one-off checks with `check()` or listen to a `Stream` of network status changes with `onStatusChange`.
+- **Protected Network Calls**: Use the `guard()` method to wrap critical operations, ensuring they only run if network quality and security policies are met.
+- **Built-in Circuit Breaker**: Automatically halts requests to unstable backends after consecutive failures of essential targets, preventing cascading failures.
 
-Before using any of the library's features, you must initialize it. This should typically be done in your `main()` function, after ensuring the Flutter bindings are initialized and the Rust library is loaded.
+### 🛡️ Advanced Security & Probes
+
+- **Security Probes**: Actively detect common network security threats.
+  - **VPN Detection**: Identify if the user is on a VPN.
+  - **DNS Hijack Detection**: Compare system DNS with a trusted resolver to detect spoofing.
+  - **Captive Portal Detection**: Check if the device is behind a login wall.
+- **Interface Control**: Restrict application functionality to specific network interfaces (e.g., only `wlan0`) for enhanced security.
+- **Traceroute**: Inspect the full network path to a host to diagnose routing issues.
+
+### ⚙️ Configuration & Performance
+
+- **High-Performance Rust Core**: All intensive network computations are handled by a native Rust engine, ensuring minimal impact on your Flutter app's performance.
+- **Extensive Configuration**: Fine-tune the engine's behavior via `NetworkConfiguration`:
+  - Define custom `NetworkTarget` endpoints (TCP/UDP).
+  - Set custom `QualityThresholds` for connection quality levels (e.g., `excellent`, `good`, `poor`).
+  - Configure `ResilienceConfig` including the circuit breaker threshold, jitter analysis, and packet loss tolerance.
+  - Enforce `SecurityConfig` rules like blocking VPNs or detecting DNS hijacking.
+- **Asynchronous API**: All network operations are fully async, integrating seamlessly with Dart's `Future` and `Stream` APIs.
+
+---
+
+## 📦 Installation
+
+1.  Add `flutter_rust_bridge` and this library to your `pubspec.yaml` file:
+
+    ```yaml
+    dependencies:
+      # Coming soon to pub.dev!
+      # network_reachability: ^1.0.0
+
+    dev_dependencies:
+      flutter_rust_bridge: ^2.11.1 # Use the appropriate version
+    ```
+
+2.  Set up `flutter_rust_bridge` by following its [official documentation](https://cjycode.com/flutter_rust_bridge/index.html). This is required to generate the bindings that link the Rust core to your Flutter app.
+
+3.  Install the dependencies from your terminal:
+
+    ```bash
+    flutter pub get
+    ```
+
+---
+
+## 🚀 Usage
+
+Using Network-Reachability involves three main steps: initializing the library, performing checks, and protecting your network calls.
+
+### 1. Initialize the Library
+
+Before using any features, you must initialize both the Rust library bindings and Network-Reachability itself. This is best done in your `main()` function.
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:flux_net/network_reachability.dart';
-// Import your generated Rust library bindings
-import 'package:flux_net/core/rust/frb_generated.dart';
+import 'package:network_reachability/network_reachability.dart';
+
+// This path will correspond to your generated Rust bindings
+import 'package:network_reachability/core/rust/frb_generated.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1. Initialize the Rust library
-  // This is a prerequisite for Flux-Net
+  // 1. Initialize the Rust library (generated by flutter_rust_bridge)
   await RustLib.init();
 
-  // 2. Initialize Flux-Net
-  // You can initialize with a default or custom configuration
+  // 2. Initialize Network-Reachability with default or custom configuration
   await NetworkReachability.init();
 
   runApp(const MyApp());
 }
 ```
 
-### 3. Basic Usage
+### 2. Performing Checks
 
-Once initialized, you can access the `NetworkReachability` singleton instance anywhere in your app.
-
-#### Performing a One-off Check
+#### One-off Check
 
 To get a detailed, on-demand report of the current network status, use the `check()` method.
 
 ```dart
-import 'package:flux_net/network_reachability.dart';
-
 Future<void> printNetworkStatus() async {
   final report = await NetworkReachability.instance.check();
 
   if (report.status.isConnected) {
     print('Network is connected!');
     print('Quality: ${report.status.quality.name}');
-    print('Latency: ${report.status.latencyMs}ms');
-    print('Jitter: ${report.status.jitterMs}ms');
-    print('Packet Loss: ${report.status.packetLossPercent.toStringAsFixed(2)}%');
+    print('Latency: ${report.status.latencyStats.latencyMs}ms');
+    print('Jitter: ${report.status.latencyStats.jitterMs}ms');
   } else {
     print('Network is disconnected.');
   }
@@ -76,70 +132,78 @@ Future<void> printNetworkStatus() async {
 
 #### Listening for Status Changes
 
-Flux-Net can perform periodic checks and notify your app of any status changes through a `Stream`.
+Network-Reachability can perform periodic checks and notify your app of any status changes through the `onStatusChange` stream.
 
 ```dart
 void listenToNetworkChanges() {
   final subscription = NetworkReachability.instance.onStatusChange.listen((status) {
     print('Network status updated: ${status.quality.name}');
+    // Update your UI based on the new status
   });
 
   // Don't forget to cancel the subscription when you're done!
+  // e.g., in your widget's dispose() method.
   // subscription.cancel();
 }
 ```
 
-#### Protecting Network Calls with `guard()`
+### 3. Protecting Network Calls with `guard()`
 
-The `guard()` method is the library's most powerful feature. It ensures that a network operation only runs if the connection meets your quality and security requirements.
+The `guard()` method is the library's most powerful feature. It wraps your network-dependent code, runs a fresh check, and only executes your code if the connection meets the required quality and security standards.
 
 ```dart
 Future<void> fetchSensitiveData() async {
   try {
+    // Wrap your API call with the guard
     final data = await NetworkReachability.instance.guard(
-      // The action to perform if the checks pass
-      action: () => myApi.fetchData(),
-      // Optional: require a minimum connection quality
+      // The action to perform if checks pass
+      action: () => myApi.fetchImportantData(),
+      // Optional: require a minimum quality
       minQuality: ConnectionQuality.good,
     );
     print('Data fetched successfully: $data');
   } on PoorConnectionException catch (e) {
+    // Thrown if quality is below `minQuality`
     print('Could not fetch data due to a poor connection: $e');
   } on SecurityException catch (e) {
+    // Thrown if a security policy is violated (e.g., VPN detected)
     print('Action blocked due to a security risk: $e');
   } on CircuitBreakerOpenException catch (e) {
+    // Thrown if the circuit breaker is open due to backend instability
     print('Backend is unstable. Please try again later: $e');
   }
 }
 ```
 
-## Configuration
+### 4. Custom Configuration
 
 You can customize the engine's behavior by providing a `NetworkConfiguration` during initialization.
 
 ```dart
-import 'package:flux_net/core/rust/api/models.dart';
+import 'package:network_reachability/core/rust/api/models/config.dart';
 
 Future<void> initializeWithCustomConfig() async {
   // Fetch the default config to use as a base
   final config = await NetworkConfiguration.default_();
 
-  // Modify the configuration
-  final customConfig = config.copyWith(
+  // Create a custom configuration
+  final customConfig = NetworkConfiguration(
     // Check every 10 seconds instead of the default 5
-    checkIntervalMs: 10000,
+    checkIntervalMs: BigInt.from(10000),
     security: SecurityConfig(
       // Block the app from running on a VPN
       blockVpn: true,
       // Enable DNS hijack detection
       detectDnsHijack: true,
       // Only allow the app to run on specific Wi-Fi networks
-      allowedInterfaces: ['wlan0', 'wifi_eth'],
+      allowedInterfaces: ['wlan0', 'eth0'],
     ),
     resilience: config.resilience.copyWith(
-      // Open the circuit breaker after 2 consecutive failures
+      // Open the circuit breaker after 2 consecutive failures on essential targets
       circuitBreakerThreshold: 2,
     ),
+    targets: config.targets, // Keep default targets or define your own
+    qualityThreshold: config.qualityThreshold,
   );
 
   // Initialize with the custom configuration
@@ -147,4 +211,59 @@ Future<void> initializeWithCustomConfig() async {
 }
 ```
 
-This provides a robust foundation for building secure and reliable Flutter applications.
+---
+
+## 🔬 API Reference
+
+Network-Reachability exposes a rich set of models and functions. Here are some of the key components:
+
+### Main Class
+
+- `NetworkReachability`: The singleton instance to access all library features.
+  - `init()`: Initializes the engine.
+  - `check()`: Performs a one-off, comprehensive network check.
+  - `onStatusChange`: A `Stream<NetworkStatus>` for periodic updates.
+  - `guard()`: Protects a function execution with network validation.
+  - `dispose()`: Cleans up resources.
+
+### Core Data Models
+
+- `NetworkReport`: The complete output of a `check()`, containing `NetworkStatus`, `ConnectionType`, `SecurityFlags`, and a list of `TargetReport` for each endpoint.
+- `NetworkStatus`: A high-level summary including `isConnected`, `ConnectionQuality`, and `LatencyStats`.
+- `NetworkConfiguration`: The main configuration object to customize targets, quality thresholds, security, and resilience settings.
+- `ConnectionQuality`: An enum representing connection quality from `excellent` to `offline`.
+- `SecurityFlags`: A report on detected security issues like VPNs or DNS spoofing.
+
+### Exceptions
+
+- `PoorConnectionException`: Thrown by `guard()` if the connection quality is below the required minimum.
+- `SecurityException`: Thrown by `guard()` if a security policy is violated (e.g., VPN is disallowed but detected).
+- `CircuitBreakerOpenException`: Thrown by `guard()` if the circuit breaker is open due to repeated failures of essential targets.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here’s how to get started:
+
+1.  Fork the repository.
+2.  Create a new branch:
+    `git checkout -b feature/YourFeature`
+3.  Commit your changes:
+    `git commit -m "Add amazing feature"`
+4.  Push to your branch:
+    `git push origin feature/YourFeature`
+5.  Open a pull request.
+
+> 💡 Please open an issue first to discuss major feature ideas or architectural changes.
+
+---
+
+## 📜 License
+
+This project is licensed under the **GPL-3.0 License**.
+See the `LICENSE` file for full details.
+
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/MostafaSensei106">MostafaSensei106</a>
+</p>

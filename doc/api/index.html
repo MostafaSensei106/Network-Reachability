@@ -8,15 +8,15 @@
   <title>network_reachability - Dart API docs</title>
 
 
-  
+
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
-  
+
   <link rel="stylesheet" href="static-assets/github.css?v1">
   <link rel="stylesheet" href="static-assets/styles.css?v1">
   <link rel="icon" href="static-assets/favicon.png?v1">
-  
+
 </head>
 
 <body data-base-href="" data-using-base-href="false" class="light-theme">
@@ -41,9 +41,9 @@
 </header>
 <main>
   <div id="dartdoc-main-content" class="main-content">
-      
+
 <section class="desc markdown">
-  <h1 id="flux-net-formerly-network-reachability">Flux-Net (formerly Network Reachability)</h1>
+  <h1 id="Network-Reachability-formerly-network-reachability">Network-Reachability (formerly Network Reachability)</h1>
 <p>A powerful and robust network monitoring and reachability library for Flutter, backed by a high-performance Rust core. Designed for applications that require reliable, detailed, and secure network state awareness, such as banking and enterprise apps.</p>
 <p>This library provides a rich set of features including:</p>
 <ul>
@@ -55,7 +55,7 @@
 <li><strong>Configurable &amp; Extensible:</strong> Fine-tune the engine's behavior with detailed configuration for targets, quality thresholds, and security policies.</li>
 </ul>
 <h2 id="getting-started">Getting Started</h2>
-<p>Follow these steps to integrate Flux-Net into your Flutter project.</p>
+<p>Follow these steps to integrate Network-Reachability into your Flutter project.</p>
 <h3 id="1-installation">1. Installation</h3>
 <p>First, you need to add the library to your <code>pubspec.yaml</code>.</p>
 <p><em>(Note: This library is not yet published on pub.dev. The following is a placeholder for when it is.)</em></p>
@@ -74,10 +74,10 @@ Future&lt;void&gt; main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // 1. Initialize the Rust library
-  // This is a prerequisite for Flux-Net
+  // This is a prerequisite for Network-Reachability
   await RustLib.init();
 
-  // 2. Initialize Flux-Net
+  // 2. Initialize Network-Reachability
   // You can initialize with a default or custom configuration
   await NetworkReachability.init();
 
@@ -105,7 +105,7 @@ Future&lt;void&gt; printNetworkStatus() async {
 }
 </code></pre>
 <h4 id="listening-for-status-changes">Listening for Status Changes</h4>
-<p>Flux-Net can perform periodic checks and notify your app of any status changes through a <code>Stream</code>.</p>
+<p>Network-Reachability can perform periodic checks and notify your app of any status changes through a <code>Stream</code>.</p>
 <pre class="language-dart"><code class="language-dart">void listenToNetworkChanges() {
   final subscription = NetworkReachability.instance.onStatusChange.listen((status) {
     print('Network status updated: ${status.quality.name}');
@@ -173,126 +173,126 @@ Future&lt;void&gt; initializeWithCustomConfig() async {
           <h2>Libraries</h2>
         <dl>
           <dt id="enums">
-  <span class="name"><a href="core_constants_enums/">core/constants/enums</a></span> 
+  <span class="name"><a href="core_constants_enums/">core/constants/enums</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="exceptions">
-  <span class="name"><a href="core_err_exceptions/">core/err/exceptions</a></span> 
+  <span class="name"><a href="core_err_exceptions/">core/err/exceptions</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="network_reachability_logic">
-  <span class="name"><a href="core_logic_network_reachability_logic/">core/logic/network_reachability_logic</a></span> 
+  <span class="name"><a href="core_logic_network_reachability_logic/">core/logic/network_reachability_logic</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="quality">
-  <span class="name"><a href="core_rust_api_analysis_quality/">core/rust/api/analysis/quality</a></span> 
+  <span class="name"><a href="core_rust_api_analysis_quality/">core/rust/api/analysis/quality</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="engine">
-  <span class="name"><a href="core_rust_api_engine/">core/rust/api/engine</a></span> 
+  <span class="name"><a href="core_rust_api_engine/">core/rust/api/engine</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="config">
-  <span class="name"><a href="core_rust_api_models_config/">core/rust/api/models/config</a></span> 
+  <span class="name"><a href="core_rust_api_models_config/">core/rust/api/models/config</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="net_info">
-  <span class="name"><a href="core_rust_api_models_net_info/">core/rust/api/models/net_info</a></span> 
+  <span class="name"><a href="core_rust_api_models_net_info/">core/rust/api/models/net_info</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="report">
-  <span class="name"><a href="core_rust_api_models_report/">core/rust/api/models/report</a></span> 
+  <span class="name"><a href="core_rust_api_models_report/">core/rust/api/models/report</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="target">
-  <span class="name"><a href="core_rust_api_models_target/">core/rust/api/models/target</a></span> 
+  <span class="name"><a href="core_rust_api_models_target/">core/rust/api/models/target</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="captive_portal">
-  <span class="name"><a href="core_rust_api_probes_captive_portal/">core/rust/api/probes/captive_portal</a></span> 
+  <span class="name"><a href="core_rust_api_probes_captive_portal/">core/rust/api/probes/captive_portal</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="dns">
-  <span class="name"><a href="core_rust_api_probes_dns/">core/rust/api/probes/dns</a></span> 
+  <span class="name"><a href="core_rust_api_probes_dns/">core/rust/api/probes/dns</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="interface">
-  <span class="name"><a href="core_rust_api_probes_interface/">core/rust/api/probes/interface</a></span> 
+  <span class="name"><a href="core_rust_api_probes_interface/">core/rust/api/probes/interface</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="target">
-  <span class="name"><a href="core_rust_api_probes_target/">core/rust/api/probes/target</a></span> 
+  <span class="name"><a href="core_rust_api_probes_target/">core/rust/api/probes/target</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="traceroute">
-  <span class="name"><a href="core_rust_api_probes_traceroute/">core/rust/api/probes/traceroute</a></span> 
+  <span class="name"><a href="core_rust_api_probes_traceroute/">core/rust/api/probes/traceroute</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="frb_generated">
-  <span class="name"><a href="core_rust_frb_generated/">core/rust/frb_generated</a></span> 
+  <span class="name"><a href="core_rust_frb_generated/">core/rust/frb_generated</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="frb_generated.io">
-  <span class="name"><a href="core_rust_frb_generated.io/">core/rust/frb_generated.io</a></span> 
+  <span class="name"><a href="core_rust_frb_generated.io/">core/rust/frb_generated.io</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="frb_generated.web">
-  <span class="name"><a href="core_rust_frb_generated.web/">core/rust/frb_generated.web</a></span> 
+  <span class="name"><a href="core_rust_frb_generated.web/">core/rust/frb_generated.web</a></span>
 
 </dt>
 <dd>
 </dd>
 
           <dt id="network_reachability">
-  <span class="name"><a href="network_reachability/">network_reachability</a></span> 
+  <span class="name"><a href="network_reachability/">network_reachability</a></span>
 
 </dt>
 <dd>A comprehensive networking library for Dart and Flutter, built on a powerful Rust core.
@@ -344,7 +344,7 @@ Future&lt;void&gt; initializeWithCustomConfig() async {
     network_reachability
       1.0.0
   </span>
-  
+
 </footer>
 
 
