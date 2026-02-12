@@ -2,7 +2,7 @@ use ::chrono::Utc;
 use ::futures::future::join_all;
 
 use crate::api::{
-    analysis::{calculate_jitter_stats, evaluate_quality},
+    analysis::{calculate_jitter_stats, evaluate_quality, quality},
     models::{
         CheckStrategy, ConnectionQuality, LatencyStats, NetworkConfiguration, NetworkReport,
         NetworkStatus, SecurityFlags, TargetReport,
@@ -76,8 +76,9 @@ fn analyze_single_sample(reports: &[TargetReport], config: &NetworkConfiguration
 }
 
 fn compute_latency_stats(latencies: &[u64], total_expected_samples: u8) -> LatencyStats {
+    let successful_samples = latencies.len() as f32;
+
     let packet_loss_percent = if total_expected_samples > 0 {
-        let successful_samples = latencies.len() as f32;
         100.0 * (1.0 - (successful_samples / total_expected_samples as f32))
     } else {
         0.0
@@ -87,33 +88,80 @@ fn compute_latency_stats(latencies: &[u64], total_expected_samples: u8) -> Laten
 
     let final_latency = mean_lat.unwrap_or(0);
     let final_jitter = std_dev_lat.unwrap_or(0.0);
+    let mean_latency_f64 = final_latency as f64;
 
-    let latency_stability_score = (100.0 - (final_jitter * 2.0)).clamp(0.0, 100.0);
+    // ---------------------------------------------------------
+    //  1. Calculate Latency Stability based on Coefficient of Variation (CV)
+    // ---------------------------------------------------------
+    let latency_stability_score = if mean_latency_f64 > 0.0 {
+        // CV = Jitter / Mean
+        // If the jitter is high (0.25 or more), the stability score decreases
+        let cv = final_jitter / mean_latency_f64;
 
-    let jitter_stability_score = if latencies.len() > 1 {
-        let mut jitter_sum = 0.0;
-        for i in 1..latencies.len() {
-            jitter_sum += (latencies[i] as f64 - latencies[i - 1] as f64).abs();
-        }
-
-        let jitter_avg = jitter_sum / (latencies.len() - 1) as f64;
-
-        (100.0 - (jitter_avg * 3.0)).clamp(0.0, 100.0)
+        // Formula: 100 * (1 - (CV * 3.0))
+        // If the CV is high, the stability score will be low
+        // If the CV is low, the stability score will be high
+        (100.0 * (1.0 - (cv * 3.0))).clamp(0.0, 100.0)
     } else {
+        // If there is no jitter, the stability score will be 100
+        // If there is packet loss, the stability score will be 0
         if packet_loss_percent > 0.0 {
-            50.0
+            0.0
         } else {
             100.0
         }
     };
+    // ---------------------------------------------------------
+    //  2. Calculate Sequential Jitter (SJ)
+    // ---------------------------------------------------------
+    let jitter_stability_score = if latencies.len() > 1 && mean_latency_f64 > 0.0 {
+        let mut jitter_sum = 0.0;
+        for i in 1..latencies.len() {
+            jitter_sum += (latencies[i] as f64 - latencies[i - 1] as f64).abs();
+        }
+        let avg_seq_jitter = jitter_sum / (latencies.len() - 1) as f64;
 
-    let loss_score = (100.0 - (packet_loss_percent as f64 * 2.0)).clamp(0.0, 100.0);
+        // Normalize the Sequential Jitter by the mean latency
+        let relative_seq_jitter = avg_seq_jitter / mean_latency_f64;
 
-    // Latency Variation (40%) + Sequential Jitter (30%) + Packet Loss (30%)
-    let weighted_score =
-        (latency_stability_score * 0.4) + (jitter_stability_score * 0.3) + (loss_score * 0.3);
+        // Scale the relative Sequential Jitter to a score between 0 and 100
+        (100.0 * (1.0 - (relative_seq_jitter * 4.0))).clamp(0.0, 100.0)
+    } else {
+        100.0
+    };
 
     // ---------------------------------------------------------
+    //  3. Calculate Loss Score
+    // ---------------------------------------------------------
+    // Any loss above 5% will penalize the score
+    // The loss score will be 50% if the loss is 5%
+    let loss_score = if packet_loss_percent > 0.0 {
+        (100.0 - (packet_loss_percent as f64 * 10.0)).clamp(0.0, 100.0)
+    } else {
+        100.0
+    };
+
+    // ---------------------------------------------------------
+    //  4. Calculate Spike Penalty
+    // ---------------------------------------------------------
+    // If the maximum latency is more than twice the mean latency, apply a spike penalty
+    let spike_score = if let (Some(max), true) = (max_lat, mean_latency_f64 > 0.0) {
+        let ratio = max as f64 / mean_latency_f64;
+        if ratio > 2.0 {
+            // If the spike is more than twice the mean latency, penalize by 20 degrees
+            80.0
+        } else {
+            100.0
+        }
+    } else {
+        100.0
+    };
+
+    // Combine the scores using a weighted average
+    let weighted_score = (latency_stability_score * 0.35)
+        + (jitter_stability_score * 0.25)
+        + (loss_score * 0.30)
+        + (spike_score * 0.10); // 10% is reserved for spike penalties only
 
     LatencyStats {
         latency_ms: final_latency,
@@ -135,17 +183,21 @@ fn evaluate_network_quality(
         return ConnectionQuality::Offline;
     }
 
-    let quality = evaluate_quality(stats.latency_ms, &config.quality_threshold);
-
-    if stats.stability_score < config.resilience.stability_thershold {
-        return ConnectionQuality::Unstable;
-    }
+    let quality_based_on_speed = evaluate_quality(stats.latency_ms, &config.quality_threshold);
 
     if stats.packet_loss_percent > config.resilience.critical_packet_loss_precent {
         return ConnectionQuality::Unstable;
     }
 
-    return quality;
+    if stats.stability_score < config.resilience.stability_thershold {
+        return ConnectionQuality::Unstable;
+    }
+
+    if quality_based_on_speed == ConnectionQuality::Excellent && stats.stability_score < 85 {
+        return ConnectionQuality::Good;
+    }
+
+    return quality_based_on_speed;
 }
 
 async fn perform_dns_security_check(config: &NetworkConfiguration, flags: &mut SecurityFlags) {

@@ -25,6 +25,7 @@ impl AppConstants {
     pub const DEFAULT_STABILITY_THRESHOLD: u8 = 70;
     /// 70%
 
-    pub const DEFAULT_CRITICAL_PACKET_LOSS: f32 = 15.0;
+    pub const DEFAULT_CRITICAL_PACKET_LOSS_PRECENT: f32 = 5.0;
+
     pub const DEFAULT_MAX_TRACEROUTE_HOPS: u8 = 30;
 }

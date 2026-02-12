@@ -14,7 +14,7 @@ pub fn detect_security_and_network_type() -> (SecurityFlags, ConnectionType) {
         (&["tun", "tap", "ppp", "vpn"], ConnectionType::Vpn),
         (&["wlan", "wifi"], ConnectionType::Wifi),
         (&["eth", "en"], ConnectionType::Ethernet),
-        (&["rmnet", "wwan"], ConnectionType::Cellular), // 'wwan' is common on linux
+        (&["rmnet", "wwan"], ConnectionType::Cellular),
     ];
 
     // Find the active, non-loopback interface

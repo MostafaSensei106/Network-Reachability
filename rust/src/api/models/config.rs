@@ -79,7 +79,7 @@ impl Default for ResilienceConfig {
             num_jitter_samples: AppConstants::DEFAULT_JITTER_SAMPLES,
             jitter_threshold_percent: AppConstants::DEFAULT_JITTER_THRESHOLD_PERCENT,
             stability_thershold: AppConstants::DEFAULT_STABILITY_THRESHOLD,
-            critical_packet_loss_precent: 0.0,
+            critical_packet_loss_precent: AppConstants::DEFAULT_CRITICAL_PACKET_LOSS_PRECENT,
         }
     }
 }
