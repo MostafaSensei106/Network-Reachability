@@ -34,8 +34,6 @@ class LatencyStats {
   /// factoring in jitter, packet loss, and latency spikes.
   final int stabilityScore;
 
-  /// A collection of statistical metrics for a series of latency samples.
-
   const LatencyStats({
     required this.latencyMs,
     required this.jitterMs,
@@ -87,8 +85,6 @@ class NetworkReport {
   /// A list of detailed reports for each individual target that was checked.
   final List<TargetReport> targetReports;
 
-  /// The top-level report containing all information from a comprehensive network check.
-
   const NetworkReport({
     required this.timestampMs,
     required this.status,
@@ -131,8 +127,6 @@ class NetworkStatus {
   /// The label of the target that responded fastest in the final sample.
   final String winnerTarget;
 
-  /// The label of the target that responded fastest in the final sample.
-
   const NetworkStatus({
     required this.isConnected,
     required this.quality,
@@ -174,8 +168,6 @@ class TargetReport {
 
   /// Whether this target is considered essential for the overall check.
   final bool isEssential;
-
-  /// The result of a check against a single network target.
 
   const TargetReport({
     required this.label,

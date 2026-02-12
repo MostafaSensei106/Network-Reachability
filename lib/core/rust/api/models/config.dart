@@ -64,8 +64,6 @@ class NetworkConfiguration {
   /// Resilience and performance tuning settings.
   final ResilienceConfig resilience;
 
-  ///The main configuration for the network reachability engine.
-
   const NetworkConfiguration({
     required this.targets,
     required this.checkIntervalMs,
@@ -115,8 +113,6 @@ class QualityThresholds {
   /// Latency at or below this value is 'Poor'. Anything higher is 'Unstable'.
   final BigInt poor;
 
-  /// Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
-
   const QualityThresholds({
     required this.excellent,
     required this.great,
@@ -125,7 +121,6 @@ class QualityThresholds {
     required this.poor,
   });
 
-  /// Creates a default configuration with checks against Cloudflare and Google DNS.
   static Future<QualityThresholds> default_() =>
       RustLib.instance.api.crateApiModelsConfigQualityThresholdsDefault();
 
@@ -166,14 +161,11 @@ class ResilienceConfig {
   /// to be considered high jitter, potentially downgrading quality.
   final double jitterThresholdPercent;
 
-  /// If the calculated stability score is less than this value, the quality
-  /// may be downgraded.
+  /// If the calculated stability score is less than this value, the quality considered 'Unstable'.
   final int stabilityThershold;
 
   /// The packet loss percentage above which the connection is marked as 'Unstable'.
   final double criticalPacketLossPrecent;
-
-  /// Configuration for resilience and performance tuning.
 
   const ResilienceConfig({
     required this.strategy,
@@ -183,8 +175,6 @@ class ResilienceConfig {
     required this.stabilityThershold,
     required this.criticalPacketLossPrecent,
   });
-
-  /// Creates a default configuration with checks against Cloudflare and Google DNS.
 
   static Future<ResilienceConfig> default_() =>
       RustLib.instance.api.crateApiModelsConfigResilienceConfigDefault();
@@ -225,15 +215,12 @@ class SecurityConfig {
   /// does not match one of the prefixes.
   final List<String> allowedInterfaces;
 
-  /// Configuration for security-related checks.
-
   const SecurityConfig({
     required this.blockVpn,
     required this.detectDnsHijack,
     required this.allowedInterfaces,
   });
 
-  /// Creates a default configuration with checks against Cloudflare and Google DNS.
   static Future<SecurityConfig> default_() =>
       RustLib.instance.api.crateApiModelsConfigSecurityConfigDefault();
 

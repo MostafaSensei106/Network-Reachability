@@ -26,7 +26,7 @@ Most network libraries tell you if you're `connected` or `disconnected`. In the 
 
 **Network-Reachability answers the questions that truly matter for building robust applications:**
 
-- **Is the connection good enough?** Instead of a simple boolean, you get a detailed `ConnectionQuality` report (`excellent`, `good`, `poor`, `unstable`), including concrete metrics like **latency**, **jitter**, and **packet loss**. This allows you to tailor the user experience—for example, by disabling video streaming on a `poor` connection.
+- **Is the connection good enough?** Instead of a simple boolean, you get a detailed `ConnectionQuality` report (`Excellent`,`Great`, `Good`, `Poor`, `Unstable`,`Offline`), including concrete metrics like **latency**, **jitter**, and **packet loss**. This allows you to tailor the user experience—for example, by disabling video streaming on a `Poor` connection.
 - **Is the backend reachable and stable?** This library doesn't just check for a generic internet connection. It probes your actual server endpoints (`NetworkTarget`). If your backend is down, the app will know.
 - **Is the network secure?** For sensitive applications (banking, enterprise), knowing the network environment is critical. This library actively detects security risks like **VPNs**, **DNS hijacking**, and **proxies**, allowing you to block operations on untrusted networks.
 - **How should my app behave during network issues?** With a built-in **Circuit Breaker**, the library can automatically stop your app from hammering a failing backend service, preventing cascading failures and providing a better user experience until the service recovers.
@@ -89,6 +89,19 @@ The `guard()` method is an intelligent sequence of validations that wrap your ac
 This robust, multi-step validation process is what makes `guard()` so powerful.
 
 ---
+
+## Installation
+
+first, you need to install [Rust Programming Language](https://www.rust-lang.org) on your system.
+
+Next, add `network_reachability` to your `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  network_reachability: ^1.0.0 # Replace with the latest version
+```
+
+Then, run `flutter pub get` to fetch the package.
 
 ## 🚀 Basic Usage
 
