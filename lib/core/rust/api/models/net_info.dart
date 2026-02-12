@@ -6,7 +6,7 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`
 
 class CaptivePortalStatus {
   final bool isCaptivePortal;
@@ -37,31 +37,6 @@ enum ConnectionType {
   bluetooth,
   unknown,
   ;
-}
-
-class LocalDevice {
-  final String ipAddress;
-  final String? hostname;
-  final String? macAddress;
-
-  const LocalDevice({
-    required this.ipAddress,
-    this.hostname,
-    this.macAddress,
-  });
-
-  @override
-  int get hashCode =>
-      ipAddress.hashCode ^ hostname.hashCode ^ macAddress.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is LocalDevice &&
-          runtimeType == other.runtimeType &&
-          ipAddress == other.ipAddress &&
-          hostname == other.hostname &&
-          macAddress == other.macAddress;
 }
 
 /// Comprehensive security report for the current network connection.

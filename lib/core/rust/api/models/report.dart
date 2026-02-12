@@ -133,14 +133,14 @@ class NetworkStatus {
 class TargetReport {
   final String label;
   final bool success;
-  final BigInt? latencyMs;
+  final BigInt latencyMs;
   final String? error;
   final bool isEssential;
 
   const TargetReport({
     required this.label,
     required this.success,
-    this.latencyMs,
+    required this.latencyMs,
     this.error,
     required this.isEssential,
   });

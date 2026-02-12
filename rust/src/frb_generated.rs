@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1288652273;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1933904176;
 
 // Section: executor
 
@@ -412,51 +412,6 @@ fn wire__crate__api__models__config__resilience_config_default_impl(
         },
     )
 }
-fn wire__crate__api__probes__local_scan__scan_local_network_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "scan_local_network",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_subnet = <String>::sse_decode(&mut deserializer);
-            let api_scan_port = <u16>::sse_decode(&mut deserializer);
-            let api_timeout_ms = <u64>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, ()>(
-                    (move || async move {
-                        let output_ok = Result::<_, ()>::Ok(
-                            crate::api::probes::local_scan::scan_local_network(
-                                api_subnet,
-                                api_scan_port,
-                                api_timeout_ms,
-                            )
-                            .await,
-                        )?;
-                        Ok(output_ok)
-                    })()
-                    .await,
-                )
-            }
-        },
-    )
-}
 fn wire__crate__api__models__config__security_config_default_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -699,20 +654,6 @@ impl SseDecode for Vec<String> {
     }
 }
 
-impl SseDecode for Vec<crate::api::models::net_info::LocalDevice> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut len_ = <i32>::sse_decode(deserializer);
-        let mut ans_ = vec![];
-        for idx_ in 0..len_ {
-            ans_.push(<crate::api::models::net_info::LocalDevice>::sse_decode(
-                deserializer,
-            ));
-        }
-        return ans_;
-    }
-}
-
 impl SseDecode for Vec<crate::api::models::target::NetworkTarget> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -776,20 +717,6 @@ impl SseDecode for Vec<crate::api::models::net_info::TraceHop> {
             ));
         }
         return ans_;
-    }
-}
-
-impl SseDecode for crate::api::models::net_info::LocalDevice {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_ipAddress = <String>::sse_decode(deserializer);
-        let mut var_hostname = <Option<String>>::sse_decode(deserializer);
-        let mut var_macAddress = <Option<String>>::sse_decode(deserializer);
-        return crate::api::models::net_info::LocalDevice {
-            ip_address: var_ipAddress,
-            hostname: var_hostname,
-            mac_address: var_macAddress,
-        };
     }
 }
 
@@ -1023,7 +950,7 @@ impl SseDecode for crate::api::models::report::TargetReport {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_label = <String>::sse_decode(deserializer);
         let mut var_success = <bool>::sse_decode(deserializer);
-        let mut var_latencyMs = <Option<u64>>::sse_decode(deserializer);
+        let mut var_latencyMs = <u64>::sse_decode(deserializer);
         let mut var_error = <Option<String>>::sse_decode(deserializer);
         let mut var_isEssential = <bool>::sse_decode(deserializer);
         return crate::api::models::report::TargetReport {
@@ -1137,25 +1064,19 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        11 => wire__crate__api__probes__local_scan__scan_local_network_impl(
+        11 => wire__crate__api__models__config__security_config_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__api__models__config__security_config_default_impl(
+        12 => wire__crate__api__models__net_info__security_flags_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        13 => wire__crate__api__models__net_info__security_flags_default_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        14 => wire__crate__api__probes__traceroute__trace_route_impl(
+        13 => wire__crate__api__probes__traceroute__trace_route_impl(
             port,
             ptr,
             rust_vec_len,
@@ -1295,28 +1216,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::report::LatencyStats>
     for crate::api::models::report::LatencyStats
 {
     fn into_into_dart(self) -> crate::api::models::report::LatencyStats {
-        self
-    }
-}
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::models::net_info::LocalDevice {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [
-            self.ip_address.into_into_dart().into_dart(),
-            self.hostname.into_into_dart().into_dart(),
-            self.mac_address.into_into_dart().into_dart(),
-        ]
-        .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::models::net_info::LocalDevice
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<crate::api::models::net_info::LocalDevice>
-    for crate::api::models::net_info::LocalDevice
-{
-    fn into_into_dart(self) -> crate::api::models::net_info::LocalDevice {
         self
     }
 }
@@ -1705,16 +1604,6 @@ impl SseEncode for Vec<String> {
     }
 }
 
-impl SseEncode for Vec<crate::api::models::net_info::LocalDevice> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(self.len() as _, serializer);
-        for item in self {
-            <crate::api::models::net_info::LocalDevice>::sse_encode(item, serializer);
-        }
-    }
-}
-
 impl SseEncode for Vec<crate::api::models::target::NetworkTarget> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1762,15 +1651,6 @@ impl SseEncode for Vec<crate::api::models::net_info::TraceHop> {
         for item in self {
             <crate::api::models::net_info::TraceHop>::sse_encode(item, serializer);
         }
-    }
-}
-
-impl SseEncode for crate::api::models::net_info::LocalDevice {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <String>::sse_encode(self.ip_address, serializer);
-        <Option<String>>::sse_encode(self.hostname, serializer);
-        <Option<String>>::sse_encode(self.mac_address, serializer);
     }
 }
 
@@ -1944,7 +1824,7 @@ impl SseEncode for crate::api::models::report::TargetReport {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.label, serializer);
         <bool>::sse_encode(self.success, serializer);
-        <Option<u64>>::sse_encode(self.latency_ms, serializer);
+        <u64>::sse_encode(self.latency_ms, serializer);
         <Option<String>>::sse_encode(self.error, serializer);
         <bool>::sse_encode(self.is_essential, serializer);
     }

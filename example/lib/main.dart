@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Netwrok Reachability Demo',
+      title: 'Network Reachability Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.deepPurple,
@@ -41,10 +41,16 @@ class NetworkDemoPage extends StatefulWidget {
 }
 
 class _NetworkDemoPageState extends State<NetworkDemoPage> {
+  // State for core report
   NetworkReport? _report;
   StreamSubscription? _statusSubscription;
   bool _isLoading = true;
   String _guardResult = 'Press "Guarded Action" to test.';
+
+  // State for probe tools
+  bool _isProbeLoading = false;
+  String? _probeError;
+  dynamic _probeResult;
 
   @override
   void initState() {
@@ -88,6 +94,9 @@ class _NetworkDemoPageState extends State<NetworkDemoPage> {
       // The guard will throw an exception if requirements are not met.
       final result = await NetworkReachability.instance.guard(
         action: () async {
+          await Future.delayed(
+            const Duration(seconds: 1),
+          ); // Simulate network call
           return "Data fetched successfully at ${DateTime.now().toIso8601String()}";
         },
         minQuality: ConnectionQuality.moderate,
@@ -106,14 +115,38 @@ class _NetworkDemoPageState extends State<NetworkDemoPage> {
     }
   }
 
+  Future<void> _runProbe(Future<dynamic> Function() probeFn) async {
+    if (_isProbeLoading) return;
+    setState(() {
+      _isProbeLoading = true;
+      _probeResult = null;
+      _probeError = null;
+    });
+    try {
+      final result = await probeFn();
+      setState(() {
+        _probeResult = result;
+      });
+    } catch (e) {
+      setState(() {
+        _probeError = e.toString();
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProbeLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Netwrok Reachability Demo'),
-
+        title: const Text('Network Reachability Demo'),
         actions: [
-          if (_isLoading)
+          if (_isLoading || _isProbeLoading)
             const Padding(
               padding: EdgeInsets.only(right: 16.0),
               child: SizedBox(
@@ -142,6 +175,47 @@ class _NetworkDemoPageState extends State<NetworkDemoPage> {
                 onPressed: _performGuardedAction,
               ),
               const SizedBox(height: 12),
+              _ProbesCard(
+                isLoading: _isProbeLoading,
+                result: _probeResult,
+                error: _probeError,
+                onCheckCaptivePortal: () => _runProbe(
+                  () => NetworkReachability.instance.checkForCaptivePortal(
+                    timeoutMs: BigInt.from(8000),
+                  ),
+                ),
+                onDetectDns: () => _runProbe(
+                  () => NetworkReachability.instance.detectDnsHijacking(
+                    domain: 'google.com',
+                  ),
+                ),
+                onDetectSecurity: () => _runProbe(
+                  () => NetworkReachability.instance
+                      .detectSecurityAndNetworkType(),
+                ),
+                onCheckTarget: () => _runProbe(() {
+                  final target = NetworkTarget(
+                    label: 'google-dns-single',
+                    host: '8.8.8.8',
+                    port: 53,
+                    protocol: TargetProtocol.udp,
+                    timeoutMs: BigInt.from(2000),
+                    priority: 1,
+                    isEssential: false,
+                  );
+                  return NetworkReachability.instance.checkTarget(
+                    target: target,
+                  );
+                }),
+                onTraceRoute: () => _runProbe(
+                  () => NetworkReachability.instance.traceRoute(
+                    host: 'google.com',
+                    maxHops: 20,
+                    timeoutPerHopMs: BigInt.from(1000),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
               _TargetReportsCard(reports: _report!.targetReports),
             ] else if (_isLoading)
               const Center(child: Text("Performing initial network check..."))
@@ -149,6 +223,7 @@ class _NetworkDemoPageState extends State<NetworkDemoPage> {
               const Center(
                 child: Text("Failed to get initial network report."),
               ),
+            const SizedBox(height: 80),
           ],
         ),
       ),
@@ -201,23 +276,15 @@ class _StatusCard extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: const Text('Stability Score 0 - 100'),
+              title: const Text('Stability Score (0-100)'),
               trailing: Text('${status.latencyStats.stabilityScore}%'),
             ),
             ListTile(
-              title: const Text('Latency'),
-              trailing: Text('${status.latencyStats.latencyMs} ms'),
+              title: const Text('Avg Latency'),
+              trailing: Text('${status.latencyStats.avgLatencyMs ?? 'N/A'} ms'),
             ),
             ListTile(
-              title: const Text('Max Latency'),
-              trailing: Text('${status.latencyStats.maxLatencyMs} ms'),
-            ),
-            ListTile(
-              title: const Text('Min Latency'),
-              trailing: Text('${status.latencyStats.minLatencyMs} ms'),
-            ),
-            ListTile(
-              title: const Text('Jitter (Std Dev)'),
+              title: const Text('Jitter'),
               trailing: Text('${status.latencyStats.jitterMs} ms'),
             ),
             ListTile(
@@ -226,7 +293,6 @@ class _StatusCard extends StatelessWidget {
                 '${status.latencyStats.packetLossPercent.toStringAsFixed(1)}%',
               ),
             ),
-
             ListTile(
               title: const Text('Winning Target'),
               trailing: Text(
@@ -344,6 +410,134 @@ class _GuardActionCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _ProbesCard extends StatelessWidget {
+  final bool isLoading;
+  final dynamic result;
+  final String? error;
+  final VoidCallback onCheckCaptivePortal;
+  final VoidCallback onDetectDns;
+  final VoidCallback onDetectSecurity;
+  final VoidCallback onCheckTarget;
+  final VoidCallback onTraceRoute;
+
+  const _ProbesCard({
+    required this.isLoading,
+    this.result,
+    this.error,
+    required this.onCheckCaptivePortal,
+    required this.onDetectDns,
+    required this.onDetectSecurity,
+    required this.onCheckTarget,
+    required this.onTraceRoute,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Probe Tools', style: textTheme.titleLarge),
+            const SizedBox(height: 8),
+            if (isLoading) const LinearProgressIndicator(),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ElevatedButton(
+                  onPressed: isLoading ? null : onCheckCaptivePortal,
+                  child: const Text('Captive Portal'),
+                ),
+                ElevatedButton(
+                  onPressed: isLoading ? null : onDetectDns,
+                  child: const Text('DNS Hijack'),
+                ),
+                ElevatedButton(
+                  onPressed: isLoading ? null : onDetectSecurity,
+                  child: const Text('Security Info'),
+                ),
+                ElevatedButton(
+                  onPressed: isLoading ? null : onCheckTarget,
+                  child: const Text('Check Target'),
+                ),
+                ElevatedButton(
+                  onPressed: isLoading ? null : onTraceRoute,
+                  child: const Text('Traceroute'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            if (error != null)
+              _buildResultTile(
+                'Error',
+                Text(error!, style: const TextStyle(color: Colors.red)),
+              ),
+            if (result != null) _buildResultView(result, context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResultView(dynamic res, BuildContext context) {
+    if (res is CaptivePortalStatus) {
+      return _buildResultTile(
+        'Captive Portal',
+        Text('Detected: ${res.isCaptivePortal}\nURL: ${res.redirectUrl}'),
+      );
+    }
+    if (res is bool) {
+      return _buildResultTile('DNS Hijack', Text('Detected: $res'));
+    }
+    if (res is (SecurityFlags, ConnectionType)) {
+      return Column(
+        children: [
+          _buildResultTile('Connection Type', Text(res.$2.name)),
+          _buildResultTile('Interface Name', Text(res.$1.interfaceName)),
+          _buildResultTile('VPN Detected', Text('${res.$1.isVpnDetected}')),
+        ],
+      );
+    }
+
+    if (res is TargetReport) {
+      return _buildResultTile(
+        'Target Report (${res.label})',
+        Text(
+          'Success: ${res.success}\nLatency: ${res.latencyMs} ms\nError: ${res.error ?? 'None'}',
+        ),
+      );
+    }
+    if (res is List<TraceHop>) {
+      return _buildResultTile(
+        'Traceroute',
+        SizedBox(
+          height: 150,
+          child: ListView(
+            shrinkWrap: true,
+            children: res
+                .map(
+                  (h) => Text(
+                    '${h.hopNumber}. ${h.ipAddress} (${h.hostname ?? '...'}) - ${h.latencyMs} ms',
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildResultTile(String title, Widget trailing) {
+    return ListTile(title: Text(title), subtitle: trailing, dense: true);
   }
 }
 

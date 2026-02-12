@@ -19,4 +19,4 @@ pub use models::{
 };
 
 // Optional, for advanced use
-pub use probes::{check_for_captive_portal, scan_local_network, trace_route};
+pub use probes::{check_for_captive_portal, trace_route};

@@ -5,7 +5,7 @@ use super::net_info::{ConnectionType, SecurityFlags};
 pub struct TargetReport {
     pub label: String,
     pub success: bool,
-    pub latency_ms: Option<u64>,
+    pub latency_ms: u64,
     pub error: Option<String>,
     pub is_essential: bool,
 }
@@ -28,12 +28,6 @@ pub struct NetworkStatus {
     pub quality: ConnectionQuality,
     pub latency_stats: LatencyStats,
     pub winner_target: String,
-    // pub latency_ms: u64,
-    // pub jitter_ms: u64,
-    // pub packet_loss_percent: f32,
-    // pub winner_target: String,
-    // pub min_latency_ms: Option<u64>,
-    // pub max_latency_ms: Option<u64>,
 }
 
 /// The top-level report containing all information about a network check.

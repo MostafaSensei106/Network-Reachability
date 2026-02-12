@@ -374,6 +374,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "dns-lookup"
+version = "3.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6e39034cee21a2f5bbb66ba0e3689819c4bb5d00382a282006e802a7ffa6c41d"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "socket2 0.6.2",
+ "windows-sys 0.60.2",
+]
+
+[[package]]
 name = "dunce"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1497,6 +1509,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
+ "dns-lookup",
  "flutter_rust_bridge",
  "futures",
  "ipnet",

@@ -1,5 +1,3 @@
-use flutter_rust_bridge::frb;
-
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ConnectionType {
     Wifi,
@@ -14,14 +12,6 @@ pub enum ConnectionType {
 pub struct CaptivePortalStatus {
     pub is_captive_portal: bool,
     pub redirect_url: Option<String>,
-}
-
-#[frb(non_opaque)]
-#[derive(Debug, Clone)]
-pub struct LocalDevice {
-    pub ip_address: String,
-    pub hostname: Option<String>,
-    pub mac_address: Option<String>,
 }
 
 #[derive(Debug, Clone)]

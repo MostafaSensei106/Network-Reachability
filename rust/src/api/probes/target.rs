@@ -61,7 +61,7 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
             TargetReport {
                 label: target.label.clone(),
                 success: true,
-                latency_ms: Some(latency),
+                latency_ms: latency,
                 error: None,
                 is_essential: target.is_essential,
             }
@@ -71,7 +71,7 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
             TargetReport {
                 label: target.label.clone(),
                 success: false,
-                latency_ms: None,
+                latency_ms: 0,
                 error: Some(e.to_string()),
                 is_essential: target.is_essential,
             }
@@ -81,7 +81,7 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
             TargetReport {
                 label: target.label.clone(),
                 success: false,
-                latency_ms: None,
+                latency_ms: 9999999,
                 error: Some(NetworkError::TimeoutError.to_string()),
                 is_essential: target.is_essential,
             }

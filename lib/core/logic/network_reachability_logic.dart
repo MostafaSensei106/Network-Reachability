@@ -5,7 +5,14 @@ import 'package:network_reachability/core/constants/enums.dart';
 import '../err/exceptions.dart';
 import '../rust/api/engine.dart' as rust_engine;
 import '../rust/api/models/config.dart';
+import '../rust/api/models/net_info.dart';
 import '../rust/api/models/report.dart';
+import '../rust/api/models/target.dart';
+import '../rust/api/probes/captive_portal.dart' as captive_portal_probe;
+import '../rust/api/probes/dns.dart' as dns_probe;
+import '../rust/api/probes/interface.dart' as interface_probe;
+import '../rust/api/probes/target.dart' as target_probe;
+import '../rust/api/probes/traceroute.dart' as traceroute_probe;
 
 /// The main class for interacting with the network reachability engine.
 ///
@@ -185,6 +192,31 @@ class NetworkReachability {
     // 5. If all checks pass, execute the action
     return await action();
   }
+
+  /// Checks for the presence of a captive portal.
+  Future<CaptivePortalStatus> checkForCaptivePortal(
+          {required BigInt timeoutMs}) =>
+      captive_portal_probe.checkForCaptivePortal(timeoutMs: timeoutMs);
+
+  /// Detects potential DNS hijacking.
+  Future<bool> detectDnsHijacking({required String domain}) =>
+      dns_probe.detectDnsHijacking(domain: domain);
+
+  /// Detects security flags and network connection type.
+  Future<(SecurityFlags, ConnectionType)> detectSecurityAndNetworkType() =>
+      interface_probe.detectSecurityAndNetworkType();
+
+  /// Performs a network check against a single target.
+  Future<TargetReport> checkTarget({required NetworkTarget target}) =>
+      target_probe.checkTarget(target: target);
+
+  /// Traces the route to a host.
+  Future<List<TraceHop>> traceRoute(
+          {required String host,
+          required int maxHops,
+          required BigInt timeoutPerHopMs}) =>
+      traceroute_probe.traceRoute(
+          host: host, maxHops: maxHops, timeoutPerHopMs: timeoutPerHopMs);
 
   /// Starts the periodic checks based on the configured interval.
   void _startPeriodicChecks() {

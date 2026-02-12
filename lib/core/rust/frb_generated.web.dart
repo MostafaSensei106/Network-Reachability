@@ -15,7 +15,6 @@ import 'api/models/target.dart';
 import 'api/probes/captive_portal.dart';
 import 'api/probes/dns.dart';
 import 'api/probes/interface.dart';
-import 'api/probes/local_scan.dart';
 import 'api/probes/target.dart';
 import 'api/probes/traceroute.dart';
 import 'dart:async';
@@ -81,9 +80,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String> dco_decode_list_String(dynamic raw);
 
   @protected
-  List<LocalDevice> dco_decode_list_local_device(dynamic raw);
-
-  @protected
   List<NetworkTarget> dco_decode_list_network_target(dynamic raw);
 
   @protected
@@ -97,9 +93,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<TraceHop> dco_decode_list_trace_hop(dynamic raw);
-
-  @protected
-  LocalDevice dco_decode_local_device(dynamic raw);
 
   @protected
   NetworkConfiguration dco_decode_network_configuration(dynamic raw);
@@ -221,9 +214,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String> sse_decode_list_String(SseDeserializer deserializer);
 
   @protected
-  List<LocalDevice> sse_decode_list_local_device(SseDeserializer deserializer);
-
-  @protected
   List<NetworkTarget> sse_decode_list_network_target(
       SseDeserializer deserializer);
 
@@ -239,9 +229,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<TraceHop> sse_decode_list_trace_hop(SseDeserializer deserializer);
-
-  @protected
-  LocalDevice sse_decode_local_device(SseDeserializer deserializer);
 
   @protected
   NetworkConfiguration sse_decode_network_configuration(
@@ -367,10 +354,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_local_device(
-      List<LocalDevice> self, SseSerializer serializer);
-
-  @protected
   void sse_encode_list_network_target(
       List<NetworkTarget> self, SseSerializer serializer);
 
@@ -388,9 +371,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_list_trace_hop(List<TraceHop> self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_local_device(LocalDevice self, SseSerializer serializer);
 
   @protected
   void sse_encode_network_configuration(

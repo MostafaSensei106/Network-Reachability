@@ -48,10 +48,9 @@ fn analyze_single_sample(reports: &[TargetReport], config: &NetworkConfiguration
 
         if report.success {
             success_count += 1;
-            if let Some(lat) = report.latency_ms {
-                if lat < best_latency {
-                    best_latency = lat;
-                }
+            let lat = report.latency_ms;
+            if lat < best_latency {
+                best_latency = lat;
             }
         }
     }

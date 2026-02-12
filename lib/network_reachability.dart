@@ -21,12 +21,7 @@ export 'core/rust/api/models/config.dart'
         CheckStrategy,
         ConnectionQuality;
 export 'core/rust/api/models/net_info.dart'
-    show
-        ConnectionType,
-        CaptivePortalStatus,
-        SecurityFlags,
-        LocalDevice,
-        TraceHop;
+    show ConnectionType, CaptivePortalStatus, SecurityFlags, TraceHop;
 export 'core/rust/api/models/report.dart'
     show NetworkReport, NetworkStatus, TargetReport;
 export 'core/rust/api/models/target.dart' show NetworkTarget, TargetProtocol;

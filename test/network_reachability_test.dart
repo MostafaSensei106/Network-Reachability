@@ -14,6 +14,14 @@ class MockRustLibApi implements RustLibApi {
   late SecurityConfig mockDefaultSecurityConfig;
   late ResilienceConfig mockDefaultResilienceConfig;
 
+  // --- Mocks for Probe Methods ---
+  late CaptivePortalStatus mockCaptivePortalStatus;
+  late bool mockDnsHijackingResult;
+  late (SecurityFlags, ConnectionType) mockSecurityAndNetworkTypeResult;
+
+  late TargetReport mockTargetReportProbe;
+  late List<TraceHop> mockTraceRouteResult;
+
   MockRustLibApi() {
     // Initialize with a default "good" report
     reset();
@@ -88,6 +96,30 @@ class MockRustLibApi implements RustLibApi {
       security: mockDefaultSecurityConfig,
       resilience: mockDefaultResilienceConfig,
     );
+
+    // Reset probe mocks
+    mockCaptivePortalStatus = const CaptivePortalStatus(isCaptivePortal: false);
+    mockDnsHijackingResult = false;
+    mockSecurityAndNetworkTypeResult = (
+      const SecurityFlags(
+        isVpnDetected: false,
+        isDnsSpoofed: false,
+        isProxyDetected: false,
+        interfaceName: 'eth0',
+      ),
+      ConnectionType.ethernet,
+    );
+
+    mockTargetReportProbe = TargetReport(
+      label: 'test_target',
+      success: true,
+      latencyMs: BigInt.from(50),
+      isEssential: false,
+    );
+    mockTraceRouteResult = [
+      TraceHop(
+          hopNumber: 1, ipAddress: '192.168.1.1', latencyMs: BigInt.from(10))
+    ];
   }
 
   @override
@@ -116,6 +148,41 @@ class MockRustLibApi implements RustLibApi {
   @override
   Future<ResilienceConfig> crateApiModelsConfigResilienceConfigDefault() async {
     return mockDefaultResilienceConfig;
+  }
+
+  // --- Mock implementations for Probe methods ---
+
+  @override
+  Future<CaptivePortalStatus> crateApiProbesCaptivePortalCheckForCaptivePortal(
+      {required BigInt timeoutMs}) async {
+    return mockCaptivePortalStatus;
+  }
+
+  @override
+  Future<bool> crateApiProbesDnsDetectDnsHijacking(
+      {required String domain}) async {
+    return mockDnsHijackingResult;
+  }
+
+  @override
+  Future<(SecurityFlags, ConnectionType)>
+      crateApiProbesInterfaceDetectSecurityAndNetworkType() async {
+    return mockSecurityAndNetworkTypeResult;
+  }
+
+  @override
+  Future<TargetReport> crateApiProbesTargetCheckTarget(
+      {required NetworkTarget target}) async {
+    // Return a copy with the label from the input target to simulate real behavior
+    return mockTargetReportProbe.copyWith(label: target.label);
+  }
+
+  @override
+  Future<List<TraceHop>> crateApiProbesTracerouteTraceRoute(
+      {required String host,
+      required int maxHops,
+      required BigInt timeoutPerHopMs}) async {
+    return mockTraceRouteResult;
   }
 
   // --- Unused mock methods ---
@@ -204,7 +271,7 @@ void main() {
     test('throws SecurityException when VPN is detected and blocked', () async {
       // Re-init with a specific security config for this test
       final config = (await NetworkConfiguration.default_()).copyWith(
-        security: SecurityConfig(
+        security: const SecurityConfig(
           blockVpn: true,
           detectDnsHijack: false,
           allowedInterfaces: [],
@@ -214,7 +281,7 @@ void main() {
       await NetworkReachability.init(config: config);
 
       mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-          securityFlags: SecurityFlags(
+          securityFlags: const SecurityFlags(
               isVpnDetected: true,
               isDnsSpoofed: false,
               isProxyDetected: false,
@@ -244,7 +311,8 @@ void main() {
             label: 'essential',
             success: false,
             isEssential: true,
-            error: 'timeout')
+            error: 'timeout',
+            latencyMs: BigInt.from(50)),
       ]);
       await NetworkReachability.instance.check();
 
@@ -295,7 +363,91 @@ void main() {
           receivedQualities,
           containsAllInOrder(
               [ConnectionQuality.excellent, ConnectionQuality.poor]));
-    }, timeout: Timeout(Duration(seconds: 2)));
+    }, timeout: const Timeout(Duration(seconds: 2)));
+  });
+
+  group('Probe Methods', () {
+    setUp(() async {
+      // Initialize with a default config for this group, no periodic checks
+      final config = await NetworkConfiguration.default_();
+      await NetworkReachability.init(
+          config: config.copyWith(checkIntervalMs: BigInt.zero));
+    });
+
+    test('checkForCaptivePortal calls the probe and returns status', () async {
+      mockApi.mockCaptivePortalStatus =
+          const CaptivePortalStatus(isCaptivePortal: true);
+      final result = await NetworkReachability.instance
+          .checkForCaptivePortal(timeoutMs: BigInt.from(1000));
+      expect(result.isCaptivePortal, isTrue);
+    });
+
+    test('detectDnsHijacking calls the probe and returns boolean', () async {
+      mockApi.mockDnsHijackingResult = true;
+      final result = await NetworkReachability.instance
+          .detectDnsHijacking(domain: 'example.com');
+      expect(result, isTrue);
+    });
+
+    test('detectSecurityAndNetworkType calls the probe and returns tuple',
+        () async {
+      final expectedResult = (
+        const SecurityFlags(
+          isVpnDetected: true,
+          isDnsSpoofed: false,
+          isProxyDetected: false,
+          interfaceName: 'tun0',
+        ),
+        ConnectionType.vpn,
+      );
+      mockApi.mockSecurityAndNetworkTypeResult = expectedResult;
+
+      final result =
+          await NetworkReachability.instance.detectSecurityAndNetworkType();
+      expect(result.$1.isVpnDetected, isTrue);
+      expect(result.$1.interfaceName, 'tun0');
+      expect(result.$2, ConnectionType.vpn);
+    });
+
+    test('checkTarget calls the probe and returns a report', () async {
+      final target = NetworkTarget(
+          label: 'google-dns',
+          host: '8.8.8.8',
+          port: 53,
+          protocol: TargetProtocol.udp,
+          timeoutMs: BigInt.from(1000),
+          priority: 1,
+          isEssential: false);
+
+      mockApi.mockTargetReportProbe = TargetReport(
+          label: 'google-dns',
+          success: true,
+          latencyMs: BigInt.from(44),
+          isEssential: false);
+
+      final result =
+          await NetworkReachability.instance.checkTarget(target: target);
+
+      expect(result.success, isTrue);
+      expect(result.label, 'google-dns');
+      expect(result.latencyMs, BigInt.from(44));
+    });
+
+    test('traceRoute calls the probe and returns hops', () async {
+      final expectedHops = <TraceHop>[
+        TraceHop(
+            hopNumber: 1, ipAddress: 'hop1.com', latencyMs: BigInt.from(10)),
+        TraceHop(
+            hopNumber: 2, ipAddress: 'hop2.com', latencyMs: BigInt.from(20)),
+      ];
+      mockApi.mockTraceRouteResult = expectedHops;
+
+      final result = await NetworkReachability.instance.traceRoute(
+          host: 'example.com', maxHops: 5, timeoutPerHopMs: BigInt.from(500));
+
+      expect(result, hasLength(2));
+      expect(result.last.ipAddress, 'hop2.com');
+    });
   });
 }
 
@@ -317,6 +469,18 @@ extension on NetworkReport {
   }
 }
 
+extension on TargetReport {
+  TargetReport copyWith({String? label}) {
+    return TargetReport(
+      label: label ?? this.label,
+      success: success,
+      latencyMs: latencyMs,
+      isEssential: isEssential,
+      error: error,
+    );
+  }
+}
+
 extension on ResilienceConfig {
   ResilienceConfig copyWith({
     int? circuitBreakerThreshold,
@@ -334,11 +498,10 @@ extension on ResilienceConfig {
 }
 
 extension on NetworkConfiguration {
-  NetworkConfiguration copyWith({
-    BigInt? checkIntervalMs,
-    SecurityConfig? security,
-    ResilienceConfig? resilience,
-  }) {
+  NetworkConfiguration copyWith(
+      {BigInt? checkIntervalMs,
+      SecurityConfig? security,
+      ResilienceConfig? resilience}) {
     return NetworkConfiguration(
       targets: targets,
       checkIntervalMs: checkIntervalMs ?? this.checkIntervalMs,

@@ -16,7 +16,7 @@ socket2 = "0.6.2"
 ipnet = "2.11.0"
 trust-dns-resolver = "0.23.2"
 reqwest = "0.13.2"
-
+dns-lookup = "3.0.1"
 network-interface = "2.0.5"
 chrono = "0.4"
 
