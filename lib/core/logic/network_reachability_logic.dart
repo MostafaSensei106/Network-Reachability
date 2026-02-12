@@ -49,8 +49,6 @@ class NetworkReachability {
   ///
   /// [config]: The configuration for the engine. If not provided, a default configuration is used.
   static Future<void> init({NetworkConfiguration? config}) async {
-    await RustLib.init();
-
     if (_instance != null) {
       _instance?.dispose();
     }

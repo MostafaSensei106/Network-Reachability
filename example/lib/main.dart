@@ -8,10 +8,9 @@ import 'package:network_reachability/network_reachability.dart';
 Future<void> main() async {
   // Mandatory setup for Flutter apps.
   WidgetsFlutterBinding.ensureInitialized();
-  RustLib.init();
+  await RustLib.init();
   final defaultConfig = await NetworkConfiguration.default_();
-  final customConfig = defaultConfig;
-  await NetworkReachability.init(config: customConfig);
+  await NetworkReachability.init(config: defaultConfig);
   runApp(const MyApp());
 }
 
@@ -24,24 +23,24 @@ class MyApp extends StatelessWidget {
       title: 'Netwrok Reachability Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: Colors.deepPurple,
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
       ),
-      home: const FluxNetDemoPage(),
+      home: const NetworkDemoPage(),
     );
   }
 }
 
-class FluxNetDemoPage extends StatefulWidget {
-  const FluxNetDemoPage({super.key});
+class NetworkDemoPage extends StatefulWidget {
+  const NetworkDemoPage({super.key});
 
   @override
-  State<FluxNetDemoPage> createState() => _FluxNetDemoPageState();
+  State<NetworkDemoPage> createState() => _NetworkDemoPageState();
 }
 
-class _FluxNetDemoPageState extends State<FluxNetDemoPage> {
+class _NetworkDemoPageState extends State<NetworkDemoPage> {
   NetworkReport? _report;
   StreamSubscription? _statusSubscription;
   bool _isLoading = true;
@@ -89,11 +88,9 @@ class _FluxNetDemoPageState extends State<FluxNetDemoPage> {
       // The guard will throw an exception if requirements are not met.
       final result = await NetworkReachability.instance.guard(
         action: () async {
-          // Simulate a network call that takes 1 second.
-          await Future.delayed(const Duration(seconds: 1));
           return "Data fetched successfully at ${DateTime.now().toIso8601String()}";
         },
-        minQuality: ConnectionQuality.good,
+        minQuality: ConnectionQuality.moderate,
       );
       setState(() {
         _guardResult = result;
@@ -113,7 +110,8 @@ class _FluxNetDemoPageState extends State<FluxNetDemoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flux Net Demo'),
+        title: const Text('Netwrok Reachability Demo'),
+
         actions: [
           if (_isLoading)
             const Padding(
@@ -203,8 +201,16 @@ class _StatusCard extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: const Text('Latency (Mean)'),
+              title: const Text('Latency'),
               trailing: Text('${status.latencyMs} ms'),
+            ),
+            ListTile(
+              title: const Text('Max Latency'),
+              trailing: Text('${status.maxLatencyMs} ms'),
+            ),
+            ListTile(
+              title: const Text('Min Latency'),
+              trailing: Text('${status.minLatencyMs} ms'),
             ),
             ListTile(
               title: const Text('Jitter (Std Dev)'),
@@ -214,6 +220,7 @@ class _StatusCard extends StatelessWidget {
               title: const Text('Packet Loss'),
               trailing: Text('${status.packetLossPercent.toStringAsFixed(1)}%'),
             ),
+
             ListTile(
               title: const Text('Winning Target'),
               trailing: Text(
@@ -275,6 +282,10 @@ class _DetailsCard extends StatelessWidget {
             ListTile(
               title: const Text('Interface Name'),
               trailing: Text(securityFlags.interfaceName),
+            ),
+            ListTile(
+              title: const Text('Proxy Detected'),
+              trailing: _boolIcon(securityFlags.isProxyDetected),
             ),
             ListTile(
               title: const Text('VPN Detected'),
