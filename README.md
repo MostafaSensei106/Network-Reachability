@@ -26,10 +26,10 @@ Most network libraries tell you if you're `connected` or `disconnected`. In the 
 
 **Network-Reachability answers the questions that truly matter for building robust applications:**
 
--   **Is the connection good enough?** Instead of a simple boolean, you get a detailed `ConnectionQuality` report (`excellent`, `good`, `poor`, `unstable`), including concrete metrics like **latency**, **jitter**, and **packet loss**. This allows you to tailor the user experience—for example, by disabling video streaming on a `poor` connection.
--   **Is the backend reachable and stable?** This library doesn't just check for a generic internet connection. It probes your actual server endpoints (`NetworkTarget`). If your backend is down, the app will know.
--   **Is the network secure?** For sensitive applications (banking, enterprise), knowing the network environment is critical. This library actively detects security risks like **VPNs**, **DNS hijacking**, and **proxies**, allowing you to block operations on untrusted networks.
--   **How should my app behave during network issues?** With a built-in **Circuit Breaker**, the library can automatically stop your app from hammering a failing backend service, preventing cascading failures and providing a better user experience until the service recovers.
+- **Is the connection good enough?** Instead of a simple boolean, you get a detailed `ConnectionQuality` report (`excellent`, `good`, `poor`, `unstable`), including concrete metrics like **latency**, **jitter**, and **packet loss**. This allows you to tailor the user experience—for example, by disabling video streaming on a `poor` connection.
+- **Is the backend reachable and stable?** This library doesn't just check for a generic internet connection. It probes your actual server endpoints (`NetworkTarget`). If your backend is down, the app will know.
+- **Is the network secure?** For sensitive applications (banking, enterprise), knowing the network environment is critical. This library actively detects security risks like **VPNs**, **DNS hijacking**, and **proxies**, allowing you to block operations on untrusted networks.
+- **How should my app behave during network issues?** With a built-in **Circuit Breaker**, the library can automatically stop your app from hammering a failing backend service, preventing cascading failures and providing a better user experience until the service recovers.
 
 This library gives you the deep network intelligence needed to build resilient, secure, and user-friendly applications that adapt gracefully to real-world network conditions.
 
@@ -37,23 +37,23 @@ This library gives you the deep network intelligence needed to build resilient, 
 
 ## ✨ Key Features
 
--   **Deep Quality Analysis**: Get a multi-faceted view of the network quality, including **average latency**, **jitter** (latency variation), and **packet loss** percentage. The final `ConnectionQuality` enum gives you an instant, actionable summary.
+- **Deep Quality Analysis**: Get a multi-faceted view of the network quality, including **average latency**, **jitter** (latency variation), and **packet loss** percentage. The final `ConnectionQuality` enum gives you an instant, actionable summary.
 
--   **`guard()` Protected Actions**: The library's crown jewel. Wrap any network-dependent function (like an API call) in a `guard()`. It will only execute if the network meets your predefined quality and security rules, throwing specific, catchable exceptions otherwise.
+- **`guard()` Protected Actions**: The library's crown jewel. Wrap any network-dependent function (like an API call) in a `guard()`. It will only execute if the network meets your predefined quality and security rules, throwing specific, catchable exceptions otherwise.
 
--   **Built-in Circuit Breaker**: Automatically detects when essential backend services are failing. The circuit breaker will "open" and temporarily block further requests, preventing your app from causing server overloads and providing immediate feedback to the user.
+- **Built-in Circuit Breaker**: Automatically detects when essential backend services are failing. The circuit breaker will "open" and temporarily block further requests, preventing your app from causing server overloads and providing immediate feedback to the user.
 
--   **Advanced Security Probes**: Go beyond application-level security. Detect and react to environmental threats:
-    -   **VPN & Proxy Detection**: Block or flag connections from anonymized networks.
-    -   **DNS Hijack Detection**: Protect against man-in-the-middle attacks by comparing system DNS against a trusted resolver.
-    -   **Captive Portal Detection**: Identify when the user is stuck on a public WiFi login page.
+- **Advanced Security Probes**: Go beyond application-level security. Detect and react to environmental threats:
+  - **VPN & Proxy Detection**: Block or flag connections from anonymized networks.
+  - **DNS Hijack Detection**: Protect against man-in-the-middle attacks by comparing system DNS against a trusted resolver.
+  - **Captive Portal Detection**: Identify when the user is stuck on a public WiFi login page.
 
--   **Granular Configuration**: Take full control. Customize the `NetworkConfiguration` to:
-    -   Define multiple `NetworkTarget` endpoints (TCP/UDP) with priorities.
-    -   Set your own `QualityThresholds` for what constitutes an "excellent" or "poor" connection.
-    -   Fine-tune the `ResilienceConfig` like the circuit breaker sensitivity and jitter tolerance.
+- **Granular Configuration**: Take full control. Customize the `NetworkConfiguration` to:
+  - Define multiple `NetworkTarget` endpoints (TCP/UDP) with priorities.
+  - Set your own `QualityThresholds` for what constitutes an "excellent" or "poor" connection.
+  - Fine-tune the `ResilienceConfig` like the circuit breaker sensitivity and jitter tolerance.
 
--   **High-Performance Rust Core**: All heavy lifting and network probing is executed in a native Rust engine, ensuring that these complex checks are fast, efficient, and don't block the Flutter UI thread.
+- **High-Performance Rust Core**: All heavy lifting and network probing is executed in a native Rust engine, ensuring that these complex checks are fast, efficient, and don't block the Flutter UI thread.
 
 ---
 
@@ -66,10 +66,10 @@ Understanding the lifecycle of the library's core functions is key to using it e
 When you call `NetworkReachability.instance.check()`, a multi-stage process is initiated:
 
 1.  **Rust Engine Execution**: The call is delegated to the high-performance Rust core, which performs the following:
-    -   **Parallel Probing**: It sends probes to all `NetworkTarget` endpoints defined in your configuration.
-    -   **Data Collection**: It gathers multiple latency samples to calculate statistics like min/max/avg latency, jitter (standard deviation), and packet loss.
-    -   **Security Analysis**: It inspects network interfaces to detect the `ConnectionType` (e.g., WiFi, Cellular) and security flags (e.g., `isVpnDetected`).
-    -   **Quality Evaluation**: The final metrics are compared against your `QualityThresholds` to determine an overall `ConnectionQuality` score.
+    - **Parallel Probing**: It sends probes to all `NetworkTarget` endpoints defined in your configuration.
+    - **Data Collection**: It gathers multiple latency samples to calculate statistics like min/max/avg latency, jitter (standard deviation), and packet loss.
+    - **Security Analysis**: It inspects network interfaces to detect the `ConnectionType` (e.g., WiFi, Cellular) and security flags (e.g., `isVpnDetected`).
+    - **Quality Evaluation**: The final metrics are compared against your `QualityThresholds` to determine an overall `ConnectionQuality` score.
 2.  **Report Generation**: The Rust engine compiles all this data into a comprehensive `NetworkReport`.
 3.  **Circuit Breaker Update**: Back in the Dart layer, the `check()` method inspects the `NetworkReport`. If any `isEssential` target failed, it increments a failure counter. If the counter exceeds the `circuitBreakerThreshold` from your configuration, the circuit is "opened". A successful check on an essential target resets the counter and closes the circuit.
 
@@ -80,36 +80,13 @@ The `guard()` method is an intelligent sequence of validations that wrap your ac
 1.  **Circuit Breaker Check**: The very first step. Is the circuit currently open? If yes, the method fails immediately by throwing a `CircuitBreakerOpenException`. This prevents any network activity if the backend is known to be unstable.
 2.  **Live Network Check**: It calls the full `check()` method described above to get a fresh, up-to-the-moment `NetworkReport`.
 3.  **Security Validation**: It compares the `report.securityFlags` against your `SecurityConfig`.
-    -   Is `blockVpn` true and a VPN is detected? Throw `SecurityException`.
-    -   Is `detectDnsHijack` true and DNS spoofing is found? Throw `SecurityException`.
-    -   Are `allowedInterfaces` defined and the current interface isn't one of them? Throw `SecurityException`.
+    - Is `blockVpn` true and a VPN is detected? Throw `SecurityException`.
+    - Is `detectDnsHijack` true and DNS spoofing is found? Throw `SecurityException`.
+    - Are `allowedInterfaces` defined and the current interface isn't one of them? Throw `SecurityException`.
 4.  **Quality Validation**: It compares the `report.status.quality` against the `minQuality` parameter you provided to `guard()`. If the current quality is worse than the minimum required (e.g., you require `good` but the connection is `poor`), it throws a `PoorConnectionException`.
 5.  **Execute Action**: Only if all the above checks pass does the `action` function you provided get executed. The return value of your function is then passed back as the result of `guard()`.
 
 This robust, multi-step validation process is what makes `guard()` so powerful.
-
----
-
-## 📦 Installation
-
-1.  Add `flutter_rust_bridge` and this library to your `pubspec.yaml` file:
-
-    ```yaml
-    dependencies:
-      # This package is not on pub.dev yet.
-      # network_reachability: ^1.0.0
-
-    dev_dependencies:
-      flutter_rust_bridge: ^2.11.1 # Or the latest version
-    ```
-
-2.  Set up `flutter_rust_bridge` by following its [official documentation](https://cjycode.com/flutter_rust_bridge/index.html). This is a crucial step to generate the bindings that link the Rust core to your Flutter app.
-
-3.  Install the dependencies from your terminal:
-
-    ```bash
-    flutter pub get
-    ```
 
 ---
 
@@ -126,9 +103,10 @@ import 'package:network_reachability/core/rust/frb_generated.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize the Rust library bindings
+  // Initialize the Rust library bindings.
   await RustLib.init();
-  // Initialize Network-Reachability with a default or custom configuration
+  // Initialize Network-Reachability with a default or custom configuration.
+  // this uses a default configuration.
   await NetworkReachability.init();
   runApp(const MyApp());
 }
@@ -174,12 +152,23 @@ void listenToNetworkChanges() {
   final subscription = NetworkReachability.instance.onStatusChange.listen((status) {
     // Note: The stream provides a lightweight `NetworkStatus` object.
     // For a full report, you would call `check()` inside the listener.
-    print('Network status updated: ${status.quality.name}');
+    print('Network status updated: ${status.isConnected ? 'Connected' : 'Disconnected'} - Quality: ${status.quality}');
+    print('Avg Latency: ${status.latencyStats.avgLatencyMs}ms');
+    print('Jitter: ${status.latencyStats.jitterMs}ms');
+    print('Packet Loss: ${status.latencyStats.packetLossPercent}');
+    print('Stability Score: ${status.latencyStats.stabilityScore}/100');
     // Update your UI based on the new status
   });
 
   // Don't forget to cancel the subscription in your widget's dispose() method.
-  // subscription.cancel();
+    @override
+  void dispose() {
+    // --- Cleanup ---
+    // It's crucial to cancel stream subscriptions in the dispose method
+    // to prevent memory leaks when the widget is removed from the tree.
+    subscription.cancel();
+    super.dispose();
+  }
 }
 ```
 
@@ -192,36 +181,59 @@ void listenToNetworkChanges() {
 Tailor the engine's behavior by providing a `NetworkConfiguration` during initialization.
 
 ```dart
-import 'package:network_reachability/core/rust/api/models/config.dart';
+import 'package:network_reachability/network_reachability.dart';
 
 Future<void> initializeWithCustomConfig() async {
-  final config = await NetworkConfiguration.default_();
+  final config = await NetworkConfiguration.default_();// Get the default config
 
   final customConfig = NetworkConfiguration(
-    checkIntervalMs: BigInt.from(15000), // Check every 15 seconds
+    targets: [
+      NetworkTarget(
+        label: 'my-backend-primary',
+        host: 'api.mydomain.com',
+        port: 443,
+        protocol: TargetProtocol.tcp,
+        timeoutMs: BigInt.from(2000),
+        isEssential: true, // This target affects the circuit breaker if it fails the app goes offline
+        priority: 1,
+      ),
+    ],
+    checkIntervalMs: BigInt.from(15000), // 15 seconds
+     // Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
+    qualityThreshold: QualityThresholds(
+      excellent: BigInt.from(50),
+      great: BigInt.from(100),
+      good: BigInt.from(200),
+      moderate: BigInt.from(500),
+      poor: BigInt.from(1000),
+    ),
+    //Configuration for security-related checks.
     security: SecurityConfig(
       blockVpn: true,
       detectDnsHijack: true,
-      allowedInterfaces: ['wlan0', 'eth0'], // Only allow WiFi and Ethernet
+      allowedInterfaces: ['eth0', 'wlan0'], // Only these interfaces are allowed
     ),
-    resilience: config.resilience.copyWith(
-      circuitBreakerThreshold: 3, // Open circuit after 3 consecutive failures
+    //Configuration for the circuit breaker
+    resilience: ResilienceConfig(
+      // first to respond wins there  CheckStrategy.consensus above 50% of targets must respond.
+      strategy: CheckStrategy.race,
+
+      // The number of consecutive failures of essential targets before the circuit breaker opens. A value of 0 disables the circuit breaker.
+      circuitBreakerThreshold: 0,
+
+      // Number of samples to take for jitter and stability analysis. Must be greater than 1 to enable jitter calculation default: 5.
+      numJitterSamples: 5,
+
+      //The percentage of mean latency that the standard deviation must exceed to be considered high jitter, potentially downgrading quality default: 0.2.
+      jitterThresholdPercent: 0.2,
+
+
+      //If the calculated stability score is less than this value, the quality considered 'Unstable' it takes 0-100, default: 70.
+      stabilityThershold: 70,
+
+      //The packet loss percentage above which the connection is marked as 'Unstable' default: 5.
+      criticalPacketLossPrecent: 5.0,
     ),
-    qualityThreshold: config.qualityThreshold.copyWith(
-      good: BigInt.from(150), // Consider latency <= 150ms as 'good'
-    ),
-    // Define custom targets to your own backend
-    targets: [
-        NetworkTarget(
-            label: 'my-backend-primary',
-            host: 'api.mydomain.com',
-            port: 443,
-            protocol: TargetProtocol.tcp,
-            timeoutMs: BigInt.from(2000),
-            isEssential: true, // This target affects the circuit breaker
-            priority: 1,
-        ),
-    ],
   );
 
   await NetworkReachability.init(config: customConfig);
@@ -254,10 +266,26 @@ if (isHijacked) {
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please open an issue first to discuss major feature ideas or architectural changes.
+Contributions are welcome! Here’s how to get started:
 
 1.  Fork the repository.
-2.  Create a new branch: `git checkout -b feature/YourFeature`
-3.  Commit your changes: `git commit -m "Add amazing feature"`
-4.  Push to your branch: `git push origin feature/YourFeature`
+2.  Create a new branch:
+    `git checkout -b feature/YourFeature`
+3.  Commit your changes:
+    `git commit -m "Add amazing feature"`
+4.  Push to your branch:
+    `git push origin feature/YourFeature`
 5.  Open a pull request.
+
+> 💡 Please read our **[Contributing Guidelines](CONTRIBUTING.md)** and open an issue first for major feature ideas or changes.
+
+---
+
+## 📜 License
+
+This project is licensed under the **GPL-3.0 License**.
+See the [LICENSE](LICENSE) file for full details.
+
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/MostafaSensei106">MostafaSensei106</a>
+</p>

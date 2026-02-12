@@ -88,8 +88,7 @@ pub struct ResilienceConfig {
     /// The percentage of mean latency that the standard deviation must exceed
     /// to be considered high jitter, potentially downgrading quality.
     pub jitter_threshold_percent: f64,
-    /// If the calculated stability score is less than this value, the quality
-    /// may be downgraded.
+    /// If the calculated stability score is less than this value, the quality considered 'Unstable'.
     pub stability_thershold: u8,
     /// The packet loss percentage above which the connection is marked as 'Unstable'.
     pub critical_packet_loss_precent: f32,

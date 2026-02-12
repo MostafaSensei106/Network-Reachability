@@ -8,15 +8,15 @@
   <title>network_reachability - Dart API docs</title>
 
 
-
+  
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
-
+  
   <link rel="stylesheet" href="static-assets/github.css?v1">
   <link rel="stylesheet" href="static-assets/styles.css?v1">
   <link rel="icon" href="static-assets/favicon.png?v1">
-
+  
 </head>
 
 <body data-base-href="" data-using-base-href="false" class="light-theme">
@@ -41,131 +41,274 @@
 </header>
 <main>
   <div id="dartdoc-main-content" class="main-content">
-
+      
 <section class="desc markdown">
-  <h1 id="Network-Reachability-formerly-network-reachability">Network-Reachability (formerly Network Reachability)</h1>
-<p>A powerful and robust network monitoring and reachability library for Flutter, backed by a high-performance Rust core. Designed for applications that require reliable, detailed, and secure network state awareness, such as banking and enterprise apps.</p>
-<p>This library provides a rich set of features including:</p>
+  <h1 align="center">Network-Reachability</h1>
+<p align="center">
+  <img src="https://socialify.git.ci/MostafaSensei106/Network-Reachability/image?font=KoHo&amp;language=1&amp;logo=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F138288138%3Fv%3D4&amp;name=1&amp;owner=1&amp;pattern=Floating+Cogs&amp;theme=Light" alt="Banner">
+</p>
+<p align="center">
+  <strong>An advanced network monitoring and resilience library for Flutter, powered by a high-performance Rust core.</strong><br>
+  Go beyond simple connectivity checks. Understand the <i>quality</i>, <i>stability</i>, and <i>security</i> of your user's network.
+</p>
+<p align="center">
+  <a href="#-why-choose-network-reachability">Why?</a> •
+  <a href="#-key-features">Key Features</a> •
+  <a href="#-how-it-works">How It Works</a> •
+  <a href="#-installation">Installation</a> •
+  <a href="#-basic-usage">Basic Usage</a> •
+  <a href="#-advanced-usage">Advanced Usage</a> •
+  <a href="#-contributing">Contributing</a>
+</p>
+<hr>
+<h2 id="-why-choose-network-reachability">🤔 Why Choose Network-Reachability?</h2>
+<p>Most network libraries tell you if you're <code>connected</code> or <code>disconnected</code>. In the real world, this is not enough. A user might be "connected" but on a network so slow that your app is unusable, or on an insecure public WiFi that exposes them to risk.</p>
+<p><strong>Network-Reachability answers the questions that truly matter for building robust applications:</strong></p>
 <ul>
-<li><strong>Comprehensive Network Reports:</strong> Get detailed information about connection quality, latency, jitter, and packet loss.</li>
-<li><strong>Smart Guard Function:</strong> Protect critical network operations by ensuring connection quality and security policies are met before execution.</li>
-<li><strong>Circuit Breaker:</strong> Automatically halt requests to unstable backends to prevent cascading failures.</li>
-<li><strong>Advanced Security Probes:</strong> Detect VPNs, DNS spoofing, and restrictive network interfaces.</li>
-<li><strong>High-Level Dart API:</strong> Enjoy a clean, easy-to-use Dart interface over a powerful Rust engine.</li>
-<li><strong>Configurable &amp; Extensible:</strong> Fine-tune the engine's behavior with detailed configuration for targets, quality thresholds, and security policies.</li>
+<li><strong>Is the connection good enough?</strong> Instead of a simple boolean, you get a detailed <code>ConnectionQuality</code> report (<code>excellent</code>, <code>good</code>, <code>poor</code>, <code>unstable</code>), including concrete metrics like <strong>latency</strong>, <strong>jitter</strong>, and <strong>packet loss</strong>. This allows you to tailor the user experience—for example, by disabling video streaming on a <code>poor</code> connection.</li>
+<li><strong>Is the backend reachable and stable?</strong> This library doesn't just check for a generic internet connection. It probes your actual server endpoints (<code>NetworkTarget</code>). If your backend is down, the app will know.</li>
+<li><strong>Is the network secure?</strong> For sensitive applications (banking, enterprise), knowing the network environment is critical. This library actively detects security risks like <strong>VPNs</strong>, <strong>DNS hijacking</strong>, and <strong>proxies</strong>, allowing you to block operations on untrusted networks.</li>
+<li><strong>How should my app behave during network issues?</strong> With a built-in <strong>Circuit Breaker</strong>, the library can automatically stop your app from hammering a failing backend service, preventing cascading failures and providing a better user experience until the service recovers.</li>
 </ul>
-<h2 id="getting-started">Getting Started</h2>
-<p>Follow these steps to integrate Network-Reachability into your Flutter project.</p>
-<h3 id="1-installation">1. Installation</h3>
-<p>First, you need to add the library to your <code>pubspec.yaml</code>.</p>
-<p><em>(Note: This library is not yet published on pub.dev. The following is a placeholder for when it is.)</em></p>
-<pre class="language-yaml"><code class="language-yaml">dependencies:
-  flux_net: ^1.0.0
-</code></pre>
-<p>You will also need to set up <code>flutter_rust_bridge</code> according to its documentation to link the Rust core with your Flutter application.</p>
-<h3 id="2-initialize-the-library">2. Initialize the Library</h3>
-<p>Before using any of the library's features, you must initialize it. This should typically be done in your <code>main()</code> function, after ensuring the Flutter bindings are initialized and the Rust library is loaded.</p>
+<p>This library gives you the deep network intelligence needed to build resilient, secure, and user-friendly applications that adapt gracefully to real-world network conditions.</p>
+<hr>
+<h2 id="-key-features">✨ Key Features</h2>
+<ul>
+<li>
+<p><strong>Deep Quality Analysis</strong>: Get a multi-faceted view of the network quality, including <strong>average latency</strong>, <strong>jitter</strong> (latency variation), and <strong>packet loss</strong> percentage. The final <code>ConnectionQuality</code> enum gives you an instant, actionable summary.</p>
+</li>
+<li>
+<p><strong><code>guard()</code> Protected Actions</strong>: The library's crown jewel. Wrap any network-dependent function (like an API call) in a <code>guard()</code>. It will only execute if the network meets your predefined quality and security rules, throwing specific, catchable exceptions otherwise.</p>
+</li>
+<li>
+<p><strong>Built-in Circuit Breaker</strong>: Automatically detects when essential backend services are failing. The circuit breaker will "open" and temporarily block further requests, preventing your app from causing server overloads and providing immediate feedback to the user.</p>
+</li>
+<li>
+<p><strong>Advanced Security Probes</strong>: Go beyond application-level security. Detect and react to environmental threats:</p>
+<ul>
+<li><strong>VPN &amp; Proxy Detection</strong>: Block or flag connections from anonymized networks.</li>
+<li><strong>DNS Hijack Detection</strong>: Protect against man-in-the-middle attacks by comparing system DNS against a trusted resolver.</li>
+<li><strong>Captive Portal Detection</strong>: Identify when the user is stuck on a public WiFi login page.</li>
+</ul>
+</li>
+<li>
+<p><strong>Granular Configuration</strong>: Take full control. Customize the <code>NetworkConfiguration</code> to:</p>
+<ul>
+<li>Define multiple <code>NetworkTarget</code> endpoints (TCP/UDP) with priorities.</li>
+<li>Set your own <code>QualityThresholds</code> for what constitutes an "excellent" or "poor" connection.</li>
+<li>Fine-tune the <code>ResilienceConfig</code> like the circuit breaker sensitivity and jitter tolerance.</li>
+</ul>
+</li>
+<li>
+<p><strong>High-Performance Rust Core</strong>: All heavy lifting and network probing is executed in a native Rust engine, ensuring that these complex checks are fast, efficient, and don't block the Flutter UI thread.</p>
+</li>
+</ul>
+<hr>
+<h2 id="-how-it-works">🔧 How It Works</h2>
+<p>Understanding the lifecycle of the library's core functions is key to using it effectively.</p>
+<h3 id="the-anatomy-of-check">The Anatomy of <code>check()</code></h3>
+<p>When you call <code>NetworkReachability.instance.check()</code>, a multi-stage process is initiated:</p>
+<ol>
+<li><strong>Rust Engine Execution</strong>: The call is delegated to the high-performance Rust core, which performs the following:
+<ul>
+<li><strong>Parallel Probing</strong>: It sends probes to all <code>NetworkTarget</code> endpoints defined in your configuration.</li>
+<li><strong>Data Collection</strong>: It gathers multiple latency samples to calculate statistics like min/max/avg latency, jitter (standard deviation), and packet loss.</li>
+<li><strong>Security Analysis</strong>: It inspects network interfaces to detect the <code>ConnectionType</code> (e.g., WiFi, Cellular) and security flags (e.g., <code>isVpnDetected</code>).</li>
+<li><strong>Quality Evaluation</strong>: The final metrics are compared against your <code>QualityThresholds</code> to determine an overall <code>ConnectionQuality</code> score.</li>
+</ul>
+</li>
+<li><strong>Report Generation</strong>: The Rust engine compiles all this data into a comprehensive <code>NetworkReport</code>.</li>
+<li><strong>Circuit Breaker Update</strong>: Back in the Dart layer, the <code>check()</code> method inspects the <code>NetworkReport</code>. If any <code>isEssential</code> target failed, it increments a failure counter. If the counter exceeds the <code>circuitBreakerThreshold</code> from your configuration, the circuit is "opened". A successful check on an essential target resets the counter and closes the circuit.</li>
+</ol>
+<h3 id="the-lifecycle-of-guard">The Lifecycle of <code>guard()</code></h3>
+<p>The <code>guard()</code> method is an intelligent sequence of validations that wrap your action:</p>
+<ol>
+<li><strong>Circuit Breaker Check</strong>: The very first step. Is the circuit currently open? If yes, the method fails immediately by throwing a <code>CircuitBreakerOpenException</code>. This prevents any network activity if the backend is known to be unstable.</li>
+<li><strong>Live Network Check</strong>: It calls the full <code>check()</code> method described above to get a fresh, up-to-the-moment <code>NetworkReport</code>.</li>
+<li><strong>Security Validation</strong>: It compares the <code>report.securityFlags</code> against your <code>SecurityConfig</code>.
+<ul>
+<li>Is <code>blockVpn</code> true and a VPN is detected? Throw <code>SecurityException</code>.</li>
+<li>Is <code>detectDnsHijack</code> true and DNS spoofing is found? Throw <code>SecurityException</code>.</li>
+<li>Are <code>allowedInterfaces</code> defined and the current interface isn't one of them? Throw <code>SecurityException</code>.</li>
+</ul>
+</li>
+<li><strong>Quality Validation</strong>: It compares the <code>report.status.quality</code> against the <code>minQuality</code> parameter you provided to <code>guard()</code>. If the current quality is worse than the minimum required (e.g., you require <code>good</code> but the connection is <code>poor</code>), it throws a <code>PoorConnectionException</code>.</li>
+<li><strong>Execute Action</strong>: Only if all the above checks pass does the <code>action</code> function you provided get executed. The return value of your function is then passed back as the result of <code>guard()</code>.</li>
+</ol>
+<p>This robust, multi-step validation process is what makes <code>guard()</code> so powerful.</p>
+<hr>
+<h2 id="-basic-usage">🚀 Basic Usage</h2>
+<h3 id="1-initialization">1. Initialization</h3>
+<p>Initialize the library in your <code>main()</code> function. This sets up the Rust engine and the Dart singleton.</p>
 <pre class="language-dart"><code class="language-dart">import 'package:flutter/material.dart';
-import 'package:flux_net/network_reachability.dart';
-// Import your generated Rust library bindings
-import 'package:flux_net/core/rust/frb_generated.dart';
+import 'package:network_reachability/network_reachability.dart';
+import 'package:network_reachability/core/rust/frb_generated.dart';
 
 Future&lt;void&gt; main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // 1. Initialize the Rust library
-  // This is a prerequisite for Network-Reachability
+  // Initialize the Rust library bindings.
   await RustLib.init();
-
-  // 2. Initialize Network-Reachability
-  // You can initialize with a default or custom configuration
+  // Initialize Network-Reachability with a default or custom configuration.
+  // this uses a default configuration.
   await NetworkReachability.init();
-
   runApp(const MyApp());
 }
 </code></pre>
-<h3 id="3-basic-usage">3. Basic Usage</h3>
-<p>Once initialized, you can access the <code>NetworkReachability</code> singleton instance anywhere in your app.</p>
-<h4 id="performing-a-one-off-check">Performing a One-off Check</h4>
-<p>To get a detailed, on-demand report of the current network status, use the <code>check()</code> method.</p>
-<pre class="language-dart"><code class="language-dart">import 'package:flux_net/network_reachability.dart';
-
-Future&lt;void&gt; printNetworkStatus() async {
-  final report = await NetworkReachability.instance.check();
-
-  if (report.status.isConnected) {
-    print('Network is connected!');
-    print('Quality: ${report.status.quality.name}');
-    print('Latency: ${report.status.latencyMs}ms');
-    print('Jitter: ${report.status.jitterMs}ms');
-    print('Packet Loss: ${report.status.packetLossPercent.toStringAsFixed(2)}%');
-  } else {
-    print('Network is disconnected.');
-  }
-}
-</code></pre>
-<h4 id="listening-for-status-changes">Listening for Status Changes</h4>
-<p>Network-Reachability can perform periodic checks and notify your app of any status changes through a <code>Stream</code>.</p>
-<pre class="language-dart"><code class="language-dart">void listenToNetworkChanges() {
-  final subscription = NetworkReachability.instance.onStatusChange.listen((status) {
-    print('Network status updated: ${status.quality.name}');
-  });
-
-  // Don't forget to cancel the subscription when you're done!
-  // subscription.cancel();
-}
-</code></pre>
-<h4 id="protecting-network-calls-with-guard">Protecting Network Calls with <code>guard()</code></h4>
-<p>The <code>guard()</code> method is the library's most powerful feature. It ensures that a network operation only runs if the connection meets your quality and security requirements.</p>
+<h3 id="2-protecting-network-calls-with-guard">2. Protecting Network Calls with <code>guard()</code></h3>
+<p>This is the primary and most recommended way to use the library. <code>guard()</code> ensures your critical functions only run when the network is in a known good state.</p>
 <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; fetchSensitiveData() async {
   try {
+    // Wrap your API call with the guard.
     final data = await NetworkReachability.instance.guard(
-      // The action to perform if the checks pass
-      action: () =&gt; myApi.fetchData(),
-      // Optional: require a minimum connection quality
+      // The action to perform ONLY if checks pass.
+      action: () =&gt; myApi.fetchImportantData(),
+      // Optional: Require a minimum quality for this specific action.
       minQuality: ConnectionQuality.good,
     );
     print('Data fetched successfully: $data');
+
   } on PoorConnectionException catch (e) {
-    print('Could not fetch data due to a poor connection: $e');
+    // Thrown if quality is below 'good'.
+    print('Could not fetch data: The connection is too slow or unstable. Details: ${e.message}');
+
   } on SecurityException catch (e) {
-    print('Action blocked due to a security risk: $e');
+    // Thrown if a security policy is violated (e.g., VPN detected).
+    print('Action blocked due to a security risk: ${e.message}');
+
   } on CircuitBreakerOpenException catch (e) {
-    print('Backend is unstable. Please try again later: $e');
+    // Thrown if the backend is known to be unstable.
+    print('Our servers are temporarily unavailable. Please try again later. Details: ${e.message}');
   }
 }
 </code></pre>
-<h2 id="configuration">Configuration</h2>
-<p>You can customize the engine's behavior by providing a <code>NetworkConfiguration</code> during initialization.</p>
-<pre class="language-dart"><code class="language-dart">import 'package:flux_net/core/rust/api/models.dart';
+<h3 id="3-monitoring-status-changes">3. Monitoring Status Changes</h3>
+<p>You can listen to a stream of network status updates for background monitoring or to update your UI in real-time.</p>
+<pre class="language-dart"><code class="language-dart">void listenToNetworkChanges() {
+  final subscription = NetworkReachability.instance.onStatusChange.listen((status) {
+    // Note: The stream provides a lightweight `NetworkStatus` object.
+    // For a full report, you would call `check()` inside the listener.
+    print('Network status updated: ${status.isConnected ? 'Connected' : 'Disconnected'} - Quality: ${status.quality}');
+    print('Avg Latency: ${status.latencyStats.avgLatencyMs}ms');
+    print('Jitter: ${status.latencyStats.jitterMs}ms');
+    print('Packet Loss: ${status.latencyStats.packetLossPercent}');
+    print('Stability Score: ${status.latencyStats.stabilityScore}/100');
+    // Update your UI based on the new status
+  });
+
+  // Don't forget to cancel the subscription in your widget's dispose() method.
+    @override
+  void dispose() {
+    // --- Cleanup ---
+    // It's crucial to cancel stream subscriptions in the dispose method
+    // to prevent memory leaks when the widget is removed from the tree.
+    subscription.cancel();
+    super.dispose();
+  }
+}
+</code></pre>
+<hr>
+<h2 id="-advanced-usage">🔬 Advanced Usage</h2>
+<h3 id="custom-configuration">Custom Configuration</h3>
+<p>Tailor the engine's behavior by providing a <code>NetworkConfiguration</code> during initialization.</p>
+<pre class="language-dart"><code class="language-dart">import 'package:network_reachability/network_reachability.dart';
 
 Future&lt;void&gt; initializeWithCustomConfig() async {
-  // Fetch the default config to use as a base
-  final config = await NetworkConfiguration.default_();
+  final config = await NetworkConfiguration.default_();// Get the default config
 
-  // Modify the configuration
-  final customConfig = config.copyWith(
-    // Check every 10 seconds instead of the default 5
-    checkIntervalMs: 10000,
-    security: SecurityConfig(
-      // Block the app from running on a VPN
-      blockVpn: true,
-      // Enable DNS hijack detection
-      detectDnsHijack: true,
-      // Only allow the app to run on specific Wi-Fi networks
-      allowedInterfaces: ['wlan0', 'wifi_eth'],
+  final customConfig = NetworkConfiguration(
+    targets: [
+      NetworkTarget(
+        label: 'my-backend-primary',
+        host: 'api.mydomain.com',
+        port: 443,
+        protocol: TargetProtocol.tcp,
+        timeoutMs: BigInt.from(2000),
+        isEssential: true, // This target affects the circuit breaker if it fails the app goes offline
+        priority: 1,
+      ),
+    ],
+    checkIntervalMs: BigInt.from(15000), // 15 seconds
+     // Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
+    qualityThreshold: QualityThresholds(
+      excellent: BigInt.from(50),
+      great: BigInt.from(100),
+      good: BigInt.from(200),
+      moderate: BigInt.from(500),
+      poor: BigInt.from(1000),
     ),
-    resilience: config.resilience.copyWith(
-      // Open the circuit breaker after 2 consecutive failures
-      circuitBreakerThreshold: 2,
+    //Configuration for security-related checks.
+    security: SecurityConfig(
+      blockVpn: true,
+      detectDnsHijack: true,
+      allowedInterfaces: ['eth0', 'wlan0'], // Only these interfaces are allowed
+    ),
+    //Configuration for the circuit breaker
+    resilience: ResilienceConfig(
+      // first to respond wins there  CheckStrategy.consensus above 50% of targets must respond.
+      strategy: CheckStrategy.race,
+
+      // The number of consecutive failures of essential targets before the circuit breaker opens. A value of 0 disables the circuit breaker.
+      circuitBreakerThreshold: 0,
+
+      // Number of samples to take for jitter and stability analysis. Must be greater than 1 to enable jitter calculation default: 5.
+      numJitterSamples: 5,
+
+      //The percentage of mean latency that the standard deviation must exceed to be considered high jitter, potentially downgrading quality default: 0.2.
+      jitterThresholdPercent: 0.2,
+
+
+      //If the calculated stability score is less than this value, the quality considered 'Unstable' it takes 0-100, default: 70.
+      stabilityThershold: 70,
+
+      //The packet loss percentage above which the connection is marked as 'Unstable' default: 5.
+      criticalPacketLossPrecent: 5.0,
     ),
   );
 
-  // Initialize with the custom configuration
   await NetworkReachability.init(config: customConfig);
 }
 </code></pre>
-<p>This provides a robust foundation for building secure and reliable Flutter applications.</p>
+<h3 id="direct-probe-access">Direct Probe Access</h3>
+<p>For specific, one-off checks, you can call the individual probe functions directly without running a full <code>check()</code>.</p>
+<pre class="language-dart"><code class="language-dart">// Check if the user is behind a WiFi login page
+final captiveStatus = await NetworkReachability.instance.checkForCaptivePortal(
+  timeoutMs: BigInt.from(5000),
+);
+if (captiveStatus.isCaptivePortal) {
+  print('User may need to log in to the network at ${captiveStatus.redirectUrl}');
+}
+
+// Check for DNS tampering
+final isHijacked = await NetworkReachability.instance.detectDnsHijacking(
+  domain: 'my-api.com',
+);
+if (isHijacked) {
+  print('Warning: Potential DNS hijacking detected!');
+}
+</code></pre>
+<hr>
+<h2 id="-contributing">🤝 Contributing</h2>
+<p>Contributions are welcome! Here’s how to get started:</p>
+<ol>
+<li>Fork the repository.</li>
+<li>Create a new branch:
+<code>git checkout -b feature/YourFeature</code></li>
+<li>Commit your changes:
+<code>git commit -m "Add amazing feature"</code></li>
+<li>Push to your branch:
+<code>git push origin feature/YourFeature</code></li>
+<li>Open a pull request.</li>
+</ol>
+<blockquote>
+<p>💡 Please read our <strong><a href="CONTRIBUTING.md">Contributing Guidelines</a></strong> and open an issue first for major feature ideas or changes.</p>
+</blockquote>
+<hr>
+<h2 id="-license">📜 License</h2>
+<p>This project is licensed under the <strong>GPL-3.0 License</strong>.
+See the <a href="LICENSE">LICENSE</a> file for full details.</p>
+<p align="center">
+Made with ❤️ by <a href="https://github.com/MostafaSensei106">MostafaSensei106</a>
+</p>
 </section>
 
 
@@ -173,126 +316,126 @@ Future&lt;void&gt; initializeWithCustomConfig() async {
           <h2>Libraries</h2>
         <dl>
           <dt id="enums">
-  <span class="name"><a href="core_constants_enums/">core/constants/enums</a></span>
+  <span class="name"><a href="core_constants_enums/">core/constants/enums</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="exceptions">
-  <span class="name"><a href="core_err_exceptions/">core/err/exceptions</a></span>
+  <span class="name"><a href="core_err_exceptions/">core/err/exceptions</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="network_reachability_logic">
-  <span class="name"><a href="core_logic_network_reachability_logic/">core/logic/network_reachability_logic</a></span>
+  <span class="name"><a href="core_logic_network_reachability_logic/">core/logic/network_reachability_logic</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="quality">
-  <span class="name"><a href="core_rust_api_analysis_quality/">core/rust/api/analysis/quality</a></span>
+  <span class="name"><a href="core_rust_api_analysis_quality/">core/rust/api/analysis/quality</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="engine">
-  <span class="name"><a href="core_rust_api_engine/">core/rust/api/engine</a></span>
+  <span class="name"><a href="core_rust_api_engine/">core/rust/api/engine</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="config">
-  <span class="name"><a href="core_rust_api_models_config/">core/rust/api/models/config</a></span>
+  <span class="name"><a href="core_rust_api_models_config/">core/rust/api/models/config</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="net_info">
-  <span class="name"><a href="core_rust_api_models_net_info/">core/rust/api/models/net_info</a></span>
+  <span class="name"><a href="core_rust_api_models_net_info/">core/rust/api/models/net_info</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="report">
-  <span class="name"><a href="core_rust_api_models_report/">core/rust/api/models/report</a></span>
+  <span class="name"><a href="core_rust_api_models_report/">core/rust/api/models/report</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="target">
-  <span class="name"><a href="core_rust_api_models_target/">core/rust/api/models/target</a></span>
+  <span class="name"><a href="core_rust_api_models_target/">core/rust/api/models/target</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="captive_portal">
-  <span class="name"><a href="core_rust_api_probes_captive_portal/">core/rust/api/probes/captive_portal</a></span>
+  <span class="name"><a href="core_rust_api_probes_captive_portal/">core/rust/api/probes/captive_portal</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="dns">
-  <span class="name"><a href="core_rust_api_probes_dns/">core/rust/api/probes/dns</a></span>
+  <span class="name"><a href="core_rust_api_probes_dns/">core/rust/api/probes/dns</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="interface">
-  <span class="name"><a href="core_rust_api_probes_interface/">core/rust/api/probes/interface</a></span>
+  <span class="name"><a href="core_rust_api_probes_interface/">core/rust/api/probes/interface</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="target">
-  <span class="name"><a href="core_rust_api_probes_target/">core/rust/api/probes/target</a></span>
+  <span class="name"><a href="core_rust_api_probes_target/">core/rust/api/probes/target</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="traceroute">
-  <span class="name"><a href="core_rust_api_probes_traceroute/">core/rust/api/probes/traceroute</a></span>
+  <span class="name"><a href="core_rust_api_probes_traceroute/">core/rust/api/probes/traceroute</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="frb_generated">
-  <span class="name"><a href="core_rust_frb_generated/">core/rust/frb_generated</a></span>
+  <span class="name"><a href="core_rust_frb_generated/">core/rust/frb_generated</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="frb_generated.io">
-  <span class="name"><a href="core_rust_frb_generated.io/">core/rust/frb_generated.io</a></span>
+  <span class="name"><a href="core_rust_frb_generated.io/">core/rust/frb_generated.io</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="frb_generated.web">
-  <span class="name"><a href="core_rust_frb_generated.web/">core/rust/frb_generated.web</a></span>
+  <span class="name"><a href="core_rust_frb_generated.web/">core/rust/frb_generated.web</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="network_reachability">
-  <span class="name"><a href="network_reachability/">network_reachability</a></span>
+  <span class="name"><a href="network_reachability/">network_reachability</a></span> 
 
 </dt>
 <dd>A comprehensive networking library for Dart and Flutter, built on a powerful Rust core.
@@ -344,7 +487,7 @@ Future&lt;void&gt; initializeWithCustomConfig() async {
     network_reachability
       1.0.0
   </span>
-
+  
 </footer>
 
 

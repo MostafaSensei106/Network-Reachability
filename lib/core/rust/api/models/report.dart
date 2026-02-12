@@ -131,7 +131,7 @@ class NetworkStatus {
   /// The label of the target that responded fastest in the final sample.
   final String winnerTarget;
 
-  /// A high-level summary of the network state at a given time.
+  /// The label of the target that responded fastest in the final sample.
 
   const NetworkStatus({
     required this.isConnected,

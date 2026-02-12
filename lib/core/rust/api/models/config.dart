@@ -64,7 +64,7 @@ class NetworkConfiguration {
   /// Resilience and performance tuning settings.
   final ResilienceConfig resilience;
 
-  /// The main configuration for the network reachability engine.
+  ///The main configuration for the network reachability engine.
 
   const NetworkConfiguration({
     required this.targets,
@@ -174,6 +174,7 @@ class ResilienceConfig {
   final double criticalPacketLossPrecent;
 
   /// Configuration for resilience and performance tuning.
+
   const ResilienceConfig({
     required this.strategy,
     required this.circuitBreakerThreshold,
@@ -184,6 +185,7 @@ class ResilienceConfig {
   });
 
   /// Creates a default configuration with checks against Cloudflare and Google DNS.
+
   static Future<ResilienceConfig> default_() =>
       RustLib.instance.api.crateApiModelsConfigResilienceConfigDefault();
 
@@ -231,7 +233,7 @@ class SecurityConfig {
     required this.allowedInterfaces,
   });
 
-  /// Creates a default configuration
+  /// Creates a default configuration with checks against Cloudflare and Google DNS.
   static Future<SecurityConfig> default_() =>
       RustLib.instance.api.crateApiModelsConfigSecurityConfigDefault();
 

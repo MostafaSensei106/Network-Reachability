@@ -73,7 +73,6 @@ class SecurityFlags {
   final String interfaceName;
 
   /// A report of security-related attributes of the current network connection.
-
   const SecurityFlags({
     required this.isVpnDetected,
     required this.isDnsSpoofed,
@@ -81,7 +80,7 @@ class SecurityFlags {
     required this.interfaceName,
   });
 
-  /// The default value
+  /// A report of security-related attributes of the current network connection.
   static Future<SecurityFlags> default_() =>
       RustLib.instance.api.crateApiModelsNetInfoSecurityFlagsDefault();
 
@@ -117,7 +116,7 @@ class TraceHop {
   /// The round-trip time to this hop in milliseconds.
   final BigInt? latencyMs;
 
-  /// Represents a single hop in a traceroute path.
+  //// Represents a single hop in a traceroute path.
 
   const TraceHop({
     required this.hopNumber,

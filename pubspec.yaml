@@ -1,14 +1,28 @@
 name: network_reachability
-description: A starting point for Dart libraries or applications.
+description: An advanced network monitoring and resilience library for Flutter, powered by a high-performance Rust core.
 
 version: 1.0.0
-repository: https://github.com/my_org/my_repo
+repository: https://github.com/MostafaSensei106/Network-Reachability
+
+
+funding:
+  - https://github.com/sponsors/MostafaSensei106
+  - https://buymeacoffee.com/7yz1lqkegy
+  - https://ipn.eg/S/mostafasensei106/instapay/0dlUfz
+
+
+topics:
+  - network
+  - reachability
+  - connectivity
+  - utils
+
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
-  flutter_rust_bridge: 2.11.1
+  flutter_rust_bridge: ^2.11.1
   rust_lib_network_reachability:
     path: rust_builder
 

@@ -60,6 +60,17 @@
     
 <section class="desc markdown">
   <p>Enum representing specific security issues.</p>
+<p>This enum is used by the <code>guard</code> function to throw
+<a href="../core_err_exceptions/SecurityException-class.html">SecurityException</a>s when specific security issues are
+detected.</p>
+<p>The possible values of this enum are:</p>
+<ul>
+<li><a href="../core_constants_enums/SecurityAlert.html">vpnDetected</a>: the VPN connection is not allowed.</li>
+<li><a href="../core_constants_enums/SecurityAlert.html">dnsHijackDetected</a>: DNS hijacking was detected.</li>
+<li><a href="../core_constants_enums/SecurityAlert.html">proxyDetected</a>: a proxy server was detected.</li>
+<li><a href="../core_constants_enums/SecurityAlert.html">unallowedInterface</a>: the active interface is not allowed.</li>
+</ul>
+<p>See also <code>guard</code>.</p>
 </section>
 
 
@@ -98,7 +109,7 @@
 
 </dt>
 <dd>
-  
+  <p>The VPN connection is not allowed.</p>
   
 
 </dd>
@@ -110,7 +121,7 @@
 
 </dt>
 <dd>
-  
+  <p>DNS hijacking was detected.</p>
   
 
 </dd>
@@ -122,7 +133,7 @@
 
 </dt>
 <dd>
-  
+  <p>A proxy server was detected.</p>
   
 
 </dd>
@@ -134,7 +145,7 @@
 
 </dt>
 <dd>
-  
+  <p>The active interface is not allowed.</p>
   
 
 </dd>

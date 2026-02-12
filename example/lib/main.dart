@@ -23,7 +23,9 @@ Future<void> main() async {
   // Initializes the NetworkReachability singleton. You can pass a custom
   // configuration here, but for this example, we'll use the default.
   // The default configuration checks against reliable public DNS servers.
-  await NetworkReachability.init();
+  final config = NetworkConfiguration.default_();
+
+  await NetworkReachability.init(config: await config);
 
   // Run the Flutter application.
   runApp(const MyApp());
@@ -167,6 +169,9 @@ class _NetworkDemoPageState extends State<NetworkDemoPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Network Reachability'),
+        scrolledUnderElevation: 0,
+        elevation: 0.0,
+        backgroundColor: Colors.transparent,
         actions: [
           // Show a loading indicator in the app bar if a check is in progress.
           if (_isLoading)
@@ -277,18 +282,23 @@ class _NetworkReportView extends StatelessWidget {
           title: 'Latency & Stability',
           children: [
             _buildInfoRow(
+              'Stability Score:',
+              '${status.latencyStats.stabilityScore}/100',
+            ),
+            _buildInfoRow(
               'Average Latency:',
               '${status.latencyStats.avgLatencyMs ?? 'N/A'} ms',
+            ),
+            _buildInfoRow('Max Latency','${status.latencyStats.maxLatencyMs ?? 'N/A'} ms',
+            ),
+            _buildInfoRow('Min Latency','${status.latencyStats.minLatencyMs ?? 'N/A'} ms',
             ),
             _buildInfoRow('Jitter:', '${status.latencyStats.jitterMs} ms'),
             _buildInfoRow(
               'Packet Loss:',
-              '${status.latencyStats.packetLossPercent.toStringAsFixed(1)}%',
+              '${status.latencyStats.packetLossPercent}%',
             ),
-            _buildInfoRow(
-              'Stability Score:',
-              '${status.latencyStats.stabilityScore}/100',
-            ),
+
           ],
         ),
 
