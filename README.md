@@ -3,6 +3,7 @@
 A powerful and robust network monitoring and reachability library for Flutter, backed by a high-performance Rust core. Designed for applications that require reliable, detailed, and secure network state awareness, such as banking and enterprise apps.
 
 This library provides a rich set of features including:
+
 - **Comprehensive Network Reports:** Get detailed information about connection quality, latency, jitter, and packet loss.
 - **Smart Guard Function:** Protect critical network operations by ensuring connection quality and security policies are met before execution.
 - **Circuit Breaker:** Automatically halt requests to unstable backends to prevent cascading failures.
@@ -18,12 +19,7 @@ Follow these steps to integrate Flux-Net into your Flutter project.
 
 First, you need to add the library to your `pubspec.yaml`.
 
-*(Note: This library is not yet published on pub.dev. The following is a placeholder for when it is.)*
-
-```yaml
-dependencies:
-  flux_net: ^1.0.0
-```
+_(Note: This library is not yet published on pub.dev. The following is a placeholder for when it is.)_
 
 You will also need to set up `flutter_rust_bridge` according to its documentation to link the Rust core with your Flutter application.
 
