@@ -1,7 +1,25 @@
+//! Probe for detecting captive portals.
+
 use crate::api::{constants::AppConstants, models::CaptivePortalStatus};
 use std::time::Duration;
 
-/// Checks for the presence of a captive portal by sending a request to a known non-SSL site.
+/// Checks for the presence of a captive portal.
+///
+/// A captive portal is a web page that a user on a public-access network must
+/// view and interact with before being granted broader access to network resources.
+///
+/// This function works by sending an HTTP GET request to a known, non-SSL site
+/// (`http://neverssl.com`). If the request is redirected, it indicates the
+/// presence of a captive portal.
+///
+/// # Arguments
+///
+/// * `timeout_ms` - The maximum time in milliseconds to wait for the request to complete.
+///
+/// # Returns
+///
+/// A [CaptivePortalStatus] struct indicating whether a portal was detected and
+/// the final URL after any redirects.
 pub async fn check_for_captive_portal(timeout_ms: u64) -> CaptivePortalStatus {
     let client = match reqwest::ClientBuilder::new()
         .redirect(reqwest::redirect::Policy::limited(5)) // Follow up to 5 redirects

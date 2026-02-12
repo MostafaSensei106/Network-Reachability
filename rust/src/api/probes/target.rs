@@ -1,3 +1,5 @@
+//! Probe for checking a single network target.
+
 use std::time::{Duration, Instant};
 use tokio::{
     net::{TcpStream, UdpSocket},
@@ -6,14 +8,34 @@ use tokio::{
 
 use crate::api::models::{NetworkError, NetworkTarget, TargetProtocol, TargetReport};
 
-/// Performs a network check against a single target.
+/// Performs a network check against a single, specified target.
+///
+/// This function attempts to establish a connection to the given `target` using
+/// the specified protocol (TCP or UDP) and within the specified timeout.
+///
+/// - For TCP, it attempts a `TcpStream::connect`.
+/// - For UDP, it binds a local socket, connects to the target address, and sends a
+///   single-byte payload. The operation is considered successful if the `send`
+///   completes without error. It does not wait for a response.
+///
+/// # Arguments
+///
+/// * `target` - A reference to the [NetworkTarget] to be checked.
+///
+/// # Returns
+///
+/// A [TargetReport] containing the outcome of the check.
+/// - On success: `success` is true, `latency_ms` is the time taken, and `error` is None.
+/// - On failure: `success` is false, `latency_ms` is 0, and `error` contains a
+///   description of the failure (e.g., DNS error, connection error, timeout).
 pub async fn check_target(target: &NetworkTarget) -> TargetReport {
     let start = Instant::now();
     let addr_str = format!("{}:{}", target.host, target.port);
     let timeout_duration = Duration::from_millis(target.timeout_ms);
 
-    // This internal async block helps manage the timeout across the entire operation.
-    let result: Result<(), NetworkError> = async {
+    // This internal async block helps manage the timeout across the entire operation,
+    // including DNS resolution and the connection attempt.
+    let result: Result<(), NetworkError> = timeout(timeout_duration, async {
         let mut addrs = tokio::net::lookup_host(&addr_str)
             .await
             .map_err(|e| NetworkError::DnsResolutionError(e.to_string()))?;
@@ -31,6 +53,11 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
             }
             TargetProtocol::Udp => {
+                // For UDP, we can't truly "connect" in the same way as TCP.
+                // We bind a socket and send a small packet. If the send succeeds,
+                // we consider it a success. An ICMP "Port Unreachable" might be returned
+                // by the OS, but handling that reliably across platforms is complex.
+                // A successful send is a good-enough indicator for reachability.
                 let socket = UdpSocket::bind("0.0.0.0:0")
                     .await
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
@@ -38,23 +65,17 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
                     .connect(&addr)
                     .await
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
-
-                // For UDP, we send a small packet. A successful send is a good sign,
-                // but we don't wait for a reply as it's often not guaranteed (e.g., DNS servers).
-                // A more advanced check could expect an ICMP port unreachable if the port is closed.
-                let send_buf = [0u8; 1];
                 socket
-                    .send(&send_buf)
+                    .send(&[0])
                     .await
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
             }
         }
         Ok(())
-    }
+    })
     .await;
 
-    // Apply the overall timeout
-    match timeout(timeout_duration, async { result }).await {
+    match result {
         Ok(Ok(_)) => {
             // The operation inside succeeded within the timeout
             let latency = start.elapsed().as_millis() as u64;
@@ -81,7 +102,7 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
             TargetReport {
                 label: target.label.clone(),
                 success: false,
-                latency_ms: 9999999,
+                latency_ms: 999_999, // A large value to indicate timeout
                 error: Some(NetworkError::TimeoutError.to_string()),
                 is_essential: target.is_essential,
             }

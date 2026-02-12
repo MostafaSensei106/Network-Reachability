@@ -10,13 +10,28 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`, `fmt`
 
+/// A collection of statistical metrics for a series of latency samples.
 class LatencyStats {
+  /// The final, representative latency value, typically the mean.
   final BigInt latencyMs;
+
+  /// The standard deviation of the latency samples, representing jitter.
   final BigInt jitterMs;
+
+  /// The percentage of failed samples out of the total expected.
   final double packetLossPercent;
+
+  /// The minimum latency recorded in the sample set.
   final BigInt? minLatencyMs;
+
+  /// The average latency of the sample set.
   final BigInt? avgLatencyMs;
+
+  /// The maximum latency recorded in the sample set.
   final BigInt? maxLatencyMs;
+
+  /// A calculated score from 0-100 representing connection stability,
+  /// factoring in jitter, packet loss, and latency spikes.
   final int stabilityScore;
 
   const LatencyStats({
@@ -53,21 +68,21 @@ class LatencyStats {
           stabilityScore == other.stabilityScore;
 }
 
-/// The top-level report containing all information about a network check.
+/// The top-level report containing all information from a comprehensive network check.
 class NetworkReport {
   /// The timestamp (in milliseconds since epoch) when the check was initiated.
   final BigInt timestampMs;
 
-  /// The detailed status of the network connection.
+  /// The high-level status and quality summary of the network connection.
   final NetworkStatus status;
 
-  /// The detected type of the active network connection (WiFi, Cellular, etc.).
+  /// The detected type of the active network connection (e.g., WiFi, Cellular).
   final ConnectionType connectionType;
 
-  /// Security-related flags for the connection.
+  /// Security-related flags for the connection (e.g., VPN, DNS spoofing).
   final SecurityFlags securityFlags;
 
-  /// A list of reports for each individual target that was checked.
+  /// A list of detailed reports for each individual target that was checked.
   final List<TargetReport> targetReports;
 
   const NetworkReport({
@@ -98,11 +113,18 @@ class NetworkReport {
           targetReports == other.targetReports;
 }
 
-/// A comprehensive snapshot of the network state at a given time.
+/// A high-level summary of the network state at a given time.
 class NetworkStatus {
+  /// True if a connection to any target was successfully established.
   final bool isConnected;
+
+  /// The overall calculated quality of the connection.
   final ConnectionQuality quality;
+
+  /// Detailed statistics about latency and stability.
   final LatencyStats latencyStats;
+
+  /// The label of the target that responded fastest in the final sample.
   final String winnerTarget;
 
   const NetworkStatus({
@@ -130,11 +152,21 @@ class NetworkStatus {
           winnerTarget == other.winnerTarget;
 }
 
+/// The result of a check against a single network target.
 class TargetReport {
+  /// The unique label for the target.
   final String label;
+
+  /// True if the check was successful.
   final bool success;
+
+  /// The latency of the successful check in milliseconds.
   final BigInt latencyMs;
+
+  /// An error message if the check failed.
   final String? error;
+
+  /// Whether this target is considered essential for the overall check.
   final bool isEssential;
 
   const TargetReport({

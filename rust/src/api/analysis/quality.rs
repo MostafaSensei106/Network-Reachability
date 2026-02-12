@@ -1,6 +1,17 @@
+//! Functions for analyzing latency data to determine connection quality and stability.
+
 use crate::api::models::{ConnectionQuality, QualityThresholds};
 
-/// Evaluates connection quality based on latency against a set of thresholds.
+/// Evaluates connection quality based on a latency value and a set of thresholds.
+///
+/// # Arguments
+///
+/// * `latency` - The latency value in milliseconds.
+/// * `threshold` - A reference to the [QualityThresholds] to compare against.
+///
+/// # Returns
+///
+/// A [ConnectionQuality] enum variant representing the quality level.
 pub fn evaluate_quality(latency: u64, threshold: &QualityThresholds) -> ConnectionQuality {
     if latency <= threshold.excellent {
         ConnectionQuality::Excellent
@@ -13,13 +24,31 @@ pub fn evaluate_quality(latency: u64, threshold: &QualityThresholds) -> Connecti
     } else if latency <= threshold.poor {
         ConnectionQuality::Poor
     } else {
+        // If latency is higher than the 'poor' threshold, it's considered unusable
+        // for many applications, effectively offline for quality purposes.
         ConnectionQuality::Offline
     }
 }
 
 /// Calculates statistical metrics for a series of latency samples.
 ///
-/// Returns a tuple containing: (min, max, mean, standard_deviation).
+/// This function computes the minimum, maximum, and mean latency, along with the
+/// standard deviation, which is used as a measure of jitter.
+///
+/// # Arguments
+///
+/// * `latencies` - A slice of u64 latency values in milliseconds.
+///
+/// # Returns
+///
+/// A tuple containing:
+/// 1. `Option<u64>`: Minimum latency.
+/// 2. `Option<u64>`: Maximum latency.
+/// 3. `Option<u64>`: Mean (average) latency.
+/// 4. `Option<f64>`: Standard deviation (jitter).
+///
+/// Returns `(None, None, None, None)` if the input slice is empty.
+/// Jitter will be `None` if there are fewer than two samples.
 pub fn calculate_jitter_stats(
     latencies: &[u64],
 ) -> (Option<u64>, Option<u64>, Option<u64>, Option<f64>) {
@@ -51,6 +80,7 @@ pub fn calculate_jitter_stats(
             diff * diff
         })
         .sum();
+    // Use (count - 1) for sample standard deviation
     let std_dev = (variance_sum / (count as f64 - 1.0)).sqrt();
 
     (

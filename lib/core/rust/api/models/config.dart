@@ -9,36 +9,50 @@ import 'target.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
 
+/// Defines the strategy for evaluating multiple targets.
 enum CheckStrategy {
   /// The first target to respond successfully determines the result.
+  /// This is faster but less reliable.
   race,
 
-  /// A majority of targets must respond successfully.
+  /// A majority of targets must respond successfully for the check to be
+  /// considered a success. This is slower but more robust.
   consensus,
   ;
 }
 
+/// Represents the perceived quality of the network connection.
 enum ConnectionQuality {
+  /// Excellent connection, very low latency. Suitable for all tasks.
   excellent,
+
+  /// Great connection, low latency. Suitable for most tasks.
   great,
+
+  /// Good, usable connection.
   good,
+
+  /// Moderate connection, noticeable latency. May affect real-time applications.
   moderate,
+
+  /// Poor connection, high latency. Basic browsing may be slow.
   poor,
 
-  /// Connection is active but latency is highly variable.
+  /// Connection is active, but packet loss or high jitter makes it unreliable.
   unstable,
 
-  /// No connection.
+  /// No connection detected or all essential targets failed.
   offline,
   ;
 }
 
 /// The main configuration for the network reachability engine.
 class NetworkConfiguration {
-  /// The list of targets to check.
+  /// A list of network endpoints to check.
   final List<NetworkTarget> targets;
 
-  /// The time between automatic checks. 0 to disable.
+  /// The time in milliseconds between automatic periodic checks.
+  /// A value of 0 disables periodic checks.
   final BigInt checkIntervalMs;
 
   /// Latency thresholds for determining connection quality.
@@ -47,7 +61,7 @@ class NetworkConfiguration {
   /// Security-related settings.
   final SecurityConfig security;
 
-  /// Resilience and performance settings.
+  /// Resilience and performance tuning settings.
   final ResilienceConfig resilience;
 
   const NetworkConfiguration({
@@ -58,6 +72,7 @@ class NetworkConfiguration {
     required this.resilience,
   });
 
+  /// Creates a default configuration with checks against Cloudflare and Google DNS.
   static Future<NetworkConfiguration> default_() =>
       RustLib.instance.api.crateApiModelsConfigNetworkConfigurationDefault();
 
@@ -81,11 +96,21 @@ class NetworkConfiguration {
           resilience == other.resilience;
 }
 
+/// Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
 class QualityThresholds {
+  /// Latency at or below this value is 'Excellent'.
   final BigInt excellent;
+
+  /// Latency at or below this value is 'Great'.
   final BigInt great;
+
+  /// Latency at or below this value is 'Good'.
   final BigInt good;
+
+  /// Latency at or below this value is 'Moderate'.
   final BigInt moderate;
+
+  /// Latency at or below this value is 'Poor'. Anything higher is 'Unstable'.
   final BigInt poor;
 
   const QualityThresholds({
@@ -119,24 +144,28 @@ class QualityThresholds {
           poor == other.poor;
 }
 
-/// Configuration for resilience and performance features.
+/// Configuration for resilience and performance tuning.
 class ResilienceConfig {
   /// The strategy to use for checking multiple targets.
   final CheckStrategy strategy;
 
-  /// The number of consecutive failures before the circuit breaker opens. 0 to disable.
+  /// The number of consecutive failures of essential targets before the
+  /// circuit breaker opens. A value of 0 disables the circuit breaker.
   final int circuitBreakerThreshold;
 
-  /// Number of samples for jitter analysis. Must be > 1 to enable jitter check.
+  /// Number of samples to take for jitter and stability analysis.
+  /// Must be greater than 1 to enable jitter calculation.
   final int numJitterSamples;
 
-  /// The percentage of mean latency that the standard deviation must exceed to be marked as 'Unstable'.
+  /// The percentage of mean latency that the standard deviation must exceed
+  /// to be considered high jitter, potentially downgrading quality.
   final double jitterThresholdPercent;
 
-  /// if score is less than this value, the target is considered unstable for examples 70-80%
+  /// If the calculated stability score is less than this value, the quality
+  /// may be downgraded.
   final int stabilityThershold;
 
-  /// The maximum percentage of packetloss that can not be ignored
+  /// The packet loss percentage above which the connection is marked as 'Unstable'.
   final double criticalPacketLossPrecent;
 
   const ResilienceConfig({
@@ -175,13 +204,16 @@ class ResilienceConfig {
 
 /// Configuration for security-related checks.
 class SecurityConfig {
-  /// If true, the check will fail if a VPN is detected.
+  /// If true, the `guard` function will throw an exception if a VPN is detected.
   final bool blockVpn;
 
   /// If true, performs a check to detect potential DNS hijacking.
+  /// This adds a small latency to each check.
   final bool detectDnsHijack;
 
-  /// A list of allowed interface prefixes. If not empty, the check will fail if the active interface is not on this list.
+  /// A list of allowed interface name prefixes (e.g., "en", "wlan").
+  /// If not empty, the `guard` will fail if the active interface
+  /// does not match one of the prefixes.
   final List<String> allowedInterfaces;
 
   const SecurityConfig({

@@ -7,5 +7,23 @@ import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// Detects potential DNS hijacking by comparing system DNS resolution with a trusted DoH resolver.
+///
+/// This works by:
+/// 1. Resolving the given `domain` using the operating system's configured DNS resolver.
+/// 2. Resolving the same `domain` using a hardcoded, trusted DNS-over-HTTPS (DoH)
+///    resolver (Cloudflare's 1.1.1.1).
+/// 3. Comparing the sets of IP addresses returned. If the system's resolved IPs are not a
+///    perfect subset of the DoH-resolved IPs, it suggests that the system's DNS
+///    responses may have been tampered with.
+///
+/// # Arguments
+///
+/// * `domain` - The domain name to use for the check (e.g., "google.com").
+///
+/// # Returns
+///
+/// Returns `true` if a discrepancy is found, indicating a potential DNS hijack.
+/// Returns `false` if the results match or if an error occurs during resolution
+/// (as a hijack cannot be definitively proven).
 Future<bool> detectDnsHijacking({required String domain}) =>
     RustLib.instance.api.crateApiProbesDnsDetectDnsHijacking(domain: domain);

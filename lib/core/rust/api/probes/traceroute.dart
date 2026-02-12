@@ -7,6 +7,25 @@ import '../../frb_generated.dart';
 import '../models/net_info.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+/// Performs a traceroute to a specified host.
+///
+/// This function discovers the network path by sending a series of UDP packets
+/// with incrementally increasing Time-To-Live (TTL) values. Each router along
+/// the path decrements the TTL. When the TTL reaches zero, the router sends back
+/// an ICMP "Time Exceeded" message. By capturing these messages, we can identify
+/// each hop in the path.
+///
+/// # Arguments
+///
+/// * `host` - The destination hostname or IP address (e.g., "google.com").
+/// * `max_hops` - The maximum number of hops (TTL value) to probe.
+/// * `timeout_per_hop_ms` - The time in milliseconds to wait for a response from each hop.
+///
+/// # Returns
+///
+/// A `Vec<TraceHop>` where each element represents a router or the final
+/// destination in the network path. Hops that time out will have an IP address
+/// of "*" and no latency information.
 Future<List<TraceHop>> traceRoute(
         {required String host,
         required int maxHops,

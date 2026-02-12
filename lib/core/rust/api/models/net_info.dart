@@ -8,8 +8,12 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`
 
+/// The result of a captive portal check.
 class CaptivePortalStatus {
+  /// True if a captive portal was detected (i.e., the probe was redirected).
   final bool isCaptivePortal;
+
+  /// The URL that the probe was redirected to, if a portal was detected.
   final String? redirectUrl;
 
   const CaptivePortalStatus({
@@ -29,22 +33,35 @@ class CaptivePortalStatus {
           redirectUrl == other.redirectUrl;
 }
 
+/// Represents the type of physical or logical network connection.
 enum ConnectionType {
+  /// A WiFi connection.
   wifi,
+
+  /// A mobile data connection (e.g., LTE, 5G).
   cellular,
+
+  /// A wired Ethernet connection.
   ethernet,
+
+  /// A Virtual Private Network connection.
   vpn,
+
+  /// A Bluetooth tethering connection.
   bluetooth,
+
+  /// The connection type could not be determined.
   unknown,
   ;
 }
 
-/// Comprehensive security report for the current network connection.
+/// A report of security-related attributes of the current network connection.
 class SecurityFlags {
   /// True if the active interface is a known VPN/tunnel type (e.g., 'tun', 'ppp').
   final bool isVpnDetected;
 
-  /// True if a DNS mismatch was found between system and trusted resolvers.
+  /// True if a DNS mismatch was found between system and trusted resolvers,
+  /// indicating a potential DNS hijacking or spoofing attack.
   final bool isDnsSpoofed;
 
   /// True if a system-level proxy is detected (future implementation).
@@ -81,10 +98,18 @@ class SecurityFlags {
           interfaceName == other.interfaceName;
 }
 
+/// Represents a single hop in a traceroute path.
 class TraceHop {
+  /// The hop number in the sequence (Time-To-Live value).
   final int hopNumber;
+
+  /// The IP address of the router at this hop. Can be "*" if the hop timed out.
   final String ipAddress;
+
+  /// The hostname resolved from the IP address, if available.
   final String? hostname;
+
+  /// The round-trip time to this hop in milliseconds.
   final BigInt? latencyMs;
 
   const TraceHop({

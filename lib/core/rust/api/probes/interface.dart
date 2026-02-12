@@ -7,6 +7,21 @@ import '../../frb_generated.dart';
 import '../models/net_info.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-/// Inspects system network interfaces to detect connection type and potential security flags like VPNs.
+/// Inspects system network interfaces to detect connection type and potential security flags.
+///
+/// This function iterates through the system's available network interfaces,
+/// skipping loopback and inactive ones. It identifies the most likely connection
+/// type (VPN, WiFi, Ethernet, etc.) based on common interface name prefixes
+/// (e.g., "tun", "wlan", "en").
+///
+/// A VPN connection is given the highest priority. If a VPN is detected, the
+/// connection type will be [ConnectionType::Vpn] and the relevant security flag
+/// will be set, regardless of other present interfaces.
+///
+/// # Returns
+///
+/// A tuple containing:
+/// 1. `SecurityFlags` - A struct with flags like `is_vpn_detected` and the active `interface_name`.
+/// 2. `ConnectionType` - The determined type of the network connection.
 Future<(SecurityFlags, ConnectionType)> detectSecurityAndNetworkType() =>
     RustLib.instance.api.crateApiProbesInterfaceDetectSecurityAndNetworkType();

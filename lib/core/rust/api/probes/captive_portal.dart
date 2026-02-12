@@ -7,7 +7,23 @@ import '../../frb_generated.dart';
 import '../models/net_info.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-/// Checks for the presence of a captive portal by sending a request to a known non-SSL site.
+/// Checks for the presence of a captive portal.
+///
+/// A captive portal is a web page that a user on a public-access network must
+/// view and interact with before being granted broader access to network resources.
+///
+/// This function works by sending an HTTP GET request to a known, non-SSL site
+/// (`http://neverssl.com`). If the request is redirected, it indicates the
+/// presence of a captive portal.
+///
+/// # Arguments
+///
+/// * `timeout_ms` - The maximum time in milliseconds to wait for the request to complete.
+///
+/// # Returns
+///
+/// A [CaptivePortalStatus] struct indicating whether a portal was detected and
+/// the final URL after any redirects.
 Future<CaptivePortalStatus> checkForCaptivePortal(
         {required BigInt timeoutMs}) =>
     RustLib.instance.api

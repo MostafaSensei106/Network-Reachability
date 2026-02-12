@@ -8,13 +8,29 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `eq`, `fmt`, `fmt`
 
+/// Defines a single network endpoint to be checked.
 class NetworkTarget {
+  /// A unique, human-readable label for this target (e.g., "Google DNS").
   final String label;
+
+  /// The hostname or IP address of the target.
   final String host;
+
+  /// The port number to connect to.
   final int port;
+
+  /// The protocol (TCP or UDP) to use for the check.
   final TargetProtocol protocol;
+
+  /// The timeout in milliseconds for this specific target check.
   final BigInt timeoutMs;
+
+  /// The priority of the target. While not used in the current engine logic,
+  /// it can be used by the caller for sorting or selection. (e.g., 1=High).
   final int priority;
+
+  /// If true, a failure to connect to this target will be considered a critical
+  /// failure, affecting the circuit breaker and potentially the overall check status.
   final bool isEssential;
 
   const NetworkTarget({
@@ -51,8 +67,12 @@ class NetworkTarget {
           isEssential == other.isEssential;
 }
 
+/// The network protocol to use for a check.
 enum TargetProtocol {
+  /// Use the Transmission Control Protocol (TCP). This is a reliable, connection-oriented protocol.
   tcp,
+
+  /// Use the User Datagram Protocol (UDP). This is a fast, connectionless protocol.
   udp,
   ;
 }

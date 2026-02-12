@@ -7,7 +7,16 @@ import '../../frb_generated.dart';
 import '../models/config.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-/// Evaluates connection quality based on latency against a set of thresholds.
+/// Evaluates connection quality based on a latency value and a set of thresholds.
+///
+/// # Arguments
+///
+/// * `latency` - The latency value in milliseconds.
+/// * `threshold` - A reference to the [QualityThresholds] to compare against.
+///
+/// # Returns
+///
+/// A [ConnectionQuality] enum variant representing the quality level.
 Future<ConnectionQuality> evaluateQuality(
         {required BigInt latency, required QualityThresholds threshold}) =>
     RustLib.instance.api.crateApiAnalysisQualityEvaluateQuality(
@@ -15,7 +24,23 @@ Future<ConnectionQuality> evaluateQuality(
 
 /// Calculates statistical metrics for a series of latency samples.
 ///
-/// Returns a tuple containing: (min, max, mean, standard_deviation).
+/// This function computes the minimum, maximum, and mean latency, along with the
+/// standard deviation, which is used as a measure of jitter.
+///
+/// # Arguments
+///
+/// * `latencies` - A slice of u64 latency values in milliseconds.
+///
+/// # Returns
+///
+/// A tuple containing:
+/// 1. `Option<u64>`: Minimum latency.
+/// 2. `Option<u64>`: Maximum latency.
+/// 3. `Option<u64>`: Mean (average) latency.
+/// 4. `Option<f64>`: Standard deviation (jitter).
+///
+/// Returns `(None, None, None, None)` if the input slice is empty.
+/// Jitter will be `None` if there are fewer than two samples.
 Future<(BigInt?, BigInt?, BigInt?, double?)> calculateJitterStats(
         {required Uint64List latencies}) =>
     RustLib.instance.api

@@ -1,3 +1,5 @@
+//! The core orchestration engine for network checks.
+
 use ::chrono::Utc;
 use ::futures::future::join_all;
 
@@ -10,6 +12,7 @@ use crate::api::{
     probes::{self, check_target, detect_security_and_network_type},
 };
 
+/// Collects multiple latency samples by running checks against all configured targets.
 async fn collect_network_samples(config: &NetworkConfiguration) -> (Vec<u64>, Vec<TargetReport>) {
     let mut all_sample_latencies = Vec::new();
     let mut final_reports = Vec::new();
@@ -28,6 +31,7 @@ async fn collect_network_samples(config: &NetworkConfiguration) -> (Vec<u64>, Ve
             all_sample_latencies.push(best_latency);
         }
 
+        // Only the reports from the very last sample run are stored.
         if sample_num == num_samples - 1 {
             final_reports = reports;
         }
@@ -36,6 +40,7 @@ async fn collect_network_samples(config: &NetworkConfiguration) -> (Vec<u64>, Ve
     (all_sample_latencies, final_reports)
 }
 
+/// Analyzes the results of a single sample run across all targets.
 fn analyze_single_sample(reports: &[TargetReport], config: &NetworkConfiguration) -> Option<u64> {
     let mut best_latency = u64::MAX;
     let mut success_count = 0;
@@ -74,6 +79,7 @@ fn analyze_single_sample(reports: &[TargetReport], config: &NetworkConfiguration
     }
 }
 
+/// Computes final latency and stability statistics from a set of samples.
 fn compute_latency_stats(latencies: &[u64], total_expected_samples: u8) -> LatencyStats {
     let successful_samples = latencies.len() as f32;
 
@@ -173,6 +179,7 @@ fn compute_latency_stats(latencies: &[u64], total_expected_samples: u8) -> Laten
     }
 }
 
+/// Evaluates the final network quality based on latency, stability, and packet loss.
 fn evaluate_network_quality(
     is_connected: bool,
     stats: &LatencyStats,
@@ -182,28 +189,34 @@ fn evaluate_network_quality(
         return ConnectionQuality::Offline;
     }
 
+    // First, determine quality based purely on latency
     let quality_based_on_speed = evaluate_quality(stats.latency_ms, &config.quality_threshold);
 
+    // Then, apply penalties that can downgrade the quality
     if stats.packet_loss_percent > config.resilience.critical_packet_loss_precent {
         return ConnectionQuality::Unstable;
     }
 
     if stats.stability_score < config.resilience.stability_thershold {
+        // If stability is poor, the best it can be is 'Good'
         return ConnectionQuality::Good;
     }
 
+    // An 'Excellent' connection requires high stability
     if quality_based_on_speed == ConnectionQuality::Excellent && stats.stability_score < 85 {
         return ConnectionQuality::Good;
     }
 
-    return quality_based_on_speed;
+    quality_based_on_speed
 }
 
+/// Runs the DNS hijack check if enabled in the configuration.
 async fn perform_dns_security_check(config: &NetworkConfiguration, flags: &mut SecurityFlags) {
     if !config.security.detect_dns_hijack {
         return;
     }
 
+    // Use an essential target if available, otherwise the first one, for the check.
     let target_to_check = config
         .targets
         .iter()
@@ -217,6 +230,7 @@ async fn perform_dns_security_check(config: &NetworkConfiguration, flags: &mut S
     }
 }
 
+/// Gets the label of the first successful target from a list of reports.
 fn get_winner_target(reports: &[TargetReport]) -> String {
     reports
         .iter()
@@ -226,7 +240,22 @@ fn get_winner_target(reports: &[TargetReport]) -> String {
 
 /// The main entry point for running a comprehensive network check.
 ///
-/// This function orchestrates the various probes and analyses based on the provided configuration.
+/// This function orchestrates the entire check process:
+/// 1. Records the start time.
+/// 2. Collects multiple latency samples by running probes against all configured targets.
+/// 3. Computes detailed latency and stability statistics from the samples.
+/// 4. Evaluates the final connection quality based on speed, jitter, and packet loss.
+/// 5. Detects the network interface type and checks for security issues like VPNs.
+/// 6. Performs a DNS hijacking check if configured.
+/// 7. Compiles all results into a single, comprehensive [NetworkReport].
+///
+/// # Arguments
+///
+/// * `config` - The [NetworkConfiguration] that defines how the check should be performed.
+///
+/// # Returns
+///
+/// A [NetworkReport] containing the complete results of the check.
 pub async fn check_network(config: NetworkConfiguration) -> NetworkReport {
     let start_time = Utc::now().timestamp_millis() as u64;
 
@@ -244,16 +273,16 @@ pub async fn check_network(config: NetworkConfiguration) -> NetworkReport {
 
     let winner_target = get_winner_target(&final_target_reports);
 
-    return NetworkReport {
+    NetworkReport {
         timestamp_ms: start_time,
         status: NetworkStatus {
-            is_connected: is_connected,
-            quality: quality,
-            latency_stats: latency_stats,
-            winner_target: winner_target,
+            is_connected,
+            quality,
+            latency_stats,
+            winner_target,
         },
-        connection_type: connection_type,
-        security_flags: security_flags,
+        connection_type,
+        security_flags,
         target_reports: final_target_reports,
-    };
+    }
 }

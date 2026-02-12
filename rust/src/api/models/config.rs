@@ -1,33 +1,50 @@
+//! Configuration-related data structures.
+
 use super::target::{NetworkTarget, TargetProtocol};
 use crate::api::constants::AppConstants;
 
+/// Defines the strategy for evaluating multiple targets.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum CheckStrategy {
     /// The first target to respond successfully determines the result.
+    /// This is faster but less reliable.
     Race,
-    /// A majority of targets must respond successfully.
+    /// A majority of targets must respond successfully for the check to be
+    /// considered a success. This is slower but more robust.
     Consensus,
 }
 
+/// Represents the perceived quality of the network connection.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ConnectionQuality {
+    /// Excellent connection, very low latency. Suitable for all tasks.
     Excellent,
+    /// Great connection, low latency. Suitable for most tasks.
     Great,
+    /// Good, usable connection.
     Good,
+    /// Moderate connection, noticeable latency. May affect real-time applications.
     Moderate,
+    /// Poor connection, high latency. Basic browsing may be slow.
     Poor,
-    /// Connection is active but latency is highly variable.
+    /// Connection is active, but packet loss or high jitter makes it unreliable.
     Unstable,
-    /// No connection.
+    /// No connection detected or all essential targets failed.
     Offline,
 }
 
+/// Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
 #[derive(Debug, Clone, Copy)]
 pub struct QualityThresholds {
+    /// Latency at or below this value is 'Excellent'.
     pub excellent: u64,
+    /// Latency at or below this value is 'Great'.
     pub great: u64,
+    /// Latency at or below this value is 'Good'.
     pub good: u64,
+    /// Latency at or below this value is 'Moderate'.
     pub moderate: u64,
+    /// Latency at or below this value is 'Poor'. Anything higher is 'Unstable'.
     pub poor: u64,
 }
 
@@ -46,28 +63,35 @@ impl Default for QualityThresholds {
 /// Configuration for security-related checks.
 #[derive(Debug, Clone, Default)]
 pub struct SecurityConfig {
-    /// If true, the check will fail if a VPN is detected.
+    /// If true, the `guard` function will throw an exception if a VPN is detected.
     pub block_vpn: bool,
     /// If true, performs a check to detect potential DNS hijacking.
+    /// This adds a small latency to each check.
     pub detect_dns_hijack: bool,
-    /// A list of allowed interface prefixes. If not empty, the check will fail if the active interface is not on this list.
+    /// A list of allowed interface name prefixes (e.g., "en", "wlan").
+    /// If not empty, the `guard` will fail if the active interface
+    /// does not match one of the prefixes.
     pub allowed_interfaces: Vec<String>,
 }
 
-/// Configuration for resilience and performance features.
+/// Configuration for resilience and performance tuning.
 #[derive(Debug, Clone)]
 pub struct ResilienceConfig {
     /// The strategy to use for checking multiple targets.
     pub strategy: CheckStrategy,
-    /// The number of consecutive failures before the circuit breaker opens. 0 to disable.
+    /// The number of consecutive failures of essential targets before the
+    /// circuit breaker opens. A value of 0 disables the circuit breaker.
     pub circuit_breaker_threshold: u8,
-    /// Number of samples for jitter analysis. Must be > 1 to enable jitter check.
+    /// Number of samples to take for jitter and stability analysis.
+    /// Must be greater than 1 to enable jitter calculation.
     pub num_jitter_samples: u8,
-    /// The percentage of mean latency that the standard deviation must exceed to be marked as 'Unstable'.
+    /// The percentage of mean latency that the standard deviation must exceed
+    /// to be considered high jitter, potentially downgrading quality.
     pub jitter_threshold_percent: f64,
-    /// if score is less than this value, the target is considered unstable for examples 70-80%
+    /// If the calculated stability score is less than this value, the quality
+    /// may be downgraded.
     pub stability_thershold: u8,
-    /// The maximum percentage of packetloss that can not be ignored
+    /// The packet loss percentage above which the connection is marked as 'Unstable'.
     pub critical_packet_loss_precent: f32,
 }
 
@@ -87,19 +111,21 @@ impl Default for ResilienceConfig {
 /// The main configuration for the network reachability engine.
 #[derive(Debug, Clone)]
 pub struct NetworkConfiguration {
-    /// The list of targets to check.
+    /// A list of network endpoints to check.
     pub targets: Vec<NetworkTarget>,
-    /// The time between automatic checks. 0 to disable.
+    /// The time in milliseconds between automatic periodic checks.
+    /// A value of 0 disables periodic checks.
     pub check_interval_ms: u64,
     /// Latency thresholds for determining connection quality.
     pub quality_threshold: QualityThresholds,
     /// Security-related settings.
     pub security: SecurityConfig,
-    /// Resilience and performance settings.
+    /// Resilience and performance tuning settings.
     pub resilience: ResilienceConfig,
 }
 
 impl Default for NetworkConfiguration {
+    /// Creates a default configuration with checks against Cloudflare and Google DNS.
     fn default() -> Self {
         Self {
             targets: vec![

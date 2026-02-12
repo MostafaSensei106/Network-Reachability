@@ -8,6 +8,25 @@ import '../models/report.dart';
 import '../models/target.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-/// Performs a network check against a single target.
+/// Performs a network check against a single, specified target.
+///
+/// This function attempts to establish a connection to the given `target` using
+/// the specified protocol (TCP or UDP) and within the specified timeout.
+///
+/// - For TCP, it attempts a `TcpStream::connect`.
+/// - For UDP, it binds a local socket, connects to the target address, and sends a
+///   single-byte payload. The operation is considered successful if the `send`
+///   completes without error. It does not wait for a response.
+///
+/// # Arguments
+///
+/// * `target` - A reference to the [NetworkTarget] to be checked.
+///
+/// # Returns
+///
+/// A [TargetReport] containing the outcome of the check.
+/// - On success: `success` is true, `latency_ms` is the time taken, and `error` is None.
+/// - On failure: `success` is false, `latency_ms` is 0, and `error` contains a
+///   description of the failure (e.g., DNS error, connection error, timeout).
 Future<TargetReport> checkTarget({required NetworkTarget target}) =>
     RustLib.instance.api.crateApiProbesTargetCheckTarget(target: target);

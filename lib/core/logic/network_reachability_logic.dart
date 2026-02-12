@@ -16,14 +16,18 @@ import '../rust/api/probes/traceroute.dart' as traceroute_probe;
 
 /// The main class for interacting with the network reachability engine.
 ///
-/// This class provides a high-level API for network checks, monitoring, and guarding operations.
-/// It should be initialized once using the static `init` method.
+/// This class provides a high-level API for performing network checks,
+/// monitoring network status changes, and guarding operations based on network
+/// quality and security requirements.
+///
+/// It operates as a singleton, which must be initialized once using the static
+/// [init] method before use.
 class NetworkReachability {
   static NetworkReachability? _instance;
 
   /// The singleton instance of the network reachability engine.
   ///
-  /// Must be initialized by calling `NetworkReachability.init()` before use.
+  /// An exception will be thrown if this is accessed before [init] is called.
   static NetworkReachability get instance {
     if (_instance == null) {
       throw Exception(
@@ -50,10 +54,12 @@ class NetworkReachability {
 
   /// Initializes the network reachability engine.
   ///
-  /// This must be called once before accessing the singleton instance.
-  /// The user of this library is responsible for calling `RustLib.init()` *before* this.
+  /// This must be called once before accessing the [instance]. It sets up the
+  /// singleton with the given configuration. The user of this library is
+  /// responsible for calling `RustLib.init()` *before* calling this method.
   ///
-  /// [config]: The configuration for the engine. If not provided, a default configuration is used.
+  /// - [config]: The configuration for the engine. If not provided, a default
+  ///   configuration is fetched from the underlying Rust implementation.
   static Future<void> init({NetworkConfiguration? config}) async {
     if (_instance != null) {
       _instance?.dispose();
@@ -67,12 +73,23 @@ class NetworkReachability {
 
   /// A stream of network status updates.
   ///
-  /// Emits a new `NetworkStatus` whenever a periodic check is completed.
+  /// This stream emits a new [NetworkStatus] whenever a periodic check is
+  /// completed successfully. The interval for these checks is defined by
+  /// `checkIntervalMs` in the [NetworkConfiguration].
+  ///
+  /// If periodic checks are disabled (`checkIntervalMs` is zero), this stream
+  /// will not emit any values.
   Stream<NetworkStatus> get onStatusChange => _statusController.stream;
 
-  /// Performs a single, one-off network check.
+  /// Performs a single, on-demand network check.
   ///
-  /// Returns a `NetworkReport` with detailed information about the connection.
+  /// This method orchestrates a comprehensive check based on the current
+  /// configuration, including running probes against all defined targets.
+  /// It also updates the internal circuit breaker state based on the outcome.
+  ///
+  /// Returns a [Future] that completes with a [NetworkReport] containing
+  /// detailed information about the connection, including quality, latency,
+  /// and security flags.
   Future<NetworkReport> check() async {
     final report = await rust_engine.checkNetwork(config: _config);
 
@@ -103,15 +120,19 @@ class NetworkReachability {
 
   /// A wrapper to protect network-dependent operations.
   ///
-  /// Before executing the [action], this method performs a fresh network check
-  /// and validates it against the provided [requirements] and the active [NetworkConfiguration].
+  /// Before executing the provided [action], this method performs a fresh
+  /// network check and validates it against the active [NetworkConfiguration]
+  /// and the [minQuality] requirement.
   ///
-
   /// It serves as a single point of truth to ensure that an operation is only
   /// attempted when the network state is acceptable.
   ///
-  /// Throws a [PoorConnectionException], [SecurityException], or [CircuitBreakerOpenException]
-  /// if the conditions are not met.
+  /// Throws a [PoorConnectionException], [SecurityException], or
+  /// [CircuitBreakerOpenException] if the conditions are not met.
+  ///
+  /// - [action]: The function to execute if all network checks pass.
+  /// - [minQuality]: The minimum required [ConnectionQuality] to proceed.
+  ///   Defaults to [ConnectionQuality.good].
   ///
   /// ### Example: Basic Usage
   ///
@@ -194,23 +215,59 @@ class NetworkReachability {
   }
 
   /// Checks for the presence of a captive portal.
+  ///
+  /// A captive portal is a web page that the user of a public-access network
+  /// is obliged to view and interact with before access is granted.
+  ///
+  /// - [timeoutMs]: The maximum time to wait for the check to complete.
+  ///
+  /// Returns a [CaptivePortalStatus] indicating whether a portal was detected
+  /// and the URL it redirected to.
   Future<CaptivePortalStatus> checkForCaptivePortal(
           {required BigInt timeoutMs}) =>
       captive_portal_probe.checkForCaptivePortal(timeoutMs: timeoutMs);
 
   /// Detects potential DNS hijacking.
+  ///
+  /// This is done by comparing the DNS resolution results from the system's
+  /// resolver with a trusted DNS-over-HTTPS (DoH) resolver.
+  ///
+  /// - [domain]: The domain to use for the comparison (e.g., "google.com").
+  ///
+  /// Returns `true` if a mismatch is found, suggesting a potential hijack.
   Future<bool> detectDnsHijacking({required String domain}) =>
       dns_probe.detectDnsHijacking(domain: domain);
 
-  /// Detects security flags and network connection type.
+  /// Inspects system network interfaces to detect connection type and security flags.
+  ///
+  /// This can identify the active network interface and determine if it's a
+  /// known VPN, cellular, WiFi, or Ethernet connection.
+  ///
+  /// Returns a tuple containing the [SecurityFlags] and the detected [ConnectionType].
   Future<(SecurityFlags, ConnectionType)> detectSecurityAndNetworkType() =>
       interface_probe.detectSecurityAndNetworkType();
 
-  /// Performs a network check against a single target.
+  /// Performs a network check against a single, specified target.
+  ///
+  /// This is useful for testing a specific endpoint without running a full
+  /// check against all configured targets.
+  ///
+  /// - [target]: The [NetworkTarget] to check.
+  ///
+  /// Returns a [TargetReport] with the results of the check.
   Future<TargetReport> checkTarget({required NetworkTarget target}) =>
       target_probe.checkTarget(target: target);
 
-  /// Traces the route to a host.
+  /// Traces the network path to a specified host.
+  ///
+  /// This method sends packets with increasing TTLs to discover the
+  /// intermediate routers between the device and the destination.
+  ///
+  /// - [host]: The destination host (e.g., "google.com").
+  /// - [maxHops]: The maximum number of hops to trace.
+  /// - [timeoutPerHopMs]: The timeout for each individual hop.
+  ///
+  /// Returns a list of [TraceHop] objects, each representing a step in the path.
   Future<List<TraceHop>> traceRoute(
           {required String host,
           required int maxHops,
@@ -233,7 +290,11 @@ class NetworkReachability {
     }
   }
 
-  /// Disposes of the engine and cleans up resources.
+  /// Disposes of the engine and cleans up all resources.
+  ///
+  /// This method cancels any active timers and closes the status stream.
+  /// It should be called when the [NetworkReachability] instance is no longer needed
+  /// to prevent memory leaks.
   void dispose() {
     _periodicTimer?.cancel();
     _statusController.close();
