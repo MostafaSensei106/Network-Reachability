@@ -59,7 +59,7 @@
         <li>@<a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated/protected-constant.html">protected</a></li>
     </ol>
   </div>
-<span class="returntype"><a href="../../core_rust_api_models/NetworkStatus-class.html">NetworkStatus</a></span>
+<span class="returntype"><a href="../../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span>
 <span class="name ">dco_decode_network_status</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="dco_decode_network_status-param-raw"><span class="type-annotation">dynamic</span> <span class="parameter-name">raw</span></span></li>
 </ol>)
 
@@ -76,17 +76,13 @@
 NetworkStatus dco_decode_network_status(dynamic raw) {
   &#47;&#47; Codec=Dco (DartCObject based), see doc to use other codecs
   final arr = raw as List&lt;dynamic&gt;;
-  if (arr.length != 8)
-    throw Exception(&#39;unexpected arr length: expect 8 but see ${arr.length}&#39;);
+  if (arr.length != 4)
+    throw Exception(&#39;unexpected arr length: expect 4 but see ${arr.length}&#39;);
   return NetworkStatus(
     isConnected: dco_decode_bool(arr[0]),
     quality: dco_decode_connection_quality(arr[1]),
-    latencyMs: dco_decode_u_64(arr[2]),
+    latencyStats: dco_decode_latency_stats(arr[2]),
     winnerTarget: dco_decode_String(arr[3]),
-    minLatencyMs: dco_decode_opt_box_autoadd_u_64(arr[4]),
-    maxLatencyMs: dco_decode_opt_box_autoadd_u_64(arr[5]),
-    meanLatencyMs: dco_decode_opt_box_autoadd_u_64(arr[6]),
-    stdDevLatencyMs: dco_decode_opt_box_autoadd_f_64(arr[7]),
   );
 }</code></pre>
 </section>

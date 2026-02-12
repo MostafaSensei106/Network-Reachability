@@ -42,11 +42,143 @@
 <main>
   <div id="dartdoc-main-content" class="main-content">
       
+<section class="desc markdown">
+  <h1 id="flux-net-formerly-network-reachability">Flux-Net (formerly Network Reachability)</h1>
+<p>A powerful and robust network monitoring and reachability library for Flutter, backed by a high-performance Rust core. Designed for applications that require reliable, detailed, and secure network state awareness, such as banking and enterprise apps.</p>
+<p>This library provides a rich set of features including:</p>
+<ul>
+<li><strong>Comprehensive Network Reports:</strong> Get detailed information about connection quality, latency, jitter, and packet loss.</li>
+<li><strong>Smart Guard Function:</strong> Protect critical network operations by ensuring connection quality and security policies are met before execution.</li>
+<li><strong>Circuit Breaker:</strong> Automatically halt requests to unstable backends to prevent cascading failures.</li>
+<li><strong>Advanced Security Probes:</strong> Detect VPNs, DNS spoofing, and restrictive network interfaces.</li>
+<li><strong>High-Level Dart API:</strong> Enjoy a clean, easy-to-use Dart interface over a powerful Rust engine.</li>
+<li><strong>Configurable &amp; Extensible:</strong> Fine-tune the engine's behavior with detailed configuration for targets, quality thresholds, and security policies.</li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<p>Follow these steps to integrate Flux-Net into your Flutter project.</p>
+<h3 id="1-installation">1. Installation</h3>
+<p>First, you need to add the library to your <code>pubspec.yaml</code>.</p>
+<p><em>(Note: This library is not yet published on pub.dev. The following is a placeholder for when it is.)</em></p>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  flux_net: ^1.0.0
+</code></pre>
+<p>You will also need to set up <code>flutter_rust_bridge</code> according to its documentation to link the Rust core with your Flutter application.</p>
+<h3 id="2-initialize-the-library">2. Initialize the Library</h3>
+<p>Before using any of the library's features, you must initialize it. This should typically be done in your <code>main()</code> function, after ensuring the Flutter bindings are initialized and the Rust library is loaded.</p>
+<pre class="language-dart"><code class="language-dart">import 'package:flutter/material.dart';
+import 'package:flux_net/network_reachability.dart';
+// Import your generated Rust library bindings
+import 'package:flux_net/core/rust/frb_generated.dart';
+
+Future&lt;void&gt; main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 1. Initialize the Rust library
+  // This is a prerequisite for Flux-Net
+  await RustLib.init();
+
+  // 2. Initialize Flux-Net
+  // You can initialize with a default or custom configuration
+  await NetworkReachability.init();
+
+  runApp(const MyApp());
+}
+</code></pre>
+<h3 id="3-basic-usage">3. Basic Usage</h3>
+<p>Once initialized, you can access the <code>NetworkReachability</code> singleton instance anywhere in your app.</p>
+<h4 id="performing-a-one-off-check">Performing a One-off Check</h4>
+<p>To get a detailed, on-demand report of the current network status, use the <code>check()</code> method.</p>
+<pre class="language-dart"><code class="language-dart">import 'package:flux_net/network_reachability.dart';
+
+Future&lt;void&gt; printNetworkStatus() async {
+  final report = await NetworkReachability.instance.check();
+
+  if (report.status.isConnected) {
+    print('Network is connected!');
+    print('Quality: ${report.status.quality.name}');
+    print('Latency: ${report.status.latencyMs}ms');
+    print('Jitter: ${report.status.jitterMs}ms');
+    print('Packet Loss: ${report.status.packetLossPercent.toStringAsFixed(2)}%');
+  } else {
+    print('Network is disconnected.');
+  }
+}
+</code></pre>
+<h4 id="listening-for-status-changes">Listening for Status Changes</h4>
+<p>Flux-Net can perform periodic checks and notify your app of any status changes through a <code>Stream</code>.</p>
+<pre class="language-dart"><code class="language-dart">void listenToNetworkChanges() {
+  final subscription = NetworkReachability.instance.onStatusChange.listen((status) {
+    print('Network status updated: ${status.quality.name}');
+  });
+
+  // Don't forget to cancel the subscription when you're done!
+  // subscription.cancel();
+}
+</code></pre>
+<h4 id="protecting-network-calls-with-guard">Protecting Network Calls with <code>guard()</code></h4>
+<p>The <code>guard()</code> method is the library's most powerful feature. It ensures that a network operation only runs if the connection meets your quality and security requirements.</p>
+<pre class="language-dart"><code class="language-dart">Future&lt;void&gt; fetchSensitiveData() async {
+  try {
+    final data = await NetworkReachability.instance.guard(
+      // The action to perform if the checks pass
+      action: () =&gt; myApi.fetchData(),
+      // Optional: require a minimum connection quality
+      minQuality: ConnectionQuality.good,
+    );
+    print('Data fetched successfully: $data');
+  } on PoorConnectionException catch (e) {
+    print('Could not fetch data due to a poor connection: $e');
+  } on SecurityException catch (e) {
+    print('Action blocked due to a security risk: $e');
+  } on CircuitBreakerOpenException catch (e) {
+    print('Backend is unstable. Please try again later: $e');
+  }
+}
+</code></pre>
+<h2 id="configuration">Configuration</h2>
+<p>You can customize the engine's behavior by providing a <code>NetworkConfiguration</code> during initialization.</p>
+<pre class="language-dart"><code class="language-dart">import 'package:flux_net/core/rust/api/models.dart';
+
+Future&lt;void&gt; initializeWithCustomConfig() async {
+  // Fetch the default config to use as a base
+  final config = await NetworkConfiguration.default_();
+
+  // Modify the configuration
+  final customConfig = config.copyWith(
+    // Check every 10 seconds instead of the default 5
+    checkIntervalMs: 10000,
+    security: SecurityConfig(
+      // Block the app from running on a VPN
+      blockVpn: true,
+      // Enable DNS hijack detection
+      detectDnsHijack: true,
+      // Only allow the app to run on specific Wi-Fi networks
+      allowedInterfaces: ['wlan0', 'wifi_eth'],
+    ),
+    resilience: config.resilience.copyWith(
+      // Open the circuit breaker after 2 consecutive failures
+      circuitBreakerThreshold: 2,
+    ),
+  );
+
+  // Initialize with the custom configuration
+  await NetworkReachability.init(config: customConfig);
+}
+</code></pre>
+<p>This provides a robust foundation for building secure and reliable Flutter applications.</p>
+</section>
 
 
       <section class="summary">
           <h2>Libraries</h2>
         <dl>
+          <dt id="enums">
+  <span class="name"><a href="core_constants_enums/">core/constants/enums</a></span> 
+
+</dt>
+<dd>
+</dd>
+
           <dt id="exceptions">
   <span class="name"><a href="core_err_exceptions/">core/err/exceptions</a></span> 
 
@@ -61,6 +193,13 @@
 <dd>
 </dd>
 
+          <dt id="quality">
+  <span class="name"><a href="core_rust_api_analysis_quality/">core/rust/api/analysis/quality</a></span> 
+
+</dt>
+<dd>
+</dd>
+
           <dt id="engine">
   <span class="name"><a href="core_rust_api_engine/">core/rust/api/engine</a></span> 
 
@@ -68,15 +207,71 @@
 <dd>
 </dd>
 
-          <dt id="models">
-  <span class="name"><a href="core_rust_api_models/">core/rust/api/models</a></span> 
+          <dt id="config">
+  <span class="name"><a href="core_rust_api_models_config/">core/rust/api/models/config</a></span> 
 
 </dt>
 <dd>
 </dd>
 
-          <dt id="utils">
-  <span class="name"><a href="core_rust_api_utils/">core/rust/api/utils</a></span> 
+          <dt id="net_info">
+  <span class="name"><a href="core_rust_api_models_net_info/">core/rust/api/models/net_info</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="report">
+  <span class="name"><a href="core_rust_api_models_report/">core/rust/api/models/report</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="target">
+  <span class="name"><a href="core_rust_api_models_target/">core/rust/api/models/target</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="captive_portal">
+  <span class="name"><a href="core_rust_api_probes_captive_portal/">core/rust/api/probes/captive_portal</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="dns">
+  <span class="name"><a href="core_rust_api_probes_dns/">core/rust/api/probes/dns</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="interface">
+  <span class="name"><a href="core_rust_api_probes_interface/">core/rust/api/probes/interface</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="local_scan">
+  <span class="name"><a href="core_rust_api_probes_local_scan/">core/rust/api/probes/local_scan</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="target">
+  <span class="name"><a href="core_rust_api_probes_target/">core/rust/api/probes/target</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="traceroute">
+  <span class="name"><a href="core_rust_api_probes_traceroute/">core/rust/api/probes/traceroute</a></span> 
 
 </dt>
 <dd>
@@ -107,7 +302,7 @@
   <span class="name"><a href="network_reachability/">network_reachability</a></span> 
 
 </dt>
-<dd>
+<dd>A comprehensive networking library for Dart and Flutter, built on a powerful Rust core.
 </dd>
 
         </dl>
@@ -127,11 +322,21 @@
     <h5 class="hidden-xs"><span class="package-name">network_reachability</span> <span class="package-kind">package</span></h5>
     <ol>
       <li class="section-title">Libraries</li>
+      <li><a href="core_constants_enums/">core/constants/enums</a></li>
       <li><a href="core_err_exceptions/">core/err/exceptions</a></li>
       <li><a href="core_logic_network_reachability_logic/">core/logic/network_reachability_logic</a></li>
+      <li><a href="core_rust_api_analysis_quality/">core/rust/api/analysis/quality</a></li>
       <li><a href="core_rust_api_engine/">core/rust/api/engine</a></li>
-      <li><a href="core_rust_api_models/">core/rust/api/models</a></li>
-      <li><a href="core_rust_api_utils/">core/rust/api/utils</a></li>
+      <li><a href="core_rust_api_models_config/">core/rust/api/models/config</a></li>
+      <li><a href="core_rust_api_models_net_info/">core/rust/api/models/net_info</a></li>
+      <li><a href="core_rust_api_models_report/">core/rust/api/models/report</a></li>
+      <li><a href="core_rust_api_models_target/">core/rust/api/models/target</a></li>
+      <li><a href="core_rust_api_probes_captive_portal/">core/rust/api/probes/captive_portal</a></li>
+      <li><a href="core_rust_api_probes_dns/">core/rust/api/probes/dns</a></li>
+      <li><a href="core_rust_api_probes_interface/">core/rust/api/probes/interface</a></li>
+      <li><a href="core_rust_api_probes_local_scan/">core/rust/api/probes/local_scan</a></li>
+      <li><a href="core_rust_api_probes_target/">core/rust/api/probes/target</a></li>
+      <li><a href="core_rust_api_probes_traceroute/">core/rust/api/probes/traceroute</a></li>
       <li><a href="core_rust_frb_generated/">core/rust/frb_generated</a></li>
       <li><a href="core_rust_frb_generated.io/">core/rust/frb_generated.io</a></li>
       <li><a href="core_rust_frb_generated.web/">core/rust/frb_generated.web</a></li>

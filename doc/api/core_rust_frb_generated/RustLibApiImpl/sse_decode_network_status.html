@@ -59,7 +59,7 @@
         <li>@<a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated/protected-constant.html">protected</a></li>
     </ol>
   </div>
-<span class="returntype"><a href="../../core_rust_api_models/NetworkStatus-class.html">NetworkStatus</a></span>
+<span class="returntype"><a href="../../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span>
 <span class="name ">sse_decode_network_status</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="sse_decode_network_status-param-deserializer"><span class="type-annotation"><a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated_web/SseDeserializer-class.html">SseDeserializer</a></span> <span class="parameter-name">deserializer</span></span></li>
 </ol>)
 
@@ -77,21 +77,13 @@ NetworkStatus sse_decode_network_status(SseDeserializer deserializer) {
   &#47;&#47; Codec=Sse (Serialization based), see doc to use other codecs
   var var_isConnected = sse_decode_bool(deserializer);
   var var_quality = sse_decode_connection_quality(deserializer);
-  var var_latencyMs = sse_decode_u_64(deserializer);
+  var var_latencyStats = sse_decode_latency_stats(deserializer);
   var var_winnerTarget = sse_decode_String(deserializer);
-  var var_minLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
-  var var_maxLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
-  var var_meanLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
-  var var_stdDevLatencyMs = sse_decode_opt_box_autoadd_f_64(deserializer);
   return NetworkStatus(
       isConnected: var_isConnected,
       quality: var_quality,
-      latencyMs: var_latencyMs,
-      winnerTarget: var_winnerTarget,
-      minLatencyMs: var_minLatencyMs,
-      maxLatencyMs: var_maxLatencyMs,
-      meanLatencyMs: var_meanLatencyMs,
-      stdDevLatencyMs: var_stdDevLatencyMs);
+      latencyStats: var_latencyStats,
+      winnerTarget: var_winnerTarget);
 }</code></pre>
 </section>
 

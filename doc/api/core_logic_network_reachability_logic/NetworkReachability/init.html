@@ -55,27 +55,33 @@
     <section class="multi-line-signature">
       
 <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
-<span class="name ">init</span>(<wbr>)
+<span class="name ">init</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="init-param-config"><span class="type-annotation"><a href="../../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a>?</span> <span class="parameter-name">config</span>, </span></li>
+</ol>})
 
       
 
     </section>
     
 <section class="desc markdown">
-  <p>Initializes the Rust library.
-This must be called once before using any other functionality.</p>
+  <p>Initializes the network reachability engine.</p>
+<p>This must be called once before accessing the singleton instance.
+The user of this library is responsible for calling <code>RustLib.init()</code> <em>before</em> this.</p>
+<p><code>config</code>: The configuration for the engine. If not provided, a default configuration is used.</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static Future&lt;void&gt; init() async {
-  &#47;&#47; Ensure `flutter_rust_bridge` is initialized
-  await RustLib.init();
+  <pre class="language-dart"><code class="language-dart">static Future&lt;void&gt; init({NetworkConfiguration? config}) async {
+  if (_instance != null) {
+    _instance?.dispose();
+  }
 
-  &#47;&#47; Fetch default configuration after init
-  _instance._currentConfig = await NetwrokConfiguration.default_();
+  &#47;&#47; Fetch the default config from Rust if none is provided.
+  final finalConfig = config ?? await NetworkConfiguration.default_();
+
+  _instance = NetworkReachability._(finalConfig);
 }</code></pre>
 </section>
 

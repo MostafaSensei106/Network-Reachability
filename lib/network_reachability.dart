@@ -31,6 +31,4 @@ export 'core/rust/api/models/report.dart'
     show NetworkReport, NetworkStatus, TargetReport;
 export 'core/rust/api/models/target.dart' show NetworkTarget, TargetProtocol;
 
-// --- Rust Bridge Initialization ---
-// The user might need this for advanced setup.
 export 'core/rust/frb_generated.dart' show RustLib;

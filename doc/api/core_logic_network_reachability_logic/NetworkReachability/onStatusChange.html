@@ -59,18 +59,22 @@
   <section id="getter">
     <section class="multi-line-signature">
       
-      <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../core_rust_api_models/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
+      <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span>&gt;</span></span>
       get
       <span class="name ">onStatusChange</span>
       
 
     </section>
     
+<section class="desc markdown">
+  <p>A stream of network status updates.</p>
+<p>Emits a new <code>NetworkStatus</code> whenever a periodic check is completed.</p>
+</section>
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Stream&lt;NetworkReport&gt; get onStatusChange =&gt; _onStatusChangeController.stream;</code></pre>
+  <pre class="language-dart"><code class="language-dart">Stream&lt;NetworkStatus&gt; get onStatusChange =&gt; _statusController.stream;</code></pre>
 </section>
 
   </section>

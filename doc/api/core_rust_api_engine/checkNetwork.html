@@ -54,20 +54,24 @@
 
     <section class="multi-line-signature">
         
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
-<span class="name ">checkNetwork</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="checkNetwork-param-config"><span>required</span> <span class="type-annotation"><a href="../core_rust_api_models/NetwrokConfiguration-class.html">NetwrokConfiguration</a></span> <span class="parameter-name">config</span>, </span></li>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
+<span class="name ">checkNetwork</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="checkNetwork-param-config"><span>required</span> <span class="type-annotation"><a href="../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a></span> <span class="parameter-name">config</span>, </span></li>
 </ol>})
 
         
 
     </section>
     
+<section class="desc markdown">
+  <p>The main entry point for running a comprehensive network check.</p>
+<p>This function orchestrates the various probes and analyses based on the provided configuration.</p>
+</section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;NetworkReport&gt; checkNetwork({required NetwrokConfiguration config}) =&gt;
+  <pre class="language-dart"><code class="language-dart">Future&lt;NetworkReport&gt; checkNetwork({required NetworkConfiguration config}) =&gt;
     RustLib.instance.api.crateApiEngineCheckNetwork(config: config);</code></pre>
 </section>
 

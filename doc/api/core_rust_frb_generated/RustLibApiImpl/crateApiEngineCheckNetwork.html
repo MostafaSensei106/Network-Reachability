@@ -59,8 +59,8 @@
         <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
     </ol>
   </div>
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../core_rust_api_models/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
-<span class="name ">crateApiEngineCheckNetwork</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="crateApiEngineCheckNetwork-param-config"><span>required</span> <span class="type-annotation"><a href="../../core_rust_api_models/NetwrokConfiguration-class.html">NetwrokConfiguration</a></span> <span class="parameter-name">config</span>, </span></li>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
+<span class="name ">crateApiEngineCheckNetwork</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="crateApiEngineCheckNetwork-param-config"><span>required</span> <span class="type-annotation"><a href="../../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a></span> <span class="parameter-name">config</span>, </span></li>
 </ol>})
 
       <div class="features"><span class="feature">override</span></div>
@@ -74,11 +74,11 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
 Future&lt;NetworkReport&gt; crateApiEngineCheckNetwork(
-    {required NetwrokConfiguration config}) {
+    {required NetworkConfiguration config}) {
   return handler.executeNormal(NormalTask(
     callFfi: (port_) {
       final serializer = SseSerializer(generalizedFrbRustBinding);
-      sse_encode_box_autoadd_netwrok_configuration(config, serializer);
+      sse_encode_box_autoadd_network_configuration(config, serializer);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
           funcId: 3, port: port_);
     },

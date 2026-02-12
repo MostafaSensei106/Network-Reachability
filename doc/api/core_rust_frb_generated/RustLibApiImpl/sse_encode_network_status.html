@@ -60,7 +60,7 @@
     </ol>
   </div>
 <span class="returntype">void</span>
-<span class="name ">sse_encode_network_status</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="sse_encode_network_status-param-self"><span class="type-annotation"><a href="../../core_rust_api_models/NetworkStatus-class.html">NetworkStatus</a></span> <span class="parameter-name">self</span>, </span></li>
+<span class="name ">sse_encode_network_status</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="sse_encode_network_status-param-self"><span class="type-annotation"><a href="../../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span> <span class="parameter-name">self</span>, </span></li>
 <li><span class="parameter" id="sse_encode_network_status-param-serializer"><span class="type-annotation"><a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated_web/SseSerializer-class.html">SseSerializer</a></span> <span class="parameter-name">serializer</span></span></li>
 </ol>)
 
@@ -78,12 +78,8 @@ void sse_encode_network_status(NetworkStatus self, SseSerializer serializer) {
   &#47;&#47; Codec=Sse (Serialization based), see doc to use other codecs
   sse_encode_bool(self.isConnected, serializer);
   sse_encode_connection_quality(self.quality, serializer);
-  sse_encode_u_64(self.latencyMs, serializer);
+  sse_encode_latency_stats(self.latencyStats, serializer);
   sse_encode_String(self.winnerTarget, serializer);
-  sse_encode_opt_box_autoadd_u_64(self.minLatencyMs, serializer);
-  sse_encode_opt_box_autoadd_u_64(self.maxLatencyMs, serializer);
-  sse_encode_opt_box_autoadd_u_64(self.meanLatencyMs, serializer);
-  sse_encode_opt_box_autoadd_f_64(self.stdDevLatencyMs, serializer);
 }</code></pre>
 </section>
 

@@ -55,29 +55,137 @@
     <section class="multi-line-signature">
       
 <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span>
-<span class="name ">guard</span>&lt;<wbr><span class="type-parameter">T</span>&gt;(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="guard-param-action"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">action</span>()</span></li>
-</ol>)
+<span class="name ">guard</span>&lt;<wbr><span class="type-parameter">T</span>&gt;(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="guard-param-action"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">action</span>(), </span></li>
+<li><span class="parameter" id="guard-param-minQuality"><span class="type-annotation"><a href="../../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a></span> <span class="parameter-name">minQuality</span> = <span class="default-value">ConnectionQuality.good</span>, </span></li>
+</ol>})
 
       
 
     </section>
     
 <section class="desc markdown">
-  <p>Executes a Future, but only if the network quality is not Poor or Dead.
-Throws <a href="../../core_err_exceptions/PoorConnectionException-class.html">PoorConnectionException</a> if network quality is insufficient.</p>
+  <p>A wrapper to protect network-dependent operations.</p>
+<p>Before executing the <code>action</code>, this method performs a fresh network check
+and validates it against the provided <code>requirements</code> and the active <a href="../../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a>.</p>
+<p>It serves as a single point of truth to ensure that an operation is only
+attempted when the network state is acceptable.</p>
+<p>Throws a <a href="../../core_err_exceptions/PoorConnectionException-class.html">PoorConnectionException</a>, <a href="../../core_err_exceptions/SecurityException-class.html">SecurityException</a>, or <a href="../../core_err_exceptions/CircuitBreakerOpenException-class.html">CircuitBreakerOpenException</a>
+if the conditions are not met.</p>
+<h3 id="example-basic-usage">Example: Basic Usage</h3>
+<pre class="language-dart"><code class="language-dart">try {
+  final data = await NetworkReachability.instance.guard(
+    action: () =&gt; myApi.fetchSensitiveData(),
+  );
+  print('Data fetched successfully: $data');
+} on PoorConnectionException catch (e) {
+  print('Could not fetch data due to poor connection: $e');
+} on SecurityException catch (e) {
+  print('Security alert! Cannot perform action: $e');
+} on CircuitBreakerOpenException catch (e) {
+  print('Backend is unstable. Please try again later: $e');
+}
+</code></pre>
+<h3 id="example-requiring-excellent-quality">Example: Requiring Excellent Quality</h3>
+<pre class="language-dart"><code class="language-dart">try {
+  await NetworkReachability.instance.guard(
+    action: () =&gt; streamingService.start4KStream(),
+    minQuality: ConnectionQuality.excellent,
+  );
+} on PoorConnectionException {
+  // Handle case where connection is good, but not excellent
+  print('4K streaming requires an excellent connection.');
+}
+</code></pre>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;T&gt; guard&lt;T&gt;(Future&lt;T&gt; Function() action) async {
-  final currentReport = await check();
-  if (currentReport.status.quality == ConnectionQuality.poor ||
-      currentReport.status.quality == ConnectionQuality.dead) {
-    throw PoorConnectionException(currentReport);
+  <pre class="language-dart"><code class="language-dart">&#47;&#47;&#47; It serves as a single point of truth to ensure that an operation is only
+&#47;&#47;&#47; attempted when the network state is acceptable.
+&#47;&#47;&#47;
+&#47;&#47;&#47; Throws a [PoorConnectionException], [SecurityException], or [CircuitBreakerOpenException]
+&#47;&#47;&#47; if the conditions are not met.
+&#47;&#47;&#47;
+&#47;&#47;&#47; ### Example: Basic Usage
+&#47;&#47;&#47;
+&#47;&#47;&#47; ```dart
+&#47;&#47;&#47; try {
+&#47;&#47;&#47;   final data = await NetworkReachability.instance.guard(
+&#47;&#47;&#47;     action: () =&gt; myApi.fetchSensitiveData(),
+&#47;&#47;&#47;   );
+&#47;&#47;&#47;   print(&#39;Data fetched successfully: $data&#39;);
+&#47;&#47;&#47; } on PoorConnectionException catch (e) {
+&#47;&#47;&#47;   print(&#39;Could not fetch data due to poor connection: $e&#39;);
+&#47;&#47;&#47; } on SecurityException catch (e) {
+&#47;&#47;&#47;   print(&#39;Security alert! Cannot perform action: $e&#39;);
+&#47;&#47;&#47; } on CircuitBreakerOpenException catch (e) {
+&#47;&#47;&#47;   print(&#39;Backend is unstable. Please try again later: $e&#39;);
+&#47;&#47;&#47; }
+&#47;&#47;&#47; ```
+&#47;&#47;&#47;
+&#47;&#47;&#47; ### Example: Requiring Excellent Quality
+&#47;&#47;&#47;
+&#47;&#47;&#47; ```dart
+&#47;&#47;&#47; try {
+&#47;&#47;&#47;   await NetworkReachability.instance.guard(
+&#47;&#47;&#47;     action: () =&gt; streamingService.start4KStream(),
+&#47;&#47;&#47;     minQuality: ConnectionQuality.excellent,
+&#47;&#47;&#47;   );
+&#47;&#47;&#47; } on PoorConnectionException {
+&#47;&#47;&#47;   &#47;&#47; Handle case where connection is good, but not excellent
+&#47;&#47;&#47;   print(&#39;4K streaming requires an excellent connection.&#39;);
+&#47;&#47;&#47; }
+&#47;&#47;&#47; ```
+Future&lt;T&gt; guard&lt;T&gt;({
+  required Future&lt;T&gt; Function() action,
+  ConnectionQuality minQuality = ConnectionQuality.good,
+}) async {
+  &#47;&#47; 1. Check if circuit breaker is open
+  if (_isCircuitBreakerOpen) {
+    if (_circuitBreakerOpenUntil != null &amp;&amp;
+        DateTime.now().isBefore(_circuitBreakerOpenUntil!)) {
+      throw CircuitBreakerOpenException(
+          &#39;Circuit breaker is open due to recent backend failures. Please try again later.&#39;);
+    } else {
+      &#47;&#47; Reset the breaker if the timeout has passed
+      _isCircuitBreakerOpen = false;
+      _consecutiveFailures = 0;
+    }
   }
-  return action();
+
+  &#47;&#47; 2. Perform a fresh network check
+  final report = await check();
+
+  &#47;&#47; 3. Validate security requirements
+  if (_config.security.blockVpn &amp;&amp; report.securityFlags.isVpnDetected) {
+    throw SecurityException(
+        SecurityAlert.vpnDetected, &#39;VPN connection is not allowed.&#39;);
+  }
+  if (_config.security.detectDnsHijack &amp;&amp; report.securityFlags.isDnsSpoofed) {
+    throw SecurityException(SecurityAlert.dnsHijackDetected,
+        &#39;DNS hijacking was detected. Connection is insecure.&#39;);
+  }
+  if (_config.security.allowedInterfaces.isNotEmpty &amp;&amp;
+      report.securityFlags.interfaceName.isNotEmpty) {
+    final isAllowed = _config.security.allowedInterfaces.any(
+        (prefix) =&gt; report.securityFlags.interfaceName.startsWith(prefix));
+    if (!isAllowed) {
+      throw SecurityException(SecurityAlert.unallowedInterface,
+          &#39;The active network interface (${report.securityFlags.interfaceName}) is not in the list of allowed interfaces.&#39;);
+    }
+  }
+
+  &#47;&#47; 4. Validate quality requirements
+  if (!report.status.isConnected ||
+      report.status.quality.index &gt; minQuality.index) {
+    throw PoorConnectionException(
+        &#39;Connection quality is below the required minimum (${minQuality.name}).&#39;);
+  }
+
+  &#47;&#47; 5. If all checks pass, execute the action
+  return await action();
 }</code></pre>
 </section>
 

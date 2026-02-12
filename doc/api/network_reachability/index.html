@@ -59,53 +59,66 @@
     </div>
 
     
+<section class="desc markdown">
+  <p>A comprehensive networking library for Dart and Flutter, built on a powerful Rust core.</p>
+<p>This library provides advanced network monitoring, reachability checks, and security features
+to ensure your application's network communication is reliable and secure.</p>
+</section>
 
 
     <section class="summary offset-anchor" id="classes">
       <h2>Classes</h2>
       <dl>
           <dt id="CaptivePortalStatus">
-  <span class="name "><a href="../core_rust_api_models/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span> 
+  <span class="name "><a href="../core_rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span> 
 
 </dt>
 <dd>
   
 </dd>
 
-          <dt id="NetworkMetadata">
-  <span class="name "><a href="../core_rust_api_models/NetworkMetadata-class.html">NetworkMetadata</a></span> 
+          <dt id="LocalDevice">
+  <span class="name "><a href="../core_rust_api_models_net_info/LocalDevice-class.html">LocalDevice</a></span> 
 
 </dt>
 <dd>
   
+</dd>
+
+          <dt id="NetworkConfiguration">
+  <span class="name "><a href="../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a></span> 
+
+</dt>
+<dd>
+  The main configuration for the network reachability engine.
+</dd>
+
+          <dt id="NetworkReachability">
+  <span class="name "><a href="../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></span> 
+
+</dt>
+<dd>
+  The main class for interacting with the network reachability engine.
 </dd>
 
           <dt id="NetworkReport">
-  <span class="name "><a href="../core_rust_api_models/NetworkReport-class.html">NetworkReport</a></span> 
+  <span class="name "><a href="../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span> 
 
 </dt>
 <dd>
-  
+  The top-level report containing all information about a network check.
 </dd>
 
           <dt id="NetworkStatus">
-  <span class="name "><a href="../core_rust_api_models/NetworkStatus-class.html">NetworkStatus</a></span> 
+  <span class="name "><a href="../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span> 
 
 </dt>
 <dd>
-  
+  A comprehensive snapshot of the network state at a given time.
 </dd>
 
           <dt id="NetworkTarget">
-  <span class="name "><a href="../core_rust_api_models/NetworkTarget-class.html">NetworkTarget</a></span> 
-
-</dt>
-<dd>
-  
-</dd>
-
-          <dt id="NetwrokConfiguration">
-  <span class="name "><a href="../core_rust_api_models/NetwrokConfiguration-class.html">NetwrokConfiguration</a></span> 
+  <span class="name "><a href="../core_rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a></span> 
 
 </dt>
 <dd>
@@ -113,15 +126,47 @@
 </dd>
 
           <dt id="QualityThresholds">
-  <span class="name "><a href="../core_rust_api_models/QualityThresholds-class.html">QualityThresholds</a></span> 
+  <span class="name "><a href="../core_rust_api_models_config/QualityThresholds-class.html">QualityThresholds</a></span> 
 
 </dt>
 <dd>
   
 </dd>
 
+          <dt id="ResilienceConfig">
+  <span class="name "><a href="../core_rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a></span> 
+
+</dt>
+<dd>
+  Configuration for resilience and performance features.
+</dd>
+
+          <dt id="RustLib">
+  <span class="name "><a href="../core_rust_frb_generated/RustLib-class.html">RustLib</a></span> 
+
+</dt>
+<dd>
+  Main entrypoint of the Rust API
+</dd>
+
+          <dt id="SecurityConfig">
+  <span class="name "><a href="../core_rust_api_models_config/SecurityConfig-class.html">SecurityConfig</a></span> 
+
+</dt>
+<dd>
+  Configuration for security-related checks.
+</dd>
+
+          <dt id="SecurityFlags">
+  <span class="name "><a href="../core_rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a></span> 
+
+</dt>
+<dd>
+  Comprehensive security report for the current network connection.
+</dd>
+
           <dt id="TargetReport">
-  <span class="name "><a href="../core_rust_api_models/TargetReport-class.html">TargetReport</a></span> 
+  <span class="name "><a href="../core_rust_api_models_report/TargetReport-class.html">TargetReport</a></span> 
 
 </dt>
 <dd>
@@ -129,7 +174,7 @@
 </dd>
 
           <dt id="TraceHop">
-  <span class="name "><a href="../core_rust_api_models/TraceHop-class.html">TraceHop</a></span> 
+  <span class="name "><a href="../core_rust_api_models_net_info/TraceHop-class.html">TraceHop</a></span> 
 
 </dt>
 <dd>
@@ -143,7 +188,7 @@
       <h2>Enums</h2>
       <dl>
           <dt id="CheckStrategy">
-  <span class="name "><a href="../core_rust_api_models/CheckStrategy.html">CheckStrategy</a></span> 
+  <span class="name "><a href="../core_rust_api_models_config/CheckStrategy.html">CheckStrategy</a></span> 
 
 </dt>
 <dd>
@@ -151,7 +196,7 @@
 </dd>
 
           <dt id="ConnectionQuality">
-  <span class="name "><a href="../core_rust_api_models/ConnectionQuality.html">ConnectionQuality</a></span> 
+  <span class="name "><a href="../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a></span> 
 
 </dt>
 <dd>
@@ -159,7 +204,7 @@
 </dd>
 
           <dt id="ConnectionType">
-  <span class="name "><a href="../core_rust_api_models/ConnectionType.html">ConnectionType</a></span> 
+  <span class="name "><a href="../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span> 
 
 </dt>
 <dd>
@@ -167,7 +212,7 @@
 </dd>
 
           <dt id="TargetProtocol">
-  <span class="name "><a href="../core_rust_api_models/TargetProtocol.html">TargetProtocol</a></span> 
+  <span class="name "><a href="../core_rust_api_models_target/TargetProtocol.html">TargetProtocol</a></span> 
 
 </dt>
 <dd>
@@ -187,12 +232,36 @@
     <section class="summary offset-anchor" id="exceptions">
       <h2>Exceptions / Errors</h2>
       <dl>
+          <dt id="CircuitBreakerOpenException">
+  <span class="name "><a href="../core_err_exceptions/CircuitBreakerOpenException-class.html">CircuitBreakerOpenException</a></span> 
+
+</dt>
+<dd>
+  Thrown by the <code>guard</code> method when the circuit breaker is open due to repeated backend failures.
+</dd>
+
+          <dt id="NetworkReachabilityException">
+  <span class="name "><a href="../core_err_exceptions/NetworkReachabilityException-class.html">NetworkReachabilityException</a></span> 
+
+</dt>
+<dd>
+  Base class for all network reachability exceptions.
+</dd>
+
           <dt id="PoorConnectionException">
   <span class="name "><a href="../core_err_exceptions/PoorConnectionException-class.html">PoorConnectionException</a></span> 
 
 </dt>
 <dd>
-  Custom exception for poor network quality.
+  Thrown by the <code>guard</code> method when the connection quality is below the required minimum.
+</dd>
+
+          <dt id="SecurityException">
+  <span class="name "><a href="../core_err_exceptions/SecurityException-class.html">SecurityException</a></span> 
+
+</dt>
+<dd>
+  Thrown by the <code>guard</code> method when a security requirement is not met (e.g., VPN detected).
 </dd>
 
       </dl>
@@ -213,11 +282,21 @@
     <h5><span class="package-name">network_reachability</span> <span class="package-kind">package</span></h5>
     <ol>
       <li class="section-title">Libraries</li>
+      <li><a href="../core_constants_enums/">core/constants/enums</a></li>
       <li><a href="../core_err_exceptions/">core/err/exceptions</a></li>
       <li><a href="../core_logic_network_reachability_logic/">core/logic/network_reachability_logic</a></li>
+      <li><a href="../core_rust_api_analysis_quality/">core/rust/api/analysis/quality</a></li>
       <li><a href="../core_rust_api_engine/">core/rust/api/engine</a></li>
-      <li><a href="../core_rust_api_models/">core/rust/api/models</a></li>
-      <li><a href="../core_rust_api_utils/">core/rust/api/utils</a></li>
+      <li><a href="../core_rust_api_models_config/">core/rust/api/models/config</a></li>
+      <li><a href="../core_rust_api_models_net_info/">core/rust/api/models/net_info</a></li>
+      <li><a href="../core_rust_api_models_report/">core/rust/api/models/report</a></li>
+      <li><a href="../core_rust_api_models_target/">core/rust/api/models/target</a></li>
+      <li><a href="../core_rust_api_probes_captive_portal/">core/rust/api/probes/captive_portal</a></li>
+      <li><a href="../core_rust_api_probes_dns/">core/rust/api/probes/dns</a></li>
+      <li><a href="../core_rust_api_probes_interface/">core/rust/api/probes/interface</a></li>
+      <li><a href="../core_rust_api_probes_local_scan/">core/rust/api/probes/local_scan</a></li>
+      <li><a href="../core_rust_api_probes_target/">core/rust/api/probes/target</a></li>
+      <li><a href="../core_rust_api_probes_traceroute/">core/rust/api/probes/traceroute</a></li>
       <li><a href="../core_rust_frb_generated/">core/rust/frb_generated</a></li>
       <li><a href="../core_rust_frb_generated.io/">core/rust/frb_generated.io</a></li>
       <li><a href="../core_rust_frb_generated.web/">core/rust/frb_generated.web</a></li>

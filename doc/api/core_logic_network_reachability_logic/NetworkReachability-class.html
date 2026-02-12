@@ -54,24 +54,14 @@
 
     
 <section class="desc markdown">
-  <p>The main entry point for interacting with the network reachability library.</p>
+  <p>The main class for interacting with the network reachability engine.</p>
+<p>This class provides a high-level API for network checks, monitoring, and guarding operations.
+It should be initialized once using the static <code>init</code> method.</p>
 </section>
 
 
 
     
-  <section class="summary offset-anchor" id="constructors">
-    <h2>Constructors</h2>
-    <dl class="constructor-summary-list">
-        <dt id="NetworkReachability.new" class="callable">
-          <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/NetworkReachability.html">NetworkReachability</a></span><span class="signature">()</span>
-        </dt>
-        <dd>
-          
-            <div class="constructor-modifier features">factory</div>
-        </dd>
-    </dl>
-  </section>
     
   <section
       class="summary offset-anchor"
@@ -92,12 +82,12 @@
 
         <dt id="onStatusChange" class="property">
   <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/onStatusChange.html">onStatusChange</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span>&gt;</span></span>
   
 
 </dt>
 <dd>
-  
+  A stream of network status updates.
   <div class="features"><span class="feature">no setter</span></div>
 
 </dd>
@@ -125,53 +115,39 @@
     <dl class="callables">
         <dt id="check" class="callable">
   <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/check.html">check</a></span><span class="signature">(<wbr>)
-    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
   </span>
   
 
 </dt>
 <dd>
-  Performs an immediate network reachability check.
+  Performs a single, one-off network check.
   
 
 </dd>
 
-        <dt id="checkForCaptivePortal" class="callable">
-  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/checkForCaptivePortal.html">checkForCaptivePortal</a></span><span class="signature">(<wbr>{<span class="parameter" id="checkForCaptivePortal-param-timeoutMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">timeoutMs</span> = <span class="default-value">5000</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span>&gt;</span></span>
+        <dt id="dispose" class="callable">
+  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/dispose.html">dispose</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; void</span>
   </span>
   
 
 </dt>
 <dd>
-  Checks if the current network connection is behind a captive portal.
-  
-
-</dd>
-
-        <dt id="configure" class="callable">
-  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/configure.html">configure</a></span><span class="signature">(<wbr>{<span class="parameter" id="configure-param-targets"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models/NetworkTarget-class.html">NetworkTarget</a></span>&gt;</span>?</span> <span class="parameter-name">targets</span>, </span><span class="parameter" id="configure-param-strategy"><span class="type-annotation"><a href="../core_rust_api_models/CheckStrategy.html">CheckStrategy</a>?</span> <span class="parameter-name">strategy</span>, </span><span class="parameter" id="configure-param-thresholds"><span class="type-annotation"><a href="../core_rust_api_models/QualityThresholds-class.html">QualityThresholds</a>?</span> <span class="parameter-name">thresholds</span>, </span><span class="parameter" id="configure-param-checkIntervalMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">checkIntervalMs</span>, </span><span class="parameter" id="configure-param-blockRequestWhenPoor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">blockRequestWhenPoor</span>, </span><span class="parameter" id="configure-param-numJitterSamples"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">numJitterSamples</span>, </span><span class="parameter" id="configure-param-jitterThresholdPercent"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">jitterThresholdPercent</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
-  </span>
-  
-
-</dt>
-<dd>
-  Configures the network reachability checks.
+  Disposes of the engine and cleans up resources.
   
 
 </dd>
 
         <dt id="guard" class="callable">
-  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/guard.html">guard</a></span><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span><span class="signature">(<wbr><span class="parameter" id="guard-param-action"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">action</span>()</span>)
+  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/guard.html">guard</a></span><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span><span class="signature">(<wbr>{<span class="parameter" id="guard-param-action"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">action</span>(), </span><span class="parameter" id="guard-param-minQuality"><span class="type-annotation"><a href="../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a></span> <span class="parameter-name">minQuality</span> = <span class="default-value">ConnectionQuality.good</span></span>})
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span>
   </span>
   
 
 </dt>
 <dd>
-  Executes a Future, but only if the network quality is not Poor or Dead.
-Throws <a href="../core_err_exceptions/PoorConnectionException-class.html">PoorConnectionException</a> if network quality is insufficient.
+  A wrapper to protect network-dependent operations.
   
 
 </dd>
@@ -189,45 +165,6 @@ Throws <a href="../core_err_exceptions/PoorConnectionException-class.html">PoorC
 
 </dd>
 
-        <dt id="scanLocalNetwork" class="callable">
-  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/scanLocalNetwork.html">scanLocalNetwork</a></span><span class="signature">(<wbr>{<span class="parameter" id="scanLocalNetwork-param-subnet"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">subnet</span> = <span class="default-value">&quot;89.207.132.170&#47;24&quot;</span>, </span><span class="parameter" id="scanLocalNetwork-param-scanPort"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">scanPort</span> = <span class="default-value">80</span>, </span><span class="parameter" id="scanLocalNetwork-param-timeoutMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">timeoutMs</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models/LocalDevice-class.html">LocalDevice</a></span>&gt;</span></span>&gt;</span></span>
-  </span>
-  
-
-</dt>
-<dd>
-  Scans the local network for active devices within a given subnet.
-  
-
-</dd>
-
-        <dt id="startMonitoring" class="callable">
-  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/startMonitoring.html">startMonitoring</a></span><span class="signature">(<wbr>)
-    <span class="returntype parameter">&#8594; void</span>
-  </span>
-  
-
-</dt>
-<dd>
-  
-  
-
-</dd>
-
-        <dt id="stopMonitoring" class="callable">
-  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/stopMonitoring.html">stopMonitoring</a></span><span class="signature">(<wbr>)
-    <span class="returntype parameter">&#8594; void</span>
-  </span>
-  
-
-</dt>
-<dd>
-  Stops the periodic network monitoring.
-  
-
-</dd>
-
         <dt id="toString" class="callable inherited">
   <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
@@ -238,19 +175,6 @@ Throws <a href="../core_err_exceptions/PoorConnectionException-class.html">PoorC
 <dd class="inherited">
   A string representation of this object.
   <div class="features"><span class="feature">inherited</span></div>
-
-</dd>
-
-        <dt id="traceRoute" class="callable">
-  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/traceRoute.html">traceRoute</a></span><span class="signature">(<wbr>{<span class="parameter" id="traceRoute-param-host"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">host</span>, </span><span class="parameter" id="traceRoute-param-maxHops"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">maxHops</span> = <span class="default-value">30</span>, </span><span class="parameter" id="traceRoute-param-timeoutPerHopMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">timeoutPerHopMs</span> = <span class="default-value">1000</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models/TraceHop-class.html">TraceHop</a></span>&gt;</span></span>&gt;</span></span>
-  </span>
-  
-
-</dt>
-<dd>
-  Performs a simplified traceroute to a given host.
-  
 
 </dd>
 
@@ -278,20 +202,36 @@ Throws <a href="../core_err_exceptions/PoorConnectionException-class.html">PoorC
     </dl>
   </section>
     
+  <section class="summary offset-anchor" id="static-properties">
+    <h2>Static Properties</h2>
+    <dl class="properties">
+        <dt id="instance" class="property">
+  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/instance.html">instance</a></span>
+  <span class="signature">&#8594; <a href="../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></span>
+  
+
+</dt>
+<dd>
+  The singleton instance of the network reachability engine.
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
+    </dl>
+  </section>
     
   <section class="summary offset-anchor" id="static-methods">
     <h2>Static Methods</h2>
     <dl class="callables">
         <dt id="init" class="callable">
-  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/init.html">init</a></span><span class="signature">(<wbr>)
+  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/init.html">init</a></span><span class="signature">(<wbr>{<span class="parameter" id="init-param-config"><span class="type-annotation"><a href="../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a>?</span> <span class="parameter-name">config</span></span>})
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
   </span>
   
 
 </dt>
 <dd>
-  Initializes the Rust library.
-This must be called once before using any other functionality.
+  Initializes the network reachability engine.
   
 
 </dd>

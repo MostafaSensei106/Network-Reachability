@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../core_rust_api_models/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
 <span class="name ">check</span>(<wbr>)
 
       
@@ -62,7 +62,8 @@
     </section>
     
 <section class="desc markdown">
-  <p>Performs an immediate network reachability check.</p>
+  <p>Performs a single, one-off network check.</p>
+<p>Returns a <code>NetworkReport</code> with detailed information about the connection.</p>
 </section>
 
 
@@ -70,8 +71,30 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">Future&lt;NetworkReport&gt; check() async {
-  final report = await checkNetwork(config: _currentConfig);
-  _onStatusChangeController.add(report);
+  final report = await rust_engine.checkNetwork(config: _config);
+
+  &#47;&#47; --- Update Circuit Breaker State ---
+  final threshold = _config.resilience.circuitBreakerThreshold;
+  if (threshold &gt; 0) {
+    final essentialTargetFailed =
+        report.targetReports.any((r) =&gt; r.isEssential &amp;&amp; !r.success);
+
+    if (essentialTargetFailed) {
+      _consecutiveFailures++;
+      if (_consecutiveFailures &gt;= threshold) {
+        _isCircuitBreakerOpen = true;
+        &#47;&#47; Keep the circuit open for a short period (e.g., 1 minute)
+        _circuitBreakerOpenUntil =
+            DateTime.now().add(const Duration(minutes: 1));
+      }
+    } else {
+      &#47;&#47; Any success resets the counter
+      _consecutiveFailures = 0;
+      _isCircuitBreakerOpen = false;
+      _circuitBreakerOpenUntil = null;
+    }
+  }
+
   return report;
 }</code></pre>
 </section>
