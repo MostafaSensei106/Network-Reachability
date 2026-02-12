@@ -35,7 +35,7 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
 
     // This internal async block helps manage the timeout across the entire operation,
     // including DNS resolution and the connection attempt.
-    let result: Result<(), NetworkError> = timeout(timeout_duration, async {
+    let result = timeout(timeout_duration, async {
         let mut addrs = tokio::net::lookup_host(&addr_str)
             .await
             .map_err(|e| NetworkError::DnsResolutionError(e.to_string()))?;
@@ -71,7 +71,10 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
             }
         }
-        Ok(())
+        {
+            let ok_result: Result<(), NetworkError> = Ok(());
+            ok_result
+        }
     })
     .await;
 

@@ -1,5 +1,3 @@
-//! Probe for inspecting local network interfaces.
-
 use crate::api::models::{ConnectionType, SecurityFlags};
 use network_interface::{NetworkInterface, NetworkInterfaceConfig};
 
@@ -77,7 +75,7 @@ mod tests {
     fn test_detect_security_and_network_type_simple() {
         // This test is limited because it depends on the host's network interfaces.
         // A more robust test would use a mock library for `network_interface::show()`.
-        let (flags, conn_type) = detect_security_and_network_type();
+        let (flags, _conn_type) = detect_security_and_network_type();
 
         // We can at least assert that it found *something*.
         assert!(!flags.interface_name.is_empty());
