@@ -289,16 +289,19 @@ class _NetworkReportView extends StatelessWidget {
               'Average Latency:',
               '${status.latencyStats.avgLatencyMs ?? 'N/A'} ms',
             ),
-            _buildInfoRow('Max Latency','${status.latencyStats.maxLatencyMs ?? 'N/A'} ms',
+            _buildInfoRow(
+              'Max Latency',
+              '${status.latencyStats.maxLatencyMs ?? 'N/A'} ms',
             ),
-            _buildInfoRow('Min Latency','${status.latencyStats.minLatencyMs ?? 'N/A'} ms',
+            _buildInfoRow(
+              'Min Latency',
+              '${status.latencyStats.minLatencyMs ?? 'N/A'} ms',
             ),
             _buildInfoRow('Jitter:', '${status.latencyStats.jitterMs} ms'),
             _buildInfoRow(
               'Packet Loss:',
               '${status.latencyStats.packetLossPercent}%',
             ),
-
           ],
         ),
 
