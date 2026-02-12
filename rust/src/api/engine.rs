@@ -2,7 +2,7 @@ use ::chrono::Utc;
 use ::futures::future::join_all;
 
 use crate::api::{
-    analysis::{calculate_jitter_stats, evaluate_quality, quality},
+    analysis::{calculate_jitter_stats, evaluate_quality},
     models::{
         CheckStrategy, ConnectionQuality, LatencyStats, NetworkConfiguration, NetworkReport,
         NetworkStatus, SecurityFlags, TargetReport,
@@ -190,7 +190,7 @@ fn evaluate_network_quality(
     }
 
     if stats.stability_score < config.resilience.stability_thershold {
-        return ConnectionQuality::Unstable;
+        return ConnectionQuality::Good;
     }
 
     if quality_based_on_speed == ConnectionQuality::Excellent && stats.stability_score < 85 {
