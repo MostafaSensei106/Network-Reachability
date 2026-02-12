@@ -11,9 +11,10 @@
 <p align="center">
   <a href="#-why-choose-network-reachability">Why?</a> •
   <a href="#-key-features">Key Features</a> •
+  <a href="#-how-it-works">How It Works</a> •
   <a href="#-installation">Installation</a> •
-  <a href="#-usage">Usage</a> •
-  <a href="#-api-overview">API Overview</a> •
+  <a href="#-basic-usage">Basic Usage</a> •
+  <a href="#-advanced-usage">Advanced Usage</a> •
   <a href="#-contributing">Contributing</a>
 </p>
 
@@ -21,7 +22,7 @@
 
 ## 🤔 Why Choose Network-Reachability?
 
-Most network libraries tell you if you're `connected` or `disconnected`. In the real world, this is not enough. A user might be "connected" but on a network so slow that your app is unusable, or on a public WiFi that is insecure.
+Most network libraries tell you if you're `connected` or `disconnected`. In the real world, this is not enough. A user might be "connected" but on a network so slow that your app is unusable, or on an insecure public WiFi that exposes them to risk.
 
 **Network-Reachability answers the questions that truly matter for building robust applications:**
 
@@ -36,18 +37,56 @@ This library gives you the deep network intelligence needed to build resilient, 
 
 ## ✨ Key Features
 
-This library is built on a high-performance Rust core, providing deep network insights without compromising your app's performance.
+-   **Deep Quality Analysis**: Get a multi-faceted view of the network quality, including **average latency**, **jitter** (latency variation), and **packet loss** percentage. The final `ConnectionQuality` enum gives you an instant, actionable summary.
 
-<br>
+-   **`guard()` Protected Actions**: The library's crown jewel. Wrap any network-dependent function (like an API call) in a `guard()`. It will only execute if the network meets your predefined quality and security rules, throwing specific, catchable exceptions otherwise.
 
-| Feature                           | Description                                                                                                                                                                                                                           |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Deep Quality Analysis**         | Get a multi-faceted view of the network quality, including **latency**, **jitter** (latency variation), and **packet loss** percentage. The final `ConnectionQuality` enum gives you an instant, actionable summary.               |
-| **`guard()` Protected Actions**   | The library's crown jewel. Wrap any network-dependent function (like an API call) in a `guard()`. It will only execute if the network meets your predefined quality and security rules, throwing specific exceptions otherwise.    |
-| **Built-in Circuit Breaker**      | Automatically detect when essential backend services are failing. The circuit breaker will "open" and temporarily block further requests, preventing your app from causing server overloads and providing immediate feedback to the user. |
-| **Advanced Security Probes**      | Go beyond application-level security. Detect and react to environmental threats: <br> • **VPN & Proxy Detection**: Block or flag connections from anonymized networks. <br> • **DNS Hijack Detection**: Protect against man-in-the-middle attacks. <br> • **Captive Portal Detection**: Identify when the user is stuck on a public WiFi login page. |
-| **Granular Configuration**        | Take full control. Customize the `NetworkConfiguration` to: <br> • Define multiple `NetworkTarget` endpoints (TCP/UDP) with priorities. <br> • Set your own `QualityThresholds` for what constitutes an "excellent" or "poor" connection. <br> • Fine-tune the `ResilienceConfig` like the circuit breaker sensitivity. |
-| **High-Performance Rust Core**    | All heavy lifting and network probing is executed in a native Rust engine, ensuring that these complex checks are fast, efficient, and don't block the Flutter UI thread.                                                         |
+-   **Built-in Circuit Breaker**: Automatically detects when essential backend services are failing. The circuit breaker will "open" and temporarily block further requests, preventing your app from causing server overloads and providing immediate feedback to the user.
+
+-   **Advanced Security Probes**: Go beyond application-level security. Detect and react to environmental threats:
+    -   **VPN & Proxy Detection**: Block or flag connections from anonymized networks.
+    -   **DNS Hijack Detection**: Protect against man-in-the-middle attacks by comparing system DNS against a trusted resolver.
+    -   **Captive Portal Detection**: Identify when the user is stuck on a public WiFi login page.
+
+-   **Granular Configuration**: Take full control. Customize the `NetworkConfiguration` to:
+    -   Define multiple `NetworkTarget` endpoints (TCP/UDP) with priorities.
+    -   Set your own `QualityThresholds` for what constitutes an "excellent" or "poor" connection.
+    -   Fine-tune the `ResilienceConfig` like the circuit breaker sensitivity and jitter tolerance.
+
+-   **High-Performance Rust Core**: All heavy lifting and network probing is executed in a native Rust engine, ensuring that these complex checks are fast, efficient, and don't block the Flutter UI thread.
+
+---
+
+## 🔧 How It Works
+
+Understanding the lifecycle of the library's core functions is key to using it effectively.
+
+### The Anatomy of `check()`
+
+When you call `NetworkReachability.instance.check()`, a multi-stage process is initiated:
+
+1.  **Rust Engine Execution**: The call is delegated to the high-performance Rust core, which performs the following:
+    -   **Parallel Probing**: It sends probes to all `NetworkTarget` endpoints defined in your configuration.
+    -   **Data Collection**: It gathers multiple latency samples to calculate statistics like min/max/avg latency, jitter (standard deviation), and packet loss.
+    -   **Security Analysis**: It inspects network interfaces to detect the `ConnectionType` (e.g., WiFi, Cellular) and security flags (e.g., `isVpnDetected`).
+    -   **Quality Evaluation**: The final metrics are compared against your `QualityThresholds` to determine an overall `ConnectionQuality` score.
+2.  **Report Generation**: The Rust engine compiles all this data into a comprehensive `NetworkReport`.
+3.  **Circuit Breaker Update**: Back in the Dart layer, the `check()` method inspects the `NetworkReport`. If any `isEssential` target failed, it increments a failure counter. If the counter exceeds the `circuitBreakerThreshold` from your configuration, the circuit is "opened". A successful check on an essential target resets the counter and closes the circuit.
+
+### The Lifecycle of `guard()`
+
+The `guard()` method is an intelligent sequence of validations that wrap your action:
+
+1.  **Circuit Breaker Check**: The very first step. Is the circuit currently open? If yes, the method fails immediately by throwing a `CircuitBreakerOpenException`. This prevents any network activity if the backend is known to be unstable.
+2.  **Live Network Check**: It calls the full `check()` method described above to get a fresh, up-to-the-moment `NetworkReport`.
+3.  **Security Validation**: It compares the `report.securityFlags` against your `SecurityConfig`.
+    -   Is `blockVpn` true and a VPN is detected? Throw `SecurityException`.
+    -   Is `detectDnsHijack` true and DNS spoofing is found? Throw `SecurityException`.
+    -   Are `allowedInterfaces` defined and the current interface isn't one of them? Throw `SecurityException`.
+4.  **Quality Validation**: It compares the `report.status.quality` against the `minQuality` parameter you provided to `guard()`. If the current quality is worse than the minimum required (e.g., you require `good` but the connection is `poor`), it throws a `PoorConnectionException`.
+5.  **Execute Action**: Only if all the above checks pass does the `action` function you provided get executed. The return value of your function is then passed back as the result of `guard()`.
+
+This robust, multi-step validation process is what makes `guard()` so powerful.
 
 ---
 
@@ -74,61 +113,30 @@ This library is built on a high-performance Rust core, providing deep network in
 
 ---
 
-## 🚀 Usage
+## 🚀 Basic Usage
 
 ### 1. Initialization
 
-First, initialize the library in your `main()` function. This sets up the Rust engine and the Dart singleton with your desired configuration.
+Initialize the library in your `main()` function. This sets up the Rust engine and the Dart singleton.
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:network_reachability/network_reachability.dart';
-
-// This path will correspond to your generated Rust bindings
 import 'package:network_reachability/core/rust/frb_generated.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // 1. Initialize the Rust library (generated by flutter_rust_bridge)
+  // Initialize the Rust library bindings
   await RustLib.init();
-
-  // 2. Initialize Network-Reachability with a default or custom configuration
+  // Initialize Network-Reachability with a default or custom configuration
   await NetworkReachability.init();
-
   runApp(const MyApp());
 }
 ```
 
-### 2. Performing a Detailed Check
+### 2. Protecting Network Calls with `guard()`
 
-To get a full, on-demand report of the current network status, use the `check()` method.
-
-```dart
-Future<void> printNetworkStatus() async {
-  final report = await NetworkReachability.instance.check();
-
-  if (report.status.isConnected) {
-    print('Network is connected!');
-    // Go beyond a simple boolean. Is it actually usable?
-    print('Quality: ${report.status.quality.name}'); // e.g., 'good', 'unstable'
-    print('Latency: ${report.status.latencyStats.latencyMs}ms');
-    print('Jitter: ${report.status.latencyStats.jitterMs}ms');
-    print('Packet Loss: ${report.status.latencyStats.packetLossPercent}%');
-  } else {
-    print('Network is disconnected.');
-  }
-
-  // You also get security info
-  if(report.securityFlags.isVpnDetected) {
-      print('Security Warning: VPN connection detected.');
-  }
-}
-```
-
-### 3. Protecting Network Calls with `guard()`
-
-This is the most powerful way to use the library. The `guard()` method acts as an intelligent gatekeeper for your critical functions. It performs a fresh network check and only executes the `action` if all quality and security rules are met.
+This is the primary and most recommended way to use the library. `guard()` ensures your critical functions only run when the network is in a known good state.
 
 ```dart
 Future<void> fetchSensitiveData() async {
@@ -144,51 +152,103 @@ Future<void> fetchSensitiveData() async {
 
   } on PoorConnectionException catch (e) {
     // Thrown if quality is below 'good'.
-    // Use this to show a friendly message instead of a generic "Error".
-    print('Could not fetch data: The connection is too slow or unstable.');
-    print('Details: ${e.message}');
+    print('Could not fetch data: The connection is too slow or unstable. Details: ${e.message}');
 
   } on SecurityException catch (e) {
-    // Thrown if a security policy is violated (e.g., VPN detected and disallowed).
+    // Thrown if a security policy is violated (e.g., VPN detected).
     print('Action blocked due to a security risk: ${e.message}');
 
   } on CircuitBreakerOpenException catch (e) {
-    // Thrown if the backend is unstable.
-    // Prevents the app from making repeated failed requests.
-    print('Our servers are temporarily unavailable. Please try again later.');
-    print('Details: ${e.message}');
+    // Thrown if the backend is known to be unstable.
+    print('Our servers are temporarily unavailable. Please try again later. Details: ${e.message}');
   }
+}
+```
+
+### 3. Monitoring Status Changes
+
+You can listen to a stream of network status updates for background monitoring or to update your UI in real-time.
+
+```dart
+void listenToNetworkChanges() {
+  final subscription = NetworkReachability.instance.onStatusChange.listen((status) {
+    // Note: The stream provides a lightweight `NetworkStatus` object.
+    // For a full report, you would call `check()` inside the listener.
+    print('Network status updated: ${status.quality.name}');
+    // Update your UI based on the new status
+  });
+
+  // Don't forget to cancel the subscription in your widget's dispose() method.
+  // subscription.cancel();
 }
 ```
 
 ---
 
-## 🔬 API Overview
+## 🔬 Advanced Usage
 
-Network-Reachability exposes a rich set of models and functions. Here are some of the key components:
+### Custom Configuration
 
-### Main Class
+Tailor the engine's behavior by providing a `NetworkConfiguration` during initialization.
 
--   `NetworkReachability`: The singleton instance to access all library features.
-    -   `init()`: Initializes the engine.
-    -   `check()`: Performs a one-off, comprehensive network check.
-    -   `onStatusChange`: A `Stream<NetworkStatus>` for periodic updates.
-    -   `guard()`: Protects a function execution with network validation.
-    -   `dispose()`: Cleans up resources.
+```dart
+import 'package:network_reachability/core/rust/api/models/config.dart';
 
-### Core Data Models
+Future<void> initializeWithCustomConfig() async {
+  final config = await NetworkConfiguration.default_();
 
--   `NetworkReport`: The complete output of a `check()`, containing `NetworkStatus`, `ConnectionType`, `SecurityFlags`, and a list of `TargetReport` for each endpoint.
--   `NetworkStatus`: A high-level summary including `isConnected`, `ConnectionQuality`, and `LatencyStats`.
--   `NetworkConfiguration`: The main configuration object to customize targets, quality thresholds, security, and resilience settings.
--   `ConnectionQuality`: An enum representing connection quality from `excellent` to `offline`.
--   `SecurityFlags`: A report on detected security issues like VPNs or DNS spoofing.
+  final customConfig = NetworkConfiguration(
+    checkIntervalMs: BigInt.from(15000), // Check every 15 seconds
+    security: SecurityConfig(
+      blockVpn: true,
+      detectDnsHijack: true,
+      allowedInterfaces: ['wlan0', 'eth0'], // Only allow WiFi and Ethernet
+    ),
+    resilience: config.resilience.copyWith(
+      circuitBreakerThreshold: 3, // Open circuit after 3 consecutive failures
+    ),
+    qualityThreshold: config.qualityThreshold.copyWith(
+      good: BigInt.from(150), // Consider latency <= 150ms as 'good'
+    ),
+    // Define custom targets to your own backend
+    targets: [
+        NetworkTarget(
+            label: 'my-backend-primary',
+            host: 'api.mydomain.com',
+            port: 443,
+            protocol: TargetProtocol.tcp,
+            timeoutMs: BigInt.from(2000),
+            isEssential: true, // This target affects the circuit breaker
+            priority: 1,
+        ),
+    ],
+  );
 
-### Exceptions
+  await NetworkReachability.init(config: customConfig);
+}
+```
 
--   `PoorConnectionException`: Thrown by `guard()` if the connection quality is below the required minimum.
--   `SecurityException`: Thrown by `guard()` if a security policy is violated (e.g., VPN is disallowed but detected).
--   `CircuitBreakerOpenException`: Thrown by `guard()` if the circuit breaker is open due to repeated failures of essential targets.
+### Direct Probe Access
+
+For specific, one-off checks, you can call the individual probe functions directly without running a full `check()`.
+
+```dart
+// Check if the user is behind a WiFi login page
+final captiveStatus = await NetworkReachability.instance.checkForCaptivePortal(
+  timeoutMs: BigInt.from(5000),
+);
+if (captiveStatus.isCaptivePortal) {
+  print('User may need to log in to the network at ${captiveStatus.redirectUrl}');
+}
+
+// Check for DNS tampering
+final isHijacked = await NetworkReachability.instance.detectDnsHijacking(
+  domain: 'my-api.com',
+);
+if (isHijacked) {
+  print('Warning: Potential DNS hijacking detected!');
+}
+```
 
 ---
 
@@ -201,13 +261,3 @@ Contributions are welcome! Please open an issue first to discuss major feature i
 3.  Commit your changes: `git commit -m "Add amazing feature"`
 4.  Push to your branch: `git push origin feature/YourFeature`
 5.  Open a pull request.
-
----
-
-## 📜 License
-
-This project is licensed under the **GPL-3.0 License**. See the `LICENSE` file for full details.
-
-<p align="center">
-  Made with ❤️ by <a href="https://github.com/MostafaSensei106">MostafaSensei106</a>
-</p>
