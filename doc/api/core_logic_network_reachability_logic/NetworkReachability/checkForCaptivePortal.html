@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the sse_encode_local_device method from the RustLibApiImplPlatform class, for the Dart programming language.">
-  <title>sse_encode_local_device method - RustLibApiImplPlatform class - frb_generated.io library - Dart API</title>
+  <meta name="description" content="API docs for the checkForCaptivePortal method from the NetworkReachability class, for the Dart programming language.">
+  <title>checkForCaptivePortal method - NetworkReachability class - network_reachability_logic library - Dart API</title>
 
 
   
@@ -25,11 +25,11 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">network_reachability</a></li>
-    <li><a href="../../core_rust_frb_generated.io/">core&#47;rust&#47;frb_generated.io.dart</a></li>
-    <li><a href="../../core_rust_frb_generated.io/RustLibApiImplPlatform-class.html">RustLibApiImplPlatform</a></li>
-    <li class="self-crumb">sse_encode_local_device abstract method</li>
+    <li><a href="../../core_logic_network_reachability_logic/">core&#47;logic&#47;network_reachability_logic.dart</a></li>
+    <li><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></li>
+    <li class="self-crumb">checkForCaptivePortal method</li>
   </ol>
-  <div class="self-name">sse_encode_local_device</div>
+  <div class="self-name">checkForCaptivePortal</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -46,35 +46,40 @@
 <div
     id="dartdoc-main-content"
     class="main-content"
-    data-above-sidebar="core_rust_frb_generated.io&#47;RustLibApiImplPlatform-class-sidebar.html"
+    data-above-sidebar="core_logic_network_reachability_logic&#47;NetworkReachability-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-method">sse_encode_local_device</span> abstract method 
+<h1><span class="kind-method">checkForCaptivePortal</span> method 
 </h1></div>
 
     <section class="multi-line-signature">
       
-  <div>
-    <ol class="annotation-list">
-        <li>@<a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated/protected-constant.html">protected</a></li>
-    </ol>
-  </div>
-<span class="returntype">void</span>
-<span class="name ">sse_encode_local_device</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="sse_encode_local_device-param-self"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/LocalDevice-class.html">LocalDevice</a></span> <span class="parameter-name">self</span>, </span></li>
-<li><span class="parameter" id="sse_encode_local_device-param-serializer"><span class="type-annotation"><a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated_web/SseSerializer-class.html">SseSerializer</a></span> <span class="parameter-name">serializer</span></span></li>
-</ol>)
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../core_rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span>&gt;</span></span>
+<span class="name ">checkForCaptivePortal</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="checkForCaptivePortal-param-timeoutMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">timeoutMs</span>, </span></li>
+</ol>})
 
       
 
     </section>
     
+<section class="desc markdown">
+  <p>Checks for the presence of a captive portal.</p>
+<p>A captive portal is a web page that the user of a public-access network
+is obliged to view and interact with before access is granted.</p>
+<ul>
+<li><code>timeoutMs</code>: The maximum time to wait for the check to complete.</li>
+</ul>
+<p>Returns a <a href="../../core_rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a> indicating whether a portal was detected
+and the URL it redirected to.</p>
+</section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">@protected
-void sse_encode_local_device(LocalDevice self, SseSerializer serializer);</code></pre>
+  <pre class="language-dart"><code class="language-dart">Future&lt;CaptivePortalStatus&gt; checkForCaptivePortal(
+        {required BigInt timeoutMs}) =&gt;
+    captive_portal_probe.checkForCaptivePortal(timeoutMs: timeoutMs);</code></pre>
 </section>
 
 
@@ -88,12 +93,12 @@ void sse_encode_local_device(LocalDevice self, SseSerializer serializer);</code>
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">network_reachability</a></li>
-    <li><a href="../../core_rust_frb_generated.io/">frb_generated.io</a></li>
-    <li><a href="../../core_rust_frb_generated.io/RustLibApiImplPlatform-class.html">RustLibApiImplPlatform</a></li>
-    <li class="self-crumb">sse_encode_local_device abstract method</li>
+    <li><a href="../../core_logic_network_reachability_logic/">network_reachability_logic</a></li>
+    <li><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></li>
+    <li class="self-crumb">checkForCaptivePortal method</li>
 </ol>
 
-    <h5>RustLibApiImplPlatform class</h5>
+    <h5>NetworkReachability class</h5>
     <div id="dartdoc-sidebar-left-content"></div>
   </div><!--/.sidebar-offcanvas-->
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">

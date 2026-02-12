@@ -64,9 +64,13 @@
     
 <section class="desc markdown">
   <p>Initializes the network reachability engine.</p>
-<p>This must be called once before accessing the singleton instance.
-The user of this library is responsible for calling <code>RustLib.init()</code> <em>before</em> this.</p>
-<p><code>config</code>: The configuration for the engine. If not provided, a default configuration is used.</p>
+<p>This must be called once before accessing the <a href="../../core_logic_network_reachability_logic/NetworkReachability/instance.html">instance</a>. It sets up the
+singleton with the given configuration. The user of this library is
+responsible for calling <code>RustLib.init()</code> <em>before</em> calling this method.</p>
+<ul>
+<li><code>config</code>: The configuration for the engine. If not provided, a default
+configuration is fetched from the underlying Rust implementation.</li>
+</ul>
 </section>
 
 

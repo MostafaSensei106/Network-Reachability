@@ -77,7 +77,7 @@ TargetReport sse_decode_target_report(SseDeserializer deserializer) {
   &#47;&#47; Codec=Sse (Serialization based), see doc to use other codecs
   var var_label = sse_decode_String(deserializer);
   var var_success = sse_decode_bool(deserializer);
-  var var_latencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
+  var var_latencyMs = sse_decode_u_64(deserializer);
   var var_error = sse_decode_opt_String(deserializer);
   var var_isEssential = sse_decode_bool(deserializer);
   return TargetReport(

@@ -65,12 +65,18 @@
     
 <section class="desc markdown">
   <p>A wrapper to protect network-dependent operations.</p>
-<p>Before executing the <code>action</code>, this method performs a fresh network check
-and validates it against the provided <code>requirements</code> and the active <a href="../../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a>.</p>
+<p>Before executing the provided <code>action</code>, this method performs a fresh
+network check and validates it against the active <a href="../../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a>
+and the <code>minQuality</code> requirement.</p>
 <p>It serves as a single point of truth to ensure that an operation is only
 attempted when the network state is acceptable.</p>
-<p>Throws a <a href="../../core_err_exceptions/PoorConnectionException-class.html">PoorConnectionException</a>, <a href="../../core_err_exceptions/SecurityException-class.html">SecurityException</a>, or <a href="../../core_err_exceptions/CircuitBreakerOpenException-class.html">CircuitBreakerOpenException</a>
-if the conditions are not met.</p>
+<p>Throws a <a href="../../core_err_exceptions/PoorConnectionException-class.html">PoorConnectionException</a>, <a href="../../core_err_exceptions/SecurityException-class.html">SecurityException</a>, or
+<a href="../../core_err_exceptions/CircuitBreakerOpenException-class.html">CircuitBreakerOpenException</a> if the conditions are not met.</p>
+<ul>
+<li><code>action</code>: The function to execute if all network checks pass.</li>
+<li><code>minQuality</code>: The minimum required <a href="../../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a> to proceed.
+Defaults to <a href="../../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality.good</a>.</li>
+</ul>
 <h3 id="example-basic-usage">Example: Basic Usage</h3>
 <pre class="language-dart"><code class="language-dart">try {
   final data = await NetworkReachability.instance.guard(
@@ -102,43 +108,7 @@ if the conditions are not met.</p>
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">&#47;&#47;&#47; It serves as a single point of truth to ensure that an operation is only
-&#47;&#47;&#47; attempted when the network state is acceptable.
-&#47;&#47;&#47;
-&#47;&#47;&#47; Throws a [PoorConnectionException], [SecurityException], or [CircuitBreakerOpenException]
-&#47;&#47;&#47; if the conditions are not met.
-&#47;&#47;&#47;
-&#47;&#47;&#47; ### Example: Basic Usage
-&#47;&#47;&#47;
-&#47;&#47;&#47; ```dart
-&#47;&#47;&#47; try {
-&#47;&#47;&#47;   final data = await NetworkReachability.instance.guard(
-&#47;&#47;&#47;     action: () =&gt; myApi.fetchSensitiveData(),
-&#47;&#47;&#47;   );
-&#47;&#47;&#47;   print(&#39;Data fetched successfully: $data&#39;);
-&#47;&#47;&#47; } on PoorConnectionException catch (e) {
-&#47;&#47;&#47;   print(&#39;Could not fetch data due to poor connection: $e&#39;);
-&#47;&#47;&#47; } on SecurityException catch (e) {
-&#47;&#47;&#47;   print(&#39;Security alert! Cannot perform action: $e&#39;);
-&#47;&#47;&#47; } on CircuitBreakerOpenException catch (e) {
-&#47;&#47;&#47;   print(&#39;Backend is unstable. Please try again later: $e&#39;);
-&#47;&#47;&#47; }
-&#47;&#47;&#47; ```
-&#47;&#47;&#47;
-&#47;&#47;&#47; ### Example: Requiring Excellent Quality
-&#47;&#47;&#47;
-&#47;&#47;&#47; ```dart
-&#47;&#47;&#47; try {
-&#47;&#47;&#47;   await NetworkReachability.instance.guard(
-&#47;&#47;&#47;     action: () =&gt; streamingService.start4KStream(),
-&#47;&#47;&#47;     minQuality: ConnectionQuality.excellent,
-&#47;&#47;&#47;   );
-&#47;&#47;&#47; } on PoorConnectionException {
-&#47;&#47;&#47;   &#47;&#47; Handle case where connection is good, but not excellent
-&#47;&#47;&#47;   print(&#39;4K streaming requires an excellent connection.&#39;);
-&#47;&#47;&#47; }
-&#47;&#47;&#47; ```
-Future&lt;T&gt; guard&lt;T&gt;({
+  <pre class="language-dart"><code class="language-dart">Future&lt;T&gt; guard&lt;T&gt;({
   required Future&lt;T&gt; Function() action,
   ConnectionQuality minQuality = ConnectionQuality.good,
 }) async {

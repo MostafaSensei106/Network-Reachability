@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the dco_decode_local_device method from the RustLibApiImpl class, for the Dart programming language.">
-  <title>dco_decode_local_device method - RustLibApiImpl class - frb_generated library - Dart API</title>
+  <meta name="description" content="API docs for the checkTarget method from the NetworkReachability class, for the Dart programming language.">
+  <title>checkTarget method - NetworkReachability class - network_reachability_logic library - Dart API</title>
 
 
   
@@ -25,11 +25,11 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">network_reachability</a></li>
-    <li><a href="../../core_rust_frb_generated/">core&#47;rust&#47;frb_generated.dart</a></li>
-    <li><a href="../../core_rust_frb_generated/RustLibApiImpl-class.html">RustLibApiImpl</a></li>
-    <li class="self-crumb">dco_decode_local_device method</li>
+    <li><a href="../../core_logic_network_reachability_logic/">core&#47;logic&#47;network_reachability_logic.dart</a></li>
+    <li><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></li>
+    <li class="self-crumb">checkTarget method</li>
   </ol>
-  <div class="self-name">dco_decode_local_device</div>
+  <div class="self-name">checkTarget</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -46,44 +46,38 @@
 <div
     id="dartdoc-main-content"
     class="main-content"
-    data-above-sidebar="core_rust_frb_generated&#47;RustLibApiImpl-class-sidebar.html"
+    data-above-sidebar="core_logic_network_reachability_logic&#47;NetworkReachability-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-method">dco_decode_local_device</span> method 
+<h1><span class="kind-method">checkTarget</span> method 
 </h1></div>
 
     <section class="multi-line-signature">
       
-  <div>
-    <ol class="annotation-list">
-        <li>@<a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated/protected-constant.html">protected</a></li>
-    </ol>
-  </div>
-<span class="returntype"><a href="../../core_rust_api_models_net_info/LocalDevice-class.html">LocalDevice</a></span>
-<span class="name ">dco_decode_local_device</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="dco_decode_local_device-param-raw"><span class="type-annotation">dynamic</span> <span class="parameter-name">raw</span></span></li>
-</ol>)
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../core_rust_api_models_report/TargetReport-class.html">TargetReport</a></span>&gt;</span></span>
+<span class="name ">checkTarget</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="checkTarget-param-target"><span>required</span> <span class="type-annotation"><a href="../../core_rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a></span> <span class="parameter-name">target</span>, </span></li>
+</ol>})
 
-      <div class="features"><span class="feature">override</span></div>
+      
 
     </section>
     
+<section class="desc markdown">
+  <p>Performs a network check against a single, specified target.</p>
+<p>This is useful for testing a specific endpoint without running a full
+check against all configured targets.</p>
+<ul>
+<li><code>target</code>: The <a href="../../core_rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a> to check.</li>
+</ul>
+<p>Returns a <a href="../../core_rust_api_models_report/TargetReport-class.html">TargetReport</a> with the results of the check.</p>
+</section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">@protected
-LocalDevice dco_decode_local_device(dynamic raw) {
-  &#47;&#47; Codec=Dco (DartCObject based), see doc to use other codecs
-  final arr = raw as List&lt;dynamic&gt;;
-  if (arr.length != 3)
-    throw Exception(&#39;unexpected arr length: expect 3 but see ${arr.length}&#39;);
-  return LocalDevice(
-    ipAddress: dco_decode_String(arr[0]),
-    hostname: dco_decode_opt_String(arr[1]),
-    macAddress: dco_decode_opt_String(arr[2]),
-  );
-}</code></pre>
+  <pre class="language-dart"><code class="language-dart">Future&lt;TargetReport&gt; checkTarget({required NetworkTarget target}) =&gt;
+    target_probe.checkTarget(target: target);</code></pre>
 </section>
 
 
@@ -97,12 +91,12 @@ LocalDevice dco_decode_local_device(dynamic raw) {
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">network_reachability</a></li>
-    <li><a href="../../core_rust_frb_generated/">frb_generated</a></li>
-    <li><a href="../../core_rust_frb_generated/RustLibApiImpl-class.html">RustLibApiImpl</a></li>
-    <li class="self-crumb">dco_decode_local_device method</li>
+    <li><a href="../../core_logic_network_reachability_logic/">network_reachability_logic</a></li>
+    <li><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></li>
+    <li class="self-crumb">checkTarget method</li>
 </ol>
 
-    <h5>RustLibApiImpl class</h5>
+    <h5>NetworkReachability class</h5>
     <div id="dartdoc-sidebar-left-content"></div>
   </div><!--/.sidebar-offcanvas-->
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">

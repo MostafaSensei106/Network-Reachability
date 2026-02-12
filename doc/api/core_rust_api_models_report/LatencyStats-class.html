@@ -53,6 +53,9 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>A collection of statistical metrics for a series of latency samples.</p>
+</section>
 
 
 
@@ -82,7 +85,7 @@
 
 </dt>
 <dd>
-  
+  The average latency of the sample set.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -106,7 +109,7 @@
 
 </dt>
 <dd>
-  
+  The standard deviation of the latency samples, representing jitter.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -118,7 +121,7 @@
 
 </dt>
 <dd>
-  
+  The final, representative latency value, typically the mean.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -130,7 +133,7 @@
 
 </dt>
 <dd>
-  
+  The maximum latency recorded in the sample set.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -142,7 +145,7 @@
 
 </dt>
 <dd>
-  
+  The minimum latency recorded in the sample set.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -154,7 +157,7 @@
 
 </dt>
 <dd>
-  
+  The percentage of failed samples out of the total expected.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -178,7 +181,8 @@
 
 </dt>
 <dd>
-  
+  A calculated score from 0-100 representing connection stability,
+factoring in jitter, packet loss, and latency spikes.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>

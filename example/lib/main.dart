@@ -207,13 +207,13 @@ class _NetworkDemoPageState extends State<NetworkDemoPage> {
                     target: target,
                   );
                 }),
-                onTraceRoute: () => _runProbe(
-                  () => NetworkReachability.instance.traceRoute(
-                    host: 'google.com',
-                    maxHops: 20,
-                    timeoutPerHopMs: BigInt.from(1000),
-                  ),
-                ),
+                // onTraceRoute: () => _runProbe(
+                //   () => NetworkReachability.instance.traceRoute(
+                //     host: 'google.com',
+                //     maxHops: 20,
+                //     timeoutPerHopMs: BigInt.from(1000),
+                //   ),
+                // ),
               ),
               const SizedBox(height: 12),
               _TargetReportsCard(reports: _report!.targetReports),
@@ -421,7 +421,7 @@ class _ProbesCard extends StatelessWidget {
   final VoidCallback onDetectDns;
   final VoidCallback onDetectSecurity;
   final VoidCallback onCheckTarget;
-  final VoidCallback onTraceRoute;
+  // final VoidCallback onTraceRoute;
 
   const _ProbesCard({
     required this.isLoading,
@@ -431,7 +431,7 @@ class _ProbesCard extends StatelessWidget {
     required this.onDetectDns,
     required this.onDetectSecurity,
     required this.onCheckTarget,
-    required this.onTraceRoute,
+    // required this.onTraceRoute,
   });
 
   @override
@@ -468,10 +468,10 @@ class _ProbesCard extends StatelessWidget {
                   onPressed: isLoading ? null : onCheckTarget,
                   child: const Text('Check Target'),
                 ),
-                ElevatedButton(
-                  onPressed: isLoading ? null : onTraceRoute,
-                  child: const Text('Traceroute'),
-                ),
+                // ElevatedButton(
+                //   onPressed: isLoading ? null : onTraceRoute,
+                //   child: const Text('Traceroute'),
+                // ),
               ],
             ),
             const SizedBox(height: 16),

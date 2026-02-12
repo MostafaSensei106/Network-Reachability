@@ -64,7 +64,22 @@
     
 <section class="desc markdown">
   <p>Calculates statistical metrics for a series of latency samples.</p>
-<p>Returns a tuple containing: (min, max, mean, standard_deviation).</p>
+<p>This function computes the minimum, maximum, and mean latency, along with the
+standard deviation, which is used as a measure of jitter.</p>
+<h1 id="arguments">Arguments</h1>
+<ul>
+<li><code>latencies</code> - A slice of u64 latency values in milliseconds.</li>
+</ul>
+<h1 id="returns">Returns</h1>
+<p>A tuple containing:</p>
+<ol>
+<li><code>Option&lt;u64&gt;</code>: Minimum latency.</li>
+<li><code>Option&lt;u64&gt;</code>: Maximum latency.</li>
+<li><code>Option&lt;u64&gt;</code>: Mean (average) latency.</li>
+<li><code>Option&lt;f64&gt;</code>: Standard deviation (jitter).</li>
+</ol>
+<p>Returns <code>(None, None, None, None)</code> if the input slice is empty.
+Jitter will be <code>None</code> if there are fewer than two samples.</p>
 </section>
 
 

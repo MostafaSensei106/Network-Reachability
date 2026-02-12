@@ -53,6 +53,9 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>Defines a single network endpoint to be checked.</p>
+</section>
 
 
 
@@ -94,7 +97,7 @@
 
 </dt>
 <dd>
-  
+  The hostname or IP address of the target.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -106,7 +109,8 @@
 
 </dt>
 <dd>
-  
+  If true, a failure to connect to this target will be considered a critical
+failure, affecting the circuit breaker and potentially the overall check status.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -118,7 +122,7 @@
 
 </dt>
 <dd>
-  
+  A unique, human-readable label for this target (e.g., "Google DNS").
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -130,7 +134,7 @@
 
 </dt>
 <dd>
-  
+  The port number to connect to.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -142,7 +146,8 @@
 
 </dt>
 <dd>
-  
+  The priority of the target. While not used in the current engine logic,
+it can be used by the caller for sorting or selection. (e.g., 1=High).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -154,7 +159,7 @@
 
 </dt>
 <dd>
-  
+  The protocol (TCP or UDP) to use for the check.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -178,7 +183,7 @@
 
 </dt>
 <dd>
-  
+  The timeout in milliseconds for this specific target check.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>

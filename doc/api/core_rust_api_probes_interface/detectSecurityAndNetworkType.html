@@ -62,7 +62,20 @@
     </section>
     
 <section class="desc markdown">
-  <p>Inspects system network interfaces to detect connection type and potential security flags like VPNs.</p>
+  <p>Inspects system network interfaces to detect connection type and potential security flags.</p>
+<p>This function iterates through the system's available network interfaces,
+skipping loopback and inactive ones. It identifies the most likely connection
+type (VPN, WiFi, Ethernet, etc.) based on common interface name prefixes
+(e.g., "tun", "wlan", "en").</p>
+<p>A VPN connection is given the highest priority. If a VPN is detected, the
+connection type will be <code>ConnectionType::Vpn</code> and the relevant security flag
+will be set, regardless of other present interfaces.</p>
+<h1 id="returns">Returns</h1>
+<p>A tuple containing:</p>
+<ol>
+<li><code>SecurityFlags</code> - A struct with flags like <code>is_vpn_detected</code> and the active <code>interface_name</code>.</li>
+<li><code>ConnectionType</code> - The determined type of the network connection.</li>
+</ol>
 </section>
 
 

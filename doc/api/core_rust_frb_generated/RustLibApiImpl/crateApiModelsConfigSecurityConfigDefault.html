@@ -77,7 +77,7 @@ Future&lt;SecurityConfig&gt; crateApiModelsConfigSecurityConfigDefault() {
     callFfi: (port_) {
       final serializer = SseSerializer(generalizedFrbRustBinding);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 12, port: port_);
+          funcId: 11, port: port_);
     },
     codec: SseCodec(
       decodeSuccessData: sse_decode_security_config,

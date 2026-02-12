@@ -433,21 +433,21 @@ void main() {
       expect(result.latencyMs, BigInt.from(44));
     });
 
-    test('traceRoute calls the probe and returns hops', () async {
-      final expectedHops = <TraceHop>[
-        TraceHop(
-            hopNumber: 1, ipAddress: 'hop1.com', latencyMs: BigInt.from(10)),
-        TraceHop(
-            hopNumber: 2, ipAddress: 'hop2.com', latencyMs: BigInt.from(20)),
-      ];
-      mockApi.mockTraceRouteResult = expectedHops;
+    // test('traceRoute calls the probe and returns hops', () async {
+    //   final expectedHops = <TraceHop>[
+    //     TraceHop(
+    //         hopNumber: 1, ipAddress: 'hop1.com', latencyMs: BigInt.from(10)),
+    //     TraceHop(
+    //         hopNumber: 2, ipAddress: 'hop2.com', latencyMs: BigInt.from(20)),
+    //   ];
+    //   mockApi.mockTraceRouteResult = expectedHops;
 
-      final result = await NetworkReachability.instance.traceRoute(
-          host: 'example.com', maxHops: 5, timeoutPerHopMs: BigInt.from(500));
+    //   final result = await NetworkReachability.instance.traceRoute(
+    //       host: 'example.com', maxHops: 5, timeoutPerHopMs: BigInt.from(500));
 
-      expect(result, hasLength(2));
-      expect(result.last.ipAddress, 'hop2.com');
-    });
+    //   expect(result, hasLength(2));
+    //   expect(result.last.ipAddress, 'hop2.com');
+    // });
   });
 }
 

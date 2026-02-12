@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the kCrateApiProbesLocalScanScanLocalNetworkConstMeta property from the RustLibApiImpl class, for the Dart programming language.">
-  <title>kCrateApiProbesLocalScanScanLocalNetworkConstMeta property - RustLibApiImpl class - frb_generated library - Dart API</title>
+  <meta name="description" content="API docs for the detectDnsHijacking method from the NetworkReachability class, for the Dart programming language.">
+  <title>detectDnsHijacking method - NetworkReachability class - network_reachability_logic library - Dart API</title>
 
 
   
@@ -25,11 +25,11 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">network_reachability</a></li>
-    <li><a href="../../core_rust_frb_generated/">core&#47;rust&#47;frb_generated.dart</a></li>
-    <li><a href="../../core_rust_frb_generated/RustLibApiImpl-class.html">RustLibApiImpl</a></li>
-    <li class="self-crumb">kCrateApiProbesLocalScanScanLocalNetworkConstMeta property</li>
+    <li><a href="../../core_logic_network_reachability_logic/">core&#47;logic&#47;network_reachability_logic.dart</a></li>
+    <li><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></li>
+    <li class="self-crumb">detectDnsHijacking method</li>
   </ol>
-  <div class="self-name">kCrateApiProbesLocalScanScanLocalNetworkConstMeta</div>
+  <div class="self-name">detectDnsHijacking</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -46,43 +46,44 @@
 <div
     id="dartdoc-main-content"
     class="main-content"
-    data-above-sidebar="core_rust_frb_generated&#47;RustLibApiImpl-class-sidebar.html"
+    data-above-sidebar="core_logic_network_reachability_logic&#47;NetworkReachability-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-property">kCrateApiProbesLocalScanScanLocalNetworkConstMeta</span> property 
+<h1><span class="kind-method">detectDnsHijacking</span> method 
 </h1></div>
 
-    
-
-    
-        
-  <section id="getter">
     <section class="multi-line-signature">
       
-      <span class="returntype"><a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated_web/TaskConstMeta-class.html">TaskConstMeta</a></span>
-      get
-      <span class="name ">kCrateApiProbesLocalScanScanLocalNetworkConstMeta</span>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>&gt;</span></span>
+<span class="name ">detectDnsHijacking</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="detectDnsHijacking-param-domain"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">domain</span>, </span></li>
+</ol>})
+
       
 
     </section>
     
+<section class="desc markdown">
+  <p>Detects potential DNS hijacking.</p>
+<p>This is done by comparing the DNS resolution results from the system's
+resolver with a trusted DNS-over-HTTPS (DoH) resolver.</p>
+<ul>
+<li><code>domain</code>: The domain to use for the comparison (e.g., "google.com").</li>
+</ul>
+<p>Returns <code>true</code> if a mismatch is found, suggesting a potential hijack.</p>
+</section>
+
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">TaskConstMeta get kCrateApiProbesLocalScanScanLocalNetworkConstMeta =&gt;
-    const TaskConstMeta(
-      debugName: &quot;scan_local_network&quot;,
-      argNames: [&quot;subnet&quot;, &quot;scanPort&quot;, &quot;timeoutMs&quot;],
-    );</code></pre>
+  <pre class="language-dart"><code class="language-dart">Future&lt;bool&gt; detectDnsHijacking({required String domain}) =&gt;
+    dns_probe.detectDnsHijacking(domain: domain);</code></pre>
 </section>
 
-  </section>
 
-
-</div> <!-- /.main-content -->
-<div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
-  <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
 <header id="header-search-sidebar" class="hidden-l">
   <form class="search-sidebar" role="search">
     <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
@@ -90,15 +91,15 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">network_reachability</a></li>
-    <li><a href="../../core_rust_frb_generated/">frb_generated</a></li>
-    <li><a href="../../core_rust_frb_generated/RustLibApiImpl-class.html">RustLibApiImpl</a></li>
-    <li class="self-crumb">kCrateApiProbesLocalScanScanLocalNetworkConstMeta property</li>
+    <li><a href="../../core_logic_network_reachability_logic/">network_reachability_logic</a></li>
+    <li><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></li>
+    <li class="self-crumb">detectDnsHijacking method</li>
 </ol>
 
-  <h5>RustLibApiImpl class</h5>
-  <div id="dartdoc-sidebar-left-content"></div>
-</div><!--/.sidebar-offcanvas-->
-<div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <h5>NetworkReachability class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
 </div><!--/.sidebar-offcanvas-->
 </main>
 <footer>

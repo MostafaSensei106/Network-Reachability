@@ -86,7 +86,7 @@ Future&lt;List&lt;TraceHop&gt;&gt; crateApiProbesTracerouteTraceRoute(
       sse_encode_u_8(maxHops, serializer);
       sse_encode_u_64(timeoutPerHopMs, serializer);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 14, port: port_);
+          funcId: 13, port: port_);
     },
     codec: SseCodec(
       decodeSuccessData: sse_decode_list_trace_hop,

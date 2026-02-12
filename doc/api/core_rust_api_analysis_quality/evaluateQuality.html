@@ -64,7 +64,14 @@
     </section>
     
 <section class="desc markdown">
-  <p>Evaluates connection quality based on latency against a set of thresholds.</p>
+  <p>Evaluates connection quality based on a latency value and a set of thresholds.</p>
+<h1 id="arguments">Arguments</h1>
+<ul>
+<li><code>latency</code> - The latency value in milliseconds.</li>
+<li><code>threshold</code> - A reference to the <a href="../core_rust_api_models_config/QualityThresholds-class.html">QualityThresholds</a> to compare against.</li>
+</ul>
+<h1 id="returns">Returns</h1>
+<p>A <a href="../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a> enum variant representing the quality level.</p>
 </section>
 
 

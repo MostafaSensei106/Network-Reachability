@@ -64,6 +64,23 @@
     
 <section class="desc markdown">
   <p>Detects potential DNS hijacking by comparing system DNS resolution with a trusted DoH resolver.</p>
+<p>This works by:</p>
+<ol>
+<li>Resolving the given <code>domain</code> using the operating system's configured DNS resolver.</li>
+<li>Resolving the same <code>domain</code> using a hardcoded, trusted DNS-over-HTTPS (DoH)
+resolver (Cloudflare's 1.1.1.1).</li>
+<li>Comparing the sets of IP addresses returned. If the system's resolved IPs are not a
+perfect subset of the DoH-resolved IPs, it suggests that the system's DNS
+responses may have been tampered with.</li>
+</ol>
+<h1 id="arguments">Arguments</h1>
+<ul>
+<li><code>domain</code> - The domain name to use for the check (e.g., "google.com").</li>
+</ul>
+<h1 id="returns">Returns</h1>
+<p>Returns <code>true</code> if a discrepancy is found, indicating a potential DNS hijack.
+Returns <code>false</code> if the results match or if an error occurs during resolution
+(as a hijack cannot be definitively proven).</p>
 </section>
 
 

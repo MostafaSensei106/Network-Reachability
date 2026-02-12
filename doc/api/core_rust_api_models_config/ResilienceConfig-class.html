@@ -54,7 +54,7 @@
 
     
 <section class="desc markdown">
-  <p>Configuration for resilience and performance features.</p>
+  <p>Configuration for resilience and performance tuning.</p>
 </section>
 
 
@@ -85,7 +85,8 @@
 
 </dt>
 <dd>
-  The number of consecutive failures before the circuit breaker opens. 0 to disable.
+  The number of consecutive failures of essential targets before the
+circuit breaker opens. A value of 0 disables the circuit breaker.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -97,7 +98,7 @@
 
 </dt>
 <dd>
-  The maximum percentage of packetloss that can not be ignored
+  The packet loss percentage above which the connection is marked as 'Unstable'.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -121,7 +122,8 @@
 
 </dt>
 <dd>
-  The percentage of mean latency that the standard deviation must exceed to be marked as 'Unstable'.
+  The percentage of mean latency that the standard deviation must exceed
+to be considered high jitter, potentially downgrading quality.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -133,7 +135,8 @@
 
 </dt>
 <dd>
-  Number of samples for jitter analysis. Must be &gt; 1 to enable jitter check.
+  Number of samples to take for jitter and stability analysis.
+Must be greater than 1 to enable jitter calculation.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -157,7 +160,8 @@
 
 </dt>
 <dd>
-  if score is less than this value, the target is considered unstable for examples 70-80%
+  If the calculated stability score is less than this value, the quality
+may be downgraded.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>

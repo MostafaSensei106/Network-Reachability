@@ -68,7 +68,11 @@
     
 <section class="desc markdown">
   <p>A stream of network status updates.</p>
-<p>Emits a new <code>NetworkStatus</code> whenever a periodic check is completed.</p>
+<p>This stream emits a new <a href="../../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a> whenever a periodic check is
+completed successfully. The interval for these checks is defined by
+<code>checkIntervalMs</code> in the <a href="../../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a>.</p>
+<p>If periodic checks are disabled (<code>checkIntervalMs</code> is zero), this stream
+will not emit any values.</p>
 </section>
 
     

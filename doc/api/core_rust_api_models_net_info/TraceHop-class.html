@@ -53,6 +53,9 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>Represents a single hop in a traceroute path.</p>
+</section>
 
 
 
@@ -94,7 +97,7 @@
 
 </dt>
 <dd>
-  
+  The hop number in the sequence (Time-To-Live value).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -106,7 +109,7 @@
 
 </dt>
 <dd>
-  
+  The hostname resolved from the IP address, if available.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -118,7 +121,7 @@
 
 </dt>
 <dd>
-  
+  The IP address of the router at this hop. Can be "*" if the hop timed out.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -130,7 +133,7 @@
 
 </dt>
 <dd>
-  
+  The round-trip time to this hop in milliseconds.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>

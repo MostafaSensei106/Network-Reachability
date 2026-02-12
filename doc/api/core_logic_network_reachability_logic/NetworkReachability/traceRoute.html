@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the instance property from the NetworkReachability class, for the Dart programming language.">
-  <title>instance property - NetworkReachability class - network_reachability_logic library - Dart API</title>
+  <meta name="description" content="API docs for the traceRoute method from the NetworkReachability class, for the Dart programming language.">
+  <title>traceRoute method - NetworkReachability class - network_reachability_logic library - Dart API</title>
 
 
   
@@ -27,9 +27,9 @@
     <li><a href="../../index.html">network_reachability</a></li>
     <li><a href="../../core_logic_network_reachability_logic/">core&#47;logic&#47;network_reachability_logic.dart</a></li>
     <li><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></li>
-    <li class="self-crumb">instance property</li>
+    <li class="self-crumb">traceRoute method</li>
   </ol>
-  <div class="self-name">instance</div>
+  <div class="self-name">traceRoute</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -49,46 +49,49 @@
     data-above-sidebar="core_logic_network_reachability_logic&#47;NetworkReachability-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-property">instance</span> property 
+<h1><span class="kind-method">traceRoute</span> method 
 </h1></div>
 
-    
-
-    
-        
-  <section id="getter">
     <section class="multi-line-signature">
       
-      <span class="returntype"><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></span>
-      get
-      <span class="name ">instance</span>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../core_rust_api_models_net_info/TraceHop-class.html">TraceHop</a></span>&gt;</span></span>&gt;</span></span>
+<span class="name ">traceRoute</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="traceRoute-param-host"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">host</span>, </span></li>
+<li><span class="parameter" id="traceRoute-param-maxHops"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">maxHops</span>, </span></li>
+<li><span class="parameter" id="traceRoute-param-timeoutPerHopMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">timeoutPerHopMs</span>, </span></li>
+</ol>})
+
       
 
     </section>
     
 <section class="desc markdown">
-  <p>The singleton instance of the network reachability engine.</p>
-<p>An exception will be thrown if this is accessed before <a href="../../core_logic_network_reachability_logic/NetworkReachability/init.html">init</a> is called.</p>
+  <p>Traces the network path to a specified host.</p>
+<p>This method sends packets with increasing TTLs to discover the
+intermediate routers between the device and the destination.</p>
+<ul>
+<li><code>host</code>: The destination host (e.g., "google.com").</li>
+<li><code>maxHops</code>: The maximum number of hops to trace.</li>
+<li><code>timeoutPerHopMs</code>: The timeout for each individual hop.</li>
+</ul>
+<p>Returns a list of <a href="../../core_rust_api_models_net_info/TraceHop-class.html">TraceHop</a> objects, each representing a step in the path.</p>
 </section>
+
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static NetworkReachability get instance {
-  if (_instance == null) {
-    throw Exception(
-        &#39;NetworkReachability has not been initialized. Call NetworkReachability.init() first.&#39;);
-  }
-  return _instance!;
-}</code></pre>
+  <pre class="language-dart"><code class="language-dart">Future&lt;List&lt;TraceHop&gt;&gt; traceRoute(
+        {required String host,
+        required int maxHops,
+        required BigInt timeoutPerHopMs}) =&gt;
+    traceroute_probe.traceRoute(
+        host: host, maxHops: maxHops, timeoutPerHopMs: timeoutPerHopMs);</code></pre>
 </section>
 
-  </section>
 
-
-</div> <!-- /.main-content -->
-<div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
-  <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
 <header id="header-search-sidebar" class="hidden-l">
   <form class="search-sidebar" role="search">
     <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
@@ -98,13 +101,13 @@
     <li><a href="../../index.html">network_reachability</a></li>
     <li><a href="../../core_logic_network_reachability_logic/">network_reachability_logic</a></li>
     <li><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></li>
-    <li class="self-crumb">instance property</li>
+    <li class="self-crumb">traceRoute method</li>
 </ol>
 
-  <h5>NetworkReachability class</h5>
-  <div id="dartdoc-sidebar-left-content"></div>
-</div><!--/.sidebar-offcanvas-->
-<div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <h5>NetworkReachability class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
 </div><!--/.sidebar-offcanvas-->
 </main>
 <footer>

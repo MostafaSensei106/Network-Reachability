@@ -12,7 +12,7 @@ import '../rust/api/probes/captive_portal.dart' as captive_portal_probe;
 import '../rust/api/probes/dns.dart' as dns_probe;
 import '../rust/api/probes/interface.dart' as interface_probe;
 import '../rust/api/probes/target.dart' as target_probe;
-import '../rust/api/probes/traceroute.dart' as traceroute_probe;
+// import '../rust/api/probes/traceroute.dart' as traceroute_probe;
 
 /// The main class for interacting with the network reachability engine.
 ///
@@ -268,12 +268,12 @@ class NetworkReachability {
   /// - [timeoutPerHopMs]: The timeout for each individual hop.
   ///
   /// Returns a list of [TraceHop] objects, each representing a step in the path.
-  Future<List<TraceHop>> traceRoute(
-          {required String host,
-          required int maxHops,
-          required BigInt timeoutPerHopMs}) =>
-      traceroute_probe.traceRoute(
-          host: host, maxHops: maxHops, timeoutPerHopMs: timeoutPerHopMs);
+  // Future<List<TraceHop>> traceRoute(
+  //         {required String host,
+  //         required int maxHops,
+  //         required BigInt timeoutPerHopMs}) =>
+  //     traceroute_probe.traceRoute(
+  //         host: host, maxHops: maxHops, timeoutPerHopMs: timeoutPerHopMs);
 
   /// Starts the periodic checks based on the configured interval.
   void _startPeriodicChecks() {

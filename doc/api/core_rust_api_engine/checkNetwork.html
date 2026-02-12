@@ -64,7 +64,22 @@
     
 <section class="desc markdown">
   <p>The main entry point for running a comprehensive network check.</p>
-<p>This function orchestrates the various probes and analyses based on the provided configuration.</p>
+<p>This function orchestrates the entire check process:</p>
+<ol>
+<li>Records the start time.</li>
+<li>Collects multiple latency samples by running probes against all configured targets.</li>
+<li>Computes detailed latency and stability statistics from the samples.</li>
+<li>Evaluates the final connection quality based on speed, jitter, and packet loss.</li>
+<li>Detects the network interface type and checks for security issues like VPNs.</li>
+<li>Performs a DNS hijacking check if configured.</li>
+<li>Compiles all results into a single, comprehensive <a href="../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a>.</li>
+</ol>
+<h1 id="arguments">Arguments</h1>
+<ul>
+<li><code>config</code> - The <a href="../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a> that defines how the check should be performed.</li>
+</ul>
+<h1 id="returns">Returns</h1>
+<p>A <a href="../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a> containing the complete results of the check.</p>
 </section>
 
 

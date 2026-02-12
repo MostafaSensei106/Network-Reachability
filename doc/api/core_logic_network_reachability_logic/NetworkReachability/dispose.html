@@ -62,7 +62,10 @@
     </section>
     
 <section class="desc markdown">
-  <p>Disposes of the engine and cleans up resources.</p>
+  <p>Disposes of the engine and cleans up all resources.</p>
+<p>This method cancels any active timers and closes the status stream.
+It should be called when the <a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a> instance is no longer needed
+to prevent memory leaks.</p>
 </section>
 
 

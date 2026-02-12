@@ -85,7 +85,9 @@
 
 </dt>
 <dd>
-  A list of allowed interface prefixes. If not empty, the check will fail if the active interface is not on this list.
+  A list of allowed interface name prefixes (e.g., "en", "wlan").
+If not empty, the <code>guard</code> will fail if the active interface
+does not match one of the prefixes.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -97,7 +99,7 @@
 
 </dt>
 <dd>
-  If true, the check will fail if a VPN is detected.
+  If true, the <code>guard</code> function will throw an exception if a VPN is detected.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -110,6 +112,7 @@
 </dt>
 <dd>
   If true, performs a check to detect potential DNS hijacking.
+This adds a small latency to each check.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>

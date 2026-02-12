@@ -55,8 +55,11 @@
     
 <section class="desc markdown">
   <p>The main class for interacting with the network reachability engine.</p>
-<p>This class provides a high-level API for network checks, monitoring, and guarding operations.
-It should be initialized once using the static <code>init</code> method.</p>
+<p>This class provides a high-level API for performing network checks,
+monitoring network status changes, and guarding operations based on network
+quality and security requirements.</p>
+<p>It operates as a singleton, which must be initialized once using the static
+<a href="../core_logic_network_reachability_logic/NetworkReachability/init.html">init</a> method before use.</p>
 </section>
 
 
@@ -121,7 +124,59 @@ It should be initialized once using the static <code>init</code> method.</p>
 
 </dt>
 <dd>
-  Performs a single, one-off network check.
+  Performs a single, on-demand network check.
+  
+
+</dd>
+
+        <dt id="checkForCaptivePortal" class="callable">
+  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/checkForCaptivePortal.html">checkForCaptivePortal</a></span><span class="signature">(<wbr>{<span class="parameter" id="checkForCaptivePortal-param-timeoutMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">timeoutMs</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Checks for the presence of a captive portal.
+  
+
+</dd>
+
+        <dt id="checkTarget" class="callable">
+  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/checkTarget.html">checkTarget</a></span><span class="signature">(<wbr>{<span class="parameter" id="checkTarget-param-target"><span>required</span> <span class="type-annotation"><a href="../core_rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a></span> <span class="parameter-name">target</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_report/TargetReport-class.html">TargetReport</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Performs a network check against a single, specified target.
+  
+
+</dd>
+
+        <dt id="detectDnsHijacking" class="callable">
+  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/detectDnsHijacking.html">detectDnsHijacking</a></span><span class="signature">(<wbr>{<span class="parameter" id="detectDnsHijacking-param-domain"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">domain</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Detects potential DNS hijacking.
+  
+
+</dd>
+
+        <dt id="detectSecurityAndNetworkType" class="callable">
+  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/detectSecurityAndNetworkType.html">detectSecurityAndNetworkType</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">(<span class="field"><span class="type-annotation"><a href="../core_rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a></span>, </span><span class="field"><span class="type-annotation"><a href="../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span></span>)</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Inspects system network interfaces to detect connection type and security flags.
   
 
 </dd>
@@ -134,7 +189,7 @@ It should be initialized once using the static <code>init</code> method.</p>
 
 </dt>
 <dd>
-  Disposes of the engine and cleans up resources.
+  Disposes of the engine and cleans up all resources.
   
 
 </dd>
@@ -175,6 +230,19 @@ It should be initialized once using the static <code>init</code> method.</p>
 <dd class="inherited">
   A string representation of this object.
   <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="traceRoute" class="callable">
+  <span class="name"><a href="../core_logic_network_reachability_logic/NetworkReachability/traceRoute.html">traceRoute</a></span><span class="signature">(<wbr>{<span class="parameter" id="traceRoute-param-host"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">host</span>, </span><span class="parameter" id="traceRoute-param-maxHops"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">maxHops</span>, </span><span class="parameter" id="traceRoute-param-timeoutPerHopMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">timeoutPerHopMs</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_net_info/TraceHop-class.html">TraceHop</a></span>&gt;</span></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Traces the network path to a specified host.
+  
 
 </dd>
 

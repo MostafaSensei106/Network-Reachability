@@ -63,7 +63,19 @@
     </section>
     
 <section class="desc markdown">
-  <p>Checks for the presence of a captive portal by sending a request to a known non-SSL site.</p>
+  <p>Checks for the presence of a captive portal.</p>
+<p>A captive portal is a web page that a user on a public-access network must
+view and interact with before being granted broader access to network resources.</p>
+<p>This function works by sending an HTTP GET request to a known, non-SSL site
+(<code>http://neverssl.com</code>). If the request is redirected, it indicates the
+presence of a captive portal.</p>
+<h1 id="arguments">Arguments</h1>
+<ul>
+<li><code>timeout_ms</code> - The maximum time in milliseconds to wait for the request to complete.</li>
+</ul>
+<h1 id="returns">Returns</h1>
+<p>A <a href="../core_rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a> struct indicating whether a portal was detected and
+the final URL after any redirects.</p>
 </section>
 
 

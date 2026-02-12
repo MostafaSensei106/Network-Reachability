@@ -81,7 +81,7 @@ TargetReport dco_decode_target_report(dynamic raw) {
   return TargetReport(
     label: dco_decode_String(arr[0]),
     success: dco_decode_bool(arr[1]),
-    latencyMs: dco_decode_opt_box_autoadd_u_64(arr[2]),
+    latencyMs: dco_decode_u_64(arr[2]),
     error: dco_decode_opt_String(arr[3]),
     isEssential: dco_decode_bool(arr[4]),
   );

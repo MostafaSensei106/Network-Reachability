@@ -78,7 +78,7 @@ void sse_encode_target_report(TargetReport self, SseSerializer serializer) {
   &#47;&#47; Codec=Sse (Serialization based), see doc to use other codecs
   sse_encode_String(self.label, serializer);
   sse_encode_bool(self.success, serializer);
-  sse_encode_opt_box_autoadd_u_64(self.latencyMs, serializer);
+  sse_encode_u_64(self.latencyMs, serializer);
   sse_encode_opt_String(self.error, serializer);
   sse_encode_bool(self.isEssential, serializer);
 }</code></pre>

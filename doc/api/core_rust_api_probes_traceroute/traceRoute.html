@@ -64,6 +64,24 @@
 
     </section>
     
+<section class="desc markdown">
+  <p>Performs a traceroute to a specified host.</p>
+<p>This function discovers the network path by sending a series of UDP packets
+with incrementally increasing Time-To-Live (TTL) values. Each router along
+the path decrements the TTL. When the TTL reaches zero, the router sends back
+an ICMP "Time Exceeded" message. By capturing these messages, we can identify
+each hop in the path.</p>
+<h1 id="arguments">Arguments</h1>
+<ul>
+<li><code>host</code> - The destination hostname or IP address (e.g., "google.com").</li>
+<li><code>max_hops</code> - The maximum number of hops (TTL value) to probe.</li>
+<li><code>timeout_per_hop_ms</code> - The time in milliseconds to wait for a response from each hop.</li>
+</ul>
+<h1 id="returns">Returns</h1>
+<p>A <code>Vec&lt;TraceHop&gt;</code> where each element represents a router or the final
+destination in the network path. Hops that time out will have an IP address
+of "*" and no latency information.</p>
+</section>
 
 
     

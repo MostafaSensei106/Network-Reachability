@@ -63,7 +63,26 @@
     </section>
     
 <section class="desc markdown">
-  <p>Performs a network check against a single target.</p>
+  <p>Performs a network check against a single, specified target.</p>
+<p>This function attempts to establish a connection to the given <code>target</code> using
+the specified protocol (TCP or UDP) and within the specified timeout.</p>
+<ul>
+<li>For TCP, it attempts a <code>TcpStream::connect</code>.</li>
+<li>For UDP, it binds a local socket, connects to the target address, and sends a
+single-byte payload. The operation is considered successful if the <code>send</code>
+completes without error. It does not wait for a response.</li>
+</ul>
+<h1 id="arguments">Arguments</h1>
+<ul>
+<li><code>target</code> - A reference to the <a href="../core_rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a> to be checked.</li>
+</ul>
+<h1 id="returns">Returns</h1>
+<p>A <a href="../core_rust_api_models_report/TargetReport-class.html">TargetReport</a> containing the outcome of the check.</p>
+<ul>
+<li>On success: <code>success</code> is true, <code>latency_ms</code> is the time taken, and <code>error</code> is None.</li>
+<li>On failure: <code>success</code> is false, <code>latency_ms</code> is 0, and <code>error</code> contains a
+description of the failure (e.g., DNS error, connection error, timeout).</li>
+</ul>
 </section>
 
 

@@ -77,7 +77,7 @@ Future&lt;SecurityFlags&gt; crateApiModelsNetInfoSecurityFlagsDefault() {
     callFfi: (port_) {
       final serializer = SseSerializer(generalizedFrbRustBinding);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 13, port: port_);
+          funcId: 12, port: port_);
     },
     codec: SseCodec(
       decodeSuccessData: sse_decode_security_flags,

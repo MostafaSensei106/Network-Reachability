@@ -62,8 +62,13 @@
     </section>
     
 <section class="desc markdown">
-  <p>Performs a single, one-off network check.</p>
-<p>Returns a <code>NetworkReport</code> with detailed information about the connection.</p>
+  <p>Performs a single, on-demand network check.</p>
+<p>This method orchestrates a comprehensive check based on the current
+configuration, including running probes against all defined targets.
+It also updates the internal circuit breaker state based on the outcome.</p>
+<p>Returns a <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a> that completes with a <a href="../../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a> containing
+detailed information about the connection, including quality, latency,
+and security flags.</p>
 </section>
 
 
