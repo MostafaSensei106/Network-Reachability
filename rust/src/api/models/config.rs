@@ -1,7 +1,7 @@
 //! Configuration-related data structures.
 
 use super::target::{NetworkTarget, TargetProtocol};
-use crate::api::constants::AppConstants;
+use crate::api::constants::LibConstants;
 
 /// Defines the strategy for evaluating multiple targets.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -51,11 +51,11 @@ pub struct QualityThresholds {
 impl Default for QualityThresholds {
     fn default() -> Self {
         Self {
-            excellent: AppConstants::DEFAULT_EXCELLENT_THRESHOLD,
-            great: AppConstants::DEFAULT_GREAT_THRESHOLD,
-            good: AppConstants::DEFAULT_GOOD_THRESHOLD,
-            moderate: AppConstants::DEFAULT_MODERATE_THRESHOLD,
-            poor: AppConstants::DEFAULT_POOR_THRESHOLD,
+            excellent: LibConstants::DEFAULT_EXCELLENT_THRESHOLD,
+            great: LibConstants::DEFAULT_GREAT_THRESHOLD,
+            good: LibConstants::DEFAULT_GOOD_THRESHOLD,
+            moderate: LibConstants::DEFAULT_MODERATE_THRESHOLD,
+            poor: LibConstants::DEFAULT_POOR_THRESHOLD,
         }
     }
 }
@@ -99,10 +99,10 @@ impl Default for ResilienceConfig {
         Self {
             strategy: CheckStrategy::Race,
             circuit_breaker_threshold: 0, // Disabled by default
-            num_jitter_samples: AppConstants::DEFAULT_JITTER_SAMPLES,
-            jitter_threshold_percent: AppConstants::DEFAULT_JITTER_THRESHOLD_PERCENT,
-            stability_thershold: AppConstants::DEFAULT_STABILITY_THRESHOLD,
-            critical_packet_loss_precent: AppConstants::DEFAULT_CRITICAL_PACKET_LOSS_PRECENT,
+            num_jitter_samples: LibConstants::DEFAULT_JITTER_SAMPLES,
+            jitter_threshold_percent: LibConstants::DEFAULT_JITTER_THRESHOLD_PERCENT,
+            stability_thershold: LibConstants::DEFAULT_STABILITY_THRESHOLD,
+            critical_packet_loss_precent: LibConstants::DEFAULT_CRITICAL_PACKET_LOSS_PRECENT,
         }
     }
 }
@@ -129,25 +129,25 @@ impl Default for NetworkConfiguration {
         Self {
             targets: vec![
                 NetworkTarget {
-                    label: AppConstants::CLOUDFLARE_NAME.into(),
-                    host: AppConstants::CLOUDFLARE_DNS.into(),
-                    port: AppConstants::DEFAULT_PORT,
+                    label: LibConstants::CLOUDFLARE_NAME.into(),
+                    host: LibConstants::CLOUDFLARE_DNS.into(),
+                    port: LibConstants::DEFAULT_PORT,
                     protocol: TargetProtocol::Tcp,
-                    timeout_ms: AppConstants::DEFAULT_TIMEOUT_MS,
+                    timeout_ms: LibConstants::DEFAULT_TIMEOUT_MS,
                     priority: 1,
                     is_essential: false,
                 },
                 NetworkTarget {
-                    label: AppConstants::GOOGLE_NAME.into(),
-                    host: AppConstants::GOOGLE_DNS.into(),
-                    port: AppConstants::DEFAULT_PORT,
+                    label: LibConstants::GOOGLE_NAME.into(),
+                    host: LibConstants::GOOGLE_DNS.into(),
+                    port: LibConstants::DEFAULT_PORT,
                     protocol: TargetProtocol::Tcp,
-                    timeout_ms: AppConstants::DEFAULT_TIMEOUT_MS,
+                    timeout_ms: LibConstants::DEFAULT_TIMEOUT_MS,
                     priority: 1,
                     is_essential: false,
                 },
             ],
-            check_interval_ms: AppConstants::DEFAULT_CHECK_INTERVAL_MS,
+            check_interval_ms: LibConstants::DEFAULT_CHECK_INTERVAL_MS,
             quality_threshold: QualityThresholds::default(),
             security: SecurityConfig::default(),
             resilience: ResilienceConfig::default(),
@@ -158,30 +158,30 @@ impl Default for NetworkConfiguration {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api::constants::AppConstants;
+    use crate::api::constants::LibConstants;
 
     #[test]
     fn test_quality_thresholds_default() {
         let thresholds = QualityThresholds::default();
         assert_eq!(
             thresholds.excellent,
-            AppConstants::DEFAULT_EXCELLENT_THRESHOLD
+            LibConstants::DEFAULT_EXCELLENT_THRESHOLD
         );
-        assert_eq!(thresholds.great, AppConstants::DEFAULT_GREAT_THRESHOLD);
-        assert_eq!(thresholds.good, AppConstants::DEFAULT_GOOD_THRESHOLD);
+        assert_eq!(thresholds.great, LibConstants::DEFAULT_GREAT_THRESHOLD);
+        assert_eq!(thresholds.good, LibConstants::DEFAULT_GOOD_THRESHOLD);
         assert_eq!(
             thresholds.moderate,
-            AppConstants::DEFAULT_MODERATE_THRESHOLD
+            LibConstants::DEFAULT_MODERATE_THRESHOLD
         );
-        assert_eq!(thresholds.poor, AppConstants::DEFAULT_POOR_THRESHOLD);
+        assert_eq!(thresholds.poor, LibConstants::DEFAULT_POOR_THRESHOLD);
     }
 
     #[test]
     fn test_network_configuration_default() {
         let config = NetworkConfiguration::default();
         assert_eq!(config.targets.len(), 2);
-        assert_eq!(config.targets[0].label, AppConstants::CLOUDFLARE_NAME);
-        assert_eq!(config.targets[1].label, AppConstants::GOOGLE_NAME);
+        assert_eq!(config.targets[0].label, LibConstants::CLOUDFLARE_NAME);
+        assert_eq!(config.targets[1].label, LibConstants::GOOGLE_NAME);
         assert_eq!(config.resilience.strategy, CheckStrategy::Race);
         assert!(!config.security.block_vpn);
     }

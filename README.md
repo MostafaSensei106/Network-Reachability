@@ -98,7 +98,7 @@ Next, add `network_reachability` to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  network_reachability: ^1.0.0 # Replace with the latest version
+  network_reachability: ^0.0.1 # Replace with the latest version
 ```
 
 Then, run `flutter pub get` to fetch the package.

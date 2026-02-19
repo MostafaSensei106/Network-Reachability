@@ -1,6 +1,6 @@
-pub struct AppConstants;
+pub struct LibConstants;
 
-impl AppConstants {
+impl LibConstants {
     pub const CLOUDFLARE_NAME: &'static str = "Cloudflare";
     pub const GOOGLE_NAME: &'static str = "Google";
 

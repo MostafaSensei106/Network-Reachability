@@ -1,6 +1,6 @@
 //! Probe for detecting captive portals.
 
-use crate::api::{constants::AppConstants, models::CaptivePortalStatus};
+use crate::api::{constants::LibConstants, models::CaptivePortalStatus};
 use std::time::Duration;
 
 /// Checks for the presence of a captive portal.
@@ -36,7 +36,7 @@ pub async fn check_for_captive_portal(timeout_ms: u64) -> CaptivePortalStatus {
         }
     };
 
-    let url = AppConstants::CAPTIVE_PORTAL_DETECTION_URL;
+    let url = LibConstants::CAPTIVE_PORTAL_DETECTION_URL;
 
     match client.get(url).send().await {
         Ok(response) => {
@@ -78,7 +78,7 @@ mod tests {
             .await;
 
         // Temporarily override the constant for the test
-        let _original_url = AppConstants::CAPTIVE_PORTAL_DETECTION_URL;
+        let _original_url = LibConstants::CAPTIVE_PORTAL_DETECTION_URL;
         let _temp_url = &url;
 
         // This is a tricky way to test, a better approach would be dependency injection for the URL.
