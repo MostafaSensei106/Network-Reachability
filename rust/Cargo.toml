@@ -1,5 +1,5 @@
 [package]
-name = "rust_lib_network_reachability"
+name = "network_reachability"
 version = "0.1.0"
 edition = "2021"
 
@@ -22,5 +22,6 @@ chrono = "0.4"
 
 [dev-dependencies]
 mockito = "1.2.0"
+
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
