@@ -33,6 +33,7 @@ class NetworkTarget {
   /// failure, affecting the circuit breaker and potentially the overall check status.
   final bool isEssential;
 
+  /// Creates a new [NetworkTarget] instance.
   const NetworkTarget({
     required this.label,
     required this.host,
