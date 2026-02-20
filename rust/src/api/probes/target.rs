@@ -66,14 +66,21 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
             }
             TargetProtocol::Http | TargetProtocol::Https => {
-                let scheme = if target.protocol == TargetProtocol::Https { "https" } else { "http" };
+                let scheme = if target.protocol == TargetProtocol::Https {
+                    "https"
+                } else {
+                    "http"
+                };
                 let url = format!("{}://{}:{}", scheme, target.host, target.port);
                 let client = reqwest::Client::builder()
                     .timeout(timeout_duration)
                     .build()
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
-                
-                let _res = client.get(&url).send().await
+
+                let _res = client
+                    .get(&url)
+                    .send()
+                    .await
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
             }
             TargetProtocol::Icmp => {

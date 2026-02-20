@@ -10,25 +10,15 @@ import 'models/report.dart';
 import 'models/target.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `analyze_single_sample`, `collect_network_samples`, `compute_latency_stats`, `evaluate_network_quality`, `get_winner_target`, `perform_dns_security_check`
+// These functions are ignored because they are not marked as `pub`: `analyze_single_sample`, `collect_network_samples`, `compute_latency_stats`, `evaluate_network_quality`, `perform_dns_security_check`
 
 /// The main entry point for running a comprehensive network check.
 ///
 /// This function orchestrates the entire check process:
-/// 1. Records the start time.
-/// 2. Collects multiple latency samples by running probes against all configured targets.
-/// 3. Computes detailed latency and stability statistics from the samples.
-/// 4. Evaluates the final connection quality based on speed, jitter, and packet loss.
-/// 5. Detects the network interface type and checks for security issues like VPNs.
-/// 6. Performs a DNS hijacking check if configured.
-/// 7. Compiles all results into a single, comprehensive [NetworkReport].
-///
-/// # Arguments
-///
-/// * `config` - The [NetworkConfiguration] that defines how the check should be performed.
-///
-/// # Returns
-///
-/// A [NetworkReport] containing the complete results of the check.
+/// 1. Collects latency samples via [collect_network_samples].
+/// 2. Computes [LatencyStats].
+/// 3. Evaluates [ConnectionQuality].
+/// 4. Detects interface security and type.
+/// 5. Compiles a final [NetworkReport].
 Future<NetworkReport> checkNetwork({required NetworkConfiguration config}) =>
     RustLib.instance.api.crateApiEngineCheckNetwork(config: config);
