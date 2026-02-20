@@ -133,10 +133,10 @@ impl Default for NetworkConfiguration {
         Self {
             targets: vec![
                 NetworkTarget {
-                    label: LibConstants::CLOUDFLARE_NAME_HTTP.into(),
+                    label: LibConstants::CLOUDFLARE_NAME_HTTPS.into(),
                     host: LibConstants::CLOUDFLARE_DNS.into(),
                     port: LibConstants::DEFAULT_HTTP_PORT,
-                    protocol: TargetProtocol::Http,
+                    protocol: TargetProtocol::Https,
                     timeout_ms: LibConstants::DEFAULT_HTTP_TIMEOUT_MS,
                     priority: 2,
                     is_essential: false,
@@ -194,7 +194,7 @@ mod tests {
     fn test_network_configuration_default() {
         let config = NetworkConfiguration::default();
         assert_eq!(config.targets.len(), 3);
-        assert_eq!(config.targets[0].label, LibConstants::CLOUDFLARE_NAME_HTTP);
+        assert_eq!(config.targets[0].label, LibConstants::CLOUDFLARE_NAME_HTTPS);
         assert_eq!(config.targets[1].label, LibConstants::CLOUDFLARE_NAME);
         assert_eq!(config.targets[2].label, LibConstants::GOOGLE_NAME);
         assert_eq!(config.resilience.strategy, CheckStrategy::Race);

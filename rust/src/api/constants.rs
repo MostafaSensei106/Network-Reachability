@@ -3,6 +3,8 @@ pub struct LibConstants;
 impl LibConstants {
     pub const CLOUDFLARE_NAME: &'static str = "Cloudflare";
     pub const CLOUDFLARE_NAME_HTTP: &'static str = "Cloudflare Http";
+    pub const CLOUDFLARE_NAME_HTTPS: &'static str = "Cloudflare Https";
+
     pub const GOOGLE_NAME: &'static str = "Google";
 
     pub const DEFAULT_INTERFACE_NAME: &'static str = "unknown";
