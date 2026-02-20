@@ -74,5 +74,14 @@ enum TargetProtocol {
 
   /// Use the User Datagram Protocol (UDP). This is a fast, connectionless protocol.
   udp,
+
+  /// Use the Internet Control Message Protocol (ICMP). This is commonly used for "pinging" hosts.
+  icmp,
+
+  /// Use the Hypertext Transfer Protocol (HTTP).
+  http,
+
+  /// Use the Hypertext Transfer Protocol Secure (HTTPS).
+  https,
   ;
 }

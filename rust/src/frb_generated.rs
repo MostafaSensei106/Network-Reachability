@@ -749,6 +749,7 @@ impl SseDecode for crate::api::models::config::NetworkConfiguration {
         let mut var_targets =
             <Vec<crate::api::models::target::NetworkTarget>>::sse_decode(deserializer);
         let mut var_checkIntervalMs = <u64>::sse_decode(deserializer);
+        let mut var_cacheValidityMs = <u64>::sse_decode(deserializer);
         let mut var_qualityThreshold =
             <crate::api::models::config::QualityThresholds>::sse_decode(deserializer);
         let mut var_security =
@@ -758,6 +759,7 @@ impl SseDecode for crate::api::models::config::NetworkConfiguration {
         return crate::api::models::config::NetworkConfiguration {
             targets: var_targets,
             check_interval_ms: var_checkIntervalMs,
+            cache_validity_ms: var_cacheValidityMs,
             quality_threshold: var_qualityThreshold,
             security: var_security,
             resilience: var_resilience,
@@ -911,6 +913,7 @@ impl SseDecode for crate::api::models::config::ResilienceConfig {
         let mut var_strategy =
             <crate::api::models::config::CheckStrategy>::sse_decode(deserializer);
         let mut var_circuitBreakerThreshold = <u8>::sse_decode(deserializer);
+        let mut var_circuitBreakerCooldownMs = <u64>::sse_decode(deserializer);
         let mut var_numJitterSamples = <u8>::sse_decode(deserializer);
         let mut var_jitterThresholdPercent = <f64>::sse_decode(deserializer);
         let mut var_stabilityThershold = <u8>::sse_decode(deserializer);
@@ -918,6 +921,7 @@ impl SseDecode for crate::api::models::config::ResilienceConfig {
         return crate::api::models::config::ResilienceConfig {
             strategy: var_strategy,
             circuit_breaker_threshold: var_circuitBreakerThreshold,
+            circuit_breaker_cooldown_ms: var_circuitBreakerCooldownMs,
             num_jitter_samples: var_numJitterSamples,
             jitter_threshold_percent: var_jitterThresholdPercent,
             stability_thershold: var_stabilityThershold,
@@ -961,6 +965,9 @@ impl SseDecode for crate::api::models::target::TargetProtocol {
         return match inner {
             0 => crate::api::models::target::TargetProtocol::Tcp,
             1 => crate::api::models::target::TargetProtocol::Udp,
+            2 => crate::api::models::target::TargetProtocol::Icmp,
+            3 => crate::api::models::target::TargetProtocol::Http,
+            4 => crate::api::models::target::TargetProtocol::Https,
             _ => unreachable!("Invalid variant for TargetProtocol: {}", inner),
         };
     }
@@ -1253,6 +1260,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::config::NetworkConfig
         [
             self.targets.into_into_dart().into_dart(),
             self.check_interval_ms.into_into_dart().into_dart(),
+            self.cache_validity_ms.into_into_dart().into_dart(),
             self.quality_threshold.into_into_dart().into_dart(),
             self.security.into_into_dart().into_dart(),
             self.resilience.into_into_dart().into_dart(),
@@ -1374,6 +1382,9 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::config::ResilienceCon
         [
             self.strategy.into_into_dart().into_dart(),
             self.circuit_breaker_threshold.into_into_dart().into_dart(),
+            self.circuit_breaker_cooldown_ms
+                .into_into_dart()
+                .into_dart(),
             self.num_jitter_samples.into_into_dart().into_dart(),
             self.jitter_threshold_percent.into_into_dart().into_dart(),
             self.stability_thershold.into_into_dart().into_dart(),
@@ -1445,6 +1456,9 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::target::TargetProtoco
         match self {
             Self::Tcp => 0.into_dart(),
             Self::Udp => 1.into_dart(),
+            Self::Icmp => 2.into_dart(),
+            Self::Http => 3.into_dart(),
+            Self::Https => 4.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1677,6 +1691,7 @@ impl SseEncode for crate::api::models::config::NetworkConfiguration {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<crate::api::models::target::NetworkTarget>>::sse_encode(self.targets, serializer);
         <u64>::sse_encode(self.check_interval_ms, serializer);
+        <u64>::sse_encode(self.cache_validity_ms, serializer);
         <crate::api::models::config::QualityThresholds>::sse_encode(
             self.quality_threshold,
             serializer,
@@ -1795,6 +1810,7 @@ impl SseEncode for crate::api::models::config::ResilienceConfig {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <crate::api::models::config::CheckStrategy>::sse_encode(self.strategy, serializer);
         <u8>::sse_encode(self.circuit_breaker_threshold, serializer);
+        <u64>::sse_encode(self.circuit_breaker_cooldown_ms, serializer);
         <u8>::sse_encode(self.num_jitter_samples, serializer);
         <f64>::sse_encode(self.jitter_threshold_percent, serializer);
         <u8>::sse_encode(self.stability_thershold, serializer);
@@ -1827,6 +1843,9 @@ impl SseEncode for crate::api::models::target::TargetProtocol {
             match self {
                 crate::api::models::target::TargetProtocol::Tcp => 0,
                 crate::api::models::target::TargetProtocol::Udp => 1,
+                crate::api::models::target::TargetProtocol::Icmp => 2,
+                crate::api::models::target::TargetProtocol::Http => 3,
+                crate::api::models::target::TargetProtocol::Https => 4,
                 _ => {
                     unimplemented!("");
                 }

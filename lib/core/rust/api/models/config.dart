@@ -55,6 +55,9 @@ class NetworkConfiguration {
   /// A value of 0 disables periodic checks.
   final BigInt checkIntervalMs;
 
+  /// The duration for which a network report is considered fresh (cached).
+  final BigInt cacheValidityMs;
+
   /// Latency thresholds for determining connection quality.
   final QualityThresholds qualityThreshold;
 
@@ -67,6 +70,7 @@ class NetworkConfiguration {
   const NetworkConfiguration({
     required this.targets,
     required this.checkIntervalMs,
+    required this.cacheValidityMs,
     required this.qualityThreshold,
     required this.security,
     required this.resilience,
@@ -80,6 +84,7 @@ class NetworkConfiguration {
   int get hashCode =>
       targets.hashCode ^
       checkIntervalMs.hashCode ^
+      cacheValidityMs.hashCode ^
       qualityThreshold.hashCode ^
       security.hashCode ^
       resilience.hashCode;
@@ -91,6 +96,7 @@ class NetworkConfiguration {
           runtimeType == other.runtimeType &&
           targets == other.targets &&
           checkIntervalMs == other.checkIntervalMs &&
+          cacheValidityMs == other.cacheValidityMs &&
           qualityThreshold == other.qualityThreshold &&
           security == other.security &&
           resilience == other.resilience;
@@ -153,6 +159,10 @@ class ResilienceConfig {
   /// circuit breaker opens. A value of 0 disables the circuit breaker.
   final int circuitBreakerThreshold;
 
+  /// The cooldown period in milliseconds after which the circuit breaker
+  /// transitions from 'Open' to 'Half-Open'.
+  final BigInt circuitBreakerCooldownMs;
+
   /// Number of samples to take for jitter and stability analysis.
   /// Must be greater than 1 to enable jitter calculation.
   final int numJitterSamples;
@@ -170,6 +180,7 @@ class ResilienceConfig {
   const ResilienceConfig({
     required this.strategy,
     required this.circuitBreakerThreshold,
+    required this.circuitBreakerCooldownMs,
     required this.numJitterSamples,
     required this.jitterThresholdPercent,
     required this.stabilityThershold,
@@ -183,6 +194,7 @@ class ResilienceConfig {
   int get hashCode =>
       strategy.hashCode ^
       circuitBreakerThreshold.hashCode ^
+      circuitBreakerCooldownMs.hashCode ^
       numJitterSamples.hashCode ^
       jitterThresholdPercent.hashCode ^
       stabilityThershold.hashCode ^
@@ -195,6 +207,7 @@ class ResilienceConfig {
           runtimeType == other.runtimeType &&
           strategy == other.strategy &&
           circuitBreakerThreshold == other.circuitBreakerThreshold &&
+          circuitBreakerCooldownMs == other.circuitBreakerCooldownMs &&
           numJitterSamples == other.numJitterSamples &&
           jitterThresholdPercent == other.jitterThresholdPercent &&
           stabilityThershold == other.stabilityThershold &&

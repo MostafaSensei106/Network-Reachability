@@ -53,11 +53,6 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
             }
             TargetProtocol::Udp => {
-                // For UDP, we can't truly "connect" in the same way as TCP.
-                // We bind a socket and send a small packet. If the send succeeds,
-                // we consider it a success. An ICMP "Port Unreachable" might be returned
-                // by the OS, but handling that reliably across platforms is complex.
-                // A successful send is a good-enough indicator for reachability.
                 let socket = UdpSocket::bind("0.0.0.0:0")
                     .await
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
@@ -69,6 +64,24 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
                     .send(&[0])
                     .await
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
+            }
+            TargetProtocol::Http | TargetProtocol::Https => {
+                let scheme = if target.protocol == TargetProtocol::Https { "https" } else { "http" };
+                let url = format!("{}://{}:{}", scheme, target.host, target.port);
+                let client = reqwest::Client::builder()
+                    .timeout(timeout_duration)
+                    .build()
+                    .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
+                
+                let _res = client.get(&url).send().await
+                    .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
+            }
+            TargetProtocol::Icmp => {
+                let payload = [0u8; 8];
+                let _ = timeout(timeout_duration, surge_ping::ping(addr.ip(), &payload))
+                    .await
+                    .map_err(|_| NetworkError::TimeoutError)?
+                    .map_err(|e| NetworkError::ConnectionError(format!("Ping failed: {}", e)))?;
             }
         }
         {

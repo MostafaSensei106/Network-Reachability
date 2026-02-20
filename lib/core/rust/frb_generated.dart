@@ -638,14 +638,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   NetworkConfiguration dco_decode_network_configuration(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return NetworkConfiguration(
       targets: dco_decode_list_network_target(arr[0]),
       checkIntervalMs: dco_decode_u_64(arr[1]),
-      qualityThreshold: dco_decode_quality_thresholds(arr[2]),
-      security: dco_decode_security_config(arr[3]),
-      resilience: dco_decode_resilience_config(arr[4]),
+      cacheValidityMs: dco_decode_u_64(arr[2]),
+      qualityThreshold: dco_decode_quality_thresholds(arr[3]),
+      security: dco_decode_security_config(arr[4]),
+      resilience: dco_decode_resilience_config(arr[5]),
     );
   }
 
@@ -767,15 +768,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ResilienceConfig dco_decode_resilience_config(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
     return ResilienceConfig(
       strategy: dco_decode_check_strategy(arr[0]),
       circuitBreakerThreshold: dco_decode_u_8(arr[1]),
-      numJitterSamples: dco_decode_u_8(arr[2]),
-      jitterThresholdPercent: dco_decode_f_64(arr[3]),
-      stabilityThershold: dco_decode_u_8(arr[4]),
-      criticalPacketLossPrecent: dco_decode_f_32(arr[5]),
+      circuitBreakerCooldownMs: dco_decode_u_64(arr[2]),
+      numJitterSamples: dco_decode_u_8(arr[3]),
+      jitterThresholdPercent: dco_decode_f_64(arr[4]),
+      stabilityThershold: dco_decode_u_8(arr[5]),
+      criticalPacketLossPrecent: dco_decode_f_32(arr[6]),
     );
   }
 
@@ -1038,12 +1040,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_targets = sse_decode_list_network_target(deserializer);
     var var_checkIntervalMs = sse_decode_u_64(deserializer);
+    var var_cacheValidityMs = sse_decode_u_64(deserializer);
     var var_qualityThreshold = sse_decode_quality_thresholds(deserializer);
     var var_security = sse_decode_security_config(deserializer);
     var var_resilience = sse_decode_resilience_config(deserializer);
     return NetworkConfiguration(
         targets: var_targets,
         checkIntervalMs: var_checkIntervalMs,
+        cacheValidityMs: var_cacheValidityMs,
         qualityThreshold: var_qualityThreshold,
         security: var_security,
         resilience: var_resilience);
@@ -1180,6 +1184,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_strategy = sse_decode_check_strategy(deserializer);
     var var_circuitBreakerThreshold = sse_decode_u_8(deserializer);
+    var var_circuitBreakerCooldownMs = sse_decode_u_64(deserializer);
     var var_numJitterSamples = sse_decode_u_8(deserializer);
     var var_jitterThresholdPercent = sse_decode_f_64(deserializer);
     var var_stabilityThershold = sse_decode_u_8(deserializer);
@@ -1187,6 +1192,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return ResilienceConfig(
         strategy: var_strategy,
         circuitBreakerThreshold: var_circuitBreakerThreshold,
+        circuitBreakerCooldownMs: var_circuitBreakerCooldownMs,
         numJitterSamples: var_numJitterSamples,
         jitterThresholdPercent: var_jitterThresholdPercent,
         stabilityThershold: var_stabilityThershold,
@@ -1431,6 +1437,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_network_target(self.targets, serializer);
     sse_encode_u_64(self.checkIntervalMs, serializer);
+    sse_encode_u_64(self.cacheValidityMs, serializer);
     sse_encode_quality_thresholds(self.qualityThreshold, serializer);
     sse_encode_security_config(self.security, serializer);
     sse_encode_resilience_config(self.resilience, serializer);
@@ -1533,6 +1540,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_check_strategy(self.strategy, serializer);
     sse_encode_u_8(self.circuitBreakerThreshold, serializer);
+    sse_encode_u_64(self.circuitBreakerCooldownMs, serializer);
     sse_encode_u_8(self.numJitterSamples, serializer);
     sse_encode_f_64(self.jitterThresholdPercent, serializer);
     sse_encode_u_8(self.stabilityThershold, serializer);

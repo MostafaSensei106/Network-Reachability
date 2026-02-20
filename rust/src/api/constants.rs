@@ -24,8 +24,8 @@ impl LibConstants {
 
     pub const CAPTIVE_PORTAL_DETECTION_URL: &'static str = "http://neverssl.com";
 
+    /// 40%
     pub const DEFAULT_STABILITY_THRESHOLD: u8 = 40;
-    /// 45%
 
     pub const DEFAULT_CRITICAL_PACKET_LOSS_PRECENT: f32 = 5.0;
 
@@ -90,8 +90,34 @@ impl LibConstants {
     ];
 
     pub const CELLULAR_PREFIXES: &'static [&'static str] = &[
-        "rmnet",
+        // === iOS / Apple ===
+        "pdp_ip", // Packet Data Protocol (e.g., pdp_ip0)
+        // === Android - Qualcomm ===
+        "rmnet",      // Standard Qualcomm
+        "rmnet_data", // Modern Qualcomm
+        "qcrmnet",    // Older Qualcomm
+        "bam_dmux",   // Qualcomm data multiplexer
+        "cdma_rmnet", // CDMA Qualcomm
+        // === Android - Samsung ===
+        "seth_lte", // Samsung LTE
+        "snet",     // Samsung Network
+        "svnet",    // Samsung Voice/Data
+        // === Android - MediaTek ===
+        "ccmni", // MediaTek
+        // === Android - Generic / IPv6 Translation ===
+        "clat", // 464xlat interface (IPv4 to IPv6 translation)
+        "xlat",
+        "v4-rmnet",
+        "v6-rmnet",
+        "dun", // Dial-up network (older Androids)
+        // === Generic Modems / USB Dongles ===
         "wwan",
+        "mbim",
+        "qmi",
+        "cdc",
+        "hso",
+        "usb", // Often used for USB Tethering or external modems
+        // === Protocol / Generation Names (Fallback) ===
         "lte",
         "3g",
         "4g",

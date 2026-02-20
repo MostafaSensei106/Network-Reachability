@@ -45,6 +45,9 @@ class SecurityException extends NetworkReachabilityException {
 
 /// Thrown by the `guard` method when the circuit breaker is open due to repeated backend failures.
 class CircuitBreakerOpenException extends NetworkReachabilityException {
-  /// Creates a new [CircuitBreakerOpenException] with the given [message].
-  CircuitBreakerOpenException(super.message);
+  /// The duration to wait before attempting another request.
+  final Duration? retryAfter;
+
+  /// Creates a new [CircuitBreakerOpenException] with the given [message] and [retryAfter].
+  CircuitBreakerOpenException(String message, {this.retryAfter}) : super(message);
 }
