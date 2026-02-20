@@ -1,3 +1,17 @@
+/// Enum representing the state of the circuit breaker.
+enum CircuitBreakerState {
+  /// The circuit is closed, allowing all requests to pass through.
+  closed,
+
+  /// The circuit is open, blocking all requests and potentially
+  /// throwing a [CircuitBreakerOpenException].
+  open,
+
+  /// The circuit is half-open, allowing a single probe request to pass
+  /// through to see if the network has recovered.
+  halfOpen,
+}
+
 /// Enum representing specific security issues.
 ///
 /// This enum is used by the [guard] function to throw

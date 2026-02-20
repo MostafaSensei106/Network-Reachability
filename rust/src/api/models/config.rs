@@ -68,10 +68,6 @@ pub struct SecurityConfig {
     /// If true, performs a check to detect potential DNS hijacking.
     /// This adds a small latency to each check.
     pub detect_dns_hijack: bool,
-    /// A list of allowed interface name prefixes (e.g., "en", "wlan").
-    /// If not empty, the `guard` will fail if the active interface
-    /// does not match one of the prefixes.
-    pub allowed_interfaces: Vec<String>,
 }
 
 /// Configuration for resilience and performance tuning.
@@ -82,6 +78,9 @@ pub struct ResilienceConfig {
     /// The number of consecutive failures of essential targets before the
     /// circuit breaker opens. A value of 0 disables the circuit breaker.
     pub circuit_breaker_threshold: u8,
+    /// The cooldown period in milliseconds after which the circuit breaker
+    /// transitions from 'Open' to 'Half-Open'.
+    pub circuit_breaker_cooldown_ms: u64,
     /// Number of samples to take for jitter and stability analysis.
     /// Must be greater than 1 to enable jitter calculation.
     pub num_jitter_samples: u8,
@@ -99,6 +98,7 @@ impl Default for ResilienceConfig {
         Self {
             strategy: CheckStrategy::Race,
             circuit_breaker_threshold: 0, // Disabled by default
+            circuit_breaker_cooldown_ms: 60000, // 1 minute default
             num_jitter_samples: LibConstants::DEFAULT_JITTER_SAMPLES,
             jitter_threshold_percent: LibConstants::DEFAULT_JITTER_THRESHOLD_PERCENT,
             stability_thershold: LibConstants::DEFAULT_STABILITY_THRESHOLD,
@@ -115,6 +115,8 @@ pub struct NetworkConfiguration {
     /// The time in milliseconds between automatic periodic checks.
     /// A value of 0 disables periodic checks.
     pub check_interval_ms: u64,
+    /// The duration for which a network report is considered fresh (cached).
+    pub cache_validity_ms: u64,
     /// Latency thresholds for determining connection quality.
     pub quality_threshold: QualityThresholds,
     /// Security-related settings.
@@ -148,6 +150,7 @@ impl Default for NetworkConfiguration {
                 },
             ],
             check_interval_ms: LibConstants::DEFAULT_CHECK_INTERVAL_MS,
+            cache_validity_ms: 2000, // 2 seconds default cache
             quality_threshold: QualityThresholds::default(),
             security: SecurityConfig::default(),
             resilience: ResilienceConfig::default(),

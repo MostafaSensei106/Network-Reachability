@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1933904176;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -682342185;
 
 // Section: executor
 
@@ -195,6 +195,40 @@ fn wire__crate__api__probes__target__check_target_impl(
                     })()
                     .await,
                 )
+            }
+        },
+    )
+}
+fn wire__crate__api__models__net_info__connection_type_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "connection_type_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::models::net_info::ConnectionType::default(),
+                    )?;
+                    Ok(output_ok)
+                })())
             }
         },
     )
@@ -593,7 +627,8 @@ impl SseDecode for crate::api::models::net_info::ConnectionType {
             2 => crate::api::models::net_info::ConnectionType::Ethernet,
             3 => crate::api::models::net_info::ConnectionType::Vpn,
             4 => crate::api::models::net_info::ConnectionType::Bluetooth,
-            5 => crate::api::models::net_info::ConnectionType::Unknown,
+            5 => crate::api::models::net_info::ConnectionType::Loopback,
+            6 => crate::api::models::net_info::ConnectionType::Unknown,
             _ => unreachable!("Invalid variant for ConnectionType: {}", inner),
         };
     }
@@ -639,18 +674,6 @@ impl SseDecode for crate::api::models::report::LatencyStats {
             max_latency_ms: var_maxLatencyMs,
             stability_score: var_stabilityScore,
         };
-    }
-}
-
-impl SseDecode for Vec<String> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut len_ = <i32>::sse_decode(deserializer);
-        let mut ans_ = vec![];
-        for idx_ in 0..len_ {
-            ans_.push(<String>::sse_decode(deserializer));
-        }
-        return ans_;
     }
 }
 
@@ -726,6 +749,7 @@ impl SseDecode for crate::api::models::config::NetworkConfiguration {
         let mut var_targets =
             <Vec<crate::api::models::target::NetworkTarget>>::sse_decode(deserializer);
         let mut var_checkIntervalMs = <u64>::sse_decode(deserializer);
+        let mut var_cacheValidityMs = <u64>::sse_decode(deserializer);
         let mut var_qualityThreshold =
             <crate::api::models::config::QualityThresholds>::sse_decode(deserializer);
         let mut var_security =
@@ -735,6 +759,7 @@ impl SseDecode for crate::api::models::config::NetworkConfiguration {
         return crate::api::models::config::NetworkConfiguration {
             targets: var_targets,
             check_interval_ms: var_checkIntervalMs,
+            cache_validity_ms: var_cacheValidityMs,
             quality_threshold: var_qualityThreshold,
             security: var_security,
             resilience: var_resilience,
@@ -888,6 +913,7 @@ impl SseDecode for crate::api::models::config::ResilienceConfig {
         let mut var_strategy =
             <crate::api::models::config::CheckStrategy>::sse_decode(deserializer);
         let mut var_circuitBreakerThreshold = <u8>::sse_decode(deserializer);
+        let mut var_circuitBreakerCooldownMs = <u64>::sse_decode(deserializer);
         let mut var_numJitterSamples = <u8>::sse_decode(deserializer);
         let mut var_jitterThresholdPercent = <f64>::sse_decode(deserializer);
         let mut var_stabilityThershold = <u8>::sse_decode(deserializer);
@@ -895,6 +921,7 @@ impl SseDecode for crate::api::models::config::ResilienceConfig {
         return crate::api::models::config::ResilienceConfig {
             strategy: var_strategy,
             circuit_breaker_threshold: var_circuitBreakerThreshold,
+            circuit_breaker_cooldown_ms: var_circuitBreakerCooldownMs,
             num_jitter_samples: var_numJitterSamples,
             jitter_threshold_percent: var_jitterThresholdPercent,
             stability_thershold: var_stabilityThershold,
@@ -908,11 +935,9 @@ impl SseDecode for crate::api::models::config::SecurityConfig {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_blockVpn = <bool>::sse_decode(deserializer);
         let mut var_detectDnsHijack = <bool>::sse_decode(deserializer);
-        let mut var_allowedInterfaces = <Vec<String>>::sse_decode(deserializer);
         return crate::api::models::config::SecurityConfig {
             block_vpn: var_blockVpn,
             detect_dns_hijack: var_detectDnsHijack,
-            allowed_interfaces: var_allowedInterfaces,
         };
     }
 }
@@ -940,6 +965,9 @@ impl SseDecode for crate::api::models::target::TargetProtocol {
         return match inner {
             0 => crate::api::models::target::TargetProtocol::Tcp,
             1 => crate::api::models::target::TargetProtocol::Udp,
+            2 => crate::api::models::target::TargetProtocol::Icmp,
+            3 => crate::api::models::target::TargetProtocol::Http,
+            4 => crate::api::models::target::TargetProtocol::Https,
             _ => unreachable!("Invalid variant for TargetProtocol: {}", inner),
         };
     }
@@ -1028,55 +1056,61 @@ fn pde_ffi_dispatcher_primary_impl(
         ),
         3 => wire__crate__api__engine__check_network_impl(port, ptr, rust_vec_len, data_len),
         4 => wire__crate__api__probes__target__check_target_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire__crate__api__probes__dns__detect_dns_hijacking_impl(
+        5 => wire__crate__api__models__net_info__connection_type_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__api__probes__interface__detect_security_and_network_type_impl(
+        6 => wire__crate__api__probes__dns__detect_dns_hijacking_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__analysis__quality__evaluate_quality_impl(
+        7 => wire__crate__api__probes__interface__detect_security_and_network_type_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__models__config__network_configuration_default_impl(
+        8 => wire__crate__api__analysis__quality__evaluate_quality_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__models__config__quality_thresholds_default_impl(
+        9 => wire__crate__api__models__config__network_configuration_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__models__config__resilience_config_default_impl(
+        10 => wire__crate__api__models__config__quality_thresholds_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => wire__crate__api__models__config__security_config_default_impl(
+        11 => wire__crate__api__models__config__resilience_config_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__api__models__net_info__security_flags_default_impl(
+        12 => wire__crate__api__models__config__security_config_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        13 => wire__crate__api__probes__traceroute__trace_route_impl(
+        13 => wire__crate__api__models__net_info__security_flags_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        14 => wire__crate__api__probes__traceroute__trace_route_impl(
             port,
             ptr,
             rust_vec_len,
@@ -1177,7 +1211,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::net_info::ConnectionT
             Self::Ethernet => 2.into_dart(),
             Self::Vpn => 3.into_dart(),
             Self::Bluetooth => 4.into_dart(),
-            Self::Unknown => 5.into_dart(),
+            Self::Loopback => 5.into_dart(),
+            Self::Unknown => 6.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1225,6 +1260,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::config::NetworkConfig
         [
             self.targets.into_into_dart().into_dart(),
             self.check_interval_ms.into_into_dart().into_dart(),
+            self.cache_validity_ms.into_into_dart().into_dart(),
             self.quality_threshold.into_into_dart().into_dart(),
             self.security.into_into_dart().into_dart(),
             self.resilience.into_into_dart().into_dart(),
@@ -1346,6 +1382,9 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::config::ResilienceCon
         [
             self.strategy.into_into_dart().into_dart(),
             self.circuit_breaker_threshold.into_into_dart().into_dart(),
+            self.circuit_breaker_cooldown_ms
+                .into_into_dart()
+                .into_dart(),
             self.num_jitter_samples.into_into_dart().into_dart(),
             self.jitter_threshold_percent.into_into_dart().into_dart(),
             self.stability_thershold.into_into_dart().into_dart(),
@@ -1373,7 +1412,6 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::config::SecurityConfi
         [
             self.block_vpn.into_into_dart().into_dart(),
             self.detect_dns_hijack.into_into_dart().into_dart(),
-            self.allowed_interfaces.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -1418,6 +1456,9 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::target::TargetProtoco
         match self {
             Self::Tcp => 0.into_dart(),
             Self::Udp => 1.into_dart(),
+            Self::Icmp => 2.into_dart(),
+            Self::Http => 3.into_dart(),
+            Self::Https => 4.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1550,7 +1591,8 @@ impl SseEncode for crate::api::models::net_info::ConnectionType {
                 crate::api::models::net_info::ConnectionType::Ethernet => 2,
                 crate::api::models::net_info::ConnectionType::Vpn => 3,
                 crate::api::models::net_info::ConnectionType::Bluetooth => 4,
-                crate::api::models::net_info::ConnectionType::Unknown => 5,
+                crate::api::models::net_info::ConnectionType::Loopback => 5,
+                crate::api::models::net_info::ConnectionType::Unknown => 6,
                 _ => {
                     unimplemented!("");
                 }
@@ -1591,16 +1633,6 @@ impl SseEncode for crate::api::models::report::LatencyStats {
         <Option<u64>>::sse_encode(self.avg_latency_ms, serializer);
         <Option<u64>>::sse_encode(self.max_latency_ms, serializer);
         <u8>::sse_encode(self.stability_score, serializer);
-    }
-}
-
-impl SseEncode for Vec<String> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(self.len() as _, serializer);
-        for item in self {
-            <String>::sse_encode(item, serializer);
-        }
     }
 }
 
@@ -1659,6 +1691,7 @@ impl SseEncode for crate::api::models::config::NetworkConfiguration {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<crate::api::models::target::NetworkTarget>>::sse_encode(self.targets, serializer);
         <u64>::sse_encode(self.check_interval_ms, serializer);
+        <u64>::sse_encode(self.cache_validity_ms, serializer);
         <crate::api::models::config::QualityThresholds>::sse_encode(
             self.quality_threshold,
             serializer,
@@ -1777,6 +1810,7 @@ impl SseEncode for crate::api::models::config::ResilienceConfig {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <crate::api::models::config::CheckStrategy>::sse_encode(self.strategy, serializer);
         <u8>::sse_encode(self.circuit_breaker_threshold, serializer);
+        <u64>::sse_encode(self.circuit_breaker_cooldown_ms, serializer);
         <u8>::sse_encode(self.num_jitter_samples, serializer);
         <f64>::sse_encode(self.jitter_threshold_percent, serializer);
         <u8>::sse_encode(self.stability_thershold, serializer);
@@ -1789,7 +1823,6 @@ impl SseEncode for crate::api::models::config::SecurityConfig {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <bool>::sse_encode(self.block_vpn, serializer);
         <bool>::sse_encode(self.detect_dns_hijack, serializer);
-        <Vec<String>>::sse_encode(self.allowed_interfaces, serializer);
     }
 }
 
@@ -1810,6 +1843,9 @@ impl SseEncode for crate::api::models::target::TargetProtocol {
             match self {
                 crate::api::models::target::TargetProtocol::Tcp => 0,
                 crate::api::models::target::TargetProtocol::Udp => 1,
+                crate::api::models::target::TargetProtocol::Icmp => 2,
+                crate::api::models::target::TargetProtocol::Http => 3,
+                crate::api::models::target::TargetProtocol::Https => 4,
                 _ => {
                     unimplemented!("");
                 }

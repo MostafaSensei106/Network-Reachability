@@ -38,7 +38,6 @@ class MockRustLibApi implements RustLibApi {
     mockDefaultSecurityConfig = SecurityConfig(
       blockVpn: false,
       detectDnsHijack: false,
-      allowedInterfaces: [],
     );
     mockDefaultResilienceConfig = ResilienceConfig(
       strategy: CheckStrategy.race,
@@ -274,7 +273,6 @@ void main() {
         security: const SecurityConfig(
           blockVpn: true,
           detectDnsHijack: false,
-          allowedInterfaces: [],
         ),
       );
       NetworkReachability.instance.dispose(); // Dispose previous instance
