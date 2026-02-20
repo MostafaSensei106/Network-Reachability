@@ -39,33 +39,26 @@ pub fn detect_security_and_network_type() -> (SecurityFlags, ConnectionType) {
 
     // Find the active, non-loopback interface
     for iface in interfaces {
-        // Skip loopback and interfaces without an IP
-        if iface.name.contains("lo") || iface.addr.is_empty() || iface.name.starts_with("lo:") {
+        // Skip loopback and interfaces without an IP (inactive)
+        if iface.name.contains("lo") || iface.addr.is_empty() {
             continue;
         }
 
         let name_lower = iface.name.to_lowercase();
 
         for &(prefixes, ref ctype) in type_map {
+            // Check if name contains prefix or matches common patterns
             if prefixes.iter().any(|prefix| name_lower.contains(prefix)) {
                 if *ctype == ConnectionType::Vpn {
-                    // If a VPN is found, it's the most important piece of information.
-                    // We set the flags and can break early.
                     security_flags.is_vpn_detected = true;
                     security_flags.interface_name = iface.name.clone();
                     conn_type = ConnectionType::Vpn;
                     return (security_flags, conn_type);
                 } else if conn_type == ConnectionType::Unknown {
-                    // Otherwise, set the first non-VPN type we find.
                     conn_type = ctype.clone();
                     security_flags.interface_name = iface.name.clone();
                 }
             }
-        }
-
-        // If VPN is detected, we don't need to check other interfaces.
-        if security_flags.is_vpn_detected {
-            break;
         }
     }
 

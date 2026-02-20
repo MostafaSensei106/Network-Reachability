@@ -12,6 +12,8 @@ use crate::api::{
     probes::{self, check_target, detect_security_and_network_type},
 };
 
+pub use crate::api::probes::trace_route;
+
 /// Collects multiple latency samples by running checks against all configured targets.
 async fn collect_network_samples(config: &NetworkConfiguration) -> (Vec<u64>, Vec<TargetReport>) {
     let mut all_sample_latencies = Vec::new();

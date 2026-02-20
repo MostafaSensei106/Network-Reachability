@@ -45,31 +45,23 @@ pub async fn trace_route(host: String, max_hops: u8, timeout_per_hop_ms: u64) ->
             if let Some(ip) = response.iter().next() {
                 ip
             } else {
-                eprintln!("No IP address found for host {}", host);
-                return hops;
+                return hops; // Silent failure preferred for library probes
             }
         }
-        _ => {
-            eprintln!("Failed to resolve host {}", host);
-            return hops;
-        }
+        _ => return hops,
     };
 
     // A common UDP port used for traceroute that is unlikely to be used for a real service.
     let target_port: u16 = 33434;
-    let probe_payload = [0; 1]; // Small, empty payload
+    let probe_payload = [0; 1];
 
     for ttl in 1..=max_hops {
         let socket = match TokioUdpSocket::bind("0.0.0.0:0").await {
             Ok(s) => s,
-            Err(e) => {
-                eprintln!("Failed to bind UDP socket: {:?}", e);
-                break;
-            }
+            Err(_) => break,
         };
 
-        if let Err(e) = socket.set_ttl(ttl as u32) {
-            eprintln!("Failed to set TTL for hop {}: {:?}", ttl, e);
+        if socket.set_ttl(ttl as u32).is_err() {
             break;
         }
 
