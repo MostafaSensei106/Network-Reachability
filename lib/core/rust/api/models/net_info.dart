@@ -53,6 +53,9 @@ enum ConnectionType {
   /// The connection type could not be determined.
   unknown,
   ;
+
+  static Future<ConnectionType> default_() =>
+      RustLib.instance.api.crateApiModelsNetInfoConnectionTypeDefault();
 }
 
 /// A report of security-related attributes of the current network connection.

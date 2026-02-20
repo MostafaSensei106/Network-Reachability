@@ -210,23 +210,16 @@ class SecurityConfig {
   /// This adds a small latency to each check.
   final bool detectDnsHijack;
 
-  /// A list of allowed interface name prefixes (e.g., "en", "wlan").
-  /// If not empty, the `guard` will fail if the active interface
-  /// does not match one of the prefixes.
-  final List<String> allowedInterfaces;
-
   const SecurityConfig({
     required this.blockVpn,
     required this.detectDnsHijack,
-    required this.allowedInterfaces,
   });
 
   static Future<SecurityConfig> default_() =>
       RustLib.instance.api.crateApiModelsConfigSecurityConfigDefault();
 
   @override
-  int get hashCode =>
-      blockVpn.hashCode ^ detectDnsHijack.hashCode ^ allowedInterfaces.hashCode;
+  int get hashCode => blockVpn.hashCode ^ detectDnsHijack.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -234,6 +227,5 @@ class SecurityConfig {
       other is SecurityConfig &&
           runtimeType == other.runtimeType &&
           blockVpn == other.blockVpn &&
-          detectDnsHijack == other.detectDnsHijack &&
-          allowedInterfaces == other.allowedInterfaces;
+          detectDnsHijack == other.detectDnsHijack;
 }

@@ -1,5 +1,7 @@
 //! Data structures for low-level network information and security flags.
 
+use crate::api::constants::LibConstants;
+
 /// Represents the type of physical or logical network connection.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ConnectionType {
@@ -15,6 +17,12 @@ pub enum ConnectionType {
     Bluetooth,
     /// The connection type could not be determined.
     Unknown,
+}
+
+impl Default for ConnectionType {
+    fn default() -> Self {
+        return Self::Unknown;
+    }
 }
 
 /// The result of a captive portal check.
@@ -59,7 +67,7 @@ impl Default for SecurityFlags {
             is_vpn_detected: false,
             is_dns_spoofed: false,
             is_proxy_detected: false,
-            interface_name: "unknown".to_string(),
+            interface_name: LibConstants::DEFAULT_INTERFACE_NAME.to_string(),
         }
     }
 }

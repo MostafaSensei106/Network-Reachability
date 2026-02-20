@@ -4,6 +4,8 @@ impl LibConstants {
     pub const CLOUDFLARE_NAME: &'static str = "Cloudflare";
     pub const GOOGLE_NAME: &'static str = "Google";
 
+    pub const DEFAULT_INTERFACE_NAME: &'static str = "unknown";
+
     pub const DEFAULT_PORT: u16 = 53;
     pub const DEFAULT_TIMEOUT_MS: u64 = 1000;
     pub const DEFAULT_CHECK_INTERVAL_MS: u64 = 5000;
@@ -22,8 +24,8 @@ impl LibConstants {
 
     pub const CAPTIVE_PORTAL_DETECTION_URL: &'static str = "http://neverssl.com";
 
-    pub const DEFAULT_STABILITY_THRESHOLD: u8 = 70;
-    /// 70%
+    pub const DEFAULT_STABILITY_THRESHOLD: u8 = 45;
+    /// 45%
 
     pub const DEFAULT_CRITICAL_PACKET_LOSS_PRECENT: f32 = 5.0;
 

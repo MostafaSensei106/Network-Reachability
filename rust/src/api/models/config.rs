@@ -68,10 +68,6 @@ pub struct SecurityConfig {
     /// If true, performs a check to detect potential DNS hijacking.
     /// This adds a small latency to each check.
     pub detect_dns_hijack: bool,
-    /// A list of allowed interface name prefixes (e.g., "en", "wlan").
-    /// If not empty, the `guard` will fail if the active interface
-    /// does not match one of the prefixes.
-    pub allowed_interfaces: Vec<String>,
 }
 
 /// Configuration for resilience and performance tuning.

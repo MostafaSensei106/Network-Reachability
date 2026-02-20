@@ -193,15 +193,6 @@ class NetworkReachability {
       throw SecurityException(SecurityAlert.dnsHijackDetected,
           'DNS hijacking was detected. Connection is insecure.');
     }
-    if (_config.security.allowedInterfaces.isNotEmpty &&
-        report.securityFlags.interfaceName.isNotEmpty) {
-      final isAllowed = _config.security.allowedInterfaces.any(
-          (prefix) => report.securityFlags.interfaceName.startsWith(prefix));
-      if (!isAllowed) {
-        throw SecurityException(SecurityAlert.unallowedInterface,
-            'The active network interface (${report.securityFlags.interfaceName}) is not in the list of allowed interfaces.');
-      }
-    }
 
     // 4. Validate quality requirements
     if (!report.status.isConnected ||
