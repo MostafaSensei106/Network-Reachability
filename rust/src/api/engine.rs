@@ -15,8 +15,6 @@ use crate::api::{
     probes::{self, check_target, detect_security_and_network_type},
 };
 
-pub use crate::api::probes::trace_route;
-
 /// Collects multiple latency samples by running checks against all configured targets.
 ///
 /// This handles the concurrency logic for probing multiple endpoints and
@@ -41,7 +39,7 @@ async fn collect_network_samples(config: &NetworkConfiguration) -> (Vec<u64>, Ve
 
         // Only the reports from the very last sample run are stored.
         if sample_num == num_samples - 1 {
-            final_reports = reports;
+            final_reports = reports
         }
     }
 
@@ -353,7 +351,10 @@ mod tests {
             avg_latency_ms: None,
             stability_score: 0,
         };
-        assert_eq!(evaluate_network_quality(false, &stats, &config), ConnectionQuality::Offline);
+        assert_eq!(
+            evaluate_network_quality(false, &stats, &config),
+            ConnectionQuality::Offline
+        );
 
         // Critical loss
         let stats = LatencyStats {
@@ -365,7 +366,10 @@ mod tests {
             avg_latency_ms: Some(100),
             stability_score: 80,
         };
-        assert_eq!(evaluate_network_quality(true, &stats, &config), ConnectionQuality::Unstable);
+        assert_eq!(
+            evaluate_network_quality(true, &stats, &config),
+            ConnectionQuality::Unstable
+        );
 
         // Unstable due to low stability score
         let stats = LatencyStats {
@@ -377,7 +381,10 @@ mod tests {
             avg_latency_ms: Some(100),
             stability_score: 10, // Very low stability
         };
-        assert_eq!(evaluate_network_quality(true, &stats, &config), ConnectionQuality::Good); // Downgraded from Great
+        assert_eq!(
+            evaluate_network_quality(true, &stats, &config),
+            ConnectionQuality::Good
+        ); // Downgraded from Great
     }
 
     #[test]
@@ -421,6 +428,9 @@ mod tests {
                 is_essential: true,
             },
         ];
-        assert_eq!(analyze_single_sample(&reports_essential_fail, &config), None);
+        assert_eq!(
+            analyze_single_sample(&reports_essential_fail, &config),
+            None
+        );
     }
 }

@@ -611,7 +611,8 @@ impl SseDecode for crate::api::models::config::ConnectionQuality {
             3 => crate::api::models::config::ConnectionQuality::Moderate,
             4 => crate::api::models::config::ConnectionQuality::Poor,
             5 => crate::api::models::config::ConnectionQuality::Unstable,
-            6 => crate::api::models::config::ConnectionQuality::Offline,
+            6 => crate::api::models::config::ConnectionQuality::CaptivePortal,
+            7 => crate::api::models::config::ConnectionQuality::Offline,
             _ => unreachable!("Invalid variant for ConnectionQuality: {}", inner),
         };
     }
@@ -964,10 +965,9 @@ impl SseDecode for crate::api::models::target::TargetProtocol {
         let mut inner = <i32>::sse_decode(deserializer);
         return match inner {
             0 => crate::api::models::target::TargetProtocol::Tcp,
-            1 => crate::api::models::target::TargetProtocol::Udp,
-            2 => crate::api::models::target::TargetProtocol::Icmp,
-            3 => crate::api::models::target::TargetProtocol::Http,
-            4 => crate::api::models::target::TargetProtocol::Https,
+            1 => crate::api::models::target::TargetProtocol::Icmp,
+            2 => crate::api::models::target::TargetProtocol::Http,
+            3 => crate::api::models::target::TargetProtocol::Https,
             _ => unreachable!("Invalid variant for TargetProtocol: {}", inner),
         };
     }
@@ -1186,7 +1186,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::config::ConnectionQua
             Self::Moderate => 3.into_dart(),
             Self::Poor => 4.into_dart(),
             Self::Unstable => 5.into_dart(),
-            Self::Offline => 6.into_dart(),
+            Self::CaptivePortal => 6.into_dart(),
+            Self::Offline => 7.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1455,10 +1456,9 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::target::TargetProtoco
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
             Self::Tcp => 0.into_dart(),
-            Self::Udp => 1.into_dart(),
-            Self::Icmp => 2.into_dart(),
-            Self::Http => 3.into_dart(),
-            Self::Https => 4.into_dart(),
+            Self::Icmp => 1.into_dart(),
+            Self::Http => 2.into_dart(),
+            Self::Https => 3.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1571,7 +1571,8 @@ impl SseEncode for crate::api::models::config::ConnectionQuality {
                 crate::api::models::config::ConnectionQuality::Moderate => 3,
                 crate::api::models::config::ConnectionQuality::Poor => 4,
                 crate::api::models::config::ConnectionQuality::Unstable => 5,
-                crate::api::models::config::ConnectionQuality::Offline => 6,
+                crate::api::models::config::ConnectionQuality::CaptivePortal => 6,
+                crate::api::models::config::ConnectionQuality::Offline => 7,
                 _ => {
                     unimplemented!("");
                 }
@@ -1842,10 +1843,9 @@ impl SseEncode for crate::api::models::target::TargetProtocol {
         <i32>::sse_encode(
             match self {
                 crate::api::models::target::TargetProtocol::Tcp => 0,
-                crate::api::models::target::TargetProtocol::Udp => 1,
-                crate::api::models::target::TargetProtocol::Icmp => 2,
-                crate::api::models::target::TargetProtocol::Http => 3,
-                crate::api::models::target::TargetProtocol::Https => 4,
+                crate::api::models::target::TargetProtocol::Icmp => 1,
+                crate::api::models::target::TargetProtocol::Http => 2,
+                crate::api::models::target::TargetProtocol::Https => 3,
                 _ => {
                     unimplemented!("");
                 }

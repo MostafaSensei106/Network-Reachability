@@ -1,10 +1,7 @@
 //! Probe for checking a single network target.
 
 use std::time::{Duration, Instant};
-use tokio::{
-    net::{TcpStream, UdpSocket},
-    time::timeout,
-};
+use tokio::{net::TcpStream, time::timeout};
 
 use crate::api::models::{NetworkError, NetworkTarget, TargetProtocol, TargetReport};
 
@@ -31,35 +28,6 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
                     .await
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
             }
-            TargetProtocol::Udp => {
-                let socket = UdpSocket::bind("0.0.0.0:0")
-                    .await
-                    .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
-                socket
-                    .connect(&addr)
-                    .await
-                    .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
-
-                if target.port == 53 {
-                    // Send a minimal DNS query to ensure end-to-end reachability
-                    let query = [
-                        0x12, 0x34, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                        0x01, b'a', 0x00, 0x00, 0x01, 0x00, 0x01,
-                    ];
-                    socket.send(&query).await?;
-                    let mut buf = [0u8; 512];
-                    let _ = socket.recv(&mut buf).await?;
-                } else {
-                    socket.send(&[0]).await?;
-                    // For non-DNS UDP, we still try to wait for any response (even if it times out,
-                    // which might be expected for some UDP services, but for "reachability"
-                    // a response is better).
-                    // However, many UDP services are silent.
-                    // To be safe and "accurate" as requested, we'll just send and
-                    // hope for no "ICMP unreachable" if we were using a more advanced socket,
-                    // but for now, we'll just stick to the fact that UDP is less reliable.
-                }
-            }
             TargetProtocol::Http | TargetProtocol::Https => {
                 let scheme = if target.protocol == TargetProtocol::Https {
                     "https"
@@ -68,6 +36,7 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
                 };
                 let url = format!("{}://{}:{}", scheme, target.host, target.port);
                 let client = reqwest::Client::builder()
+                    .danger_accept_invalid_certs(true)
                     .timeout(timeout_duration)
                     .build()
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
@@ -85,6 +54,7 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
                     )));
                 }
             }
+
             TargetProtocol::Icmp => {
                 let payload = [0u8; 8];
                 let _ = surge_ping::ping(addr.ip(), &payload)
@@ -133,8 +103,6 @@ mod tests {
 
     #[tokio::test]
     async fn test_check_target_invalid_host() {
-        // We use a domain that is highly unlikely to exist.
-        // Some ISPs/DNS proxies might still redirect this to a search page (NXDOMAIN hijacking).
         let target = NetworkTarget {
             label: "test".into(),
             host: "this.is.a.completely.non.existent.domain.that.should.not.resolve.ever.xyz"

@@ -5,8 +5,6 @@
 pub enum TargetProtocol {
     /// Use the Transmission Control Protocol (TCP). This is a reliable, connection-oriented protocol.
     Tcp,
-    /// Use the User Datagram Protocol (UDP). This is a fast, connectionless protocol.
-    Udp,
     /// Use the Internet Control Message Protocol (ICMP). This is commonly used for "pinging" hosts.
     Icmp,
     /// Use the Hypertext Transfer Protocol (HTTP).

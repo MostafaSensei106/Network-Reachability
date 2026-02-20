@@ -99,7 +99,7 @@ impl Default for ResilienceConfig {
     fn default() -> Self {
         Self {
             strategy: CheckStrategy::Race,
-            circuit_breaker_threshold: 0, // Disabled by default
+            circuit_breaker_threshold: 0,       // Disabled by default
             circuit_breaker_cooldown_ms: 60000, // 1 minute default
             num_jitter_samples: LibConstants::DEFAULT_JITTER_SAMPLES,
             jitter_threshold_percent: LibConstants::DEFAULT_JITTER_THRESHOLD_PERCENT,
@@ -133,6 +133,15 @@ impl Default for NetworkConfiguration {
         Self {
             targets: vec![
                 NetworkTarget {
+                    label: LibConstants::CLOUDFLARE_NAME_HTTP.into(),
+                    host: LibConstants::CLOUDFLARE_DNS.into(),
+                    port: LibConstants::DEFAULT_HTTP_PORT,
+                    protocol: TargetProtocol::Http,
+                    timeout_ms: LibConstants::DEFAULT_HTTP_TIMEOUT_MS,
+                    priority: 2,
+                    is_essential: false,
+                },
+                NetworkTarget {
                     label: LibConstants::CLOUDFLARE_NAME.into(),
                     host: LibConstants::CLOUDFLARE_DNS.into(),
                     port: LibConstants::DEFAULT_PORT,
@@ -149,15 +158,6 @@ impl Default for NetworkConfiguration {
                     timeout_ms: LibConstants::DEFAULT_TIMEOUT_MS,
                     priority: 1,
                     is_essential: false,
-                },
-                NetworkTarget {
-                    label: "Cloudflare HTTPS".into(),
-                    host: "1.1.1.1".into(),
-                    port: 443,
-                    protocol: TargetProtocol::Https,
-                    timeout_ms: 1500, // HTTPS takes longer
-                    priority: 2,
-                    is_essential: true, // Essential for end-to-end internet verification
                 },
             ],
             check_interval_ms: LibConstants::DEFAULT_CHECK_INTERVAL_MS,
@@ -194,9 +194,9 @@ mod tests {
     fn test_network_configuration_default() {
         let config = NetworkConfiguration::default();
         assert_eq!(config.targets.len(), 3);
-        assert_eq!(config.targets[0].label, LibConstants::CLOUDFLARE_NAME);
-        assert_eq!(config.targets[1].label, LibConstants::GOOGLE_NAME);
-        assert_eq!(config.targets[2].label, "Cloudflare HTTPS");
+        assert_eq!(config.targets[0].label, LibConstants::CLOUDFLARE_NAME_HTTP);
+        assert_eq!(config.targets[1].label, LibConstants::CLOUDFLARE_NAME);
+        assert_eq!(config.targets[2].label, LibConstants::GOOGLE_NAME);
         assert_eq!(config.resilience.strategy, CheckStrategy::Race);
         assert!(!config.security.block_vpn);
     }

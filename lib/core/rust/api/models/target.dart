@@ -33,7 +33,6 @@ class NetworkTarget {
   /// failure, affecting the circuit breaker and potentially the overall check status.
   final bool isEssential;
 
-  /// Creates a new [NetworkTarget] instance.
   const NetworkTarget({
     required this.label,
     required this.host,
@@ -72,9 +71,6 @@ class NetworkTarget {
 enum TargetProtocol {
   /// Use the Transmission Control Protocol (TCP). This is a reliable, connection-oriented protocol.
   tcp,
-
-  /// Use the User Datagram Protocol (UDP). This is a fast, connectionless protocol.
-  udp,
 
   /// Use the Internet Control Message Protocol (ICMP). This is commonly used for "pinging" hosts.
   icmp,
