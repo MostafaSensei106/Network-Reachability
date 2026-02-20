@@ -1,41 +1,35 @@
-/// Enum representing the state of the circuit breaker.
+/// Enum representing the state of the circuit breaker pattern.
+///
+/// The circuit breaker is used to prevent an application from repeatedly
+/// trying to execute an operation that is likely to fail.
 enum CircuitBreakerState {
-  /// The circuit is closed, allowing all requests to pass through.
+  /// The circuit is closed. Requests flow normally.
+  /// Transitions to [open] after a threshold of consecutive failures.
   closed,
 
-  /// The circuit is open, blocking all requests and potentially
-  /// throwing a [CircuitBreakerOpenException].
+  /// The circuit is open. Requests are blocked immediately.
+  /// Transitions to [halfOpen] after a cooldown period.
   open,
 
-  /// The circuit is half-open, allowing a single probe request to pass
-  /// through to see if the network has recovered.
+  /// The circuit is half-open. A single trial request is allowed.
+  /// If it succeeds, the circuit moves to [closed]. If it fails, it moves back to [open].
   halfOpen,
 }
 
-/// Enum representing specific security issues.
+/// Enum representing specific security alerts or policy violations.
 ///
-/// This enum is used by the [guard] function to throw
-/// [SecurityException]s when specific security issues are
-/// detected.
-///
-/// The possible values of this enum are:
-///
-/// * [vpnDetected]: the VPN connection is not allowed.
-/// * [dnsHijackDetected]: DNS hijacking was detected.
-/// * [proxyDetected]: a proxy server was detected.
-/// * [unallowedInterface]: the active interface is not allowed.
-///
-/// See also [guard].
+/// This enum is used by the [NetworkReachability.guard] function to identify
+/// why a network-dependent action was blocked.
 enum SecurityAlert {
-  /// The VPN connection is not allowed.
+  /// A VPN connection was detected on the active interface.
   vpnDetected,
 
-  /// DNS hijacking was detected.
+  /// The resolved IP addresses from the system DNS do not match trusted resolvers.
   dnsHijackDetected,
 
-  /// A proxy server was detected.
+  /// A system-level proxy server was detected (future implementation).
   proxyDetected,
 
-  /// The active interface is not allowed.
+  /// The active network interface is not in the allowed list.
   unallowedInterface,
 }

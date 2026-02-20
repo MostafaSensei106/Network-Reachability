@@ -16,10 +16,21 @@ import '../rust/api/probes/target.dart' as target_probe;
 import '../rust/api/probes/traceroute.dart' as traceroute_probe;
 
 /// The main class for interacting with the network reachability engine.
+///
+/// This class provides a high-level API for:
+/// * Performing manual network checks via [check].
+/// * Protecting sensitive operations using [guard].
+/// * Monitoring real-time status changes through [onStatusChange].
+/// * Sideloading advanced probes (Traceroute, DNS Hijack detection, etc.).
+///
+/// It implements [WidgetsBindingObserver] to handle app lifecycle changes,
+/// ensuring battery efficiency by pausing periodic checks in the background.
 class NetworkReachability with WidgetsBindingObserver {
   static NetworkReachability? _instance;
 
   /// The singleton instance of the network reachability engine.
+  ///
+  /// Throws an [Exception] if accessed before calling [init].
   static NetworkReachability get instance {
     if (_instance == null) {
       throw Exception(
@@ -51,6 +62,9 @@ class NetworkReachability with WidgetsBindingObserver {
   }
 
   /// Initializes the network reachability engine.
+  ///
+  /// This must be called once at app startup. It sets up the singleton
+  /// with either a [config] or the default settings fetched from Rust.
   static Future<void> init({NetworkConfiguration? config}) async {
     if (_instance != null) {
       _instance?.dispose();
@@ -59,10 +73,16 @@ class NetworkReachability with WidgetsBindingObserver {
     _instance = NetworkReachability._(finalConfig);
   }
 
-  /// A stream of network status updates.
+  /// A stream of [NetworkStatus] updates emitted during periodic checks.
   Stream<NetworkStatus> get onStatusChange => _statusController.stream;
 
   /// Performs a network check with request coalescing and caching.
+  ///
+  /// If [forceRefresh] is false (default), it may return a cached report if it's
+  /// within the `cacheValidityMs` window.
+  ///
+  /// This method is "Thundering Herd" safe; multiple simultaneous calls will
+  /// result in a single underlying network probe.
   Future<NetworkReport> check({bool forceRefresh = false}) async {
     // 1. Return cached report if still valid and not forcing refresh
     if (!forceRefresh &&
@@ -87,6 +107,7 @@ class NetworkReachability with WidgetsBindingObserver {
     }
   }
 
+  /// Internal implementation of the network check orchestration.
   Future<NetworkReport> _performCheck() async {
     final report = await rust_engine.checkNetwork(config: _config);
     _lastReport = report;
@@ -96,6 +117,7 @@ class NetworkReachability with WidgetsBindingObserver {
     return report;
   }
 
+  /// Updates the internal circuit breaker state machine based on target success/failure.
   void _updateCircuitBreaker(NetworkReport report) {
     final threshold = _config.resilience.circuitBreakerThreshold;
     if (threshold == 0) return;
@@ -118,7 +140,16 @@ class NetworkReachability with WidgetsBindingObserver {
     }
   }
 
-  /// A wrapper to protect network-dependent operations.
+  /// A wrapper to protect network-dependent operations (e.g., API calls).
+  ///
+  /// This method performs a multi-stage validation:
+  /// 1. Checks if the circuit breaker is [CircuitBreakerState.open].
+  /// 2. Performs/reuses a network [check].
+  /// 3. Validates against [SecurityConfig] (VPN, DNS Hijack).
+  /// 4. Validates against [minQuality].
+  ///
+  /// Throws [CircuitBreakerOpenException], [SecurityException], or [PoorConnectionException]
+  /// if any check fails.
   Future<T> guard<T>({
     required Future<T> Function() action,
     ConnectionQuality minQuality = ConnectionQuality.good,
@@ -166,7 +197,7 @@ class NetworkReachability with WidgetsBindingObserver {
     return await action();
   }
 
-  /// Lifecycle Management for Battery Efficiency
+  /// Automatically manages periodic checks based on the Flutter app lifecycle.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
@@ -177,6 +208,7 @@ class NetworkReachability with WidgetsBindingObserver {
     }
   }
 
+  /// Starts the [Timer.periodic] for background monitoring.
   void _startPeriodicChecks() {
     _stopPeriodicChecks();
     final interval = _config.checkIntervalMs;
@@ -191,12 +223,13 @@ class NetworkReachability with WidgetsBindingObserver {
     }
   }
 
+  /// Stops the [Timer.periodic] to save resources.
   void _stopPeriodicChecks() {
     _periodicTimer?.cancel();
     _periodicTimer = null;
   }
 
-  /// Disposes of the engine and cleans up all resources.
+  /// Disposes of the engine, removes lifecycle observers, and closes streams.
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _stopPeriodicChecks();
@@ -206,19 +239,24 @@ class NetworkReachability with WidgetsBindingObserver {
 
   // --- Advanced Probes ---
 
+  /// Checks for the presence of a captive portal using a non-SSL probe.
   Future<CaptivePortalStatus> checkForCaptivePortal(
           {required BigInt timeoutMs}) =>
       captive_portal_probe.checkForCaptivePortal(timeoutMs: timeoutMs);
 
+  /// Detects potential DNS hijacking by comparing system resolution vs Cloudflare.
   Future<bool> detectDnsHijacking({required String domain}) =>
       dns_probe.detectDnsHijacking(domain: domain);
 
+  /// Inspects system network interfaces to determine connection type and security flags.
   Future<(SecurityFlags, ConnectionType)> detectSecurityAndNetworkType() =>
       interface_probe.detectSecurityAndNetworkType();
 
+  /// Performs a low-level reachability check against a single [target].
   Future<TargetReport> checkTarget({required NetworkTarget target}) =>
       target_probe.checkTarget(target: target);
 
+  /// Performs a traceroute to the specified [host].
   Future<List<TraceHop>> traceRoute({
     required String host,
     required int maxHops,
