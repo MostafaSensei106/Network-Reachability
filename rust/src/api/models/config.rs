@@ -29,6 +29,8 @@ pub enum ConnectionQuality {
     Poor,
     /// Connection is active, but packet loss or high jitter makes it unreliable.
     Unstable,
+    /// A captive portal was detected, requiring user interaction.
+    CaptivePortal,
     /// No connection detected or all essential targets failed.
     Offline,
 }
@@ -148,6 +150,15 @@ impl Default for NetworkConfiguration {
                     priority: 1,
                     is_essential: false,
                 },
+                NetworkTarget {
+                    label: "Cloudflare HTTPS".into(),
+                    host: "1.1.1.1".into(),
+                    port: 443,
+                    protocol: TargetProtocol::Https,
+                    timeout_ms: 1500, // HTTPS takes longer
+                    priority: 2,
+                    is_essential: true, // Essential for end-to-end internet verification
+                },
             ],
             check_interval_ms: LibConstants::DEFAULT_CHECK_INTERVAL_MS,
             cache_validity_ms: 2000, // 2 seconds default cache
@@ -182,9 +193,10 @@ mod tests {
     #[test]
     fn test_network_configuration_default() {
         let config = NetworkConfiguration::default();
-        assert_eq!(config.targets.len(), 2);
+        assert_eq!(config.targets.len(), 3);
         assert_eq!(config.targets[0].label, LibConstants::CLOUDFLARE_NAME);
         assert_eq!(config.targets[1].label, LibConstants::GOOGLE_NAME);
+        assert_eq!(config.targets[2].label, "Cloudflare HTTPS");
         assert_eq!(config.resilience.strategy, CheckStrategy::Race);
         assert!(!config.security.block_vpn);
     }

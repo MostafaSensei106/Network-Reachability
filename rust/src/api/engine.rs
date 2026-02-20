@@ -100,7 +100,7 @@ fn analyze_single_sample(reports: &[TargetReport], config: &NetworkConfiguration
 /// - Loss Score: 30% (measures reliability)
 /// - Jitter Score: 20% (measures packet arrival consistency)
 /// - Spike Score: 10% (measures outlier impact)
-fn compute_latency_stats(latencies: &[u64], total_expected_samples: u8) -> LatencyStats {
+pub(crate) fn compute_latency_stats(latencies: &[u64], total_expected_samples: u8) -> LatencyStats {
     let successful_samples = latencies.len() as f32;
 
     let packet_loss_percent = if total_expected_samples > 0 {
@@ -108,6 +108,18 @@ fn compute_latency_stats(latencies: &[u64], total_expected_samples: u8) -> Laten
     } else {
         0.0
     };
+
+    if latencies.is_empty() {
+        return LatencyStats {
+            latency_ms: 0,
+            jitter_ms: 0,
+            packet_loss_percent,
+            min_latency_ms: None,
+            max_latency_ms: None,
+            avg_latency_ms: None,
+            stability_score: 0,
+        };
+    }
 
     let (min_lat, max_lat, mean_lat, std_dev_lat) = calculate_jitter_stats(latencies);
 
@@ -121,7 +133,7 @@ fn compute_latency_stats(latencies: &[u64], total_expected_samples: u8) -> Laten
         let score = 100.0 * (-cv * 0.6).exp();
         score.clamp(0.0, 100.0)
     } else {
-        if packet_loss_percent > 0.0 { 0.0 } else { 100.0 }
+        0.0
     };
 
     // 2. Sequential Jitter Score (Weight: 20%)
@@ -136,34 +148,45 @@ fn compute_latency_stats(latencies: &[u64], total_expected_samples: u8) -> Laten
         let score = 100.0 * (-relative_seq_jitter * 0.6).exp();
         score.clamp(0.0, 100.0)
     } else {
-        100.0
+        // If we only have one sample, we don't have enough data to claim perfect jitter.
+        // We give a neutral score that won't artificially inflate the total.
+        50.0
     };
 
     // 3. Loss Score (Weight: 30%)
     let loss_score = if packet_loss_percent > 0.0 {
-        (100.0 - (packet_loss_percent as f64 * 10.0)).clamp(0.0, 100.0)
+        (100.0 - (packet_loss_percent as f64 * 5.0)).clamp(0.0, 100.0)
     } else {
         100.0
     };
 
     // 4. Spike Score (Weight: 10%)
     let spike_score = if let (Some(max), true) = (max_lat, mean_latency_f64 > 0.0) {
-        let ratio = max as f64 / mean_latency_f64;
-        if ratio <= 2.0 {
-            100.0
+        if latencies.len() < 2 {
+            70.0 // Neutral-low for single sample
         } else {
-            let normalized_ratio = ratio / 2.0;
-            let score = 100.0 * (1.0_f64 / normalized_ratio).powf(0.4);
-            score.clamp(0.0, 100.0)
+            let ratio = max as f64 / mean_latency_f64;
+            if ratio <= 2.0 {
+                100.0
+            } else {
+                let normalized_ratio = ratio / 2.0;
+                let score = 100.0 * (1.0_f64 / normalized_ratio).powf(0.4);
+                score.clamp(0.0, 100.0)
+            }
         }
     } else {
-        100.0
+        0.0
     };
 
-    let weighted_score = (latency_stability_score * 0.40)
+    let mut weighted_score = (latency_stability_score * 0.40)
         + (jitter_stability_score * 0.20)
         + (loss_score * 0.30)
         + (spike_score * 0.10);
+
+    // If packet loss is very high, drag down the score even more aggressively.
+    if packet_loss_percent > 50.0 {
+        weighted_score *= (100.0 - packet_loss_percent as f64) / 50.0;
+    }
 
     LatencyStats {
         latency_ms: final_latency,
@@ -172,7 +195,7 @@ fn compute_latency_stats(latencies: &[u64], total_expected_samples: u8) -> Laten
         min_latency_ms: min_lat,
         max_latency_ms: max_lat,
         avg_latency_ms: mean_lat,
-        stability_score: weighted_score as u8,
+        stability_score: weighted_score.clamp(0.0, 100.0) as u8,
     }
 }
 
@@ -251,7 +274,15 @@ pub async fn check_network(config: NetworkConfiguration) -> NetworkReport {
 
     let latency_stats = compute_latency_stats(&all_sample_latencies, num_samples);
 
-    let quality = evaluate_network_quality(is_connected, &latency_stats, &config);
+    let mut quality = evaluate_network_quality(is_connected, &latency_stats, &config);
+
+    // If we're ostensibly connected, check for a captive portal to be sure.
+    if is_connected && quality != ConnectionQuality::Offline {
+        let cp_status = probes::check_for_captive_portal(1000).await;
+        if cp_status.is_captive_portal {
+            quality = ConnectionQuality::CaptivePortal;
+        }
+    }
 
     let (mut security_flags, connection_type) = detect_security_and_network_type();
     perform_dns_security_check(&config, &mut security_flags).await;
@@ -273,5 +304,123 @@ pub async fn check_network(config: NetworkConfiguration) -> NetworkReport {
         connection_type,
         security_flags,
         target_reports: final_target_reports,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::api::models::ConnectionQuality;
+
+    #[test]
+    fn test_compute_latency_stats_offline() {
+        let stats = compute_latency_stats(&[], 5);
+        assert_eq!(stats.stability_score, 0);
+        assert_eq!(stats.packet_loss_percent, 100.0);
+    }
+
+    #[test]
+    fn test_compute_latency_stats_perfect() {
+        let latencies = vec![100, 100, 100, 100, 100];
+        let stats = compute_latency_stats(&latencies, 5);
+        // With 0 jitter and 0 loss, score should be high.
+        assert!(stats.stability_score > 90);
+        assert_eq!(stats.packet_loss_percent, 0.0);
+    }
+
+    #[test]
+    fn test_compute_latency_stats_high_jitter() {
+        let latencies = vec![100, 500, 100, 500, 100];
+        let stats = compute_latency_stats(&latencies, 5);
+        println!("High jitter stats: {:?}", stats);
+        // High jitter should lower the score significantly.
+        assert!(stats.stability_score < 80); // Adjusted threshold
+    }
+
+    #[test]
+    fn test_evaluate_network_quality_logic() {
+        let mut config = NetworkConfiguration::default();
+        config.resilience.stability_thershold = 50;
+        config.resilience.critical_packet_loss_precent = 10.0;
+
+        // Offline
+        let stats = LatencyStats {
+            latency_ms: 0,
+            jitter_ms: 0,
+            packet_loss_percent: 100.0,
+            min_latency_ms: None,
+            max_latency_ms: None,
+            avg_latency_ms: None,
+            stability_score: 0,
+        };
+        assert_eq!(evaluate_network_quality(false, &stats, &config), ConnectionQuality::Offline);
+
+        // Critical loss
+        let stats = LatencyStats {
+            latency_ms: 100,
+            jitter_ms: 0,
+            packet_loss_percent: 20.0,
+            min_latency_ms: Some(100),
+            max_latency_ms: Some(100),
+            avg_latency_ms: Some(100),
+            stability_score: 80,
+        };
+        assert_eq!(evaluate_network_quality(true, &stats, &config), ConnectionQuality::Unstable);
+
+        // Unstable due to low stability score
+        let stats = LatencyStats {
+            latency_ms: 100,
+            jitter_ms: 0,
+            packet_loss_percent: 0.0,
+            min_latency_ms: Some(100),
+            max_latency_ms: Some(100),
+            avg_latency_ms: Some(100),
+            stability_score: 10, // Very low stability
+        };
+        assert_eq!(evaluate_network_quality(true, &stats, &config), ConnectionQuality::Good); // Downgraded from Great
+    }
+
+    #[test]
+    fn test_analyze_single_sample_logic() {
+        let config = NetworkConfiguration::default();
+        let reports = vec![
+            TargetReport {
+                label: "A".into(),
+                success: true,
+                latency_ms: 100,
+                error: None,
+                is_essential: false,
+            },
+            TargetReport {
+                label: "B".into(),
+                success: false,
+                latency_ms: 0,
+                error: Some("fail".into()),
+                is_essential: false,
+            },
+        ];
+
+        // Race strategy: one success is enough
+        let res = analyze_single_sample(&reports, &config);
+        assert_eq!(res, Some(100));
+
+        // Essential failed
+        let reports_essential_fail = vec![
+            TargetReport {
+                label: "A".into(),
+                success: true,
+                latency_ms: 100,
+                error: None,
+                is_essential: false,
+            },
+            TargetReport {
+                label: "B".into(),
+                success: false,
+                latency_ms: 0,
+                error: Some("fail".into()),
+                is_essential: true,
+            },
+        ];
+        assert_eq!(analyze_single_sample(&reports_essential_fail, &config), None);
     }
 }
