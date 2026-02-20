@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+import 'package:network_reachability/core/extensions/model_extensions.dart';
 import 'package:network_reachability/network_reachability.dart';
 import 'package:test/test.dart';
 import '../mocks/mock_rust_api.dart';
@@ -6,6 +8,7 @@ void main() {
   late MockRustLibApi mockApi;
 
   setUpAll(() {
+    WidgetsFlutterBinding.ensureInitialized();
     mockApi = MockRustLibApi();
     RustLib.initMock(api: mockApi);
   });
@@ -28,7 +31,8 @@ void main() {
         circuitBreakerThreshold: 2,
       );
       await NetworkReachability.init(
-          config: config.copyWith(resilience: resilience));
+          config: config.copyWith(
+              resilience: resilience, cacheValidityMs: BigInt.zero));
 
       // Simulate a failing essential target
       mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
@@ -65,10 +69,12 @@ void main() {
         circuitBreakerCooldownMs: BigInt.from(100), // 100ms cooldown
       );
       await NetworkReachability.init(
-          config: config.copyWith(resilience: resilience));
+          config: config.copyWith(
+              resilience: resilience, cacheValidityMs: BigInt.zero));
 
       // 1. Force open state
       mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
+        status: mockApi.mockNetworkReport.status.copyWith(isConnected: false),
         targetReports: [
           TargetReport(
               label: 'e',
@@ -87,6 +93,7 @@ void main() {
 
       // 3. Success probe: Half-Open -> Closed
       mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
+        status: mockApi.mockNetworkReport.status.copyWith(isConnected: true),
         targetReports: [
           TargetReport(
               label: 'e',
@@ -111,10 +118,12 @@ void main() {
         circuitBreakerCooldownMs: BigInt.from(100),
       );
       await NetworkReachability.init(
-          config: config.copyWith(resilience: resilience));
+          config: config.copyWith(
+              resilience: resilience, cacheValidityMs: BigInt.zero));
 
       // 1. Force open
       mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
+        status: mockApi.mockNetworkReport.status.copyWith(isConnected: false),
         targetReports: [
           TargetReport(
               label: 'e',
@@ -136,53 +145,84 @@ void main() {
               isA<PoorConnectionException>()), // Fails probe, quality offline
           reason: 'Failing probe should keep/re-open the circuit');
     });
+
+    test('Non-essential target failure does NOT open the circuit', () async {
+      final config = mockApi.mockDefaultConfig.copyWith(
+        resilience: mockApi.mockDefaultResilienceConfig.copyWith(
+          circuitBreakerThreshold: 1,
+        ),
+        cacheValidityMs: BigInt.zero,
+      );
+      await NetworkReachability.init(config: config);
+
+      // Simulate failure of a NON-essential target
+      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
+        targetReports: [
+          TargetReport(
+              label: 'non-e',
+              success: false,
+              latencyMs: BigInt.zero,
+              isEssential: false),
+        ],
+      );
+
+      await NetworkReachability.instance.check();
+
+      // Guard should NOT throw because it was not an essential failure
+      final result =
+          await NetworkReachability.instance.guard(action: () async => 42);
+      expect(result, 42);
+    });
+
+    test('Successful essential target resets failure count', () async {
+      final config = mockApi.mockDefaultConfig.copyWith(
+        resilience: mockApi.mockDefaultResilienceConfig.copyWith(
+          circuitBreakerThreshold: 2,
+        ),
+        cacheValidityMs: BigInt.zero,
+      );
+      await NetworkReachability.init(config: config);
+
+      // 1. One failure
+      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
+        targetReports: [
+          TargetReport(
+              label: 'e',
+              success: false,
+              latencyMs: BigInt.zero,
+              isEssential: true),
+        ],
+      );
+      await NetworkReachability.instance.check();
+
+      // 2. One success (resets the internal counter)
+      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
+        targetReports: [
+          TargetReport(
+              label: 'e',
+              success: true,
+              latencyMs: BigInt.from(50),
+              isEssential: true),
+        ],
+      );
+      await NetworkReachability.instance.check();
+
+      // 3. Another failure (if count was not reset, this would open the circuit)
+      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
+        targetReports: [
+          TargetReport(
+              label: 'e',
+              success: false,
+              latencyMs: BigInt.zero,
+              isEssential: true),
+        ],
+      );
+      await NetworkReachability.instance.check();
+
+      // Should NOT throw because count was reset to 0 in step 2
+      final result =
+          await NetworkReachability.instance.guard(action: () async => 42);
+      expect(result, 42);
+    });
   });
-}
-
-extension on NetworkReport {
-  NetworkReport copyWith({
-    List<TargetReport>? targetReports,
-  }) {
-    return NetworkReport(
-      timestampMs: timestampMs,
-      status: status,
-      connectionType: connectionType,
-      securityFlags: securityFlags,
-      targetReports: targetReports ?? this.targetReports,
-    );
-  }
-}
-
-extension on ResilienceConfig {
-  ResilienceConfig copyWith({
-    int? circuitBreakerThreshold,
-    BigInt? circuitBreakerCooldownMs,
-  }) {
-    return ResilienceConfig(
-      strategy: strategy,
-      circuitBreakerThreshold:
-          circuitBreakerThreshold ?? this.circuitBreakerThreshold,
-      circuitBreakerCooldownMs:
-          circuitBreakerCooldownMs ?? this.circuitBreakerCooldownMs,
-      numJitterSamples: numJitterSamples,
-      jitterThresholdPercent: jitterThresholdPercent,
-      stabilityThershold: stabilityThershold,
-      criticalPacketLossPrecent: criticalPacketLossPrecent,
-    );
-  }
-}
-
-extension on NetworkConfiguration {
-  NetworkConfiguration copyWith({
-    ResilienceConfig? resilience,
-  }) {
-    return NetworkConfiguration(
-      targets: targets,
-      checkIntervalMs: checkIntervalMs,
-      cacheValidityMs: cacheValidityMs,
-      qualityThreshold: qualityThreshold,
-      security: security,
-      resilience: resilience ?? this.resilience,
-    );
-  }
 }

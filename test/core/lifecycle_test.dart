@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:network_reachability/core/rust/api/models/config.dart';
+import 'package:network_reachability/core/extensions/model_extensions.dart';
 import 'package:network_reachability/network_reachability.dart';
-import 'package:network_reachability/core/rust/frb_generated.dart';
 import 'package:test/test.dart';
 import '../mocks/mock_rust_api.dart';
 
@@ -37,38 +36,25 @@ void main() {
       expect(countResumed, greaterThan(0));
 
       // 2. Pause the app
-      NetworkReachability.instance.didChangeAppLifecycleState(AppLifecycleState.paused);
-      
+      NetworkReachability.instance
+          .didChangeAppLifecycleState(AppLifecycleState.paused);
+
       // Clear counter
       mockApi.checkCallCount = 0;
-      
+
       // Wait for a few intervals
       await Future.delayed(const Duration(milliseconds: 300));
-      
-      expect(mockApi.checkCallCount, 0, 
+
+      expect(mockApi.checkCallCount, 0,
           reason: 'Periodic checks must stop when app is paused');
 
       // 3. Resume the app
-      NetworkReachability.instance.didChangeAppLifecycleState(AppLifecycleState.resumed);
-      
+      NetworkReachability.instance
+          .didChangeAppLifecycleState(AppLifecycleState.resumed);
+
       await Future.delayed(const Duration(milliseconds: 150));
-      expect(mockApi.checkCallCount, greaterThan(0), 
+      expect(mockApi.checkCallCount, greaterThan(0),
           reason: 'Periodic checks must resume when app is resumed');
     });
   });
-}
-
-extension on NetworkConfiguration {
-  NetworkConfiguration copyWith({
-    BigInt? checkIntervalMs,
-  }) {
-    return NetworkConfiguration(
-      targets: targets,
-      checkIntervalMs: checkIntervalMs ?? this.checkIntervalMs,
-      cacheValidityMs: cacheValidityMs,
-      qualityThreshold: qualityThreshold,
-      security: security,
-      resilience: resilience,
-    );
-  }
 }
