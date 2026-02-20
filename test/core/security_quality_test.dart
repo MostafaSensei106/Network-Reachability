@@ -71,7 +71,8 @@ void main() {
     test('Throws PoorConnectionException when quality is below threshold',
         () async {
       await NetworkReachability.init(
-        config: mockApi.mockDefaultConfig.copyWith(cacheValidityMs: BigInt.zero),
+        config:
+            mockApi.mockDefaultConfig.copyWith(cacheValidityMs: BigInt.zero),
       );
 
       mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
@@ -92,7 +93,8 @@ void main() {
 
     test('Throws PoorConnectionException when disconnected', () async {
       await NetworkReachability.init(
-        config: mockApi.mockDefaultConfig.copyWith(cacheValidityMs: BigInt.zero),
+        config:
+            mockApi.mockDefaultConfig.copyWith(cacheValidityMs: BigInt.zero),
       );
 
       mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
