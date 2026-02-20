@@ -1,4 +1,7 @@
-use crate::api::models::{ConnectionType, SecurityFlags};
+use crate::api::{
+    constants::LibConstants,
+    models::{ConnectionType, SecurityFlags},
+};
 use network_interface::{NetworkInterface, NetworkInterfaceConfig};
 
 /// Inspects system network interfaces to detect connection type and potential security flags.
@@ -26,33 +29,35 @@ pub fn detect_security_and_network_type() -> (SecurityFlags, ConnectionType) {
     // Keywords to identify different types of network interfaces.
     // Order matters: VPN check should be first.
     let type_map: &[(&[&str], ConnectionType)] = &[
-        (&["tun", "tap", "ppp", "vpn"], ConnectionType::Vpn),
-        (&["wlan", "wifi"], ConnectionType::Wifi),
-        (&["eth", "en"], ConnectionType::Ethernet),
-        (&["rmnet", "wwan"], ConnectionType::Cellular),
+        (LibConstants::VPN_PREFIXES, ConnectionType::Vpn),
+        (LibConstants::WIFI_PREFIXES, ConnectionType::Wifi),
+        (LibConstants::ETHERNET_PREFIXES, ConnectionType::Ethernet),
+        (LibConstants::CELLULAR_PREFIXES, ConnectionType::Cellular),
+        (LibConstants::BLUETOOTH_PREFIXES, ConnectionType::Bluetooth),
+        (LibConstants::LOOPBACK_PREFIXES, ConnectionType::Loopback),
     ];
 
     // Find the active, non-loopback interface
     for iface in interfaces {
         // Skip loopback and interfaces without an IP
-        if iface.name.contains("lo") || iface.addr.is_empty() {
+        if iface.name.contains("lo") || iface.addr.is_empty() || iface.name.starts_with("lo:") {
             continue;
         }
 
         let name_lower = iface.name.to_lowercase();
 
-        for &(keywords, ctype) in type_map {
-            if keywords.iter().any(|kw| name_lower.contains(kw)) {
-                if ctype == ConnectionType::Vpn {
+        for &(prefixes, ref ctype) in type_map {
+            if prefixes.iter().any(|prefix| name_lower.contains(prefix)) {
+                if *ctype == ConnectionType::Vpn {
                     // If a VPN is found, it's the most important piece of information.
                     // We set the flags and can break early.
                     security_flags.is_vpn_detected = true;
                     security_flags.interface_name = iface.name.clone();
                     conn_type = ConnectionType::Vpn;
-                    break;
+                    return (security_flags, conn_type);
                 } else if conn_type == ConnectionType::Unknown {
                     // Otherwise, set the first non-VPN type we find.
-                    conn_type = ctype;
+                    conn_type = ctype.clone();
                     security_flags.interface_name = iface.name.clone();
                 }
             }

@@ -627,7 +627,8 @@ impl SseDecode for crate::api::models::net_info::ConnectionType {
             2 => crate::api::models::net_info::ConnectionType::Ethernet,
             3 => crate::api::models::net_info::ConnectionType::Vpn,
             4 => crate::api::models::net_info::ConnectionType::Bluetooth,
-            5 => crate::api::models::net_info::ConnectionType::Unknown,
+            5 => crate::api::models::net_info::ConnectionType::Loopback,
+            6 => crate::api::models::net_info::ConnectionType::Unknown,
             _ => unreachable!("Invalid variant for ConnectionType: {}", inner),
         };
     }
@@ -1203,7 +1204,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::net_info::ConnectionT
             Self::Ethernet => 2.into_dart(),
             Self::Vpn => 3.into_dart(),
             Self::Bluetooth => 4.into_dart(),
-            Self::Unknown => 5.into_dart(),
+            Self::Loopback => 5.into_dart(),
+            Self::Unknown => 6.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -1575,7 +1577,8 @@ impl SseEncode for crate::api::models::net_info::ConnectionType {
                 crate::api::models::net_info::ConnectionType::Ethernet => 2,
                 crate::api::models::net_info::ConnectionType::Vpn => 3,
                 crate::api::models::net_info::ConnectionType::Bluetooth => 4,
-                crate::api::models::net_info::ConnectionType::Unknown => 5,
+                crate::api::models::net_info::ConnectionType::Loopback => 5,
+                crate::api::models::net_info::ConnectionType::Unknown => 6,
                 _ => {
                     unimplemented!("");
                 }

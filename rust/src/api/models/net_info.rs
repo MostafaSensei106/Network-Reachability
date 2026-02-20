@@ -15,6 +15,9 @@ pub enum ConnectionType {
     Vpn,
     /// A Bluetooth tethering connection.
     Bluetooth,
+
+    /// A Loopback
+    Loopback,
     /// The connection type could not be determined.
     Unknown,
 }

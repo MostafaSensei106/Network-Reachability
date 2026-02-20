@@ -50,6 +50,9 @@ enum ConnectionType {
   /// A Bluetooth tethering connection.
   bluetooth,
 
+  /// A Loopback
+  loopback,
+
   /// The connection type could not be determined.
   unknown,
   ;
