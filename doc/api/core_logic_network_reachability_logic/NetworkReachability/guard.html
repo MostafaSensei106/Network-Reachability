@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the guard method from the NetworkReachability class, for the Dart programming language.">
+  <title>guard method - NetworkReachability class - network_reachability_logic library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">network_reachability</a></li>
+    <li><a href="../../core_logic_network_reachability_logic/">core&#47;logic&#47;network_reachability_logic.dart</a></li>
+    <li><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></li>
+    <li class="self-crumb">guard&lt;<wbr><span class="type-parameter">T</span>&gt; method</li>
+  </ol>
+  <div class="self-name">guard</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="core_logic_network_reachability_logic&#47;NetworkReachability-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">guard&lt;<wbr><span class="type-parameter">T</span>&gt;</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span>
+<span class="name ">guard</span>&lt;<wbr><span class="type-parameter">T</span>&gt;(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="guard-param-action"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">action</span>(), </span></li>
+<li><span class="parameter" id="guard-param-minQuality"><span class="type-annotation"><a href="../../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a></span> <span class="parameter-name">minQuality</span> = <span class="default-value">ConnectionQuality.good</span>, </span></li>
+</ol>})
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>A wrapper to protect network-dependent operations (e.g., API calls).</p>
+<p>This method performs a multi-stage validation:</p>
+<ol>
+<li>Checks if the circuit breaker is <a href="../../core_constants_enums/CircuitBreakerState.html">CircuitBreakerState.open</a>.</li>
+<li>Performs/reuses a network <a href="../../core_logic_network_reachability_logic/NetworkReachability/check.html">check</a>.</li>
+<li>Validates against <a href="../../core_rust_api_models_config/SecurityConfig-class.html">SecurityConfig</a> (VPN, DNS Hijack).</li>
+<li>Validates against <code>minQuality</code>.</li>
+</ol>
+<p>Throws <a href="../../core_err_exceptions/CircuitBreakerOpenException-class.html">CircuitBreakerOpenException</a>, <a href="../../core_err_exceptions/SecurityException-class.html">SecurityException</a>, or <a href="../../core_err_exceptions/PoorConnectionException-class.html">PoorConnectionException</a>
+if any check fails.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;T&gt; guard&lt;T&gt;({
+  required Future&lt;T&gt; Function() action,
+  ConnectionQuality minQuality = ConnectionQuality.good,
+}) async {
+  &#47;&#47; 1. Handle Circuit Breaker State
+  if (_circuitState == CircuitBreakerState.open) {
+    if (_circuitBreakerResetTime != null &amp;&amp;
+        DateTime.now().isBefore(_circuitBreakerResetTime!)) {
+      final remaining = _circuitBreakerResetTime!.difference(DateTime.now());
+      throw CircuitBreakerOpenException(
+          &#39;Circuit breaker is open due to recent failures. Retry after ${remaining.inSeconds}s&#39;,
+          retryAfter: remaining);
+    } else {
+      &#47;&#47; Transition to Half-Open to allow a probe
+      _circuitState = CircuitBreakerState.halfOpen;
+    }
+  }
+
+  &#47;&#47; 2. Perform or reuse network check
+  final report = await check();
+
+  &#47;&#47; 3. Validate security requirements
+  if (_config.security.blockVpn &amp;&amp; report.securityFlags.isVpnDetected) {
+    throw SecurityException(
+        SecurityAlert.vpnDetected, &#39;VPN connection is not allowed.&#39;);
+  }
+  if (_config.security.detectDnsHijack &amp;&amp; report.securityFlags.isDnsSpoofed) {
+    throw SecurityException(SecurityAlert.dnsHijackDetected,
+        &#39;DNS hijacking was detected. Connection is insecure.&#39;);
+  }
+
+  &#47;&#47; 4. Validate quality requirements
+  if (!report.status.isConnected ||
+      report.status.quality.index &gt; minQuality.index) {
+    throw PoorConnectionException(
+        &#39;Connection quality (${report.status.quality.name}) is below required (${minQuality.name}).&#39;);
+  }
+
+  &#47;&#47; 5. Success: Close circuit if it was half-open
+  if (_circuitState == CircuitBreakerState.halfOpen) {
+    _circuitState = CircuitBreakerState.closed;
+    _consecutiveFailures = 0;
+  }
+
+  return await action();
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">network_reachability</a></li>
+    <li><a href="../../core_logic_network_reachability_logic/">network_reachability_logic</a></li>
+    <li><a href="../../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></li>
+    <li class="self-crumb">guard&lt;<wbr><span class="type-parameter">T</span>&gt; method</li>
+</ol>
+
+    <h5>NetworkReachability class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    network_reachability
+      0.0.1
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
