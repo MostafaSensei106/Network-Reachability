@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:network_reachability/core/extensions/model_extensions.dart';
 import 'package:network_reachability/core/logic/network_reachability_logic.dart';
 import 'package:network_reachability/core/rust/frb_generated.dart';
 import 'package:test/test.dart';

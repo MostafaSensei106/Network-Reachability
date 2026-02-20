@@ -49,5 +49,5 @@ class CircuitBreakerOpenException extends NetworkReachabilityException {
   final Duration? retryAfter;
 
   /// Creates a new [CircuitBreakerOpenException] with the given [message] and [retryAfter].
-  CircuitBreakerOpenException(String message, {this.retryAfter}) : super(message);
+  CircuitBreakerOpenException(super.message, {this.retryAfter});
 }
