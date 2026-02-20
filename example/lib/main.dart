@@ -385,6 +385,8 @@ class _NetworkReportView extends StatelessWidget {
         return Colors.purpleAccent;
       case ConnectionQuality.offline:
         return Colors.grey;
+      case ConnectionQuality.captivePortal:
+        return Colors.blue;
     }
   }
 }

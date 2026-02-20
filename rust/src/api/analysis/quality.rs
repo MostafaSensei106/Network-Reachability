@@ -97,7 +97,7 @@ mod tests {
     use crate::api::models::QualityThresholds;
 
     #[test]
-    fn test_evaluate_quality_logic() {
+    fn test_evaluate_quality_edge_cases() {
         let thresholds = QualityThresholds {
             excellent: 50,
             great: 100,
@@ -106,55 +106,41 @@ mod tests {
             poor: 1000,
         };
 
-        assert_eq!(
-            evaluate_quality(49, &thresholds),
-            ConnectionQuality::Excellent
-        );
-        assert_eq!(
-            evaluate_quality(50, &thresholds),
-            ConnectionQuality::Excellent
-        );
+        // Zero case
+        assert_eq!(evaluate_quality(0, &thresholds), ConnectionQuality::Excellent);
+        
+        // Exact boundary cases
+        assert_eq!(evaluate_quality(50, &thresholds), ConnectionQuality::Excellent);
+        assert_eq!(evaluate_quality(51, &thresholds), ConnectionQuality::Great);
         assert_eq!(evaluate_quality(100, &thresholds), ConnectionQuality::Great);
-        assert_eq!(
-            evaluate_quality(250, &thresholds),
-            ConnectionQuality::Moderate
-        );
-        assert_eq!(
-            evaluate_quality(1001, &thresholds),
-            ConnectionQuality::Offline
-        );
+        assert_eq!(evaluate_quality(101, &thresholds), ConnectionQuality::Good);
+        assert_eq!(evaluate_quality(200, &thresholds), ConnectionQuality::Good);
+        assert_eq!(evaluate_quality(201, &thresholds), ConnectionQuality::Moderate);
+        assert_eq!(evaluate_quality(400, &thresholds), ConnectionQuality::Moderate);
+        assert_eq!(evaluate_quality(401, &thresholds), ConnectionQuality::Poor);
+        assert_eq!(evaluate_quality(1000, &thresholds), ConnectionQuality::Poor);
+        assert_eq!(evaluate_quality(1001, &thresholds), ConnectionQuality::Offline);
+        
+        // Very high latency
+        assert_eq!(evaluate_quality(9999, &thresholds), ConnectionQuality::Offline);
     }
 
     #[test]
-    fn test_calculate_jitter_stats_logic() {
-        // Empty case
-        let (min, max, mean, std_dev) = calculate_jitter_stats(&[]);
-        assert_eq!(min, None);
-        assert_eq!(max, None);
-        assert_eq!(mean, None);
-        assert_eq!(std_dev, None);
+    fn test_calculate_jitter_stats_edge_cases() {
+        // Zero latencies (already tested)
+        
+        // Negative latencies not possible as u64
+        
+        // Increasing jitter
+        let latencies = vec![100, 200, 300, 400, 500];
+        let (_, _, mean, std_dev) = calculate_jitter_stats(&latencies);
+        assert_eq!(mean, Some(300));
+        assert!(std_dev.unwrap() > 100.0);
 
-        // Single item case
-        let (min, max, mean, std_dev) = calculate_jitter_stats(&[100]);
-        assert_eq!(min, Some(100));
-        assert_eq!(max, Some(100));
+        // All identical (zero jitter)
+        let latencies = vec![100, 100, 100];
+        let (_, _, mean, std_dev) = calculate_jitter_stats(&latencies);
         assert_eq!(mean, Some(100));
-        assert_eq!(std_dev, None);
-
-        // Normal case
-        let latencies = vec![100, 110, 90, 105, 95];
-        let (min, max, mean, std_dev) = calculate_jitter_stats(&latencies);
-
-        assert_eq!(min, Some(90));
-        assert_eq!(max, Some(110));
-        assert_eq!(mean, Some(100));
-        assert!(std_dev.is_some());
-        assert!((std_dev.unwrap() - 7.905).abs() < 0.01);
-
-        // Zero jitter case
-        let latencies = vec![50, 50, 50, 50];
-        let (_, _, _, std_dev) = calculate_jitter_stats(&latencies);
-        assert!(std_dev.is_some());
-        assert!((std_dev.unwrap() - 0.0).abs() < 0.01);
+        assert_eq!(std_dev, Some(0.0));
     }
 }

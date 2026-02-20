@@ -34,7 +34,6 @@ class LatencyStats {
   /// factoring in jitter, packet loss, and latency spikes.
   final int stabilityScore;
 
-  /// Creates a new [LatencyStats] instance.
   const LatencyStats({
     required this.latencyMs,
     required this.jitterMs,
@@ -86,7 +85,6 @@ class NetworkReport {
   /// A list of detailed reports for each individual target that was checked.
   final List<TargetReport> targetReports;
 
-  /// Creates a new [NetworkReport] instance.
   const NetworkReport({
     required this.timestampMs,
     required this.status,
@@ -129,7 +127,6 @@ class NetworkStatus {
   /// The label of the target that responded fastest in the final sample.
   final String winnerTarget;
 
-  /// Creates a new [NetworkStatus] instance.
   const NetworkStatus({
     required this.isConnected,
     required this.quality,
@@ -172,7 +169,6 @@ class TargetReport {
   /// Whether this target is considered essential for the overall check.
   final bool isEssential;
 
-  /// Creates a new [TargetReport] instance.
   const TargetReport({
     required this.label,
     required this.success,

@@ -2,11 +2,15 @@ pub struct LibConstants;
 
 impl LibConstants {
     pub const CLOUDFLARE_NAME: &'static str = "Cloudflare";
+    pub const CLOUDFLARE_NAME_HTTP: &'static str = "Cloudflare Http";
     pub const GOOGLE_NAME: &'static str = "Google";
 
     pub const DEFAULT_INTERFACE_NAME: &'static str = "unknown";
 
     pub const DEFAULT_PORT: u16 = 53;
+    pub const DEFAULT_HTTP_PORT: u16 = 443;
+
+    pub const DEFAULT_HTTP_TIMEOUT_MS: u64 = 1500;
     pub const DEFAULT_TIMEOUT_MS: u64 = 1000;
     pub const DEFAULT_CHECK_INTERVAL_MS: u64 = 5000;
 
