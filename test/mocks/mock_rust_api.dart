@@ -5,10 +5,59 @@ import 'package:network_reachability/core/rust/api/models/report.dart';
 import 'package:network_reachability/core/rust/api/models/target.dart';
 import 'package:network_reachability/core/rust/frb_generated.dart';
 
+class MockSecurityFlagsResult implements SecurityFlagsResult {
+  @override
+  String interfaceName;
+  @override
+  bool isDnsSpoofed;
+  @override
+  bool isProxyDetected;
+  @override
+  bool isVpnDetected;
+
+  @override
+  void dispose() {}
+  @override
+  bool get isDisposed => false;
+
+  MockSecurityFlagsResult({
+    required this.interfaceName,
+    required this.isDnsSpoofed,
+    required this.isProxyDetected,
+    required this.isVpnDetected,
+  });
+}
+
+class MockNetworkReport implements NetworkReport {
+  @override
+  ConnectionType connectionType;
+  @override
+  SecurityFlagsResult securityFlagsResult;
+  @override
+  NetworkStatus status;
+  @override
+  List<TargetReport> targetReports;
+  @override
+  BigInt timestampMs;
+
+  @override
+  void dispose() {}
+  @override
+  bool get isDisposed => false;
+
+  MockNetworkReport({
+    required this.connectionType,
+    required this.securityFlagsResult,
+    required this.status,
+    required this.targetReports,
+    required this.timestampMs,
+  });
+}
+
 class MockRustLibApi implements RustLibApi {
   int checkCallCount = 0;
 
-  late NetworkReport mockNetworkReport;
+  late MockNetworkReport mockNetworkReport;
   late NetworkConfiguration mockDefaultConfig;
   late QualityThresholds mockDefaultQualityThresholds;
   late SecurityConfig mockDefaultSecurityConfig;
@@ -16,7 +65,7 @@ class MockRustLibApi implements RustLibApi {
 
   late CaptivePortalStatus mockCaptivePortalStatus;
   late bool mockDnsHijackingResult;
-  late (SecurityFlags, ConnectionType) mockSecurityAndNetworkTypeResult;
+  late (SecurityFlagsResult, ConnectionType) mockSecurityAndNetworkTypeResult;
   late TargetReport mockTargetReportProbe;
   late List<TraceHop> mockTraceRouteResult;
 
@@ -48,7 +97,7 @@ class MockRustLibApi implements RustLibApi {
       criticalPacketLossPrecent: 15.0,
     );
 
-    mockNetworkReport = NetworkReport(
+    mockNetworkReport = MockNetworkReport(
       timestampMs: BigInt.from(DateTime.now().millisecondsSinceEpoch),
       status: NetworkStatus(
         isConnected: true,
@@ -62,7 +111,7 @@ class MockRustLibApi implements RustLibApi {
         ),
       ),
       connectionType: ConnectionType.wifi,
-      securityFlags: const SecurityFlags(
+      securityFlagsResult: MockSecurityFlagsResult(
         isVpnDetected: false,
         isDnsSpoofed: false,
         isProxyDetected: false,
@@ -100,7 +149,7 @@ class MockRustLibApi implements RustLibApi {
     mockCaptivePortalStatus = const CaptivePortalStatus(isCaptivePortal: false);
     mockDnsHijackingResult = false;
     mockSecurityAndNetworkTypeResult = (
-      const SecurityFlags(
+      MockSecurityFlagsResult(
         isVpnDetected: false,
         isDnsSpoofed: false,
         isProxyDetected: false,
@@ -163,7 +212,7 @@ class MockRustLibApi implements RustLibApi {
   }
 
   @override
-  Future<(SecurityFlags, ConnectionType)>
+  Future<(SecurityFlagsResult, ConnectionType)>
       crateApiProbesInterfaceDetectSecurityAndNetworkType() async {
     return mockSecurityAndNetworkTypeResult;
   }
@@ -185,3 +234,4 @@ class MockRustLibApi implements RustLibApi {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
+

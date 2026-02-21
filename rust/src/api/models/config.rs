@@ -134,6 +134,15 @@ impl Default for NetworkConfiguration {
         Self {
             targets: vec![
                 NetworkTarget {
+                    label: LibConstants::CLOUDFLARE_NAME_HTTP.into(),
+                    host: LibConstants::CLOUDFLARE_DNS.into(),
+                    port: LibConstants::DEFAULT_HTTP_PORT,
+                    protocol: TargetProtocol::Http,
+                    timeout_ms: LibConstants::DEFAULT_HTTP_TIMEOUT_MS,
+                    priority: 1,
+                    is_essential: false,
+                },
+                NetworkTarget {
                     label: LibConstants::CLOUDFLARE_NAME_HTTPS.into(),
                     host: LibConstants::CLOUDFLARE_DNS.into(),
                     port: LibConstants::DEFAULT_HTTP_PORT,
@@ -142,27 +151,27 @@ impl Default for NetworkConfiguration {
                     priority: 1,
                     is_essential: false,
                 },
-                // NetworkTarget {
-                //     label: LibConstants::CLOUDFLARE_NAME.into(),
-                //     host: LibConstants::CLOUDFLARE_DNS.into(),
-                //     port: LibConstants::DEFAULT_PORT,
-                //     protocol: TargetProtocol::Tcp,
-                //     timeout_ms: LibConstants::DEFAULT_TIMEOUT_MS,
-                //     priority: 1,
-                //     is_essential: false,
-                // },
-                // NetworkTarget {
-                //     label: LibConstants::GOOGLE_NAME.into(),
-                //     host: LibConstants::GOOGLE_DNS.into(),
-                //     port: LibConstants::DEFAULT_HTTP_PORT,
-                //     protocol: TargetProtocol::Http,
-                //     timeout_ms: LibConstants::DEFAULT_HTTP_TIMEOUT_MS,
-                //     priority: 1,
-                //     is_essential: false,
-                // },
+                NetworkTarget {
+                    label: LibConstants::CLOUDFLARE_NAME.into(),
+                    host: LibConstants::GOOGLE_DNS.into(),
+                    port: LibConstants::DEFAULT_PORT,
+                    protocol: TargetProtocol::Tcp,
+                    timeout_ms: LibConstants::DEFAULT_HTTP_TIMEOUT_MS,
+                    priority: 1,
+                    is_essential: false,
+                },
+                NetworkTarget {
+                    label: LibConstants::CLOUDFLARE_NAME.into(),
+                    host: LibConstants::GOOGLE_DNS.into(),
+                    port: LibConstants::DEFAULT_PORT,
+                    protocol: TargetProtocol::Icmp,
+                    timeout_ms: LibConstants::DEFAULT_HTTP_TIMEOUT_MS,
+                    priority: 1,
+                    is_essential: false,
+                },
             ],
             check_interval_ms: LibConstants::DEFAULT_CHECK_INTERVAL_MS,
-            cache_validity_ms: 2000, // 2 seconds default cache
+            cache_validity_ms: LibConstants::DEFAULT_CACHE_VALIDITY_MS, // 2 seconds default cache
             quality_threshold: QualityThresholds::default(),
             security: SecurityConfig::default(),
             resilience: ResilienceConfig::default(),
@@ -196,8 +205,7 @@ mod tests {
         let config = NetworkConfiguration::default();
         assert_eq!(config.targets.len(), 3);
         assert_eq!(config.targets[0].label, LibConstants::CLOUDFLARE_NAME_HTTP);
-        assert_eq!(config.targets[1].label, LibConstants::CLOUDFLARE_NAME);
-        assert_eq!(config.targets[2].label, LibConstants::GOOGLE_NAME);
+        assert_eq!(config.targets[1].label, LibConstants::GOOGLE_NAME_HTTP);
         assert_eq!(config.resilience.strategy, CheckStrategy::Race);
         assert!(!config.security.block_vpn);
     }
