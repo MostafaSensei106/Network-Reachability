@@ -4,7 +4,10 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api/analysis/quality.dart';
+import 'api/analysis/stats.dart';
 import 'api/engine.dart';
+import 'api/engine/sampler.dart';
+import 'api/engine/security.dart';
 import 'api/models/config.dart';
 import 'api/models/net_info.dart';
 import 'api/models/report.dart';
@@ -28,6 +31,54 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     required super.portManager,
   });
 
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_NetworkReportPtr => wire
+          ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReportPtr;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_SecurityFlagsResultPtr => wire
+          ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResultPtr;
+
+  @protected
+  NetworkReport
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          dynamic raw);
+
+  @protected
+  SecurityFlagsResult
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          dynamic raw);
+
+  @protected
+  NetworkReport
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          dynamic raw);
+
+  @protected
+  SecurityFlagsResult
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          dynamic raw);
+
+  @protected
+  NetworkReport
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          dynamic raw);
+
+  @protected
+  SecurityFlagsResult
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          dynamic raw);
+
+  @protected
+  NetworkReport
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          dynamic raw);
+
+  @protected
+  SecurityFlagsResult
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          dynamic raw);
+
   @protected
   String dco_decode_String(dynamic raw);
 
@@ -36,6 +87,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double dco_decode_box_autoadd_f_64(dynamic raw);
+
+  @protected
+  LatencyStats dco_decode_box_autoadd_latency_stats(dynamic raw);
 
   @protected
   NetworkConfiguration dco_decode_box_autoadd_network_configuration(
@@ -93,9 +147,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   NetworkConfiguration dco_decode_network_configuration(dynamic raw);
 
   @protected
-  NetworkReport dco_decode_network_report(dynamic raw);
-
-  @protected
   NetworkStatus dco_decode_network_status(dynamic raw);
 
   @protected
@@ -115,16 +166,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   (
+    SecurityFlagsResult,
+    ConnectionType
+  ) dco_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type(
+      dynamic raw);
+
+  @protected
+  (Uint64List, List<TargetReport>)
+      dco_decode_record_list_prim_u_64_strict_list_target_report(dynamic raw);
+
+  @protected
+  (
     BigInt?,
     BigInt?,
     BigInt?,
     double?
   ) dco_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
       dynamic raw);
-
-  @protected
-  (SecurityFlags, ConnectionType)
-      dco_decode_record_security_flags_connection_type(dynamic raw);
 
   @protected
   ResilienceConfig dco_decode_resilience_config(dynamic raw);
@@ -157,6 +215,49 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void dco_decode_unit(dynamic raw);
 
   @protected
+  BigInt dco_decode_usize(dynamic raw);
+
+  @protected
+  NetworkReport
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          SseDeserializer deserializer);
+
+  @protected
+  SecurityFlagsResult
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SseDeserializer deserializer);
+
+  @protected
+  NetworkReport
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          SseDeserializer deserializer);
+
+  @protected
+  SecurityFlagsResult
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SseDeserializer deserializer);
+
+  @protected
+  NetworkReport
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          SseDeserializer deserializer);
+
+  @protected
+  SecurityFlagsResult
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SseDeserializer deserializer);
+
+  @protected
+  NetworkReport
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          SseDeserializer deserializer);
+
+  @protected
+  SecurityFlagsResult
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SseDeserializer deserializer);
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
@@ -164,6 +265,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
+
+  @protected
+  LatencyStats sse_decode_box_autoadd_latency_stats(
+      SseDeserializer deserializer);
 
   @protected
   NetworkConfiguration sse_decode_box_autoadd_network_configuration(
@@ -227,9 +332,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  NetworkReport sse_decode_network_report(SseDeserializer deserializer);
-
-  @protected
   NetworkStatus sse_decode_network_status(SseDeserializer deserializer);
 
   @protected
@@ -249,17 +351,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   (
+    SecurityFlagsResult,
+    ConnectionType
+  ) sse_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type(
+      SseDeserializer deserializer);
+
+  @protected
+  (Uint64List, List<TargetReport>)
+      sse_decode_record_list_prim_u_64_strict_list_target_report(
+          SseDeserializer deserializer);
+
+  @protected
+  (
     BigInt?,
     BigInt?,
     BigInt?,
     double?
   ) sse_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
       SseDeserializer deserializer);
-
-  @protected
-  (SecurityFlags, ConnectionType)
-      sse_decode_record_security_flags_connection_type(
-          SseDeserializer deserializer);
 
   @protected
   ResilienceConfig sse_decode_resilience_config(SseDeserializer deserializer);
@@ -292,6 +401,49 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_decode_unit(SseDeserializer deserializer);
 
   @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer);
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          NetworkReport self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SecurityFlagsResult self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          NetworkReport self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SecurityFlagsResult self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          NetworkReport self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SecurityFlagsResult self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          NetworkReport self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SecurityFlagsResult self, SseSerializer serializer);
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
@@ -299,6 +451,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_latency_stats(
+      LatencyStats self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_network_configuration(
@@ -366,9 +522,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       NetworkConfiguration self, SseSerializer serializer);
 
   @protected
-  void sse_encode_network_report(NetworkReport self, SseSerializer serializer);
-
-  @protected
   void sse_encode_network_status(NetworkStatus self, SseSerializer serializer);
 
   @protected
@@ -389,12 +542,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
-      sse_encode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
-          (BigInt?, BigInt?, BigInt?, double?) self, SseSerializer serializer);
+      sse_encode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type(
+          (SecurityFlagsResult, ConnectionType) self, SseSerializer serializer);
 
   @protected
-  void sse_encode_record_security_flags_connection_type(
-      (SecurityFlags, ConnectionType) self, SseSerializer serializer);
+  void sse_encode_record_list_prim_u_64_strict_list_target_report(
+      (Uint64List, List<TargetReport>) self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
+          (BigInt?, BigInt?, BigInt?, double?) self, SseSerializer serializer);
 
   @protected
   void sse_encode_resilience_config(
@@ -428,6 +586,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_usize(BigInt self, SseSerializer serializer);
 }
 
 // Section: wire_class
@@ -443,4 +604,68 @@ class RustLibWire implements BaseWire {
   /// The symbols are looked up in [dynamicLibrary].
   RustLibWire(ffi.DynamicLibrary dynamicLibrary)
       : _lookup = dynamicLibrary.lookup;
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReportPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_network_reachability_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReportPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReportPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_network_reachability_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReportPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResultPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_network_reachability_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResultPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResultPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_network_reachability_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResultPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 }

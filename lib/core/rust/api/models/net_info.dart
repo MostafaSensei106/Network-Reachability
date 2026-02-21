@@ -6,7 +6,29 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<SecurityFlagsResult>>
+abstract class SecurityFlagsResult implements RustOpaqueInterface {
+  String get interfaceName;
+
+  bool get isDnsSpoofed;
+
+  bool get isProxyDetected;
+
+  bool get isVpnDetected;
+
+  set interfaceName(String interfaceName);
+
+  set isDnsSpoofed(bool isDnsSpoofed);
+
+  set isProxyDetected(bool isProxyDetected);
+
+  set isVpnDetected(bool isVpnDetected);
+
+  static Future<SecurityFlagsResult> default_() =>
+      RustLib.instance.api.crateApiModelsNetInfoSecurityFlagsResultDefault();
+}
 
 /// The result of a captive portal check.
 class CaptivePortalStatus {

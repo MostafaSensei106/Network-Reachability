@@ -1,7 +1,9 @@
 //! Data structures for the final, consolidated network check reports.
 
+use crate::api::models::SecurityFlagsResult;
+
 use super::config::ConnectionQuality;
-use super::net_info::{ConnectionType, SecurityFlags};
+use super::net_info::ConnectionType;
 
 /// The result of a check against a single network target.
 #[derive(Debug, Clone)]
@@ -61,7 +63,7 @@ pub struct NetworkReport {
     /// The detected type of the active network connection (e.g., WiFi, Cellular).
     pub connection_type: ConnectionType,
     /// Security-related flags for the connection (e.g., VPN, DNS spoofing).
-    pub security_flags: SecurityFlags,
+    pub security_flags_result: SecurityFlagsResult,
     /// A list of detailed reports for each individual target that was checked.
     pub target_reports: Vec<TargetReport>,
 }

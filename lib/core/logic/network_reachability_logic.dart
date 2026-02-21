@@ -172,11 +172,12 @@ class NetworkReachability with WidgetsBindingObserver {
     final report = await check();
 
     // 3. Validate security requirements
-    if (_config.security.blockVpn && report.securityFlags.isVpnDetected) {
+    if (_config.security.blockVpn && report.securityFlagsResult.isVpnDetected) {
       throw SecurityException(
           SecurityAlert.vpnDetected, 'VPN connection is not allowed.');
     }
-    if (_config.security.detectDnsHijack && report.securityFlags.isDnsSpoofed) {
+    if (_config.security.detectDnsHijack &&
+        report.securityFlagsResult.isDnsSpoofed) {
       throw SecurityException(SecurityAlert.dnsHijackDetected,
           'DNS hijacking was detected. Connection is insecure.');
     }
@@ -249,8 +250,9 @@ class NetworkReachability with WidgetsBindingObserver {
       dns_probe.detectDnsHijacking(domain: domain);
 
   /// Inspects system network interfaces to determine connection type and security flags.
-  Future<(SecurityFlags, ConnectionType)> detectSecurityAndNetworkType() =>
-      interface_probe.detectSecurityAndNetworkType();
+  Future<(SecurityFlagsResult, ConnectionType)>
+      detectSecurityAndNetworkType() =>
+          interface_probe.detectSecurityAndNetworkType();
 
   /// Performs a low-level reachability check against a single [target].
   Future<TargetReport> checkTarget({required NetworkTarget target}) =>

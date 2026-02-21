@@ -1,6 +1,9 @@
 //! Functions for analyzing latency data to determine connection quality and stability.
 
-use crate::api::models::{ConnectionQuality, QualityThresholds};
+use crate::api::models::{
+    ConnectionQuality, LatencyStats, NetworkConfiguration, QualityThresholds,
+};
+pub use super::stats::calculate_jitter_stats;
 
 /// Evaluates connection quality based on a latency value and a set of thresholds.
 ///
@@ -30,71 +33,50 @@ pub fn evaluate_quality(latency: u64, threshold: &QualityThresholds) -> Connecti
     }
 }
 
-/// Calculates statistical metrics for a series of latency samples.
-///
-/// This function computes the minimum, maximum, and mean latency, along with the
-/// standard deviation, which is used as a measure of jitter.
-///
-/// # Arguments
-///
-/// * `latencies` - A slice of u64 latency values in milliseconds.
-///
-/// # Returns
-///
-/// A tuple containing:
-/// 1. `Option<u64>`: Minimum latency.
-/// 2. `Option<u64>`: Maximum latency.
-/// 3. `Option<u64>`: Mean (average) latency.
-/// 4. `Option<f64>`: Standard deviation (jitter).
-///
-/// Returns `(None, None, None, None)` if the input slice is empty.
-/// Jitter will be `None` if there are fewer than two samples.
-pub fn calculate_jitter_stats(
-    latencies: &[u64],
-) -> (Option<u64>, Option<u64>, Option<u64>, Option<f64>) {
-    if latencies.is_empty() {
-        return (None, None, None, None);
+/// Evaluates the final network quality by combining speed, stability, and loss.
+pub fn evaluate_network_quality(
+    is_connected: bool,
+    stats: &LatencyStats,
+    config: &NetworkConfiguration,
+) -> ConnectionQuality {
+    if !is_connected {
+        return ConnectionQuality::Offline;
     }
 
-    let min_latency = *latencies.iter().min().unwrap();
-    let max_latency = *latencies.iter().max().unwrap();
-
-    let sum: u64 = latencies.iter().sum();
-    let count = latencies.len() as u64;
-    let mean_latency = sum / count;
-
-    if count < 2 {
-        // Standard deviation requires at least 2 samples
-        return (
-            Some(min_latency),
-            Some(max_latency),
-            Some(mean_latency),
-            None,
-        );
+    if stats.packet_loss_percent > config.resilience.critical_packet_loss_precent {
+        return ConnectionQuality::Unstable;
     }
 
-    let variance_sum: f64 = latencies
-        .iter()
-        .map(|&x| {
-            let diff = (x as f64) - (mean_latency as f64);
-            diff * diff
-        })
-        .sum();
-    // Use (count - 1) for sample standard deviation
-    let std_dev = (variance_sum / (count as f64 - 1.0)).sqrt();
+    let quality_based_on_speed = evaluate_quality(stats.latency_ms, &config.quality_threshold);
 
-    (
-        Some(min_latency),
-        Some(max_latency),
-        Some(mean_latency),
-        Some(std_dev),
-    )
+    if stats.stability_score < config.resilience.stability_thershold {
+        return match quality_based_on_speed {
+            ConnectionQuality::Excellent => ConnectionQuality::Great,
+            ConnectionQuality::Great => ConnectionQuality::Good,
+            ConnectionQuality::Good => ConnectionQuality::Moderate,
+            ConnectionQuality::Moderate => ConnectionQuality::Poor,
+            ConnectionQuality::Poor => ConnectionQuality::Unstable,
+            other => other,
+        };
+    }
+
+    if quality_based_on_speed == ConnectionQuality::Excellent && stats.stability_score < 85 {
+        return ConnectionQuality::Great;
+    }
+
+    if quality_based_on_speed == ConnectionQuality::Great && stats.stability_score < 70 {
+        return ConnectionQuality::Good;
+    }
+
+    quality_based_on_speed
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api::models::QualityThresholds;
+    use crate::api::models::{
+        ConnectionQuality, LatencyStats, NetworkConfiguration, QualityThresholds,
+    };
 
     #[test]
     fn test_evaluate_quality_edge_cases() {
@@ -107,40 +89,85 @@ mod tests {
         };
 
         // Zero case
-        assert_eq!(evaluate_quality(0, &thresholds), ConnectionQuality::Excellent);
-        
+        assert_eq!(
+            evaluate_quality(0, &thresholds),
+            ConnectionQuality::Excellent
+        );
+
         // Exact boundary cases
-        assert_eq!(evaluate_quality(50, &thresholds), ConnectionQuality::Excellent);
+        assert_eq!(
+            evaluate_quality(50, &thresholds),
+            ConnectionQuality::Excellent
+        );
         assert_eq!(evaluate_quality(51, &thresholds), ConnectionQuality::Great);
         assert_eq!(evaluate_quality(100, &thresholds), ConnectionQuality::Great);
         assert_eq!(evaluate_quality(101, &thresholds), ConnectionQuality::Good);
         assert_eq!(evaluate_quality(200, &thresholds), ConnectionQuality::Good);
-        assert_eq!(evaluate_quality(201, &thresholds), ConnectionQuality::Moderate);
-        assert_eq!(evaluate_quality(400, &thresholds), ConnectionQuality::Moderate);
+        assert_eq!(
+            evaluate_quality(201, &thresholds),
+            ConnectionQuality::Moderate
+        );
+        assert_eq!(
+            evaluate_quality(400, &thresholds),
+            ConnectionQuality::Moderate
+        );
         assert_eq!(evaluate_quality(401, &thresholds), ConnectionQuality::Poor);
         assert_eq!(evaluate_quality(1000, &thresholds), ConnectionQuality::Poor);
-        assert_eq!(evaluate_quality(1001, &thresholds), ConnectionQuality::Offline);
-        
-        // Very high latency
-        assert_eq!(evaluate_quality(9999, &thresholds), ConnectionQuality::Offline);
+        assert_eq!(
+            evaluate_quality(1001, &thresholds),
+            ConnectionQuality::Offline
+        );
     }
 
     #[test]
-    fn test_calculate_jitter_stats_edge_cases() {
-        // Zero latencies (already tested)
-        
-        // Negative latencies not possible as u64
-        
-        // Increasing jitter
-        let latencies = vec![100, 200, 300, 400, 500];
-        let (_, _, mean, std_dev) = calculate_jitter_stats(&latencies);
-        assert_eq!(mean, Some(300));
-        assert!(std_dev.unwrap() > 100.0);
+    fn test_evaluate_network_quality_logic() {
+        let mut config = NetworkConfiguration::default();
+        config.resilience.stability_thershold = 50;
+        config.resilience.critical_packet_loss_precent = 10.0;
 
-        // All identical (zero jitter)
-        let latencies = vec![100, 100, 100];
-        let (_, _, mean, std_dev) = calculate_jitter_stats(&latencies);
-        assert_eq!(mean, Some(100));
-        assert_eq!(std_dev, Some(0.0));
+        // Offline
+        let stats = LatencyStats {
+            latency_ms: 0,
+            jitter_ms: 0,
+            packet_loss_percent: 100.0,
+            min_latency_ms: None,
+            max_latency_ms: None,
+            avg_latency_ms: None,
+            stability_score: 0,
+        };
+        assert_eq!(
+            evaluate_network_quality(false, &stats, &config),
+            ConnectionQuality::Offline
+        );
+
+        // Critical loss
+        let stats = LatencyStats {
+            latency_ms: 100,
+            jitter_ms: 0,
+            packet_loss_percent: 20.0,
+            min_latency_ms: Some(100),
+            max_latency_ms: Some(100),
+            avg_latency_ms: Some(100),
+            stability_score: 80,
+        };
+        assert_eq!(
+            evaluate_network_quality(true, &stats, &config),
+            ConnectionQuality::Unstable
+        );
+
+        // Downgraded due to low stability score
+        let stats = LatencyStats {
+            latency_ms: 100,
+            jitter_ms: 0,
+            packet_loss_percent: 0.0,
+            min_latency_ms: Some(100),
+            max_latency_ms: Some(100),
+            avg_latency_ms: Some(100),
+            stability_score: 10,
+        };
+        assert_eq!(
+            evaluate_network_quality(true, &stats, &config),
+            ConnectionQuality::Good
+        );
     }
 }

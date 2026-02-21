@@ -6,6 +6,8 @@ impl LibConstants {
     pub const CLOUDFLARE_NAME_HTTPS: &'static str = "Cloudflare Https";
 
     pub const GOOGLE_NAME: &'static str = "Google";
+    pub const GOOGLE_NAME_HTTP: &'static str = "Google Http";
+    pub const GOOGLE_NAME_HTTPS: &'static str = "Google Https";
 
     pub const DEFAULT_INTERFACE_NAME: &'static str = "unknown";
 
@@ -24,6 +26,8 @@ impl LibConstants {
     pub const DEFAULT_GOOD_THRESHOLD: u64 = 200;
     pub const DEFAULT_MODERATE_THRESHOLD: u64 = 400;
     pub const DEFAULT_POOR_THRESHOLD: u64 = 1000;
+
+    pub const DEFAULT_CACHE_VALIDITY_MS: u64 = 2000;
 
     pub const DEFAULT_JITTER_SAMPLES: u8 = 5;
     pub const DEFAULT_JITTER_THRESHOLD_PERCENT: f64 = 0.2;

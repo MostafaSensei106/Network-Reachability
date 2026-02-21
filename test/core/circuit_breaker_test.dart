@@ -35,16 +35,14 @@ void main() {
               resilience: resilience, cacheValidityMs: BigInt.zero));
 
       // Simulate a failing essential target
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        targetReports: [
-          TargetReport(
-            label: 'essential',
-            success: false,
-            latencyMs: BigInt.from(0),
-            isEssential: true,
-          ),
-        ],
-      );
+      mockApi.mockNetworkReport.targetReports = [
+        TargetReport(
+          label: 'essential',
+          success: false,
+          latencyMs: BigInt.from(0),
+          isEssential: true,
+        ),
+      ];
 
       // Check 1: Should still be closed
       await NetworkReachability.instance.check();
@@ -73,16 +71,14 @@ void main() {
               resilience: resilience, cacheValidityMs: BigInt.zero));
 
       // 1. Force open state
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        status: mockApi.mockNetworkReport.status.copyWith(isConnected: false),
-        targetReports: [
-          TargetReport(
-              label: 'e',
-              success: false,
-              latencyMs: BigInt.zero,
-              isEssential: true),
-        ],
-      );
+      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(isConnected: false);
+      mockApi.mockNetworkReport.targetReports = [
+        TargetReport(
+            label: 'e',
+            success: false,
+            latencyMs: BigInt.zero,
+            isEssential: true),
+      ];
       await NetworkReachability.instance.check();
 
       expect(() => NetworkReachability.instance.guard(action: () async => 42),
@@ -92,16 +88,14 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 150));
 
       // 3. Success probe: Half-Open -> Closed
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        status: mockApi.mockNetworkReport.status.copyWith(isConnected: true),
-        targetReports: [
-          TargetReport(
-              label: 'e',
-              success: true,
-              latencyMs: BigInt.from(30),
-              isEssential: true),
-        ],
-      );
+      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(isConnected: true);
+      mockApi.mockNetworkReport.targetReports = [
+        TargetReport(
+            label: 'e',
+            success: true,
+            latencyMs: BigInt.from(30),
+            isEssential: true),
+      ];
 
       // Next guard should transition to Half-Open, allow probe, then Close circuit
       final result =
@@ -122,16 +116,14 @@ void main() {
               resilience: resilience, cacheValidityMs: BigInt.zero));
 
       // 1. Force open
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        status: mockApi.mockNetworkReport.status.copyWith(isConnected: false),
-        targetReports: [
-          TargetReport(
-              label: 'e',
-              success: false,
-              latencyMs: BigInt.zero,
-              isEssential: true),
-        ],
-      );
+      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(isConnected: false);
+      mockApi.mockNetworkReport.targetReports = [
+        TargetReport(
+            label: 'e',
+            success: false,
+            latencyMs: BigInt.zero,
+            isEssential: true),
+      ];
       await NetworkReachability.instance.check();
 
       // 2. Wait for cooldown
@@ -156,15 +148,13 @@ void main() {
       await NetworkReachability.init(config: config);
 
       // Simulate failure of a NON-essential target
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        targetReports: [
-          TargetReport(
-              label: 'non-e',
-              success: false,
-              latencyMs: BigInt.zero,
-              isEssential: false),
-        ],
-      );
+      mockApi.mockNetworkReport.targetReports = [
+        TargetReport(
+            label: 'non-e',
+            success: false,
+            latencyMs: BigInt.zero,
+            isEssential: false),
+      ];
 
       await NetworkReachability.instance.check();
 
@@ -184,39 +174,33 @@ void main() {
       await NetworkReachability.init(config: config);
 
       // 1. One failure
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        targetReports: [
-          TargetReport(
-              label: 'e',
-              success: false,
-              latencyMs: BigInt.zero,
-              isEssential: true),
-        ],
-      );
+      mockApi.mockNetworkReport.targetReports = [
+        TargetReport(
+            label: 'e',
+            success: false,
+            latencyMs: BigInt.zero,
+            isEssential: true),
+      ];
       await NetworkReachability.instance.check();
 
       // 2. One success (resets the internal counter)
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        targetReports: [
-          TargetReport(
-              label: 'e',
-              success: true,
-              latencyMs: BigInt.from(50),
-              isEssential: true),
-        ],
-      );
+      mockApi.mockNetworkReport.targetReports = [
+        TargetReport(
+            label: 'e',
+            success: true,
+            latencyMs: BigInt.from(50),
+            isEssential: true),
+      ];
       await NetworkReachability.instance.check();
 
       // 3. Another failure (if count was not reset, this would open the circuit)
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        targetReports: [
-          TargetReport(
-              label: 'e',
-              success: false,
-              latencyMs: BigInt.zero,
-              isEssential: true),
-        ],
-      );
+      mockApi.mockNetworkReport.targetReports = [
+        TargetReport(
+            label: 'e',
+            success: false,
+            latencyMs: BigInt.zero,
+            isEssential: true),
+      ];
       await NetworkReachability.instance.check();
 
       // Should NOT throw because count was reset to 0 in step 2

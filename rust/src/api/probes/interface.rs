@@ -1,6 +1,6 @@
 use crate::api::{
     constants::LibConstants,
-    models::{ConnectionType, SecurityFlags},
+    models::{ConnectionType, SecurityFlagsResult},
 };
 use network_interface::{NetworkInterface, NetworkInterfaceConfig};
 
@@ -20,10 +20,10 @@ use network_interface::{NetworkInterface, NetworkInterfaceConfig};
 /// A tuple containing:
 /// 1. `SecurityFlags` - A struct with flags like `is_vpn_detected` and the active `interface_name`.
 /// 2. `ConnectionType` - The determined type of the network connection.
-pub fn detect_security_and_network_type() -> (SecurityFlags, ConnectionType) {
+pub fn detect_security_and_network_type() -> (SecurityFlagsResult, ConnectionType) {
     let interfaces = NetworkInterface::show().unwrap_or_default();
 
-    let mut security_flags = SecurityFlags::default();
+    let mut security_flags_res = SecurityFlagsResult::default();
     let mut conn_type = ConnectionType::Unknown;
 
     // Keywords to identify different types of network interfaces.
@@ -50,19 +50,19 @@ pub fn detect_security_and_network_type() -> (SecurityFlags, ConnectionType) {
             // Check if name contains prefix or matches common patterns
             if prefixes.iter().any(|prefix| name_lower.contains(prefix)) {
                 if *ctype == ConnectionType::Vpn {
-                    security_flags.is_vpn_detected = true;
-                    security_flags.interface_name = iface.name.clone();
+                    security_flags_res.is_vpn_detected = true;
+                    security_flags_res.interface_name = iface.name.clone();
                     conn_type = ConnectionType::Vpn;
-                    return (security_flags, conn_type);
+                    return (security_flags_res, conn_type);
                 } else if conn_type == ConnectionType::Unknown {
                     conn_type = ctype.clone();
-                    security_flags.interface_name = iface.name.clone();
+                    security_flags_res.interface_name = iface.name.clone();
                 }
             }
         }
     }
 
-    (security_flags, conn_type)
+    (security_flags_res, conn_type)
 }
 
 #[cfg(test)]

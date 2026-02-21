@@ -32,10 +32,8 @@ void main() {
       );
 
       // Initially mock excellent quality
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        status: mockApi.mockNetworkReport.status.copyWith(
-          quality: ConnectionQuality.excellent,
-        ),
+      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(
+        quality: ConnectionQuality.excellent,
       );
 
       await NetworkReachability.init(config: config);
@@ -50,10 +48,8 @@ void main() {
       expect(statusEvents.last.quality, ConnectionQuality.excellent);
 
       // 2. Change quality in mock
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        status: mockApi.mockNetworkReport.status.copyWith(
-          quality: ConnectionQuality.moderate,
-        ),
+      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(
+        quality: ConnectionQuality.moderate,
       );
 
       // 3. Wait for next check

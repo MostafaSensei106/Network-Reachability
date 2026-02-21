@@ -23,5 +23,5 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 /// A tuple containing:
 /// 1. `SecurityFlags` - A struct with flags like `is_vpn_detected` and the active `interface_name`.
 /// 2. `ConnectionType` - The determined type of the network connection.
-Future<(SecurityFlags, ConnectionType)> detectSecurityAndNetworkType() =>
+Future<(SecurityFlagsResult, ConnectionType)> detectSecurityAndNetworkType() =>
     RustLib.instance.api.crateApiProbesInterfaceDetectSecurityAndNetworkType();

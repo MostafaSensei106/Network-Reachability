@@ -4,7 +4,10 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api/analysis/quality.dart';
+import 'api/analysis/stats.dart';
 import 'api/engine.dart';
+import 'api/engine/sampler.dart';
+import 'api/engine/security.dart';
 import 'api/models/config.dart';
 import 'api/models/net_info.dart';
 import 'api/models/report.dart';
@@ -78,7 +81,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -682342185;
+  int get rustContentHash => -2033097267;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -89,8 +92,71 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  ConnectionType crateApiModelsReportNetworkReportAutoAccessorGetConnectionType(
+      {required NetworkReport that});
+
+  SecurityFlagsResult
+      crateApiModelsReportNetworkReportAutoAccessorGetSecurityFlagsResult(
+          {required NetworkReport that});
+
+  NetworkStatus crateApiModelsReportNetworkReportAutoAccessorGetStatus(
+      {required NetworkReport that});
+
+  List<TargetReport>
+      crateApiModelsReportNetworkReportAutoAccessorGetTargetReports(
+          {required NetworkReport that});
+
+  BigInt crateApiModelsReportNetworkReportAutoAccessorGetTimestampMs(
+      {required NetworkReport that});
+
+  void crateApiModelsReportNetworkReportAutoAccessorSetConnectionType(
+      {required NetworkReport that, required ConnectionType connectionType});
+
+  void crateApiModelsReportNetworkReportAutoAccessorSetSecurityFlagsResult(
+      {required NetworkReport that,
+      required SecurityFlagsResult securityFlagsResult});
+
+  void crateApiModelsReportNetworkReportAutoAccessorSetStatus(
+      {required NetworkReport that, required NetworkStatus status});
+
+  void crateApiModelsReportNetworkReportAutoAccessorSetTargetReports(
+      {required NetworkReport that, required List<TargetReport> targetReports});
+
+  void crateApiModelsReportNetworkReportAutoAccessorSetTimestampMs(
+      {required NetworkReport that, required BigInt timestampMs});
+
+  String crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetInterfaceName(
+      {required SecurityFlagsResult that});
+
+  bool crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsDnsSpoofed(
+      {required SecurityFlagsResult that});
+
+  bool crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsProxyDetected(
+      {required SecurityFlagsResult that});
+
+  bool crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsVpnDetected(
+      {required SecurityFlagsResult that});
+
+  void crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetInterfaceName(
+      {required SecurityFlagsResult that, required String interfaceName});
+
+  void crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsDnsSpoofed(
+      {required SecurityFlagsResult that, required bool isDnsSpoofed});
+
+  void crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsProxyDetected(
+      {required SecurityFlagsResult that, required bool isProxyDetected});
+
+  void crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsVpnDetected(
+      {required SecurityFlagsResult that, required bool isVpnDetected});
+
+  Future<SecurityFlagsResult> crateApiModelsNetInfoSecurityFlagsResultDefault();
+
+  Future<BigInt?> crateApiEngineSamplerAnalyzeSingleSample(
+      {required List<TargetReport> reports,
+      required NetworkConfiguration config});
+
   Future<(BigInt?, BigInt?, BigInt?, double?)>
-      crateApiAnalysisQualityCalculateJitterStats(
+      crateApiAnalysisStatsCalculateJitterStats(
           {required Uint64List latencies});
 
   Future<CaptivePortalStatus> crateApiProbesCaptivePortalCheckForCaptivePortal(
@@ -102,18 +168,36 @@ abstract class RustLibApi extends BaseApi {
   Future<TargetReport> crateApiProbesTargetCheckTarget(
       {required NetworkTarget target});
 
+  Future<(Uint64List, List<TargetReport>)>
+      crateApiEngineSamplerCollectNetworkSamples(
+          {required NetworkConfiguration config});
+
+  Future<LatencyStats> crateApiAnalysisStatsComputeLatencyStats(
+      {required Uint64List latencies,
+      required int totalExpectedSamples,
+      required QualityThresholds thresholds});
+
   Future<ConnectionType> crateApiModelsNetInfoConnectionTypeDefault();
 
   Future<bool> crateApiProbesDnsDetectDnsHijacking({required String domain});
 
-  Future<(SecurityFlags, ConnectionType)>
+  Future<(SecurityFlagsResult, ConnectionType)>
       crateApiProbesInterfaceDetectSecurityAndNetworkType();
+
+  Future<ConnectionQuality> crateApiAnalysisQualityEvaluateNetworkQuality(
+      {required bool isConnected,
+      required LatencyStats stats,
+      required NetworkConfiguration config});
 
   Future<ConnectionQuality> crateApiAnalysisQualityEvaluateQuality(
       {required BigInt latency, required QualityThresholds threshold});
 
   Future<NetworkConfiguration>
       crateApiModelsConfigNetworkConfigurationDefault();
+
+  Future<void> crateApiEngineSecurityPerformDnsSecurityCheck(
+      {required NetworkConfiguration config,
+      required SecurityFlagsResult flags});
 
   Future<QualityThresholds> crateApiModelsConfigQualityThresholdsDefault();
 
@@ -127,6 +211,24 @@ abstract class RustLibApi extends BaseApi {
       {required String host,
       required int maxHops,
       required BigInt timeoutPerHopMs});
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_NetworkReport;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_NetworkReport;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_NetworkReportPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_SecurityFlagsResult;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_SecurityFlagsResult;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_SecurityFlagsResultPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -138,28 +240,603 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
+  ConnectionType crateApiModelsReportNetworkReportAutoAccessorGetConnectionType(
+      {required NetworkReport that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_connection_type,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsReportNetworkReportAutoAccessorGetConnectionTypeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsReportNetworkReportAutoAccessorGetConnectionTypeConstMeta =>
+          const TaskConstMeta(
+            debugName: "NetworkReport_auto_accessor_get_connection_type",
+            argNames: ["that"],
+          );
+
+  @override
+  SecurityFlagsResult
+      crateApiModelsReportNetworkReportAutoAccessorGetSecurityFlagsResult(
+          {required NetworkReport that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsReportNetworkReportAutoAccessorGetSecurityFlagsResultConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsReportNetworkReportAutoAccessorGetSecurityFlagsResultConstMeta =>
+          const TaskConstMeta(
+            debugName: "NetworkReport_auto_accessor_get_security_flags_result",
+            argNames: ["that"],
+          );
+
+  @override
+  NetworkStatus crateApiModelsReportNetworkReportAutoAccessorGetStatus(
+      {required NetworkReport that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_network_status,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsReportNetworkReportAutoAccessorGetStatusConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsReportNetworkReportAutoAccessorGetStatusConstMeta =>
+          const TaskConstMeta(
+            debugName: "NetworkReport_auto_accessor_get_status",
+            argNames: ["that"],
+          );
+
+  @override
+  List<TargetReport>
+      crateApiModelsReportNetworkReportAutoAccessorGetTargetReports(
+          {required NetworkReport that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_target_report,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsReportNetworkReportAutoAccessorGetTargetReportsConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsReportNetworkReportAutoAccessorGetTargetReportsConstMeta =>
+          const TaskConstMeta(
+            debugName: "NetworkReport_auto_accessor_get_target_reports",
+            argNames: ["that"],
+          );
+
+  @override
+  BigInt crateApiModelsReportNetworkReportAutoAccessorGetTimestampMs(
+      {required NetworkReport that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsReportNetworkReportAutoAccessorGetTimestampMsConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsReportNetworkReportAutoAccessorGetTimestampMsConstMeta =>
+          const TaskConstMeta(
+            debugName: "NetworkReport_auto_accessor_get_timestamp_ms",
+            argNames: ["that"],
+          );
+
+  @override
+  void crateApiModelsReportNetworkReportAutoAccessorSetConnectionType(
+      {required NetworkReport that, required ConnectionType connectionType}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+            that, serializer);
+        sse_encode_connection_type(connectionType, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsReportNetworkReportAutoAccessorSetConnectionTypeConstMeta,
+      argValues: [that, connectionType],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsReportNetworkReportAutoAccessorSetConnectionTypeConstMeta =>
+          const TaskConstMeta(
+            debugName: "NetworkReport_auto_accessor_set_connection_type",
+            argNames: ["that", "connectionType"],
+          );
+
+  @override
+  void crateApiModelsReportNetworkReportAutoAccessorSetSecurityFlagsResult(
+      {required NetworkReport that,
+      required SecurityFlagsResult securityFlagsResult}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+            that, serializer);
+        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            securityFlagsResult, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsReportNetworkReportAutoAccessorSetSecurityFlagsResultConstMeta,
+      argValues: [that, securityFlagsResult],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsReportNetworkReportAutoAccessorSetSecurityFlagsResultConstMeta =>
+          const TaskConstMeta(
+            debugName: "NetworkReport_auto_accessor_set_security_flags_result",
+            argNames: ["that", "securityFlagsResult"],
+          );
+
+  @override
+  void crateApiModelsReportNetworkReportAutoAccessorSetStatus(
+      {required NetworkReport that, required NetworkStatus status}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+            that, serializer);
+        sse_encode_network_status(status, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsReportNetworkReportAutoAccessorSetStatusConstMeta,
+      argValues: [that, status],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsReportNetworkReportAutoAccessorSetStatusConstMeta =>
+          const TaskConstMeta(
+            debugName: "NetworkReport_auto_accessor_set_status",
+            argNames: ["that", "status"],
+          );
+
+  @override
+  void crateApiModelsReportNetworkReportAutoAccessorSetTargetReports(
+      {required NetworkReport that,
+      required List<TargetReport> targetReports}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+            that, serializer);
+        sse_encode_list_target_report(targetReports, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsReportNetworkReportAutoAccessorSetTargetReportsConstMeta,
+      argValues: [that, targetReports],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsReportNetworkReportAutoAccessorSetTargetReportsConstMeta =>
+          const TaskConstMeta(
+            debugName: "NetworkReport_auto_accessor_set_target_reports",
+            argNames: ["that", "targetReports"],
+          );
+
+  @override
+  void crateApiModelsReportNetworkReportAutoAccessorSetTimestampMs(
+      {required NetworkReport that, required BigInt timestampMs}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+            that, serializer);
+        sse_encode_u_64(timestampMs, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsReportNetworkReportAutoAccessorSetTimestampMsConstMeta,
+      argValues: [that, timestampMs],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsReportNetworkReportAutoAccessorSetTimestampMsConstMeta =>
+          const TaskConstMeta(
+            debugName: "NetworkReport_auto_accessor_set_timestamp_ms",
+            argNames: ["that", "timestampMs"],
+          );
+
+  @override
+  String crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetInterfaceName(
+      {required SecurityFlagsResult that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetInterfaceNameConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetInterfaceNameConstMeta =>
+          const TaskConstMeta(
+            debugName: "SecurityFlagsResult_auto_accessor_get_interface_name",
+            argNames: ["that"],
+          );
+
+  @override
+  bool crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsDnsSpoofed(
+      {required SecurityFlagsResult that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsDnsSpoofedConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsDnsSpoofedConstMeta =>
+          const TaskConstMeta(
+            debugName: "SecurityFlagsResult_auto_accessor_get_is_dns_spoofed",
+            argNames: ["that"],
+          );
+
+  @override
+  bool crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsProxyDetected(
+      {required SecurityFlagsResult that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsProxyDetectedConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsProxyDetectedConstMeta =>
+          const TaskConstMeta(
+            debugName:
+                "SecurityFlagsResult_auto_accessor_get_is_proxy_detected",
+            argNames: ["that"],
+          );
+
+  @override
+  bool crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsVpnDetected(
+      {required SecurityFlagsResult that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsVpnDetectedConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsVpnDetectedConstMeta =>
+          const TaskConstMeta(
+            debugName: "SecurityFlagsResult_auto_accessor_get_is_vpn_detected",
+            argNames: ["that"],
+          );
+
+  @override
+  void crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetInterfaceName(
+      {required SecurityFlagsResult that, required String interfaceName}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            that, serializer);
+        sse_encode_String(interfaceName, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetInterfaceNameConstMeta,
+      argValues: [that, interfaceName],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetInterfaceNameConstMeta =>
+          const TaskConstMeta(
+            debugName: "SecurityFlagsResult_auto_accessor_set_interface_name",
+            argNames: ["that", "interfaceName"],
+          );
+
+  @override
+  void crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsDnsSpoofed(
+      {required SecurityFlagsResult that, required bool isDnsSpoofed}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            that, serializer);
+        sse_encode_bool(isDnsSpoofed, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsDnsSpoofedConstMeta,
+      argValues: [that, isDnsSpoofed],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsDnsSpoofedConstMeta =>
+          const TaskConstMeta(
+            debugName: "SecurityFlagsResult_auto_accessor_set_is_dns_spoofed",
+            argNames: ["that", "isDnsSpoofed"],
+          );
+
+  @override
+  void crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsProxyDetected(
+      {required SecurityFlagsResult that, required bool isProxyDetected}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            that, serializer);
+        sse_encode_bool(isProxyDetected, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsProxyDetectedConstMeta,
+      argValues: [that, isProxyDetected],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsProxyDetectedConstMeta =>
+          const TaskConstMeta(
+            debugName:
+                "SecurityFlagsResult_auto_accessor_set_is_proxy_detected",
+            argNames: ["that", "isProxyDetected"],
+          );
+
+  @override
+  void crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsVpnDetected(
+      {required SecurityFlagsResult that, required bool isVpnDetected}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            that, serializer);
+        sse_encode_bool(isVpnDetected, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsVpnDetectedConstMeta,
+      argValues: [that, isVpnDetected],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsVpnDetectedConstMeta =>
+          const TaskConstMeta(
+            debugName: "SecurityFlagsResult_auto_accessor_set_is_vpn_detected",
+            argNames: ["that", "isVpnDetected"],
+          );
+
+  @override
+  Future<SecurityFlagsResult>
+      crateApiModelsNetInfoSecurityFlagsResultDefault() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 19, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiModelsNetInfoSecurityFlagsResultDefaultConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiModelsNetInfoSecurityFlagsResultDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "SecurityFlagsResult_default",
+        argNames: [],
+      );
+
+  @override
+  Future<BigInt?> crateApiEngineSamplerAnalyzeSingleSample(
+      {required List<TargetReport> reports,
+      required NetworkConfiguration config}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_target_report(reports, serializer);
+        sse_encode_box_autoadd_network_configuration(config, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 20, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_opt_box_autoadd_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEngineSamplerAnalyzeSingleSampleConstMeta,
+      argValues: [reports, config],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEngineSamplerAnalyzeSingleSampleConstMeta =>
+      const TaskConstMeta(
+        debugName: "analyze_single_sample",
+        argNames: ["reports", "config"],
+      );
+
+  @override
   Future<(BigInt?, BigInt?, BigInt?, double?)>
-      crateApiAnalysisQualityCalculateJitterStats(
+      crateApiAnalysisStatsCalculateJitterStats(
           {required Uint64List latencies}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_64_strict(latencies, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 1, port: port_);
+            funcId: 21, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
             sse_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiAnalysisQualityCalculateJitterStatsConstMeta,
+      constMeta: kCrateApiAnalysisStatsCalculateJitterStatsConstMeta,
       argValues: [latencies],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiAnalysisQualityCalculateJitterStatsConstMeta =>
+  TaskConstMeta get kCrateApiAnalysisStatsCalculateJitterStatsConstMeta =>
       const TaskConstMeta(
         debugName: "calculate_jitter_stats",
         argNames: ["latencies"],
@@ -173,7 +850,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_u_64(timeoutMs, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+            funcId: 22, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_captive_portal_status,
@@ -200,10 +877,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_network_configuration(config, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
+            funcId: 23, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_network_report,
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport,
         decodeErrorData: null,
       ),
       constMeta: kCrateApiEngineCheckNetworkConstMeta,
@@ -225,7 +903,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_network_target(target, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 24, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_target_report,
@@ -244,12 +922,70 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<(Uint64List, List<TargetReport>)>
+      crateApiEngineSamplerCollectNetworkSamples(
+          {required NetworkConfiguration config}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_network_configuration(config, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 25, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_record_list_prim_u_64_strict_list_target_report,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEngineSamplerCollectNetworkSamplesConstMeta,
+      argValues: [config],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEngineSamplerCollectNetworkSamplesConstMeta =>
+      const TaskConstMeta(
+        debugName: "collect_network_samples",
+        argNames: ["config"],
+      );
+
+  @override
+  Future<LatencyStats> crateApiAnalysisStatsComputeLatencyStats(
+      {required Uint64List latencies,
+      required int totalExpectedSamples,
+      required QualityThresholds thresholds}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_64_strict(latencies, serializer);
+        sse_encode_u_8(totalExpectedSamples, serializer);
+        sse_encode_box_autoadd_quality_thresholds(thresholds, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 26, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_latency_stats,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiAnalysisStatsComputeLatencyStatsConstMeta,
+      argValues: [latencies, totalExpectedSamples, thresholds],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiAnalysisStatsComputeLatencyStatsConstMeta =>
+      const TaskConstMeta(
+        debugName: "compute_latency_stats",
+        argNames: ["latencies", "totalExpectedSamples", "thresholds"],
+      );
+
+  @override
   Future<ConnectionType> crateApiModelsNetInfoConnectionTypeDefault() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 27, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_connection_type,
@@ -274,7 +1010,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(domain, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 28, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -293,16 +1029,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<(SecurityFlags, ConnectionType)>
+  Future<(SecurityFlagsResult, ConnectionType)>
       crateApiProbesInterfaceDetectSecurityAndNetworkType() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 29, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_record_security_flags_connection_type,
+        decodeSuccessData:
+            sse_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type,
         decodeErrorData: null,
       ),
       constMeta: kCrateApiProbesInterfaceDetectSecurityAndNetworkTypeConstMeta,
@@ -319,6 +1056,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
+  Future<ConnectionQuality> crateApiAnalysisQualityEvaluateNetworkQuality(
+      {required bool isConnected,
+      required LatencyStats stats,
+      required NetworkConfiguration config}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_bool(isConnected, serializer);
+        sse_encode_box_autoadd_latency_stats(stats, serializer);
+        sse_encode_box_autoadd_network_configuration(config, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 30, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_connection_quality,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiAnalysisQualityEvaluateNetworkQualityConstMeta,
+      argValues: [isConnected, stats, config],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiAnalysisQualityEvaluateNetworkQualityConstMeta =>
+      const TaskConstMeta(
+        debugName: "evaluate_network_quality",
+        argNames: ["isConnected", "stats", "config"],
+      );
+
+  @override
   Future<ConnectionQuality> crateApiAnalysisQualityEvaluateQuality(
       {required BigInt latency, required QualityThresholds threshold}) {
     return handler.executeNormal(NormalTask(
@@ -327,7 +1094,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(latency, serializer);
         sse_encode_box_autoadd_quality_thresholds(threshold, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 31, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_connection_quality,
@@ -352,7 +1119,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 9, port: port_);
+            funcId: 32, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_network_configuration,
@@ -371,12 +1138,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiEngineSecurityPerformDnsSecurityCheck(
+      {required NetworkConfiguration config,
+      required SecurityFlagsResult flags}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_network_configuration(config, serializer);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            flags, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 33, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiEngineSecurityPerformDnsSecurityCheckConstMeta,
+      argValues: [config, flags],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiEngineSecurityPerformDnsSecurityCheckConstMeta =>
+      const TaskConstMeta(
+        debugName: "perform_dns_security_check",
+        argNames: ["config", "flags"],
+      );
+
+  @override
   Future<QualityThresholds> crateApiModelsConfigQualityThresholdsDefault() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
+            funcId: 34, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_quality_thresholds,
@@ -400,7 +1196,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 11, port: port_);
+            funcId: 35, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_resilience_config,
@@ -424,7 +1220,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 36, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_security_config,
@@ -448,7 +1244,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
+            funcId: 37, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_security_flags,
@@ -478,7 +1274,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_8(maxHops, serializer);
         sse_encode_u_64(timeoutPerHopMs, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 38, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_trace_hop,
@@ -496,6 +1292,86 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: ["host", "maxHops", "timeoutPerHopMs"],
       );
 
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_NetworkReport => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_NetworkReport => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_SecurityFlagsResult => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_SecurityFlagsResult => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult;
+
+  @protected
+  NetworkReport
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return NetworkReportImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  SecurityFlagsResult
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return SecurityFlagsResultImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  NetworkReport
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return NetworkReportImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  SecurityFlagsResult
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return SecurityFlagsResultImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  NetworkReport
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return NetworkReportImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  SecurityFlagsResult
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return SecurityFlagsResultImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  NetworkReport
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return NetworkReportImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  SecurityFlagsResult
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return SecurityFlagsResultImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
   @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -512,6 +1388,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   double dco_decode_box_autoadd_f_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as double;
+  }
+
+  @protected
+  LatencyStats dco_decode_box_autoadd_latency_stats(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_latency_stats(raw);
   }
 
   @protected
@@ -651,21 +1533,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  NetworkReport dco_decode_network_report(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
-    return NetworkReport(
-      timestampMs: dco_decode_u_64(arr[0]),
-      status: dco_decode_network_status(arr[1]),
-      connectionType: dco_decode_connection_type(arr[2]),
-      securityFlags: dco_decode_security_flags(arr[3]),
-      targetReports: dco_decode_list_target_report(arr[4]),
-    );
-  }
-
-  @protected
   NetworkStatus dco_decode_network_status(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -731,6 +1598,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   (
+    SecurityFlagsResult,
+    ConnectionType
+  ) dco_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          arr[0]),
+      dco_decode_connection_type(arr[1]),
+    );
+  }
+
+  @protected
+  (Uint64List, List<TargetReport>)
+      dco_decode_record_list_prim_u_64_strict_list_target_report(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_list_prim_u_64_strict(arr[0]),
+      dco_decode_list_target_report(arr[1]),
+    );
+  }
+
+  @protected
+  (
     BigInt?,
     BigInt?,
     BigInt?,
@@ -747,20 +1646,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       dco_decode_opt_box_autoadd_u_64(arr[1]),
       dco_decode_opt_box_autoadd_u_64(arr[2]),
       dco_decode_opt_box_autoadd_f_64(arr[3]),
-    );
-  }
-
-  @protected
-  (SecurityFlags, ConnectionType)
-      dco_decode_record_security_flags_connection_type(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2) {
-      throw Exception('Expected 2 elements, got ${arr.length}');
-    }
-    return (
-      dco_decode_security_flags(arr[0]),
-      dco_decode_connection_type(arr[1]),
     );
   }
 
@@ -867,6 +1752,84 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt dco_decode_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
+  }
+
+  @protected
+  NetworkReport
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return NetworkReportImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  SecurityFlagsResult
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return SecurityFlagsResultImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  NetworkReport
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return NetworkReportImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  SecurityFlagsResult
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return SecurityFlagsResultImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  NetworkReport
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return NetworkReportImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  SecurityFlagsResult
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return SecurityFlagsResultImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  NetworkReport
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return NetworkReportImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  SecurityFlagsResult
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return SecurityFlagsResultImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
@@ -883,6 +1846,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   double sse_decode_box_autoadd_f_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_f_64(deserializer));
+  }
+
+  @protected
+  LatencyStats sse_decode_box_autoadd_latency_stats(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_latency_stats(deserializer));
   }
 
   @protected
@@ -1054,22 +2024,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  NetworkReport sse_decode_network_report(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_timestampMs = sse_decode_u_64(deserializer);
-    var var_status = sse_decode_network_status(deserializer);
-    var var_connectionType = sse_decode_connection_type(deserializer);
-    var var_securityFlags = sse_decode_security_flags(deserializer);
-    var var_targetReports = sse_decode_list_target_report(deserializer);
-    return NetworkReport(
-        timestampMs: var_timestampMs,
-        status: var_status,
-        connectionType: var_connectionType,
-        securityFlags: var_securityFlags,
-        targetReports: var_targetReports);
-  }
-
-  @protected
   NetworkStatus sse_decode_network_status(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_isConnected = sse_decode_bool(deserializer);
@@ -1155,6 +2109,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   (
+    SecurityFlagsResult,
+    ConnectionType
+  ) sse_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 =
+        sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+            deserializer);
+    var var_field1 = sse_decode_connection_type(deserializer);
+    return (var_field0, var_field1);
+  }
+
+  @protected
+  (Uint64List, List<TargetReport>)
+      sse_decode_record_list_prim_u_64_strict_list_target_report(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_list_prim_u_64_strict(deserializer);
+    var var_field1 = sse_decode_list_target_report(deserializer);
+    return (var_field0, var_field1);
+  }
+
+  @protected
+  (
     BigInt?,
     BigInt?,
     BigInt?,
@@ -1167,16 +2145,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_field2 = sse_decode_opt_box_autoadd_u_64(deserializer);
     var var_field3 = sse_decode_opt_box_autoadd_f_64(deserializer);
     return (var_field0, var_field1, var_field2, var_field3);
-  }
-
-  @protected
-  (SecurityFlags, ConnectionType)
-      sse_decode_record_security_flags_connection_type(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 = sse_decode_security_flags(deserializer);
-    var var_field1 = sse_decode_connection_type(deserializer);
-    return (var_field0, var_field1);
   }
 
   @protected
@@ -1283,6 +2251,92 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          NetworkReport self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as NetworkReportImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SecurityFlagsResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as SecurityFlagsResultImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          NetworkReport self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as NetworkReportImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SecurityFlagsResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as SecurityFlagsResultImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          NetworkReport self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as NetworkReportImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SecurityFlagsResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as SecurityFlagsResultImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
+          NetworkReport self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as NetworkReportImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+          SecurityFlagsResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as SecurityFlagsResultImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
@@ -1298,6 +2352,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_f_64(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_latency_stats(
+      LatencyStats self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_latency_stats(self, serializer);
   }
 
   @protected
@@ -1444,16 +2505,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_network_report(NetworkReport self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_u_64(self.timestampMs, serializer);
-    sse_encode_network_status(self.status, serializer);
-    sse_encode_connection_type(self.connectionType, serializer);
-    sse_encode_security_flags(self.securityFlags, serializer);
-    sse_encode_list_target_report(self.targetReports, serializer);
-  }
-
-  @protected
   void sse_encode_network_status(NetworkStatus self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_bool(self.isConnected, serializer);
@@ -1517,6 +2568,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type(
+          (SecurityFlagsResult, ConnectionType) self,
+          SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
+        self.$1, serializer);
+    sse_encode_connection_type(self.$2, serializer);
+  }
+
+  @protected
+  void sse_encode_record_list_prim_u_64_strict_list_target_report(
+      (Uint64List, List<TargetReport>) self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_64_strict(self.$1, serializer);
+    sse_encode_list_target_report(self.$2, serializer);
+  }
+
+  @protected
+  void
       sse_encode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
           (BigInt?, BigInt?, BigInt?, double?) self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1524,14 +2594,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_u_64(self.$2, serializer);
     sse_encode_opt_box_autoadd_u_64(self.$3, serializer);
     sse_encode_opt_box_autoadd_f_64(self.$4, serializer);
-  }
-
-  @protected
-  void sse_encode_record_security_flags_connection_type(
-      (SecurityFlags, ConnectionType) self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_security_flags(self.$1, serializer);
-    sse_encode_connection_type(self.$2, serializer);
   }
 
   @protected
@@ -1612,4 +2674,134 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_unit(void self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
   }
+
+  @protected
+  void sse_encode_usize(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
+  }
+}
+
+@sealed
+class NetworkReportImpl extends RustOpaque implements NetworkReport {
+  // Not to be used by end users
+  NetworkReportImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  NetworkReportImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_NetworkReport,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_NetworkReport,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_NetworkReportPtr,
+  );
+
+  ConnectionType get connectionType => RustLib.instance.api
+          .crateApiModelsReportNetworkReportAutoAccessorGetConnectionType(
+        that: this,
+      );
+
+  SecurityFlagsResult get securityFlagsResult => RustLib.instance.api
+          .crateApiModelsReportNetworkReportAutoAccessorGetSecurityFlagsResult(
+        that: this,
+      );
+
+  NetworkStatus get status => RustLib.instance.api
+          .crateApiModelsReportNetworkReportAutoAccessorGetStatus(
+        that: this,
+      );
+
+  List<TargetReport> get targetReports => RustLib.instance.api
+          .crateApiModelsReportNetworkReportAutoAccessorGetTargetReports(
+        that: this,
+      );
+
+  BigInt get timestampMs => RustLib.instance.api
+          .crateApiModelsReportNetworkReportAutoAccessorGetTimestampMs(
+        that: this,
+      );
+
+  set connectionType(ConnectionType connectionType) => RustLib.instance.api
+      .crateApiModelsReportNetworkReportAutoAccessorSetConnectionType(
+          that: this, connectionType: connectionType);
+
+  set securityFlagsResult(SecurityFlagsResult securityFlagsResult) =>
+      RustLib.instance.api
+          .crateApiModelsReportNetworkReportAutoAccessorSetSecurityFlagsResult(
+              that: this, securityFlagsResult: securityFlagsResult);
+
+  set status(NetworkStatus status) => RustLib.instance.api
+      .crateApiModelsReportNetworkReportAutoAccessorSetStatus(
+          that: this, status: status);
+
+  set targetReports(List<TargetReport> targetReports) => RustLib.instance.api
+      .crateApiModelsReportNetworkReportAutoAccessorSetTargetReports(
+          that: this, targetReports: targetReports);
+
+  set timestampMs(BigInt timestampMs) => RustLib.instance.api
+      .crateApiModelsReportNetworkReportAutoAccessorSetTimestampMs(
+          that: this, timestampMs: timestampMs);
+}
+
+@sealed
+class SecurityFlagsResultImpl extends RustOpaque
+    implements SecurityFlagsResult {
+  // Not to be used by end users
+  SecurityFlagsResultImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  SecurityFlagsResultImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib
+        .instance.api.rust_arc_increment_strong_count_SecurityFlagsResult,
+    rustArcDecrementStrongCount: RustLib
+        .instance.api.rust_arc_decrement_strong_count_SecurityFlagsResult,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_SecurityFlagsResultPtr,
+  );
+
+  String get interfaceName => RustLib.instance.api
+          .crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetInterfaceName(
+        that: this,
+      );
+
+  bool get isDnsSpoofed => RustLib.instance.api
+          .crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsDnsSpoofed(
+        that: this,
+      );
+
+  bool get isProxyDetected => RustLib.instance.api
+          .crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsProxyDetected(
+        that: this,
+      );
+
+  bool get isVpnDetected => RustLib.instance.api
+          .crateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsVpnDetected(
+        that: this,
+      );
+
+  set interfaceName(String interfaceName) => RustLib.instance.api
+      .crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetInterfaceName(
+          that: this, interfaceName: interfaceName);
+
+  set isDnsSpoofed(bool isDnsSpoofed) => RustLib.instance.api
+      .crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsDnsSpoofed(
+          that: this, isDnsSpoofed: isDnsSpoofed);
+
+  set isProxyDetected(bool isProxyDetected) => RustLib.instance.api
+      .crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsProxyDetected(
+          that: this, isProxyDetected: isProxyDetected);
+
+  set isVpnDetected(bool isVpnDetected) => RustLib.instance.api
+      .crateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsVpnDetected(
+          that: this, isVpnDetected: isVpnDetected);
 }

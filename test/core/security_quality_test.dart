@@ -32,11 +32,7 @@ void main() {
       );
       await NetworkReachability.init(config: config);
 
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        securityFlags: mockApi.mockNetworkReport.securityFlags.copyWith(
-          isVpnDetected: true,
-        ),
-      );
+      mockApi.mockNetworkReport.securityFlagsResult.isVpnDetected = true;
 
       expect(
         () => NetworkReachability.instance.guard(action: () async => 42),
@@ -52,11 +48,7 @@ void main() {
       );
       await NetworkReachability.init(config: config);
 
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        securityFlags: mockApi.mockNetworkReport.securityFlags.copyWith(
-          isDnsSpoofed: true,
-        ),
-      );
+      mockApi.mockNetworkReport.securityFlagsResult.isDnsSpoofed = true;
 
       expect(
         () => NetworkReachability.instance.guard(action: () async => 42),
@@ -75,10 +67,8 @@ void main() {
             mockApi.mockDefaultConfig.copyWith(cacheValidityMs: BigInt.zero),
       );
 
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        status: mockApi.mockNetworkReport.status.copyWith(
-          quality: ConnectionQuality.poor,
-        ),
+      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(
+        quality: ConnectionQuality.poor,
       );
 
       // Guarding with 'good' quality should fail for 'poor' connection
@@ -97,10 +87,8 @@ void main() {
             mockApi.mockDefaultConfig.copyWith(cacheValidityMs: BigInt.zero),
       );
 
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        status: mockApi.mockNetworkReport.status.copyWith(
-          isConnected: false,
-        ),
+      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(
+        isConnected: false,
       );
 
       expect(
@@ -112,16 +100,15 @@ void main() {
     test('Allows action when connection is sufficient', () async {
       await NetworkReachability.init();
 
-      mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        status: mockApi.mockNetworkReport.status.copyWith(
-          isConnected: true,
-          quality: ConnectionQuality.excellent,
-        ),
+      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(
+        isConnected: true,
+        quality: ConnectionQuality.excellent,
       );
 
       final result =
           await NetworkReachability.instance.guard(action: () async => 100);
       expect(result, 100);
     });
+
   });
 }
