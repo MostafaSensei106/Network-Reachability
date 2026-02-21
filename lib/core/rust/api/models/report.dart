@@ -10,6 +10,29 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`, `fmt`
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<NetworkReport>>
+abstract class NetworkReport implements RustOpaqueInterface {
+  ConnectionType get connectionType;
+
+  SecurityFlagsResult get securityFlagsResult;
+
+  NetworkStatus get status;
+
+  List<TargetReport> get targetReports;
+
+  BigInt get timestampMs;
+
+  set connectionType(ConnectionType connectionType);
+
+  set securityFlagsResult(SecurityFlagsResult securityFlagsResult);
+
+  set status(NetworkStatus status);
+
+  set targetReports(List<TargetReport> targetReports);
+
+  set timestampMs(BigInt timestampMs);
+}
+
 /// A collection of statistical metrics for a series of latency samples.
 class LatencyStats {
   /// The final, representative latency value, typically the mean.
@@ -66,51 +89,6 @@ class LatencyStats {
           avgLatencyMs == other.avgLatencyMs &&
           maxLatencyMs == other.maxLatencyMs &&
           stabilityScore == other.stabilityScore;
-}
-
-/// The top-level report containing all information from a comprehensive network check.
-class NetworkReport {
-  /// The timestamp (in milliseconds since epoch) when the check was initiated.
-  final BigInt timestampMs;
-
-  /// The high-level status and quality summary of the network connection.
-  final NetworkStatus status;
-
-  /// The detected type of the active network connection (e.g., WiFi, Cellular).
-  final ConnectionType connectionType;
-
-  /// Security-related flags for the connection (e.g., VPN, DNS spoofing).
-  final SecurityFlags securityFlags;
-
-  /// A list of detailed reports for each individual target that was checked.
-  final List<TargetReport> targetReports;
-
-  const NetworkReport({
-    required this.timestampMs,
-    required this.status,
-    required this.connectionType,
-    required this.securityFlags,
-    required this.targetReports,
-  });
-
-  @override
-  int get hashCode =>
-      timestampMs.hashCode ^
-      status.hashCode ^
-      connectionType.hashCode ^
-      securityFlags.hashCode ^
-      targetReports.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is NetworkReport &&
-          runtimeType == other.runtimeType &&
-          timestampMs == other.timestampMs &&
-          status == other.status &&
-          connectionType == other.connectionType &&
-          securityFlags == other.securityFlags &&
-          targetReports == other.targetReports;
 }
 
 /// A high-level summary of the network state at a given time.

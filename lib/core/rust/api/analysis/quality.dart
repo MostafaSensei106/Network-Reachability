@@ -5,6 +5,8 @@
 
 import '../../frb_generated.dart';
 import '../models/config.dart';
+import '../models/report.dart';
+import '../models/target.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// Evaluates connection quality based on a latency value and a set of thresholds.
@@ -22,26 +24,10 @@ Future<ConnectionQuality> evaluateQuality(
     RustLib.instance.api.crateApiAnalysisQualityEvaluateQuality(
         latency: latency, threshold: threshold);
 
-/// Calculates statistical metrics for a series of latency samples.
-///
-/// This function computes the minimum, maximum, and mean latency, along with the
-/// standard deviation, which is used as a measure of jitter.
-///
-/// # Arguments
-///
-/// * `latencies` - A slice of u64 latency values in milliseconds.
-///
-/// # Returns
-///
-/// A tuple containing:
-/// 1. `Option<u64>`: Minimum latency.
-/// 2. `Option<u64>`: Maximum latency.
-/// 3. `Option<u64>`: Mean (average) latency.
-/// 4. `Option<f64>`: Standard deviation (jitter).
-///
-/// Returns `(None, None, None, None)` if the input slice is empty.
-/// Jitter will be `None` if there are fewer than two samples.
-Future<(BigInt?, BigInt?, BigInt?, double?)> calculateJitterStats(
-        {required Uint64List latencies}) =>
-    RustLib.instance.api
-        .crateApiAnalysisQualityCalculateJitterStats(latencies: latencies);
+/// Evaluates the final network quality by combining speed, stability, and loss.
+Future<ConnectionQuality> evaluateNetworkQuality(
+        {required bool isConnected,
+        required LatencyStats stats,
+        required NetworkConfiguration config}) =>
+    RustLib.instance.api.crateApiAnalysisQualityEvaluateNetworkQuality(
+        isConnected: isConnected, stats: stats, config: config);

@@ -312,17 +312,19 @@ class _NetworkReportView extends StatelessWidget {
             _buildInfoRow('Connection Type:', report.connectionType.name),
             _buildInfoRow(
               'Interface Name:',
-              report.securityFlags.interfaceName,
+              report.securityFlagsResult.interfaceName,
             ),
             _buildInfoRow(
               'VPN Detected:',
-              report.securityFlags.isVpnDetected ? 'Yes' : 'No',
-              report.securityFlags.isVpnDetected ? Colors.orangeAccent : null,
+              report.securityFlagsResult.isVpnDetected ? 'Yes' : 'No',
+              report.securityFlagsResult.isVpnDetected
+                  ? Colors.orangeAccent
+                  : null,
             ),
             _buildInfoRow(
               'DNS Spoofed:',
-              report.securityFlags.isDnsSpoofed ? 'Yes' : 'No',
-              report.securityFlags.isDnsSpoofed ? Colors.redAccent : null,
+              report.securityFlagsResult.isDnsSpoofed ? 'Yes' : 'No',
+              report.securityFlagsResult.isDnsSpoofed ? Colors.redAccent : null,
             ),
           ],
         ),

@@ -5,19 +5,16 @@
 
 import '../frb_generated.dart';
 import 'models/config.dart';
-import 'models/net_info.dart';
 import 'models/report.dart';
 import 'models/target.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `analyze_single_sample`, `collect_network_samples`, `compute_latency_stats`, `evaluate_network_quality`, `perform_dns_security_check`
-
 /// The main entry point for running a comprehensive network check.
 ///
 /// This function orchestrates the entire check process:
-/// 1. Collects latency samples via [collect_network_samples].
-/// 2. Computes [LatencyStats].
-/// 3. Evaluates [ConnectionQuality].
+/// 1. Collects latency samples via [sampler::collect_network_samples].
+/// 2. Computes statistics via [analysis::compute_latency_stats].
+/// 3. Evaluates quality via [analysis::evaluate_network_quality].
 /// 4. Detects interface security and type.
 /// 5. Compiles a final [NetworkReport].
 Future<NetworkReport> checkNetwork({required NetworkConfiguration config}) =>

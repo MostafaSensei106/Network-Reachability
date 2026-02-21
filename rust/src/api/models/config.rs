@@ -63,6 +63,7 @@ impl Default for QualityThresholds {
 }
 
 /// Configuration for security-related checks.
+
 #[derive(Debug, Clone, Default)]
 pub struct SecurityConfig {
     /// If true, the `guard` function will throw an exception if a VPN is detected.
@@ -138,27 +139,27 @@ impl Default for NetworkConfiguration {
                     port: LibConstants::DEFAULT_HTTP_PORT,
                     protocol: TargetProtocol::Https,
                     timeout_ms: LibConstants::DEFAULT_HTTP_TIMEOUT_MS,
-                    priority: 2,
-                    is_essential: false,
-                },
-                NetworkTarget {
-                    label: LibConstants::CLOUDFLARE_NAME.into(),
-                    host: LibConstants::CLOUDFLARE_DNS.into(),
-                    port: LibConstants::DEFAULT_PORT,
-                    protocol: TargetProtocol::Tcp,
-                    timeout_ms: LibConstants::DEFAULT_TIMEOUT_MS,
                     priority: 1,
                     is_essential: false,
                 },
-                NetworkTarget {
-                    label: LibConstants::GOOGLE_NAME.into(),
-                    host: LibConstants::GOOGLE_DNS.into(),
-                    port: LibConstants::DEFAULT_PORT,
-                    protocol: TargetProtocol::Tcp,
-                    timeout_ms: LibConstants::DEFAULT_TIMEOUT_MS,
-                    priority: 1,
-                    is_essential: false,
-                },
+                // NetworkTarget {
+                //     label: LibConstants::CLOUDFLARE_NAME.into(),
+                //     host: LibConstants::CLOUDFLARE_DNS.into(),
+                //     port: LibConstants::DEFAULT_PORT,
+                //     protocol: TargetProtocol::Tcp,
+                //     timeout_ms: LibConstants::DEFAULT_TIMEOUT_MS,
+                //     priority: 1,
+                //     is_essential: false,
+                // },
+                // NetworkTarget {
+                //     label: LibConstants::GOOGLE_NAME.into(),
+                //     host: LibConstants::GOOGLE_DNS.into(),
+                //     port: LibConstants::DEFAULT_HTTP_PORT,
+                //     protocol: TargetProtocol::Http,
+                //     timeout_ms: LibConstants::DEFAULT_HTTP_TIMEOUT_MS,
+                //     priority: 1,
+                //     is_essential: false,
+                // },
             ],
             check_interval_ms: LibConstants::DEFAULT_CHECK_INTERVAL_MS,
             cache_validity_ms: 2000, // 2 seconds default cache
@@ -194,7 +195,7 @@ mod tests {
     fn test_network_configuration_default() {
         let config = NetworkConfiguration::default();
         assert_eq!(config.targets.len(), 3);
-        assert_eq!(config.targets[0].label, LibConstants::CLOUDFLARE_NAME_HTTPS);
+        assert_eq!(config.targets[0].label, LibConstants::CLOUDFLARE_NAME_HTTP);
         assert_eq!(config.targets[1].label, LibConstants::CLOUDFLARE_NAME);
         assert_eq!(config.targets[2].label, LibConstants::GOOGLE_NAME);
         assert_eq!(config.resilience.strategy, CheckStrategy::Race);

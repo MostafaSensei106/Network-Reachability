@@ -1,5 +1,7 @@
 //! Data structures for low-level network information and security flags.
 
+use flutter_rust_bridge::frb;
+
 use crate::api::constants::LibConstants;
 
 /// Represents the type of physical or logical network connection.
@@ -62,6 +64,32 @@ pub struct SecurityFlags {
     pub is_proxy_detected: bool,
     /// The name of the active network interface (e.g., 'wlan0', 'tun0').
     pub interface_name: String,
+}
+
+#[frb(opaque)]
+#[derive(Debug, Clone)]
+
+pub struct SecurityFlagsResult {
+    /// True if the active interface is a known VPN/tunnel type (e.g., 'tun', 'ppp').
+    pub is_vpn_detected: bool,
+    /// True if a DNS mismatch was found between system and trusted resolvers,
+    /// indicating a potential DNS hijacking or spoofing attack.
+    pub is_dns_spoofed: bool,
+    /// True if a system-level proxy is detected (future implementation).
+    pub is_proxy_detected: bool,
+    /// The name of the active network interface (e.g., 'wlan0', 'tun0').
+    pub interface_name: String,
+}
+
+impl Default for SecurityFlagsResult {
+    fn default() -> Self {
+        Self {
+            is_vpn_detected: false,
+            is_dns_spoofed: false,
+            is_proxy_detected: false,
+            interface_name: LibConstants::DEFAULT_INTERFACE_NAME.to_string(),
+        }
+    }
 }
 
 impl Default for SecurityFlags {

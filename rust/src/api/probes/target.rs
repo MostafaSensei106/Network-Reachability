@@ -1,11 +1,16 @@
 //! Probe for checking a single network target.
 
 use std::time::{Duration, Instant};
-use tokio::{net::TcpStream, time::timeout};
+use tokio::{
+    io::{AsyncReadExt, AsyncWriteExt},
+    net::TcpStream,
+    time::timeout,
+};
 
 use crate::api::models::{NetworkError, NetworkTarget, TargetProtocol, TargetReport};
 
 /// Performs a network check against a single, specified target.
+
 pub async fn check_target(target: &NetworkTarget) -> TargetReport {
     let start = Instant::now();
     let addr_str = format!("{}:{}", target.host, target.port);
@@ -24,10 +29,28 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
 
         match target.protocol {
             TargetProtocol::Tcp => {
-                let _stream = TcpStream::connect(&addr)
+                let mut stream = TcpStream::connect(&addr)
                     .await
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
+
+                let probe = format!(
+                    "HEAD / HTTP/1.0\r\nHost: {}\r\nConnection: close\r\n\r\n",
+                    target.host
+                );
+
+                stream.write_all(probe.as_bytes()).await.map_err(|e| {
+                    NetworkError::ConnectionError(format!("Failed to send probe: {}", e))
+                })?;
+
+                let mut buf = [0u8; 1];
+                stream.read(&mut buf).await.map_err(|e| {
+                    NetworkError::ConnectionError(format!(
+                        "No response from target (possible local interception): {}",
+                        e
+                    ))
+                })?;
             }
+
             TargetProtocol::Http | TargetProtocol::Https => {
                 let scheme = if target.protocol == TargetProtocol::Https {
                     "https"
@@ -47,22 +70,37 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
                     .await
                     .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
 
-                if !res.status().is_success() && target.is_essential {
+                let status = res.status();
+                if status.is_server_error() && target.is_essential {
                     return Err(NetworkError::ConnectionError(format!(
-                        "HTTP status: {}",
-                        res.status()
+                        "HTTP server error: {}",
+                        status
                     )));
                 }
+
+                let _ = res.bytes().await.map_err(|e| {
+                    NetworkError::ConnectionError(format!("Failed to read response body: {}", e))
+                })?;
             }
 
             TargetProtocol::Icmp => {
                 let payload = [0u8; 8];
-                let _ = surge_ping::ping(addr.ip(), &payload)
+
+                let ping_result = surge_ping::ping(addr.ip(), &payload)
                     .await
                     .map_err(|e| NetworkError::ConnectionError(format!("Ping failed: {}", e)))?;
+
+                let (_packet, rtt) = ping_result;
+                let is_loopback = addr.ip().is_loopback();
+
+                if !is_loopback && rtt < Duration::from_micros(100) {
+                    return Err(NetworkError::ConnectionError(
+                        "Suspiciously low RTT - possible local interception".to_string(),
+                    ));
+                }
             }
         }
-        Ok(())
+        Ok::<(), NetworkError>(())
     })
     .await;
 
@@ -84,18 +122,15 @@ pub async fn check_target(target: &NetworkTarget) -> TargetReport {
             error: Some(e.to_string()),
             is_essential: target.is_essential,
         },
-        Err(_) => {
-            TargetReport {
-                label: target.label.clone(),
-                success: false,
-                latency_ms: 0, // Should be 0 if it failed/timed out
-                error: Some(NetworkError::TimeoutError.to_string()),
-                is_essential: target.is_essential,
-            }
-        }
+        Err(_) => TargetReport {
+            label: target.label.clone(),
+            success: false,
+            latency_ms: 0,
+            error: Some(NetworkError::TimeoutError.to_string()),
+            is_essential: target.is_essential,
+        },
     }
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;

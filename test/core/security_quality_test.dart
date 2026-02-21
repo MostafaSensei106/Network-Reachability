@@ -33,7 +33,7 @@ void main() {
       await NetworkReachability.init(config: config);
 
       mockApi.mockNetworkReport = mockApi.mockNetworkReport.copyWith(
-        securityFlags: mockApi.mockNetworkReport.securityFlags.copyWith(
+        securityFlags: mockApi.mockNetworkReport.securityFlagsResult.copyWith(
           isVpnDetected: true,
         ),
       );
