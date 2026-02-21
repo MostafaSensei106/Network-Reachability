@@ -75,7 +75,8 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: const Color(0xFF020617),
+      backgroundColor: Colors.transparent,
+      scrolledUnderElevation: 0,
       elevation: 0,
       title: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,7 +204,7 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildMiniInfo(
-                'WINNER',
+                'WINNER TARGET',
                 status.winnerTarget.isEmpty
                     ? 'NONE'
                     : status.winnerTarget.toUpperCase(),
@@ -220,7 +221,7 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
     );
   }
 
-  Widget _buildTargetDetailedCard(TargetReport t, NetworkTarget target) {
+  Widget _buildTargetDetailedCard(TargetReport t) {
     final bool isFailed = !t.success;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -302,7 +303,6 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
             const SizedBox(height: 12),
           ],
           _buildRowDetail('Success State', t.success ? 'TRUE' : 'FALSE'),
-          _buildRowDetail('Target Protocol', target.protocol.toString()),
           _buildRowDetail('Response Time', '${t.latencyMs}ms'),
           _buildRowDetail(
             'Criticality',
@@ -429,6 +429,7 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
           Text(
             value,
             style: const TextStyle(
+              overflow: TextOverflow.fade,
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
