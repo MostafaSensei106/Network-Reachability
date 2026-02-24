@@ -6,6 +6,7 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `TraceHop`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<SecurityFlagsResult>>
@@ -124,43 +125,4 @@ class SecurityFlags {
           isDnsSpoofed == other.isDnsSpoofed &&
           isProxyDetected == other.isProxyDetected &&
           interfaceName == other.interfaceName;
-}
-
-/// Represents a single hop in a traceroute path.
-class TraceHop {
-  /// The hop number in the sequence (Time-To-Live value).
-  final int hopNumber;
-
-  /// The IP address of the router at this hop. Can be "*" if the hop timed out.
-  final String ipAddress;
-
-  /// The hostname resolved from the IP address, if available.
-  final String? hostname;
-
-  /// The round-trip time to this hop in milliseconds.
-  final BigInt? latencyMs;
-
-  const TraceHop({
-    required this.hopNumber,
-    required this.ipAddress,
-    this.hostname,
-    this.latencyMs,
-  });
-
-  @override
-  int get hashCode =>
-      hopNumber.hashCode ^
-      ipAddress.hashCode ^
-      hostname.hashCode ^
-      latencyMs.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TraceHop &&
-          runtimeType == other.runtimeType &&
-          hopNumber == other.hopNumber &&
-          ipAddress == other.ipAddress &&
-          hostname == other.hostname &&
-          latencyMs == other.latencyMs;
 }

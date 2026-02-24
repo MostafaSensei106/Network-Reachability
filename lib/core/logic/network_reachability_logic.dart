@@ -13,7 +13,6 @@ import '../rust/api/probes/captive_portal.dart' as captive_portal_probe;
 import '../rust/api/probes/dns.dart' as dns_probe;
 import '../rust/api/probes/interface.dart' as interface_probe;
 import '../rust/api/probes/target.dart' as target_probe;
-import '../rust/api/probes/traceroute.dart' as traceroute_probe;
 
 /// The main class for interacting with the network reachability engine.
 ///
@@ -258,15 +257,15 @@ class NetworkReachability with WidgetsBindingObserver {
   Future<TargetReport> checkTarget({required NetworkTarget target}) =>
       target_probe.checkTarget(target: target);
 
-  /// Performs a traceroute to the specified [host].
-  Future<List<TraceHop>> traceRoute({
-    required String host,
-    required int maxHops,
-    required BigInt timeoutPerHopMs,
-  }) =>
-      traceroute_probe.traceRoute(
-        host: host,
-        maxHops: maxHops,
-        timeoutPerHopMs: timeoutPerHopMs,
-      );
+  // /// Performs a traceroute to the specified [host].
+  // Future<List<TraceHop>> traceRoute({
+  //   required String host,
+  //   required int maxHops,
+  //   required BigInt timeoutPerHopMs,
+  // }) =>
+  //     traceroute_probe.traceRoute(
+  //       host: host,
+  //       maxHops: maxHops,
+  //       timeoutPerHopMs: timeoutPerHopMs,
+  //     );
 }

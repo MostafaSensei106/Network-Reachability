@@ -16,7 +16,6 @@ import 'api/probes/captive_portal.dart';
 import 'api/probes/dns.dart';
 import 'api/probes/interface.dart';
 import 'api/probes/target.dart';
-import 'api/probes/traceroute.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -81,7 +80,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -2033097267;
+  int get rustContentHash => 2098187080;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -206,11 +205,6 @@ abstract class RustLibApi extends BaseApi {
   Future<SecurityConfig> crateApiModelsConfigSecurityConfigDefault();
 
   Future<SecurityFlags> crateApiModelsNetInfoSecurityFlagsDefault();
-
-  Future<List<TraceHop>> crateApiProbesTracerouteTraceRoute(
-      {required String host,
-      required int maxHops,
-      required BigInt timeoutPerHopMs});
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_NetworkReport;
@@ -1262,36 +1256,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: [],
       );
 
-  @override
-  Future<List<TraceHop>> crateApiProbesTracerouteTraceRoute(
-      {required String host,
-      required int maxHops,
-      required BigInt timeoutPerHopMs}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(host, serializer);
-        sse_encode_u_8(maxHops, serializer);
-        sse_encode_u_64(timeoutPerHopMs, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 38, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_list_trace_hop,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiProbesTracerouteTraceRouteConstMeta,
-      argValues: [host, maxHops, timeoutPerHopMs],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiProbesTracerouteTraceRouteConstMeta =>
-      const TaskConstMeta(
-        debugName: "trace_route",
-        argNames: ["host", "maxHops", "timeoutPerHopMs"],
-      );
-
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_NetworkReport => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport;
@@ -1511,12 +1475,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<TraceHop> dco_decode_list_trace_hop(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_trace_hop).toList();
-  }
-
-  @protected
   NetworkConfiguration dco_decode_network_configuration(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -1710,20 +1668,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       latencyMs: dco_decode_u_64(arr[2]),
       error: dco_decode_opt_String(arr[3]),
       isEssential: dco_decode_bool(arr[4]),
-    );
-  }
-
-  @protected
-  TraceHop dco_decode_trace_hop(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
-    return TraceHop(
-      hopNumber: dco_decode_u_8(arr[0]),
-      ipAddress: dco_decode_String(arr[1]),
-      hostname: dco_decode_opt_String(arr[2]),
-      latencyMs: dco_decode_opt_box_autoadd_u_64(arr[3]),
     );
   }
 
@@ -1993,18 +1937,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<TraceHop> sse_decode_list_trace_hop(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <TraceHop>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_trace_hop(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
   NetworkConfiguration sse_decode_network_configuration(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2211,20 +2143,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         latencyMs: var_latencyMs,
         error: var_error,
         isEssential: var_isEssential);
-  }
-
-  @protected
-  TraceHop sse_decode_trace_hop(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_hopNumber = sse_decode_u_8(deserializer);
-    var var_ipAddress = sse_decode_String(deserializer);
-    var var_hostname = sse_decode_opt_String(deserializer);
-    var var_latencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
-    return TraceHop(
-        hopNumber: var_hopNumber,
-        ipAddress: var_ipAddress,
-        hostname: var_hostname,
-        latencyMs: var_latencyMs);
   }
 
   @protected
@@ -2483,16 +2401,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_list_trace_hop(
-      List<TraceHop> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_trace_hop(item, serializer);
-    }
-  }
-
-  @protected
   void sse_encode_network_configuration(
       NetworkConfiguration self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2641,15 +2549,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_64(self.latencyMs, serializer);
     sse_encode_opt_String(self.error, serializer);
     sse_encode_bool(self.isEssential, serializer);
-  }
-
-  @protected
-  void sse_encode_trace_hop(TraceHop self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_u_8(self.hopNumber, serializer);
-    sse_encode_String(self.ipAddress, serializer);
-    sse_encode_opt_String(self.hostname, serializer);
-    sse_encode_opt_box_autoadd_u_64(self.latencyMs, serializer);
   }
 
   @protected

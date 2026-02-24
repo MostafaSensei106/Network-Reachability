@@ -120,22 +120,22 @@ extension SecurityFlagsCopyWith on SecurityFlags {
 }
 
 /// Extension on [TraceHop] to provide an immutable way to copy the hop data.
-extension TraceHopCopyWith on TraceHop {
-  /// Creates a copy of [TraceHop] with the given fields replaced by the new values.
-  TraceHop copyWith({
-    int? hopNumber,
-    String? ipAddress,
-    String? hostname,
-    BigInt? latencyMs,
-  }) {
-    return TraceHop(
-      hopNumber: hopNumber ?? this.hopNumber,
-      ipAddress: ipAddress ?? this.ipAddress,
-      hostname: hostname ?? this.hostname,
-      latencyMs: latencyMs ?? this.latencyMs,
-    );
-  }
-}
+// extension TraceHopCopyWith on TraceHop {
+//   /// Creates a copy of [TraceHop] with the given fields replaced by the new values.
+//   TraceHop copyWith({
+//     int? hopNumber,
+//     String? ipAddress,
+//     String? hostname,
+//     BigInt? latencyMs,
+//   }) {
+//     return TraceHop(
+//       hopNumber: hopNumber ?? this.hopNumber,
+//       ipAddress: ipAddress ?? this.ipAddress,
+//       hostname: hostname ?? this.hostname,
+//       latencyMs: latencyMs ?? this.latencyMs,
+//     );
+//   }
+// }
 
 /// Extension on [SecurityFlagsResult] to provide an immutable way to copy the result.
 extension SecurityFlagsResultCopyWith on SecurityFlagsResult {

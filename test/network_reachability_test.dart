@@ -53,16 +53,5 @@ void main() {
           await NetworkReachability.instance.detectSecurityAndNetworkType();
       expect(ifaceResult.$2, ConnectionType.ethernet);
     });
-
-    test('traceRoute: successfully calls probe', () async {
-      await NetworkReachability.init();
-      final hops = await NetworkReachability.instance.traceRoute(
-        host: 'example.com',
-        maxHops: 30,
-        timeoutPerHopMs: BigInt.from(1000),
-      );
-      expect(hops, isNotEmpty);
-      expect(hops.first.hopNumber, 1);
-    });
   });
 }

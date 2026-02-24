@@ -67,7 +67,6 @@ class MockRustLibApi implements RustLibApi {
   late bool mockDnsHijackingResult;
   late (SecurityFlagsResult, ConnectionType) mockSecurityAndNetworkTypeResult;
   late TargetReport mockTargetReportProbe;
-  late List<TraceHop> mockTraceRouteResult;
 
   MockRustLibApi() {
     reset();
@@ -164,10 +163,6 @@ class MockRustLibApi implements RustLibApi {
       latencyMs: BigInt.from(50),
       isEssential: false,
     );
-    mockTraceRouteResult = [
-      TraceHop(
-          hopNumber: 1, ipAddress: '192.168.1.1', latencyMs: BigInt.from(10))
-    ];
   }
 
   @override
@@ -224,14 +219,5 @@ class MockRustLibApi implements RustLibApi {
   }
 
   @override
-  Future<List<TraceHop>> crateApiProbesTracerouteTraceRoute(
-      {required String host,
-      required int maxHops,
-      required BigInt timeoutPerHopMs}) async {
-    return mockTraceRouteResult;
-  }
-
-  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
-

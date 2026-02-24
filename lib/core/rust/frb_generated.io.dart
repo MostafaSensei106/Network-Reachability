@@ -16,7 +16,6 @@ import 'api/probes/captive_portal.dart';
 import 'api/probes/dns.dart';
 import 'api/probes/interface.dart';
 import 'api/probes/target.dart';
-import 'api/probes/traceroute.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -141,9 +140,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<TargetReport> dco_decode_list_target_report(dynamic raw);
 
   @protected
-  List<TraceHop> dco_decode_list_trace_hop(dynamic raw);
-
-  @protected
   NetworkConfiguration dco_decode_network_configuration(dynamic raw);
 
   @protected
@@ -198,9 +194,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TargetReport dco_decode_target_report(dynamic raw);
-
-  @protected
-  TraceHop dco_decode_trace_hop(dynamic raw);
 
   @protected
   int dco_decode_u_16(dynamic raw);
@@ -325,9 +318,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  List<TraceHop> sse_decode_list_trace_hop(SseDeserializer deserializer);
-
-  @protected
   NetworkConfiguration sse_decode_network_configuration(
       SseDeserializer deserializer);
 
@@ -384,9 +374,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TargetReport sse_decode_target_report(SseDeserializer deserializer);
-
-  @protected
-  TraceHop sse_decode_trace_hop(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_16(SseDeserializer deserializer);
@@ -515,9 +502,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<TargetReport> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_trace_hop(List<TraceHop> self, SseSerializer serializer);
-
-  @protected
   void sse_encode_network_configuration(
       NetworkConfiguration self, SseSerializer serializer);
 
@@ -571,9 +555,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_target_report(TargetReport self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_trace_hop(TraceHop self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_16(int self, SseSerializer serializer);
