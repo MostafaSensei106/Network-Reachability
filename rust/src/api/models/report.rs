@@ -5,65 +5,78 @@ use crate::api::models::SecurityFlagsResult;
 use super::config::ConnectionQuality;
 use super::net_info::ConnectionType;
 
-/// The result of a check against a single network target.
+/// Detailed outcome of a connectivity check against a specific [NetworkTarget].
 #[derive(Debug, Clone)]
 pub struct TargetReport {
-    /// The unique label for the target.
+    /// The unique label identifying the target.
     pub label: String,
-    /// True if the check was successful.
+    /// Indicates whether the target was successfully reached using the specified protocol.
     pub success: bool,
-    /// The latency of the successful check in milliseconds.
+    /// The measured latency in milliseconds.
+    ///
+    /// This value is 0 or undefined if [success] is false.
     pub latency_ms: u64,
-    /// An error message if the check failed.
+    /// A descriptive error message if the check failed.
     pub error: Option<String>,
-    /// Whether this target is considered essential for the overall check.
+    /// Whether this target was marked as essential for the overall network status.
     pub is_essential: bool,
 }
 
-/// A collection of statistical metrics for a series of latency samples.
+/// A suite of statistical metrics derived from multiple latency samples.
+///
+/// These metrics provide a deeper look into the stability and consistency
+/// of the connection beyond a simple "is it up?" check.
 #[derive(Debug, Clone)]
 pub struct LatencyStats {
-    /// The final, representative latency value, typically the mean.
+    /// The representative latency value for this report (usually the mean or median of samples).
     pub latency_ms: u64,
-    /// The standard deviation of the latency samples, representing jitter.
+    /// The standard deviation of latency samples, measuring "jitter".
+    ///
+    /// High jitter (e.g., > 30ms) can significantly degrade the experience in real-time apps.
     pub jitter_ms: u64,
-    /// The percentage of failed samples out of the total expected.
+    /// The percentage of samples that failed to return a response.
+    ///
+    /// Any value above 0.0% indicates potential network congestion or hardware issues.
     pub packet_loss_percent: f32,
-    /// The minimum latency recorded in the sample set.
+    /// The lowest latency recorded across all samples.
     pub min_latency_ms: Option<u64>,
-    /// The average latency of the sample set.
+    /// The arithmetic mean of all successful latency samples.
     pub avg_latency_ms: Option<u64>,
-    /// The maximum latency recorded in the sample set.
+    /// The highest latency recorded across all samples.
     pub max_latency_ms: Option<u64>,
-    /// A calculated score from 0-100 representing connection stability,
-    /// factoring in jitter, packet loss, and latency spikes.
+    /// A composite score from 0 (broken) to 100 (perfect) representing overall stability.
+    ///
+    /// Factors in jitter, packet loss, and latency spikes.
     pub stability_score: u8,
 }
 
-/// A high-level summary of the network state at a given time.
+/// A high-level summary of the network's current state.
 #[derive(Debug, Clone)]
 pub struct NetworkStatus {
-    /// True if a connection to any target was successfully established.
+    /// True if the network is considered "connected" based on the [CheckStrategy].
     pub is_connected: bool,
-    /// The overall calculated quality of the connection.
+    /// The categorical quality of the connection (e.g., Excellent, Poor, Offline).
     pub quality: ConnectionQuality,
-    /// Detailed statistics about latency and stability.
+    /// Detailed statistical breakdown of the connection's performance.
     pub latency_stats: LatencyStats,
-    /// The label of the target that responded fastest in the final sample.
+    /// The label of the target that provided the fastest response in this check cycle.
     pub winner_target: String,
 }
 
-/// The top-level report containing all information from a comprehensive network check.
+/// The comprehensive report produced by a network reachability check.
+///
+/// This structure aggregates high-level status, low-level metrics,
+/// security findings, and individual target results.
 #[derive(Debug, Clone)]
 pub struct NetworkReport {
-    /// The timestamp (in milliseconds since epoch) when the check was initiated.
+    /// The UTC timestamp (milliseconds since epoch) when the check began.
     pub timestamp_ms: u64,
-    /// The high-level status and quality summary of the network connection.
+    /// High-level connectivity status and quality assessment.
     pub status: NetworkStatus,
-    /// The detected type of the active network connection (e.g., WiFi, Cellular).
+    /// The identified type of the active network interface (e.g., WiFi).
     pub connection_type: ConnectionType,
-    /// Security-related flags for the connection (e.g., VPN, DNS spoofing).
+    /// Results of security-specific probes (VPN, DNS spoofing, etc.).
     pub security_flags_result: SecurityFlagsResult,
-    /// A list of detailed reports for each individual target that was checked.
+    /// An array containing the individual results for every target checked.
     pub target_reports: Vec<TargetReport>,
 }

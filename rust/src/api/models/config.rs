@@ -3,53 +3,92 @@
 use super::target::{NetworkTarget, TargetProtocol};
 use crate::api::constants::LibConstants;
 
-/// Defines the strategy for evaluating multiple targets.
+/// Defines the strategy used when evaluating multiple network targets.
+///
+/// This strategy determines how the engine decides if the network is "up"
+/// when multiple targets are configured.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum CheckStrategy {
     /// The first target to respond successfully determines the result.
-    /// This is faster but less reliable.
+    ///
+    /// This is the fastest strategy as it doesn't wait for other targets.
+    /// It's ideal for performance-sensitive applications where any connectivity
+    /// to a trusted endpoint is sufficient.
     Race,
     /// A majority of targets must respond successfully for the check to be
-    /// considered a success. This is slower but more robust.
+    /// considered a success.
+    ///
+    /// This strategy is more robust against localized outages or transient
+    /// failures of individual endpoints. It is slower than [Race] because
+    /// it may wait for multiple responses.
     Consensus,
 }
 
-/// Represents the perceived quality of the network connection.
+/// Represents the perceived quality of the network connection based on latency and stability.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ConnectionQuality {
-    /// Excellent connection, very low latency. Suitable for all tasks.
+    /// Excellent connection with very low latency.
+    ///
+    /// Typically < 50ms. Suitable for high-performance real-time tasks like
+    /// competitive gaming or high-frequency trading.
     Excellent,
-    /// Great connection, low latency. Suitable for most tasks.
+    /// Great connection with low latency.
+    ///
+    /// Typically < 100ms. Suitable for VoIP, video conferencing, and smooth browsing.
     Great,
-    /// Good, usable connection.
+    /// Good, usable connection with acceptable latency.
+    ///
+    /// Typically < 150ms. Suitable for most standard web applications and streaming.
     Good,
-    /// Moderate connection, noticeable latency. May affect real-time applications.
+    /// Moderate connection with noticeable latency.
+    ///
+    /// Typically < 250ms. Users might notice slight delays in interactive elements.
     Moderate,
-    /// Poor connection, high latency. Basic browsing may be slow.
+    /// Poor connection with high latency.
+    ///
+    /// Typically < 500ms. Basic browsing will feel slow, and real-time apps will struggle.
     Poor,
-    /// Connection is active, but packet loss or high jitter makes it unreliable.
+    /// Connection is active, but high jitter or packet loss makes it unreliable.
+    ///
+    /// The network is "connected" but the experience will be degraded and unpredictable.
     Unstable,
-    /// A captive portal was detected, requiring user interaction.
+    /// A captive portal (login page) was detected.
+    ///
+    /// The device is connected to an AP, but internet access is restricted until
+    /// the user interacts with the portal (e.g., at an airport or hotel).
     CaptivePortal,
     /// No connection detected or all essential targets failed.
+    ///
+    /// The network is completely unreachable or unusable.
     Offline,
 }
 
 /// Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
+///
+/// These values allow customizing what "Good" or "Poor" means for your specific application.
 #[derive(Debug, Clone, Copy)]
 pub struct QualityThresholds {
-    /// Latency at or below this value is 'Excellent'.
+    /// Latency at or below this value is considered [ConnectionQuality::Excellent].
     pub excellent: u64,
-    /// Latency at or below this value is 'Great'.
+    /// Latency at or below this value is considered [ConnectionQuality::Great].
     pub great: u64,
-    /// Latency at or below this value is 'Good'.
+    /// Latency at or below this value is considered [ConnectionQuality::Good].
     pub good: u64,
-    /// Latency at or below this value is 'Moderate'.
+    /// Latency at or below this value is considered [ConnectionQuality::Moderate].
     pub moderate: u64,
-    /// Latency at or below this value is 'Poor'. Anything higher is 'Unstable'.
+    /// Latency at or below this value is considered [ConnectionQuality::Poor].
+    /// Anything higher is categorized as [ConnectionQuality::Unstable] or [ConnectionQuality::Poor].
     pub poor: u64,
 }
 
+/// Provides sensible default latency thresholds for most mobile and web applications.
+///
+/// Defaults:
+/// - Excellent: 50ms
+/// - Great: 100ms
+/// - Good: 150ms
+/// - Moderate: 250ms
+/// - Poor: 500ms
 impl Default for QualityThresholds {
     fn default() -> Self {
         Self {
@@ -62,40 +101,59 @@ impl Default for QualityThresholds {
     }
 }
 
-/// Configuration for security-related checks.
-
+/// Configuration for security-related network checks.
 #[derive(Debug, Clone, Default)]
 pub struct SecurityConfig {
-    /// If true, the `guard` function will throw an exception if a VPN is detected.
+    /// If true, the reachability engine will flag or block connections if a VPN is detected.
+    ///
+    /// This is useful for region-locked content or compliance requirements.
     pub block_vpn: bool,
     /// If true, performs a check to detect potential DNS hijacking.
-    /// This adds a small latency to each check.
+    ///
+    /// This involves comparing results from the system DNS with a trusted resolver.
+    /// Note: This adds a small amount of latency to each check.
     pub detect_dns_hijack: bool,
 }
 
-/// Configuration for resilience and performance tuning.
+/// Configuration for resilience, stability analysis, and performance tuning.
 #[derive(Debug, Clone)]
 pub struct ResilienceConfig {
-    /// The strategy to use for checking multiple targets.
+    /// The evaluation strategy to use when checking multiple targets.
     pub strategy: CheckStrategy,
     /// The number of consecutive failures of essential targets before the
-    /// circuit breaker opens. A value of 0 disables the circuit breaker.
+    /// circuit breaker opens.
+    ///
+    /// A value of 0 disables the circuit breaker mechanism.
     pub circuit_breaker_threshold: u8,
-    /// The cooldown period in milliseconds after which the circuit breaker
-    /// transitions from 'Open' to 'Half-Open'.
+    /// The cooldown period in milliseconds.
+    ///
+    /// After this time, the circuit breaker transitions from 'Open' to 'Half-Open',
+    /// allowing a trial check to see if the network has recovered.
     pub circuit_breaker_cooldown_ms: u64,
     /// Number of samples to take for jitter and stability analysis.
-    /// Must be greater than 1 to enable jitter calculation.
+    ///
+    /// Higher values provide more accurate stability metrics but increase check duration.
+    /// Must be > 1 to enable jitter calculation.
     pub num_jitter_samples: u8,
     /// The percentage of mean latency that the standard deviation must exceed
-    /// to be considered high jitter, potentially downgrading quality.
+    /// to be flagged as high jitter.
+    ///
+    /// High jitter can downgrade the perceived [ConnectionQuality] to [ConnectionQuality::Unstable].
     pub jitter_threshold_percent: f64,
-    /// If the calculated stability score is less than this value, the quality considered 'Unstable'.
+    /// The minimum stability score (0-100) required to avoid the 'Unstable' quality tag.
     pub stability_thershold: u8,
-    /// The packet loss percentage above which the connection is marked as 'Unstable'.
+    /// The packet loss percentage above which the connection is marked as [ConnectionQuality::Unstable].
     pub critical_packet_loss_precent: f32,
 }
 
+/// Provides a standard resilience configuration balanced for stability and speed.
+///
+/// Defaults:
+/// - Strategy: [CheckStrategy::Race]
+/// - Circuit Breaker: Disabled (threshold 0)
+/// - Cooldown: 1 minute
+/// - Jitter Samples: 5
+/// - Stability Threshold: 80
 impl Default for ResilienceConfig {
     fn default() -> Self {
         Self {
@@ -110,26 +168,37 @@ impl Default for ResilienceConfig {
     }
 }
 
-/// The main configuration for the network reachability engine.
+/// The main configuration object for the network reachability engine.
+///
+/// This struct aggregates all settings including targets, intervals,
+/// quality thresholds, and security/resilience preferences.
 #[derive(Debug, Clone)]
 pub struct NetworkConfiguration {
-    /// A list of network endpoints to check.
+    /// A list of network endpoints ([NetworkTarget]) to be monitored.
     pub targets: Vec<NetworkTarget>,
-    /// The time in milliseconds between automatic periodic checks.
-    /// A value of 0 disables periodic checks.
+    /// The interval in milliseconds between automatic periodic checks.
+    ///
+    /// Set to 0 to disable periodic background checks and rely on manual triggers.
     pub check_interval_ms: u64,
-    /// The duration for which a network report is considered fresh (cached).
+    /// The duration (in milliseconds) for which a network report is cached.
+    ///
+    /// Rapid consecutive calls will return the cached report to save battery and bandwidth.
     pub cache_validity_ms: u64,
-    /// Latency thresholds for determining connection quality.
+    /// Custom latency thresholds for determining connection quality.
     pub quality_threshold: QualityThresholds,
-    /// Security-related settings.
+    /// Security-specific settings such as VPN and DNS hijacking detection.
     pub security: SecurityConfig,
-    /// Resilience and performance tuning settings.
+    /// Resilience settings including circuit breakers and jitter analysis.
     pub resilience: ResilienceConfig,
 }
 
+/// Creates a production-ready default configuration.
+///
+/// The default setup includes:
+/// - Monitoring multiple high-availability targets (Cloudflare and Google).
+/// - Automatic periodic checks every 5 seconds.
+/// - 2-second result caching to prevent redundant probes.
 impl Default for NetworkConfiguration {
-    /// Creates a default configuration with checks against Cloudflare and Google DNS.
     fn default() -> Self {
         Self {
             targets: vec![

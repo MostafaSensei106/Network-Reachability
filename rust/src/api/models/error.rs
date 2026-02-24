@@ -1,8 +1,21 @@
+/// Represents various types of network-related failures encountered during checks.
 #[derive(Debug, Clone)]
 pub enum NetworkError {
+    /// Failed to resolve the target hostname to an IP address.
+    ///
+    /// This usually indicates a DNS server issue or an invalid/non-existent host.
     DnsResolutionError(String),
+    /// A general connection failure (e.g., connection refused, reset by peer).
+    ///
+    /// Contains a descriptive string of the underlying OS or network error.
     ConnectionError(String),
+    /// The operation exceeded the allocated [NetworkTarget::timeout_ms].
+    ///
+    /// This happens when the target is unreachable or the network is extremely slow.
     TimeoutError,
+    /// An unexpected or unhandled error occurred.
+    ///
+    /// This is a catch-all for errors that don't fit into other categories.
     UnknownError(String),
 }
 
