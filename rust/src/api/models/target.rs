@@ -1,35 +1,47 @@
 //! Data structures for defining a network check target.
 
-/// The network protocol to use for a check.
+/// Supported protocols for network reachability checks.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum TargetProtocol {
-    /// Use the Transmission Control Protocol (TCP). This is a reliable, connection-oriented protocol.
+    /// Transmission Control Protocol.
+    ///
+    /// Performs a full 3-way handshake to ensure the port is open and accepting connections.
     Tcp,
-    /// Use the Internet Control Message Protocol (ICMP). This is commonly used for "pinging" hosts.
+    /// Internet Control Message Protocol.
+    ///
+    /// Sends an Echo Request (ping). Requires appropriate OS permissions.
     Icmp,
-    /// Use the Hypertext Transfer Protocol (HTTP).
+    /// Hypertext Transfer Protocol.
+    ///
+    /// Performs a GET or HEAD request and expects a successful status code (2xx/3xx).
     Http,
-    /// Use the Hypertext Transfer Protocol Secure (HTTPS).
+    /// Secure Hypertext Transfer Protocol.
+    ///
+    /// Performs an encrypted request over TLS. Validates the certificate chain by default.
     Https,
 }
 
-/// Defines a single network endpoint to be checked.
+/// Configuration for a specific network endpoint to be monitored.
 #[derive(Debug, Clone)]
 pub struct NetworkTarget {
-    /// A unique, human-readable label for this target (e.g., "Google DNS").
+    /// A human-readable identifier for the target (e.g., "Primary DNS", "API Gateway").
     pub label: String,
-    /// The hostname or IP address of the target.
+    /// The remote address to check. Can be a domain name (google.com) or an IP address (8.8.8.8).
     pub host: String,
-    /// The port number to connect to.
+    /// The destination port for the check (e.g., 80 for HTTP, 443 for HTTPS, 53 for DNS).
     pub port: u16,
-    /// The protocol (TCP or UDP) to use for the check.
+    /// The network protocol to use for the probe.
     pub protocol: TargetProtocol,
-    /// The timeout in milliseconds for this specific target check.
+    /// The maximum time in milliseconds to wait for a response before timing out.
     pub timeout_ms: u64,
-    /// The priority of the target. While not used in the current engine logic,
-    /// it can be used by the caller for sorting or selection. (e.g., 1=High).
+    /// The relative priority of this target (lower numbers = higher priority).
+    ///
+    /// While the current engine treats all targets equally, this field is useful
+    /// for UI sorting or selective checking in future versions.
     pub priority: u8,
-    /// If true, a failure to connect to this target will be considered a critical
-    /// failure, affecting the circuit breaker and potentially the overall check status.
+    /// If true, a failure of this specific target is considered a critical event.
+    ///
+    /// Essential targets trigger the circuit breaker and can disqualify
+    /// the network from being considered "connected" depending on the strategy.
     pub is_essential: bool,
 }

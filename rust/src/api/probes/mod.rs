@@ -11,4 +11,4 @@ pub use captive_portal::check_for_captive_portal;
 pub use dns::detect_dns_hijacking;
 pub use interface::detect_security_and_network_type;
 pub use target::check_target;
-pub use traceroute::trace_route;
+// pub use traceroute::trace_route;

@@ -35,7 +35,6 @@ class NetworkEngineHub extends StatefulWidget {
 
 class _NetworkEngineHubState extends State<NetworkEngineHub> {
   NetworkReport? _report;
-  List<TraceHop>? _tracerouteHops;
   CaptivePortalStatus? _cpStatus;
   StreamSubscription? _statusSub;
   bool _isBusy = false;
@@ -139,11 +138,6 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
           const SizedBox(height: 24),
           _buildSectionHeader('SECURITY & SYSTEM INTERFACE'),
           _buildSecurityInfo(),
-          if (_tracerouteHops != null) ...[
-            const SizedBox(height: 24),
-            _buildSectionHeader('TRACEROUTE PATH'),
-            _buildTracerouteCard(),
-          ],
           const SizedBox(height: 50),
         ],
       ),
@@ -155,9 +149,9 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B).withOpacity(0.5),
+        color: const Color(0xFF1E293B).withAlpha(0x50),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: color.withOpacity(0.3), width: 2),
+        border: Border.all(color: color.withAlpha(0x30), width: 2),
       ),
       child: Column(
         children: [
@@ -230,8 +224,8 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isFailed
-              ? Colors.red.withOpacity(0.3)
-              : Colors.white.withOpacity(0.05),
+              ? Colors.red.withAlpha(0x30)
+              : Colors.white.withAlpha(0x05),
         ),
       ),
       child: ExpansionTile(
@@ -258,7 +252,7 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
             ? Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.cyanAccent.withOpacity(0.1),
+                  color: Colors.cyanAccent.withAlpha(0x10),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
@@ -344,7 +338,7 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B).withOpacity(0.3),
+        color: const Color(0xFF1E293B).withAlpha(0x30),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -403,9 +397,9 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B).withOpacity(0.3),
+        color: const Color(0xFF1E293B).withAlpha(0x30),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withAlpha(0x05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -556,7 +550,6 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
       runSpacing: 10,
       children: [
         _toolButton('GUARD: ACTION', _runGuardDemo, Icons.shield),
-        _toolButton('TRACEROUTE', _runTraceroute, Icons.route),
         _toolButton('PORTAL CHECK', _runPortalCheck, Icons.web),
       ],
     );
@@ -568,9 +561,9 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.cyanAccent.withOpacity(0.05),
+          color: Colors.cyanAccent.withAlpha(0x05),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.cyanAccent.withOpacity(0.1)),
+          border: Border.all(color: Colors.cyanAccent.withAlpha(0x10)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -591,56 +584,6 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
     );
   }
 
-  Widget _buildTracerouteCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.black26,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: _tracerouteHops!
-            .map(
-              (h) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 24,
-                      child: Text(
-                        '${h.hopNumber}',
-                        style: const TextStyle(
-                          color: Colors.white24,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        h.ipAddress,
-                        style: const TextStyle(
-                          color: Colors.cyanAccent,
-                          fontSize: 12,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                    ),
-                    Text(
-                      h.latencyMs != null ? '${h.latencyMs}ms' : '*',
-                      style: const TextStyle(
-                        color: Colors.white60,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-            .toList(),
-      ),
-    );
-  }
-
   // --- Logic Execution ---
 
   Future<void> _runGuardDemo() async {
@@ -656,19 +599,6 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
     } finally {
       setState(() => _isBusy = false);
     }
-  }
-
-  Future<void> _runTraceroute() async {
-    setState(() => _isBusy = true);
-    final hops = await NetworkReachability.instance.traceRoute(
-      host: '8.8.8.8',
-      maxHops: 20,
-      timeoutPerHopMs: BigInt.from(1000),
-    );
-    setState(() {
-      _tracerouteHops = hops;
-      _isBusy = false;
-    });
   }
 
   Future<void> _runPortalCheck() async {

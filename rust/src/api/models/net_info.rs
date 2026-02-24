@@ -4,83 +4,95 @@ use flutter_rust_bridge::frb;
 
 use crate::api::constants::LibConstants;
 
-/// Represents the type of physical or logical network connection.
+/// Represents the physical or logical medium of the active network connection.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ConnectionType {
-    /// A WiFi connection.
+    /// Connected via a wireless local area network (WiFi).
     Wifi,
-    /// A mobile data connection (e.g., LTE, 5G).
+    /// Connected via mobile data (e.g., 4G LTE, 5G NR).
     Cellular,
-    /// A wired Ethernet connection.
+    /// Connected via a physical Ethernet cable.
     Ethernet,
-    /// A Virtual Private Network connection.
+    /// Connected through a Virtual Private Network (VPN) tunnel.
     Vpn,
-    /// A Bluetooth tethering connection.
+    /// Connected via Bluetooth tethering.
     Bluetooth,
-
-    /// A Loopback
+    /// A local loopback interface (typically 127.0.0.1).
     Loopback,
-    /// The connection type could not be determined.
+    /// The connection type could not be identified.
     Unknown,
 }
 
 impl Default for ConnectionType {
+    /// Returns [ConnectionType::Unknown] as the fallback default.
     fn default() -> Self {
         return Self::Unknown;
     }
 }
 
-/// The result of a captive portal check.
+/// The result of a captive portal detection probe.
+///
+/// Captive portals are commonly found on public WiFi networks (e.g., cafes, airports)
+/// where a login or "Terms of Service" acceptance is required before internet access is granted.
 #[derive(Debug, Clone)]
 pub struct CaptivePortalStatus {
-    /// True if a captive portal was detected (i.e., the probe was redirected).
+    /// True if the probe was redirected, indicating a captive portal is intercepting traffic.
     pub is_captive_portal: bool,
-    /// The URL that the probe was redirected to, if a portal was detected.
+    /// The destination URL of the redirection, if available.
+    ///
+    /// This is typically the login or landing page of the portal.
     pub redirect_url: Option<String>,
 }
 
-/// Represents a single hop in a traceroute path.
+/// Represents a single diagnostic hop in a traceroute operation.
 #[derive(Debug, Clone)]
 pub struct TraceHop {
-    /// The hop number in the sequence (Time-To-Live value).
+    /// The sequential hop number (starting from 1), corresponding to the Time-To-Live (TTL).
     pub hop_number: u8,
-    /// The IP address of the router at this hop. Can be "*" if the hop timed out.
+    /// The IP address of the router or gateway at this hop.
+    ///
+    /// Will be "*" if the hop failed to respond within the timeout.
     pub ip_address: String,
-    /// The hostname resolved from the IP address, if available.
+    /// The reverse-DNS hostname associated with the IP address, if it can be resolved.
     pub hostname: Option<String>,
-    /// The round-trip time to this hop in milliseconds.
+    /// The measured round-trip time (RTT) to this hop in milliseconds.
     pub latency_ms: Option<u64>,
 }
 
-/// A report of security-related attributes of the current network connection.
+/// Internal representation of security-related attributes for the current connection.
 #[derive(Debug, Clone)]
 pub struct SecurityFlags {
-    /// True if the active interface is a known VPN/tunnel type (e.g., 'tun', 'ppp').
+    /// True if the active interface is identified as a VPN or tunnel (e.g., 'tun0', 'utun').
     pub is_vpn_detected: bool,
-    /// True if a DNS mismatch was found between system and trusted resolvers,
-    /// indicating a potential DNS hijacking or spoofing attack.
+    /// True if DNS results differ significantly from trusted resolvers, suggesting tampering.
     pub is_dns_spoofed: bool,
-    /// True if a system-level proxy is detected (future implementation).
+    /// True if a system-level HTTP/HTTPS proxy is detected.
     pub is_proxy_detected: bool,
-    /// The name of the active network interface (e.g., 'wlan0', 'tun0').
+    /// The system-assigned name of the active network interface (e.g., 'en0', 'wlan0').
     pub interface_name: String,
 }
 
+/// The bridge-exported result containing security-related attributes.
+///
+/// This is an opaque type optimized for transfer across the FFI boundary.
 #[frb(opaque)]
 #[derive(Debug, Clone)]
-
 pub struct SecurityFlagsResult {
-    /// True if the active interface is a known VPN/tunnel type (e.g., 'tun', 'ppp').
+    /// True if the active interface is identified as a VPN or tunnel (e.g., 'tun0', 'utun').
     pub is_vpn_detected: bool,
-    /// True if a DNS mismatch was found between system and trusted resolvers,
-    /// indicating a potential DNS hijacking or spoofing attack.
+    /// True if DNS results differ significantly from trusted resolvers, suggesting tampering.
     pub is_dns_spoofed: bool,
-    /// True if a system-level proxy is detected (future implementation).
+    /// True if a system-level HTTP/HTTPS proxy is detected.
     pub is_proxy_detected: bool,
-    /// The name of the active network interface (e.g., 'wlan0', 'tun0').
+    /// The system-assigned name of the active network interface (e.g., 'en0', 'wlan0').
     pub interface_name: String,
 }
 
+/// Returns a "safe" default state:
+/// - No VPN detected.
+/// - No DNS spoofing detected.
+/// - No proxy detected.
+/// - Interface name set to a generic "unknown".
 impl Default for SecurityFlagsResult {
     fn default() -> Self {
         Self {
@@ -92,6 +104,11 @@ impl Default for SecurityFlagsResult {
     }
 }
 
+/// Returns a "safe" default state:
+/// - No VPN detected.
+/// - No DNS spoofing detected.
+/// - No proxy detected.
+/// - Interface name set to a generic "unknown".
 impl Default for SecurityFlags {
     fn default() -> Self {
         Self {
