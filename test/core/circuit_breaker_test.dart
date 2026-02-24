@@ -71,7 +71,8 @@ void main() {
               resilience: resilience, cacheValidityMs: BigInt.zero));
 
       // 1. Force open state
-      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(isConnected: false);
+      mockApi.mockNetworkReport.status =
+          mockApi.mockNetworkReport.status.copyWith(isConnected: false);
       mockApi.mockNetworkReport.targetReports = [
         TargetReport(
             label: 'e',
@@ -88,7 +89,8 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 150));
 
       // 3. Success probe: Half-Open -> Closed
-      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(isConnected: true);
+      mockApi.mockNetworkReport.status =
+          mockApi.mockNetworkReport.status.copyWith(isConnected: true);
       mockApi.mockNetworkReport.targetReports = [
         TargetReport(
             label: 'e',
@@ -116,7 +118,8 @@ void main() {
               resilience: resilience, cacheValidityMs: BigInt.zero));
 
       // 1. Force open
-      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(isConnected: false);
+      mockApi.mockNetworkReport.status =
+          mockApi.mockNetworkReport.status.copyWith(isConnected: false);
       mockApi.mockNetworkReport.targetReports = [
         TargetReport(
             label: 'e',

@@ -80,10 +80,11 @@ Future&lt;NetworkReport&gt; crateApiEngineCheckNetwork(
       final serializer = SseSerializer(generalizedFrbRustBinding);
       sse_encode_box_autoadd_network_configuration(config, serializer);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 3, port: port_);
+          funcId: 23, port: port_);
     },
     codec: SseCodec(
-      decodeSuccessData: sse_decode_network_report,
+      decodeSuccessData:
+          sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport,
       decodeErrorData: null,
     ),
     constMeta: kCrateApiEngineCheckNetworkConstMeta,

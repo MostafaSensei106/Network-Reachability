@@ -77,7 +77,7 @@ Future&lt;ConnectionType&gt; crateApiModelsNetInfoConnectionTypeDefault() {
     callFfi: (port_) {
       final serializer = SseSerializer(generalizedFrbRustBinding);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 5, port: port_);
+          funcId: 27, port: port_);
     },
     codec: SseCodec(
       decodeSuccessData: sse_decode_connection_type,

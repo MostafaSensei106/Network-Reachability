@@ -66,9 +66,9 @@
   <p>The main entry point for running a comprehensive network check.</p>
 <p>This function orchestrates the entire check process:</p>
 <ol>
-<li>Collects latency samples via <code>collect_network_samples</code>.</li>
-<li>Computes <a href="../core_rust_api_models_report/LatencyStats-class.html">LatencyStats</a>.</li>
-<li>Evaluates <a href="../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a>.</li>
+<li>Collects latency samples via <code>sampler::collect_network_samples</code>.</li>
+<li>Computes statistics via <code>analysis::compute_latency_stats</code>.</li>
+<li>Evaluates quality via <code>analysis::evaluate_network_quality</code>.</li>
 <li>Detects interface security and type.</li>
 <li>Compiles a final <a href="../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a>.</li>
 </ol>

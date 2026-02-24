@@ -59,7 +59,7 @@
 
     
 <section class="desc markdown">
-  <p>The network protocol to use for a check.</p>
+  <p>Supported protocols for network reachability checks.</p>
 </section>
 
 
@@ -98,19 +98,8 @@
 
 </dt>
 <dd>
-  <p>Use the Transmission Control Protocol (TCP). This is a reliable, connection-oriented protocol.</p>
-  
-
-</dd>
-
-            <dt id="udp" class="constant">
-    <span class="name ">udp</span>
-  <span class="signature">&#8594; const <a href="../core_rust_api_models_target/TargetProtocol.html">TargetProtocol</a></span>
-  
-
-</dt>
-<dd>
-  <p>Use the User Datagram Protocol (UDP). This is a fast, connectionless protocol.</p>
+  <p>Transmission Control Protocol.</p>
+<p>Performs a full 3-way handshake to ensure the port is open and accepting connections.</p>
   
 
 </dd>
@@ -122,7 +111,8 @@
 
 </dt>
 <dd>
-  <p>Use the Internet Control Message Protocol (ICMP). This is commonly used for "pinging" hosts.</p>
+  <p>Internet Control Message Protocol.</p>
+<p>Sends an Echo Request (ping). Requires appropriate OS permissions.</p>
   
 
 </dd>
@@ -134,7 +124,8 @@
 
 </dt>
 <dd>
-  <p>Use the Hypertext Transfer Protocol (HTTP).</p>
+  <p>Hypertext Transfer Protocol.</p>
+<p>Performs a GET or HEAD request and expects a successful status code (2xx/3xx).</p>
   
 
 </dd>
@@ -146,7 +137,8 @@
 
 </dt>
 <dd>
-  <p>Use the Hypertext Transfer Protocol Secure (HTTPS).</p>
+  <p>Secure Hypertext Transfer Protocol.</p>
+<p>Performs an encrypted request over TLS. Validates the certificate chain by default.</p>
   
 
 </dd>

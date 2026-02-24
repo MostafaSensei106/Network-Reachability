@@ -67,7 +67,8 @@ void main() {
             mockApi.mockDefaultConfig.copyWith(cacheValidityMs: BigInt.zero),
       );
 
-      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(
+      mockApi.mockNetworkReport.status =
+          mockApi.mockNetworkReport.status.copyWith(
         quality: ConnectionQuality.poor,
       );
 
@@ -87,7 +88,8 @@ void main() {
             mockApi.mockDefaultConfig.copyWith(cacheValidityMs: BigInt.zero),
       );
 
-      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(
+      mockApi.mockNetworkReport.status =
+          mockApi.mockNetworkReport.status.copyWith(
         isConnected: false,
       );
 
@@ -100,7 +102,8 @@ void main() {
     test('Allows action when connection is sufficient', () async {
       await NetworkReachability.init();
 
-      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(
+      mockApi.mockNetworkReport.status =
+          mockApi.mockNetworkReport.status.copyWith(
         isConnected: true,
         quality: ConnectionQuality.excellent,
       );
@@ -109,6 +112,5 @@ void main() {
           await NetworkReachability.instance.guard(action: () async => 100);
       expect(result, 100);
     });
-
   });
 }

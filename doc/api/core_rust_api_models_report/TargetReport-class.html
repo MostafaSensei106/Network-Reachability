@@ -54,7 +54,7 @@
 
     
 <section class="desc markdown">
-  <p>The result of a check against a single network target.</p>
+  <p>Detailed outcome of a connectivity check against a specific <a href="../core_rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a>.</p>
 </section>
 
 
@@ -85,7 +85,7 @@
           <span class="name"><a href="../core_rust_api_models_report/TargetReport/TargetReport.html">TargetReport</a></span><span class="signature">({<span class="parameter" id="-param-label"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">label</span>, </span><span class="parameter" id="-param-success"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">success</span>, </span><span class="parameter" id="-param-latencyMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">latencyMs</span>, </span><span class="parameter" id="-param-error"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">error</span>, </span><span class="parameter" id="-param-isEssential"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isEssential</span></span>})</span>
         </dt>
         <dd>
-          Creates a new <a href="../core_rust_api_models_report/TargetReport-class.html">TargetReport</a> instance.
+          
             <div class="constructor-modifier features">const</div>
         </dd>
     </dl>
@@ -103,7 +103,7 @@
 
 </dt>
 <dd>
-  An error message if the check failed.
+  A descriptive error message if the check failed.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -127,7 +127,7 @@
 
 </dt>
 <dd>
-  Whether this target is considered essential for the overall check.
+  Whether this target was marked as essential for the overall network status.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -139,7 +139,7 @@
 
 </dt>
 <dd>
-  The unique label for the target.
+  The unique label identifying the target.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -151,7 +151,7 @@
 
 </dt>
 <dd>
-  The latency of the successful check in milliseconds.
+  The measured latency in milliseconds.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -175,7 +175,7 @@
 
 </dt>
 <dd>
-  True if the check was successful.
+  Indicates whether the target was successfully reached using the specified protocol.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>

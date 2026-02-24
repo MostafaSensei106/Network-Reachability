@@ -54,7 +54,7 @@
 
     
 <section class="desc markdown">
-  <p>Configuration for resilience and performance tuning.</p>
+  <p>Configuration for resilience, stability analysis, and performance tuning.</p>
 </section>
 
 
@@ -85,7 +85,7 @@
           <span class="name"><a href="../core_rust_api_models_config/ResilienceConfig/ResilienceConfig.html">ResilienceConfig</a></span><span class="signature">({<span class="parameter" id="-param-strategy"><span>required</span> <span class="type-annotation"><a href="../core_rust_api_models_config/CheckStrategy.html">CheckStrategy</a></span> <span class="parameter-name">strategy</span>, </span><span class="parameter" id="-param-circuitBreakerThreshold"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">circuitBreakerThreshold</span>, </span><span class="parameter" id="-param-circuitBreakerCooldownMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">circuitBreakerCooldownMs</span>, </span><span class="parameter" id="-param-numJitterSamples"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">numJitterSamples</span>, </span><span class="parameter" id="-param-jitterThresholdPercent"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">jitterThresholdPercent</span>, </span><span class="parameter" id="-param-stabilityThershold"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">stabilityThershold</span>, </span><span class="parameter" id="-param-criticalPacketLossPrecent"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">criticalPacketLossPrecent</span></span>})</span>
         </dt>
         <dd>
-          Configuration for resilience and performance tuning.
+          
             <div class="constructor-modifier features">const</div>
         </dd>
     </dl>
@@ -103,8 +103,7 @@
 
 </dt>
 <dd>
-  The cooldown period in milliseconds after which the circuit breaker
-transitions from 'Open' to 'Half-Open'.
+  The cooldown period in milliseconds.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -117,7 +116,7 @@ transitions from 'Open' to 'Half-Open'.
 </dt>
 <dd>
   The number of consecutive failures of essential targets before the
-circuit breaker opens. A value of 0 disables the circuit breaker.
+circuit breaker opens.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -129,7 +128,7 @@ circuit breaker opens. A value of 0 disables the circuit breaker.
 
 </dt>
 <dd>
-  The packet loss percentage above which the connection is marked as 'Unstable'.
+  The packet loss percentage above which the connection is marked as <code>ConnectionQuality::Unstable</code>.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -154,7 +153,7 @@ circuit breaker opens. A value of 0 disables the circuit breaker.
 </dt>
 <dd>
   The percentage of mean latency that the standard deviation must exceed
-to be considered high jitter, potentially downgrading quality.
+to be flagged as high jitter.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -167,7 +166,6 @@ to be considered high jitter, potentially downgrading quality.
 </dt>
 <dd>
   Number of samples to take for jitter and stability analysis.
-Must be greater than 1 to enable jitter calculation.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -191,7 +189,7 @@ Must be greater than 1 to enable jitter calculation.
 
 </dt>
 <dd>
-  If the calculated stability score is less than this value, the quality considered 'Unstable'.
+  The minimum stability score (0-100) required to avoid the 'Unstable' quality tag.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -203,7 +201,7 @@ Must be greater than 1 to enable jitter calculation.
 
 </dt>
 <dd>
-  The strategy to use for checking multiple targets.
+  The evaluation strategy to use when checking multiple targets.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -296,7 +294,7 @@ Must be greater than 1 to enable jitter calculation.
 
 </dt>
 <dd>
-  Returns the default qresilience config.
+  Provides a standard resilience configuration balanced for stability and speed.
   
 
 </dd>

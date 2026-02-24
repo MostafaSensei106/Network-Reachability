@@ -54,7 +54,9 @@
 
     
 <section class="desc markdown">
-  <p>A collection of statistical metrics for a series of latency samples.</p>
+  <p>A suite of statistical metrics derived from multiple latency samples.</p>
+<p>These metrics provide a deeper look into the stability and consistency
+of the connection beyond a simple "is it up?" check.</p>
 </section>
 
 
@@ -85,7 +87,7 @@
           <span class="name"><a href="../core_rust_api_models_report/LatencyStats/LatencyStats.html">LatencyStats</a></span><span class="signature">({<span class="parameter" id="-param-latencyMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">latencyMs</span>, </span><span class="parameter" id="-param-jitterMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">jitterMs</span>, </span><span class="parameter" id="-param-packetLossPercent"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">packetLossPercent</span>, </span><span class="parameter" id="-param-minLatencyMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">minLatencyMs</span>, </span><span class="parameter" id="-param-avgLatencyMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">avgLatencyMs</span>, </span><span class="parameter" id="-param-maxLatencyMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">maxLatencyMs</span>, </span><span class="parameter" id="-param-stabilityScore"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">stabilityScore</span></span>})</span>
         </dt>
         <dd>
-          Creates a new <a href="../core_rust_api_models_report/LatencyStats-class.html">LatencyStats</a> instance.
+          
             <div class="constructor-modifier features">const</div>
         </dd>
     </dl>
@@ -103,7 +105,7 @@
 
 </dt>
 <dd>
-  The average latency of the sample set.
+  The arithmetic mean of all successful latency samples.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -127,7 +129,7 @@
 
 </dt>
 <dd>
-  The standard deviation of the latency samples, representing jitter.
+  The standard deviation of latency samples, measuring "jitter".
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -139,7 +141,7 @@
 
 </dt>
 <dd>
-  The final, representative latency value, typically the mean.
+  The representative latency value for this report (usually the mean or median of samples).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -151,7 +153,7 @@
 
 </dt>
 <dd>
-  The maximum latency recorded in the sample set.
+  The highest latency recorded across all samples.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -163,7 +165,7 @@
 
 </dt>
 <dd>
-  The minimum latency recorded in the sample set.
+  The lowest latency recorded across all samples.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -175,7 +177,7 @@
 
 </dt>
 <dd>
-  The percentage of failed samples out of the total expected.
+  The percentage of samples that failed to return a response.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -199,8 +201,7 @@
 
 </dt>
 <dd>
-  A calculated score from 0-100 representing connection stability,
-factoring in jitter, packet loss, and latency spikes.
+  A composite score from 0 (broken) to 100 (perfect) representing overall stability.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>

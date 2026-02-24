@@ -49,13 +49,11 @@
     data-below-sidebar="core_rust_api_models_report&#47;NetworkReport-class-sidebar.html">
     <div>
 <h1><span class="kind-class">NetworkReport</span> class 
+    <a href="https://dart.dev/language/class-modifiers#abstract" class="feature feature-abstract" title="This type can not be directly constructed.">abstract</a>
  
 </h1></div>
 
     
-<section class="desc markdown">
-  <p>The top-level report containing all information from a comprehensive network check.</p>
-</section>
 
 
     <section>
@@ -63,8 +61,18 @@
         
 
         
+  <dt>Implemented types</dt>
+  <dd>
+    <ul class="comma-separated clazz-relationships">
+        <li><a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated_web/RustOpaqueInterface-class.html">RustOpaqueInterface</a></li>
+    </ul>
+  </dd>
         
 
+          <dt>Implementers</dt>
+          <dd><ul class="comma-separated clazz-relationships">
+              <li><a href="../core_rust_frb_generated/NetworkReportImpl-class.html">NetworkReportImpl</a></li>
+          </ul></dd>
 
         
   <dt>Available extensions</dt>
@@ -82,11 +90,10 @@
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
         <dt id="NetworkReport.new" class="callable">
-          <span class="name"><a href="../core_rust_api_models_report/NetworkReport/NetworkReport.html">NetworkReport</a></span><span class="signature">({<span class="parameter" id="-param-timestampMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">timestampMs</span>, </span><span class="parameter" id="-param-status"><span>required</span> <span class="type-annotation"><a href="../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span> <span class="parameter-name">status</span>, </span><span class="parameter" id="-param-connectionType"><span>required</span> <span class="type-annotation"><a href="../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span> <span class="parameter-name">connectionType</span>, </span><span class="parameter" id="-param-securityFlags"><span>required</span> <span class="type-annotation"><a href="../core_rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a></span> <span class="parameter-name">securityFlags</span>, </span><span class="parameter" id="-param-targetReports"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_report/TargetReport-class.html">TargetReport</a></span>&gt;</span></span> <span class="parameter-name">targetReports</span></span>})</span>
+          <span class="name"><a href="../core_rust_api_models_report/NetworkReport/NetworkReport.html">NetworkReport</a></span><span class="signature">()</span>
         </dt>
         <dd>
-          Creates a new <a href="../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a> instance.
-            <div class="constructor-modifier features">const</div>
+          
         </dd>
     </dl>
   </section>
@@ -98,25 +105,37 @@
     <dl class="properties">
         <dt id="connectionType" class="property">
   <span class="name"><a href="../core_rust_api_models_report/NetworkReport/connectionType.html">connectionType</a></span>
-  <span class="signature">&#8594; <a href="../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span>
+  <span class="signature">&#8596; <a href="../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span>
   
 
 </dt>
 <dd>
-  The detected type of the active network connection (e.g., WiFi, Cellular).
-  <div class="features"><span class="feature">final</span></div>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
 
 </dd>
 
-        <dt id="hashCode" class="property">
-  <span class="name"><a href="../core_rust_api_models_report/NetworkReport/hashCode.html">hashCode</a></span>
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></span>
   <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
   
 
 </dt>
-<dd>
+<dd class="inherited">
   The hash code for this object.
-  <div class="features"><span class="feature">no setter</span><span class="feature">override</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="isDisposed" class="property inherited">
+  <span class="name"><a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated_web/RustOpaqueInterface/isDisposed.html">isDisposed</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  Whether the underlying <code>Arc</code> is disposed.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
@@ -132,51 +151,51 @@
 
 </dd>
 
-        <dt id="securityFlags" class="property">
-  <span class="name"><a href="../core_rust_api_models_report/NetworkReport/securityFlags.html">securityFlags</a></span>
-  <span class="signature">&#8594; <a href="../core_rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a></span>
+        <dt id="securityFlagsResult" class="property">
+  <span class="name"><a href="../core_rust_api_models_report/NetworkReport/securityFlagsResult.html">securityFlagsResult</a></span>
+  <span class="signature">&#8596; <a href="../core_rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a></span>
   
 
 </dt>
 <dd>
-  Security-related flags for the connection (e.g., VPN, DNS spoofing).
-  <div class="features"><span class="feature">final</span></div>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
 
 </dd>
 
         <dt id="status" class="property">
   <span class="name"><a href="../core_rust_api_models_report/NetworkReport/status.html">status</a></span>
-  <span class="signature">&#8594; <a href="../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span>
+  <span class="signature">&#8596; <a href="../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span>
   
 
 </dt>
 <dd>
-  The high-level status and quality summary of the network connection.
-  <div class="features"><span class="feature">final</span></div>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
 
 </dd>
 
         <dt id="targetReports" class="property">
   <span class="name"><a href="../core_rust_api_models_report/NetworkReport/targetReports.html">targetReports</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_report/TargetReport-class.html">TargetReport</a></span>&gt;</span></span>
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_report/TargetReport-class.html">TargetReport</a></span>&gt;</span></span>
   
 
 </dt>
 <dd>
-  A list of detailed reports for each individual target that was checked.
-  <div class="features"><span class="feature">final</span></div>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
 
 </dd>
 
         <dt id="timestampMs" class="property">
   <span class="name"><a href="../core_rust_api_models_report/NetworkReport/timestampMs.html">timestampMs</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span>
+  <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span>
   
 
 </dt>
 <dd>
-  The timestamp (in milliseconds since epoch) when the check was initiated.
-  <div class="features"><span class="feature">final</span></div>
+  
+  <div class="features"><span class="feature">getter/setter pair</span></div>
 
 </dd>
 
@@ -190,7 +209,7 @@
     <h2>Methods</h2>
     <dl class="callables">
         <dt id="copyWith" class="callable">
-  <span class="name"><a href="../core_extensions_model_extensions/NetworkReportCopyWith/copyWith.html">copyWith</a></span><span class="signature">(<wbr>{<span class="parameter" id="copyWith-param-timestampMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">timestampMs</span>, </span><span class="parameter" id="copyWith-param-status"><span class="type-annotation"><a href="../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a>?</span> <span class="parameter-name">status</span>, </span><span class="parameter" id="copyWith-param-connectionType"><span class="type-annotation"><a href="../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a>?</span> <span class="parameter-name">connectionType</span>, </span><span class="parameter" id="copyWith-param-securityFlags"><span class="type-annotation"><a href="../core_rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a>?</span> <span class="parameter-name">securityFlags</span>, </span><span class="parameter" id="copyWith-param-targetReports"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_report/TargetReport-class.html">TargetReport</a></span>&gt;</span>?</span> <span class="parameter-name">targetReports</span></span>})
+  <span class="name"><a href="../core_extensions_model_extensions/NetworkReportCopyWith/copyWith.html">copyWith</a></span><span class="signature">(<wbr>{<span class="parameter" id="copyWith-param-timestampMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">timestampMs</span>, </span><span class="parameter" id="copyWith-param-status"><span class="type-annotation"><a href="../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a>?</span> <span class="parameter-name">status</span>, </span><span class="parameter" id="copyWith-param-connectionType"><span class="type-annotation"><a href="../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a>?</span> <span class="parameter-name">connectionType</span>, </span><span class="parameter" id="copyWith-param-securityFlagsResult"><span class="type-annotation"><a href="../core_rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a>?</span> <span class="parameter-name">securityFlagsResult</span>, </span><span class="parameter" id="copyWith-param-targetReports"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../core_rust_api_models_report/TargetReport-class.html">TargetReport</a></span>&gt;</span>?</span> <span class="parameter-name">targetReports</span>, </span><span class="parameter" id="copyWith-param-securityFlags"><span>required</span> <span class="type-annotation">dynamic</span> <span class="parameter-name">securityFlags</span></span>})
     <span class="returntype parameter">&#8594; <a href="../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span>
   </span>
   
@@ -203,6 +222,19 @@
       </p>
   Creates a copy of <a href="../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a> with the given fields replaced by the new values.
   
+
+</dd>
+
+        <dt id="dispose" class="callable inherited">
+  <span class="name"><a href="https://pub.dev/documentation/flutter_rust_bridge/2.11.1/flutter_rust_bridge_for_generated_web/RustOpaqueInterface/dispose.html">dispose</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Dispose the underlying <code>Arc</code>.
+  <div class="features"><span class="feature">inherited</span></div>
 
 </dd>
 
@@ -236,20 +268,20 @@
   </section>
     
   <section
-      class="summary offset-anchor"
+      class="summary offset-anchor inherited"
       id="operators">
     <h2>Operators</h2>
     <dl class="callables">
-        <dt id="operator ==" class="callable">
-  <span class="name"><a href="../core_rust_api_models_report/NetworkReport/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
   </span>
   
 
 </dt>
-<dd>
+<dd class="inherited">
   The equality operator.
-  <div class="features"><span class="feature">override</span></div>
+  <div class="features"><span class="feature">inherited</span></div>
 
 </dd>
 

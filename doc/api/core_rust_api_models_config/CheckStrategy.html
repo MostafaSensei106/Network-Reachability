@@ -59,7 +59,9 @@
 
     
 <section class="desc markdown">
-  <p>Defines the strategy for evaluating multiple targets.</p>
+  <p>Defines the strategy used when evaluating multiple network targets.</p>
+<p>This strategy determines how the engine decides if the network is "up"
+when multiple targets are configured.</p>
 </section>
 
 
@@ -98,8 +100,10 @@
 
 </dt>
 <dd>
-  <p>The first target to respond successfully determines the result.
-This is faster but less reliable.</p>
+  <p>The first target to respond successfully determines the result.</p>
+<p>This is the fastest strategy as it doesn't wait for other targets.
+It's ideal for performance-sensitive applications where any connectivity
+to a trusted endpoint is sufficient.</p>
   
 
 </dd>
@@ -112,7 +116,10 @@ This is faster but less reliable.</p>
 </dt>
 <dd>
   <p>A majority of targets must respond successfully for the check to be
-considered a success. This is slower but more robust.</p>
+considered a success.</p>
+<p>This strategy is more robust against localized outages or transient
+failures of individual endpoints. It is slower than <code>Race</code> because
+it may wait for multiple responses.</p>
   
 
 </dd>

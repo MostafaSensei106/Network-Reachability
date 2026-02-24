@@ -59,7 +59,7 @@
         <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
     </ol>
   </div>
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">(<span class="field"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a></span>, </span><span class="field"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span></span>)</span>&gt;</span></span>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">(<span class="field"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a></span>, </span><span class="field"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span></span>)</span>&gt;</span></span>
 <span class="name ">crateApiProbesInterfaceDetectSecurityAndNetworkType</span>(<wbr>)
 
       <div class="features"><span class="feature">override</span></div>
@@ -72,16 +72,17 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
-Future&lt;(SecurityFlags, ConnectionType)&gt;
+Future&lt;(SecurityFlagsResult, ConnectionType)&gt;
     crateApiProbesInterfaceDetectSecurityAndNetworkType() {
   return handler.executeNormal(NormalTask(
     callFfi: (port_) {
       final serializer = SseSerializer(generalizedFrbRustBinding);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 7, port: port_);
+          funcId: 29, port: port_);
     },
     codec: SseCodec(
-      decodeSuccessData: sse_decode_record_security_flags_connection_type,
+      decodeSuccessData:
+          sse_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type,
       decodeErrorData: null,
     ),
     constMeta: kCrateApiProbesInterfaceDetectSecurityAndNetworkTypeConstMeta,

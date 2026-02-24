@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">(<span class="field"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a></span>, </span><span class="field"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span></span>)</span>&gt;</span></span>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">(<span class="field"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a></span>, </span><span class="field"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span></span>)</span>&gt;</span></span>
 <span class="name ">detectSecurityAndNetworkType</span>(<wbr>)
 
       
@@ -69,8 +69,9 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;(SecurityFlags, ConnectionType)&gt; detectSecurityAndNetworkType() =&gt;
-    interface_probe.detectSecurityAndNetworkType();</code></pre>
+  <pre class="language-dart"><code class="language-dart">Future&lt;(SecurityFlagsResult, ConnectionType)&gt;
+    detectSecurityAndNetworkType() =&gt;
+        interface_probe.detectSecurityAndNetworkType();</code></pre>
 </section>
 
 

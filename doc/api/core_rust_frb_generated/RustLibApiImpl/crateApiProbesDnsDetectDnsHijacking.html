@@ -79,7 +79,7 @@ Future&lt;bool&gt; crateApiProbesDnsDetectDnsHijacking({required String domain})
       final serializer = SseSerializer(generalizedFrbRustBinding);
       sse_encode_String(domain, serializer);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 6, port: port_);
+          funcId: 28, port: port_);
     },
     codec: SseCodec(
       decodeSuccessData: sse_decode_bool,

@@ -59,7 +59,7 @@
 
     
 <section class="desc markdown">
-  <p>Represents the type of physical or logical network connection.</p>
+  <p>Represents the physical or logical medium of the active network connection.</p>
 </section>
 
 
@@ -98,7 +98,7 @@
 
 </dt>
 <dd>
-  <p>A WiFi connection.</p>
+  <p>Connected via a wireless local area network (WiFi).</p>
   
 
 </dd>
@@ -110,7 +110,7 @@
 
 </dt>
 <dd>
-  <p>A mobile data connection (e.g., LTE, 5G).</p>
+  <p>Connected via mobile data (e.g., 4G LTE, 5G NR).</p>
   
 
 </dd>
@@ -122,7 +122,7 @@
 
 </dt>
 <dd>
-  <p>A wired Ethernet connection.</p>
+  <p>Connected via a physical Ethernet cable.</p>
   
 
 </dd>
@@ -134,7 +134,7 @@
 
 </dt>
 <dd>
-  <p>A Virtual Private Network connection.</p>
+  <p>Connected through a Virtual Private Network (VPN) tunnel.</p>
   
 
 </dd>
@@ -146,7 +146,7 @@
 
 </dt>
 <dd>
-  <p>A Bluetooth tethering connection.</p>
+  <p>Connected via Bluetooth tethering.</p>
   
 
 </dd>
@@ -158,7 +158,7 @@
 
 </dt>
 <dd>
-  <p>A Loopback</p>
+  <p>A local loopback interface (typically 127.0.0.1).</p>
   
 
 </dd>
@@ -170,7 +170,7 @@
 
 </dt>
 <dd>
-  <p>The connection type could not be determined.</p>
+  <p>The connection type could not be identified.</p>
   
 
 </dd>
@@ -307,7 +307,7 @@
 
 </dt>
 <dd>
-  Return default Connection type defaults.
+  Returns <code>ConnectionType::Unknown</code> as the fallback default.
   
 
 </dd>

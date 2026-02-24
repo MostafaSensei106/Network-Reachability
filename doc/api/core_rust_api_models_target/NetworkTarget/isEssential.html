@@ -62,8 +62,9 @@
       </section>
       
 <section class="desc markdown">
-  <p>If true, a failure to connect to this target will be considered a critical
-failure, affecting the circuit breaker and potentially the overall check status.</p>
+  <p>If true, a failure of this specific target is considered a critical event.</p>
+<p>Essential targets trigger the circuit breaker and can disqualify
+the network from being considered "connected" depending on the strategy.</p>
 </section>
 
       
