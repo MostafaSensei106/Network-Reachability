@@ -89,7 +89,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  The result of a captive portal check.
+  The result of a captive portal detection probe.
 </dd>
 
           <dt id="NetworkConfiguration">
@@ -97,7 +97,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  The main configuration for the network reachability engine.
+  The main configuration object for the network reachability engine.
 </dd>
 
           <dt id="NetworkReachability">
@@ -113,7 +113,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  The top-level report containing all information from a comprehensive network check.
+  
 </dd>
 
           <dt id="NetworkStatus">
@@ -121,7 +121,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  A high-level summary of the network state at a given time.
+  A high-level summary of the network's current state.
 </dd>
 
           <dt id="NetworkTarget">
@@ -129,7 +129,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  Defines a single network endpoint to be checked.
+  Configuration for a specific network endpoint to be monitored.
 </dd>
 
           <dt id="QualityThresholds">
@@ -145,7 +145,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  Configuration for resilience and performance tuning.
+  Configuration for resilience, stability analysis, and performance tuning.
 </dd>
 
           <dt id="RustLib">
@@ -161,7 +161,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  Configuration for security-related checks.
+  Configuration for security-related network checks.
 </dd>
 
           <dt id="SecurityFlags">
@@ -169,7 +169,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  A report of security-related attributes of the current network connection.
+  Internal representation of security-related attributes for the current connection.
 </dd>
 
           <dt id="TargetReport">
@@ -177,15 +177,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  The result of a check against a single network target.
-</dd>
-
-          <dt id="TraceHop">
-  <span class="name "><a href="../core_rust_api_models_net_info/TraceHop-class.html">TraceHop</a></span> 
-
-</dt>
-<dd>
-  Represents a single hop in a traceroute path.
+  Detailed outcome of a connectivity check against a specific <a href="../core_rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a>.
 </dd>
 
       </dl>
@@ -199,7 +191,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  Defines the strategy for evaluating multiple targets.
+  Defines the strategy used when evaluating multiple network targets.
 </dd>
 
           <dt id="ConnectionQuality">
@@ -207,7 +199,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  Represents the perceived quality of the network connection.
+  Represents the perceived quality of the network connection based on latency and stability.
 </dd>
 
           <dt id="ConnectionType">
@@ -215,7 +207,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  Represents the type of physical or logical network connection.
+  Represents the physical or logical medium of the active network connection.
 </dd>
 
           <dt id="TargetProtocol">
@@ -223,7 +215,7 @@ fine-grained way.</li>
 
 </dt>
 <dd>
-  The network protocol to use for a check.
+  Supported protocols for network reachability checks.
 </dd>
 
       </dl>
@@ -294,7 +286,10 @@ fine-grained way.</li>
       <li><a href="../core_extensions_model_extensions/">core/extensions/model_extensions</a></li>
       <li><a href="../core_logic_network_reachability_logic/">core/logic/network_reachability_logic</a></li>
       <li><a href="../core_rust_api_analysis_quality/">core/rust/api/analysis/quality</a></li>
+      <li><a href="../core_rust_api_analysis_stats/">core/rust/api/analysis/stats</a></li>
       <li><a href="../core_rust_api_engine/">core/rust/api/engine</a></li>
+      <li><a href="../core_rust_api_engine_sampler/">core/rust/api/engine/sampler</a></li>
+      <li><a href="../core_rust_api_engine_security/">core/rust/api/engine/security</a></li>
       <li><a href="../core_rust_api_models_config/">core/rust/api/models/config</a></li>
       <li><a href="../core_rust_api_models_net_info/">core/rust/api/models/net_info</a></li>
       <li><a href="../core_rust_api_models_report/">core/rust/api/models/report</a></li>
@@ -303,7 +298,6 @@ fine-grained way.</li>
       <li><a href="../core_rust_api_probes_dns/">core/rust/api/probes/dns</a></li>
       <li><a href="../core_rust_api_probes_interface/">core/rust/api/probes/interface</a></li>
       <li><a href="../core_rust_api_probes_target/">core/rust/api/probes/target</a></li>
-      <li><a href="../core_rust_api_probes_traceroute/">core/rust/api/probes/traceroute</a></li>
       <li><a href="../core_rust_frb_generated/">core/rust/frb_generated</a></li>
       <li><a href="../core_rust_frb_generated.io/">core/rust/frb_generated.io</a></li>
       <li><a href="../core_rust_frb_generated.web/">core/rust/frb_generated.web</a></li>

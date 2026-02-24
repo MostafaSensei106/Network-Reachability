@@ -55,6 +55,7 @@
     
 <section class="desc markdown">
   <p>Defines the latency thresholds (in milliseconds) used to determine <a href="../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a>.</p>
+<p>These values allow customizing what "Good" or "Poor" means for your specific application.</p>
 </section>
 
 
@@ -85,7 +86,7 @@
           <span class="name"><a href="../core_rust_api_models_config/QualityThresholds/QualityThresholds.html">QualityThresholds</a></span><span class="signature">({<span class="parameter" id="-param-excellent"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">excellent</span>, </span><span class="parameter" id="-param-great"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">great</span>, </span><span class="parameter" id="-param-good"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">good</span>, </span><span class="parameter" id="-param-moderate"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">moderate</span>, </span><span class="parameter" id="-param-poor"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">poor</span></span>})</span>
         </dt>
         <dd>
-          Defines the latency thresholds (in milliseconds) used to determine <a href="../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a>.
+          
             <div class="constructor-modifier features">const</div>
         </dd>
     </dl>
@@ -103,7 +104,7 @@
 
 </dt>
 <dd>
-  Latency at or below this value is 'Excellent'.
+  Latency at or below this value is considered <code>ConnectionQuality::Excellent</code>.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -115,7 +116,7 @@
 
 </dt>
 <dd>
-  Latency at or below this value is 'Good'.
+  Latency at or below this value is considered <code>ConnectionQuality::Good</code>.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -127,7 +128,7 @@
 
 </dt>
 <dd>
-  Latency at or below this value is 'Great'.
+  Latency at or below this value is considered <code>ConnectionQuality::Great</code>.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -151,7 +152,7 @@
 
 </dt>
 <dd>
-  Latency at or below this value is 'Moderate'.
+  Latency at or below this value is considered <code>ConnectionQuality::Moderate</code>.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -163,7 +164,8 @@
 
 </dt>
 <dd>
-  Latency at or below this value is 'Poor'. Anything higher is 'Unstable'.
+  Latency at or below this value is considered <code>ConnectionQuality::Poor</code>.
+Anything higher is categorized as <code>ConnectionQuality::Unstable</code> or <code>ConnectionQuality::Poor</code>.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -268,7 +270,7 @@
 
 </dt>
 <dd>
-  Returns the default quality thresholds.
+  Provides sensible default latency thresholds for most mobile and web applications.
   
 
 </dd>

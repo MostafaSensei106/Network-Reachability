@@ -102,11 +102,12 @@ if any check fails.</p>
   final report = await check();
 
   &#47;&#47; 3. Validate security requirements
-  if (_config.security.blockVpn &amp;&amp; report.securityFlags.isVpnDetected) {
+  if (_config.security.blockVpn &amp;&amp; report.securityFlagsResult.isVpnDetected) {
     throw SecurityException(
         SecurityAlert.vpnDetected, &#39;VPN connection is not allowed.&#39;);
   }
-  if (_config.security.detectDnsHijack &amp;&amp; report.securityFlags.isDnsSpoofed) {
+  if (_config.security.detectDnsHijack &amp;&amp;
+      report.securityFlagsResult.isDnsSpoofed) {
     throw SecurityException(SecurityAlert.dnsHijackDetected,
         &#39;DNS hijacking was detected. Connection is insecure.&#39;);
   }

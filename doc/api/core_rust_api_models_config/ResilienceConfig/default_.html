@@ -62,7 +62,15 @@
     </section>
     
 <section class="desc markdown">
-  <p>Returns the default qresilience config.</p>
+  <p>Provides a standard resilience configuration balanced for stability and speed.</p>
+<p>Defaults:</p>
+<ul>
+<li>Strategy: <code>CheckStrategy::Race</code></li>
+<li>Circuit Breaker: Disabled (threshold 0)</li>
+<li>Cooldown: 1 minute</li>
+<li>Jitter Samples: 5</li>
+<li>Stability Threshold: 80</li>
+</ul>
 </section>
 
 

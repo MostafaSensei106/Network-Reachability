@@ -82,7 +82,7 @@ Future&lt;ConnectionQuality&gt; crateApiAnalysisQualityEvaluateQuality(
       sse_encode_u_64(latency, serializer);
       sse_encode_box_autoadd_quality_thresholds(threshold, serializer);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 8, port: port_);
+          funcId: 31, port: port_);
     },
     codec: SseCodec(
       decodeSuccessData: sse_decode_connection_quality,

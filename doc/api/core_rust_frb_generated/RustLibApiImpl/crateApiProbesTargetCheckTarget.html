@@ -80,7 +80,7 @@ Future&lt;TargetReport&gt; crateApiProbesTargetCheckTarget(
       final serializer = SseSerializer(generalizedFrbRustBinding);
       sse_encode_box_autoadd_network_target(target, serializer);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 4, port: port_);
+          funcId: 24, port: port_);
     },
     codec: SseCodec(
       decodeSuccessData: sse_decode_target_report,

@@ -58,8 +58,9 @@
 <span class="name ">copyWith</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="copyWith-param-timestampMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">timestampMs</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-status"><span class="type-annotation"><a href="../../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a>?</span> <span class="parameter-name">status</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-connectionType"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a>?</span> <span class="parameter-name">connectionType</span>, </span></li>
-<li><span class="parameter" id="copyWith-param-securityFlags"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a>?</span> <span class="parameter-name">securityFlags</span>, </span></li>
+<li><span class="parameter" id="copyWith-param-securityFlagsResult"><span class="type-annotation"><a href="../../core_rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a>?</span> <span class="parameter-name">securityFlagsResult</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-targetReports"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../core_rust_api_models_report/TargetReport-class.html">TargetReport</a></span>&gt;</span>?</span> <span class="parameter-name">targetReports</span>, </span></li>
+<li><span class="parameter" id="copyWith-param-securityFlags"><span>required</span> <span class="type-annotation">dynamic</span> <span class="parameter-name">securityFlags</span>, </span></li>
 </ol>})
 
       
@@ -78,16 +79,16 @@
   BigInt? timestampMs,
   NetworkStatus? status,
   ConnectionType? connectionType,
-  SecurityFlags? securityFlags,
+  SecurityFlagsResult? securityFlagsResult,
   List&lt;TargetReport&gt;? targetReports,
+  required securityFlags,
 }) {
-  return NetworkReport(
-    timestampMs: timestampMs ?? this.timestampMs,
-    status: status ?? this.status,
-    connectionType: connectionType ?? this.connectionType,
-    securityFlags: securityFlags ?? this.securityFlags,
-    targetReports: targetReports ?? this.targetReports,
-  );
+  this.timestampMs = timestampMs ?? this.timestampMs;
+  this.status = status ?? this.status;
+  this.connectionType = connectionType ?? this.connectionType;
+  this.securityFlagsResult = securityFlagsResult ?? this.securityFlagsResult;
+  this.targetReports = targetReports ?? this.targetReports;
+  return this;
 }</code></pre>
 </section>
 

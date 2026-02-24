@@ -54,7 +54,7 @@
 
     
 <section class="desc markdown">
-  <p>Defines a single network endpoint to be checked.</p>
+  <p>Configuration for a specific network endpoint to be monitored.</p>
 </section>
 
 
@@ -85,7 +85,7 @@
           <span class="name"><a href="../core_rust_api_models_target/NetworkTarget/NetworkTarget.html">NetworkTarget</a></span><span class="signature">({<span class="parameter" id="-param-label"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">label</span>, </span><span class="parameter" id="-param-host"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">host</span>, </span><span class="parameter" id="-param-port"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">port</span>, </span><span class="parameter" id="-param-protocol"><span>required</span> <span class="type-annotation"><a href="../core_rust_api_models_target/TargetProtocol.html">TargetProtocol</a></span> <span class="parameter-name">protocol</span>, </span><span class="parameter" id="-param-timeoutMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">timeoutMs</span>, </span><span class="parameter" id="-param-priority"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">priority</span>, </span><span class="parameter" id="-param-isEssential"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isEssential</span></span>})</span>
         </dt>
         <dd>
-          Creates a new <a href="../core_rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a> instance.
+          
             <div class="constructor-modifier features">const</div>
         </dd>
     </dl>
@@ -115,7 +115,7 @@
 
 </dt>
 <dd>
-  The hostname or IP address of the target.
+  The remote address to check. Can be a domain name (google.com) or an IP address (8.8.8.8).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -127,8 +127,7 @@
 
 </dt>
 <dd>
-  If true, a failure to connect to this target will be considered a critical
-failure, affecting the circuit breaker and potentially the overall check status.
+  If true, a failure of this specific target is considered a critical event.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -140,7 +139,7 @@ failure, affecting the circuit breaker and potentially the overall check status.
 
 </dt>
 <dd>
-  A unique, human-readable label for this target (e.g., "Google DNS").
+  A human-readable identifier for the target (e.g., "Primary DNS", "API Gateway").
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -152,7 +151,7 @@ failure, affecting the circuit breaker and potentially the overall check status.
 
 </dt>
 <dd>
-  The port number to connect to.
+  The destination port for the check (e.g., 80 for HTTP, 443 for HTTPS, 53 for DNS).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -164,8 +163,7 @@ failure, affecting the circuit breaker and potentially the overall check status.
 
 </dt>
 <dd>
-  The priority of the target. While not used in the current engine logic,
-it can be used by the caller for sorting or selection. (e.g., 1=High).
+  The relative priority of this target (lower numbers = higher priority).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -177,7 +175,7 @@ it can be used by the caller for sorting or selection. (e.g., 1=High).
 
 </dt>
 <dd>
-  The protocol (TCP or UDP) to use for the check.
+  The network protocol to use for the probe.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -201,7 +199,7 @@ it can be used by the caller for sorting or selection. (e.g., 1=High).
 
 </dt>
 <dd>
-  The timeout in milliseconds for this specific target check.
+  The maximum time in milliseconds to wait for a response before timing out.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>

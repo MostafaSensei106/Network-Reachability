@@ -80,7 +80,7 @@ Future&lt;CaptivePortalStatus&gt; crateApiProbesCaptivePortalCheckForCaptivePort
       final serializer = SseSerializer(generalizedFrbRustBinding);
       sse_encode_u_64(timeoutMs, serializer);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 2, port: port_);
+          funcId: 22, port: port_);
     },
     codec: SseCodec(
       decodeSuccessData: sse_decode_captive_portal_status,

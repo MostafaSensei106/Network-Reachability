@@ -78,7 +78,7 @@ Future&lt;NetworkConfiguration&gt;
     callFfi: (port_) {
       final serializer = SseSerializer(generalizedFrbRustBinding);
       pdeCallFfi(generalizedFrbRustBinding, serializer,
-          funcId: 9, port: port_);
+          funcId: 32, port: port_);
     },
     codec: SseCodec(
       decodeSuccessData: sse_decode_network_configuration,

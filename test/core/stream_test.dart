@@ -32,7 +32,8 @@ void main() {
       );
 
       // Initially mock excellent quality
-      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(
+      mockApi.mockNetworkReport.status =
+          mockApi.mockNetworkReport.status.copyWith(
         quality: ConnectionQuality.excellent,
       );
 
@@ -48,7 +49,8 @@ void main() {
       expect(statusEvents.last.quality, ConnectionQuality.excellent);
 
       // 2. Change quality in mock
-      mockApi.mockNetworkReport.status = mockApi.mockNetworkReport.status.copyWith(
+      mockApi.mockNetworkReport.status =
+          mockApi.mockNetworkReport.status.copyWith(
         quality: ConnectionQuality.moderate,
       );
 
