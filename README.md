@@ -49,7 +49,7 @@ This library gives you the deep network intelligence needed to build resilient, 
   - **Captive Portal Detection**: Identify when the user is stuck on a public WiFi login page.
 
 - **Granular Configuration**: Take full control. Customize the `NetworkConfiguration` to:
-  - Define multiple `NetworkTarget` endpoints (TCP/UDP) with priorities.
+  - Define multiple `NetworkTarget` endpoints (HTTP , HTTPS , TCP , ICMP ) with priorities.
   - Set your own `QualityThresholds` for what constitutes an "excellent" or "poor" connection.
   - Fine-tune the `ResilienceConfig` like the circuit breaker sensitivity and jitter tolerance.
 
