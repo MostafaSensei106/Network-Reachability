@@ -81,6 +81,19 @@ pub struct QualityThresholds {
     pub poor: u64,
 }
 
+impl QualityThresholds {
+    /// Creates a new [QualityThresholds] instance.
+    pub fn new(excellent: u64, great: u64, good: u64, moderate: u64, poor: u64) -> Self {
+        Self {
+            excellent,
+            great,
+            good,
+            moderate,
+            poor,
+        }
+    }
+}
+
 /// Provides sensible default latency thresholds for most mobile and web applications.
 ///
 /// Defaults:
@@ -146,6 +159,29 @@ pub struct ResilienceConfig {
     pub critical_packet_loss_precent: f32,
 }
 
+impl ResilienceConfig {
+    /// Creates a new [ResilienceConfig] instance.
+    pub fn new(
+        strategy: CheckStrategy,
+        circuit_breaker_threshold: u8,
+        circuit_breaker_cooldown_ms: u64,
+        num_jitter_samples: u8,
+        jitter_threshold_percent: f64,
+        stability_thershold: u8,
+        critical_packet_loss_precent: f32,
+    ) -> Self {
+        Self {
+            strategy,
+            circuit_breaker_threshold,
+            circuit_breaker_cooldown_ms,
+            num_jitter_samples,
+            jitter_threshold_percent,
+            stability_thershold,
+            critical_packet_loss_precent,
+        }
+    }
+}
+
 /// Provides a standard resilience configuration balanced for stability and speed.
 ///
 /// Defaults:
@@ -190,6 +226,27 @@ pub struct NetworkConfiguration {
     pub security: SecurityConfig,
     /// Resilience settings including circuit breakers and jitter analysis.
     pub resilience: ResilienceConfig,
+}
+
+impl NetworkConfiguration {
+    /// Creates a new [NetworkConfiguration] instance.
+    pub fn new(
+        targets: Vec<NetworkTarget>,
+        check_interval_ms: u64,
+        cache_validity_ms: u64,
+        quality_threshold: QualityThresholds,
+        security: SecurityConfig,
+        resilience: ResilienceConfig,
+    ) -> Self {
+        Self {
+            targets,
+            check_interval_ms,
+            cache_validity_ms,
+            quality_threshold,
+            security,
+            resilience,
+        }
+    }
 }
 
 /// Creates a production-ready default configuration.
