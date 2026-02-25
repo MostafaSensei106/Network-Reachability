@@ -26,7 +26,7 @@ Most network libraries tell you if you're `connected` or `disconnected`. In the 
 
 **Network-Reachability answers the questions that truly matter for building robust applications:**
 
-- **Is the connection good enough?** Instead of a simple boolean, you get a detailed `ConnectionQuality` report (`Excellent`,`Great`, `Good`, `Poor`, `Unstable`,`Offline`), including concrete metrics like **latency**, **jitter**, and **packet loss**. This allows you to tailor the user experience—for example, by disabling video streaming on a `Poor` connection.
+- **Is the connection good enough?** Instead of a simple boolean, you get a detailed `ConnectionQuality` report (`Excellent`, `Great`, `Good`, `Moderate`, `Poor`, `Unstable`, `CaptivePortal`, `Offline`), including concrete metrics like **latency**, **jitter**, and **packet loss**. This allows you to tailor the user experience—for example, by disabling video streaming on a `Poor` connection.
 - **Is the backend reachable and stable?** This library doesn't just check for a generic internet connection. It probes your actual server endpoints (`NetworkTarget`). If your backend is down, the app will know.
 - **Is the network secure?** For sensitive applications (banking, enterprise), knowing the network environment is critical. This library actively detects security risks like **VPNs**, **DNS hijacking**, and **proxies**, allowing you to block operations on untrusted networks.
 - **How should my app behave during network issues?** With a built-in **Circuit Breaker**, the library can automatically stop your app from hammering a failing backend service, preventing cascading failures and providing a better user experience until the service recovers.
@@ -165,23 +165,15 @@ void listenToNetworkChanges() {
   final subscription = NetworkReachability.instance.onStatusChange.listen((status) {
     // Note: The stream provides a lightweight `NetworkStatus` object.
     // For a full report, you would call `check()` inside the listener.
-    print('Network status updated: ${status.isConnected ? 'Connected' : 'Disconnected'} - Quality: ${status.quality}');
-    print('Avg Latency: ${status.latencyStats.avgLatencyMs}ms');
+    print('Network status updated: ${status.isConnected ? 'Connected' : 'Disconnected'} - Quality: ${status.quality.name}');
+    print('Latency: ${status.latencyStats.latencyMs}ms');
     print('Jitter: ${status.latencyStats.jitterMs}ms');
-    print('Packet Loss: ${status.latencyStats.packetLossPercent}');
+    print('Packet Loss: ${status.latencyStats.packetLossPercent}%');
     print('Stability Score: ${status.latencyStats.stabilityScore}/100');
     // Update your UI based on the new status
   });
 
   // Don't forget to cancel the subscription in your widget's dispose() method.
-    @override
-  void dispose() {
-    // --- Cleanup ---
-    // It's crucial to cancel stream subscriptions in the dispose method
-    // to prevent memory leaks when the widget is removed from the tree.
-    subscription.cancel();
-    super.dispose();
-  }
 }
 ```
 
@@ -197,7 +189,7 @@ Tailor the engine's behavior by providing a `NetworkConfiguration` during initia
 import 'package:network_reachability/network_reachability.dart';
 
 Future<void> initializeWithCustomConfig() async {
-  final config = await NetworkConfiguration.default_();// Get the default config
+  final config = await NetworkConfiguration.default_(); // Get the default config
 
   final customConfig = NetworkConfiguration(
     targets: [
@@ -212,39 +204,41 @@ Future<void> initializeWithCustomConfig() async {
       ),
     ],
     checkIntervalMs: BigInt.from(15000), // 15 seconds
-     // Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
+    cacheValidityMs: BigInt.from(2000), // 2 seconds cache
+    // Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
     qualityThreshold: QualityThresholds(
       excellent: BigInt.from(50),
       great: BigInt.from(100),
-      good: BigInt.from(200),
-      moderate: BigInt.from(500),
-      poor: BigInt.from(1000),
+      good: BigInt.from(150),
+      moderate: BigInt.from(250),
+      poor: BigInt.from(500),
     ),
-    //Configuration for security-related checks.
+    // Configuration for security-related checks.
     security: SecurityConfig(
       blockVpn: true,
       detectDnsHijack: true,
-      allowedInterfaces: ['eth0', 'wlan0'], // Only these interfaces are allowed
     ),
-    //Configuration for the circuit breaker
+    // Configuration for the circuit breaker and resilience
     resilience: ResilienceConfig(
-      // first to respond wins there  CheckStrategy.consensus above 50% of targets must respond.
+      // first to respond wins
       strategy: CheckStrategy.race,
 
-      // The number of consecutive failures of essential targets before the circuit breaker opens. A value of 0 disables the circuit breaker.
-      circuitBreakerThreshold: 0,
+      // The number of consecutive failures of essential targets before the circuit breaker opens.
+      circuitBreakerThreshold: 3,
 
-      // Number of samples to take for jitter and stability analysis. Must be greater than 1 to enable jitter calculation default: 5.
+      // Cooldown period before the circuit breaker transitions to Half-Open.
+      circuitBreakerCooldownMs: BigInt.from(60000), // 1 minute
+
+      // Number of samples to take for jitter and stability analysis.
       numJitterSamples: 5,
 
-      //The percentage of mean latency that the standard deviation must exceed to be considered high jitter, potentially downgrading quality default: 0.2.
+      // The percentage of mean latency that the standard deviation must exceed to be considered high jitter.
       jitterThresholdPercent: 0.2,
 
+      // If the calculated stability score is less than this value, the quality considered 'Unstable'.
+      stabilityThershold: 80,
 
-      //If the calculated stability score is less than this value, the quality considered 'Unstable' it takes 0-100, default: 70.
-      stabilityThershold: 70,
-
-      //The packet loss percentage above which the connection is marked as 'Unstable' default: 5.
+      // The packet loss percentage above which the connection is marked as 'Unstable'.
       criticalPacketLossPrecent: 5.0,
     ),
   );
