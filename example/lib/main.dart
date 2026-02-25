@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:network_reachability/core/rust/api/models/report.dart';
 import 'package:network_reachability/network_reachability.dart';
 
 void main() async {
