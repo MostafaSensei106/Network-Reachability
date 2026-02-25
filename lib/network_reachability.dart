@@ -42,7 +42,7 @@ export 'core/rust/api/models/config.dart'
 export 'core/rust/api/models/net_info.dart'
     show ConnectionType, CaptivePortalStatus, SecurityFlags;
 export 'core/rust/api/models/report.dart'
-    show NetworkReport, NetworkStatus, TargetReport;
+    show NetworkReport, LatencyStats, NetworkStatus, TargetReport;
 export 'core/rust/api/models/target.dart' show NetworkTarget, TargetProtocol;
 
 export 'core/rust/frb_generated.dart' show RustLib;

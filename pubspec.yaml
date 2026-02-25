@@ -65,3 +65,5 @@ flutter:
         ffiPlugin: true
       windows:
         ffiPlugin: true
+      web:
+        default_package: network_reachability
