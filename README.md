@@ -153,13 +153,11 @@ import 'package:network_reachability/core/rust/frb_generated.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // 1. Initialize the Rust library bindings.
+  // Initialize the Rust library bindings.
   await RustLib.init();
-  
-  // 2. Initialize Network-Reachability with a configuration.
+  // Initialize Network-Reachability with a default or custom configuration.
+  // this uses a default configuration.
   await NetworkReachability.init();
-  
   runApp(const MyApp());
 }
 ```
@@ -174,17 +172,24 @@ Future<void> fetchSensitiveData() async {
   try {
     // Wrap your API call with the guard.
     final data = await NetworkReachability.instance.guard(
+      // The action to perform ONLY if checks pass.
       action: () => myApi.fetchImportantData(),
+      // Optional: Require a minimum quality for this specific action.
       minQuality: ConnectionQuality.good,
     );
     print('Data fetched successfully: $data');
 
   } on PoorConnectionException catch (e) {
-    print('Connection too slow: ${e.message}');
+    // Thrown if quality is below 'good'.
+    print('Could not fetch data: The connection is too slow or unstable. Details: ${e.message}');
+
   } on SecurityException catch (e) {
-    print('Security risk detected: ${e.message}');
+    // Thrown if a security policy is violated (e.g., VPN detected).
+    print('Action blocked due to a security risk: ${e.message}');
+
   } on CircuitBreakerOpenException catch (e) {
-    print('Server cooling down: ${e.message}');
+    // Thrown if the backend is known to be unstable.
+    print('Our servers are temporarily unavailable. Please try again later. Details: ${e.message}');
   }
 }
 ```
@@ -197,8 +202,17 @@ Future<void> fetchSensitiveData() async {
 ```dart
 void listenToNetworkChanges() {
   final subscription = NetworkReachability.instance.onStatusChange.listen((status) {
-    print('Quality: ${status.quality.name}');
+    // Note: The stream provides a lightweight `NetworkStatus` object.
+    // For a full report, you would call `check()` inside the listener.
+    print('Network status updated: ${status.isConnected ? 'Connected' : 'Disconnected'} - Quality: ${status.quality.name}');
+    print('Latency: ${status.latencyStats.latencyMs}ms');
+    print('Jitter: ${status.latencyStats.jitterMs}ms');
+    print('Packet Loss: ${status.latencyStats.packetLossPercent}%');
+    print('Stability Score: ${status.latencyStats.stabilityScore}/100');
+    // Update your UI based on the new status
   });
+
+  // Don't forget to cancel the subscription in your widget's dispose() method.
 }
 ```
 
@@ -215,15 +229,58 @@ void listenToNetworkChanges() {
 import 'package:network_reachability/network_reachability.dart';
 
 Future<void> initializeWithCustomConfig() async {
+  final config = await NetworkConfiguration.default_(); // Get the default config
+
   final customConfig = NetworkConfiguration(
     targets: [
       NetworkTarget(
-        label: 'main-api',
-        host: 'api.example.com',
-        isEssential: true, // If this fails, the app considers itself "offline"
+        label: 'my-backend-primary',
+        host: 'api.mydomain.com',
+        port: 443,
+        protocol: TargetProtocol.tcp,
+        timeoutMs: BigInt.from(2000),
+        isEssential: true, // This target affects the circuit breaker if it fails the app goes offline
+        priority: 1,
       ),
     ],
-    // ...
+    checkIntervalMs: BigInt.from(15000), // 15 seconds
+    cacheValidityMs: BigInt.from(2000), // 2 seconds cache
+    // Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
+    qualityThreshold: QualityThresholds(
+      excellent: BigInt.from(50),
+      great: BigInt.from(100),
+      good: BigInt.from(150),
+      moderate: BigInt.from(250),
+      poor: BigInt.from(500),
+    ),
+    // Configuration for security-related checks.
+    security: SecurityConfig(
+      blockVpn: true,
+      detectDnsHijack: true,
+    ),
+    // Configuration for the circuit breaker and resilience
+    resilience: ResilienceConfig(
+      // first to respond wins
+      strategy: CheckStrategy.race,
+
+      // The number of consecutive failures of essential targets before the circuit breaker opens.
+      circuitBreakerThreshold: 3,
+
+      // Cooldown period before the circuit breaker transitions to Half-Open.
+      circuitBreakerCooldownMs: BigInt.from(60000), // 1 minute
+
+      // Number of samples to take for jitter and stability analysis.
+      numJitterSamples: 5,
+
+      // The percentage of mean latency that the standard deviation must exceed to be considered high jitter.
+      jitterThresholdPercent: 0.2,
+
+      // If the calculated stability score is less than this value, the quality considered 'Unstable'.
+      stabilityThershold: 80,
+
+      // The packet loss percentage above which the connection is marked as 'Unstable'.
+      criticalPacketLossPrecent: 5.0,
+    ),
   );
 
   await NetworkReachability.init(config: customConfig);
@@ -234,6 +291,24 @@ Future<void> initializeWithCustomConfig() async {
 
 > [!TIP]
 > Direct probes are useful for "pre-flight" checks, like checking for a Captive Portal before showing a login button.
+
+```dart
+// Check if the user is behind a WiFi login page
+final captiveStatus = await NetworkReachability.instance.checkForCaptivePortal(
+  timeoutMs: BigInt.from(5000),
+);
+if (captiveStatus.isCaptivePortal) {
+  print('User may need to log in to the network at ${captiveStatus.redirectUrl}');
+}
+
+// Check for DNS tampering
+final isHijacked = await NetworkReachability.instance.detectDnsHijacking(
+  domain: 'my-api.com',
+);
+if (isHijacked) {
+  print('Warning: Potential DNS hijacking detected!');
+}
+```
 
 ---
 
