@@ -208,22 +208,39 @@ class NetworkReachability with WidgetsBindingObserver {
     }
   }
 
-  /// Starts the [Timer.periodic] for background monitoring.
+  /// Starts the [Timer] for background monitoring with an adaptive interval.
   void _startPeriodicChecks() {
     _stopPeriodicChecks();
     final interval = _config.checkIntervalMs;
     if (interval > BigInt.zero) {
-      _periodicTimer =
-          Timer.periodic(Duration(milliseconds: interval.toInt()), (_) async {
-        final report = await check(forceRefresh: true);
-        if (!_statusController.isClosed) {
-          _statusController.add(report.status);
-        }
-      });
+      _scheduleNextCheck(Duration(milliseconds: interval.toInt()));
     }
   }
 
-  /// Stops the [Timer.periodic] to save resources.
+  /// Schedules the next periodic check with a dynamic delay.
+  void _scheduleNextCheck(Duration delay) {
+    _periodicTimer = Timer(delay, () async {
+      final report = await check(forceRefresh: true);
+      if (!_statusController.isClosed) {
+        _statusController.add(report.status);
+      }
+
+      // Adaptive interval logic:
+      // 1. If quality is Excellent, we can afford to check less frequently (e.g., 2x interval).
+      // 2. If quality is Poor or Offline, we stick to the base interval to detect recovery.
+      int nextIntervalMs = _config.checkIntervalMs.toInt();
+      if (report.status.quality == ConnectionQuality.excellent) {
+        nextIntervalMs = (nextIntervalMs * 2).clamp(0, 30000); // Max 30s
+      }
+
+      // Only schedule next if we haven't been stopped
+      if (_periodicTimer != null) {
+        _scheduleNextCheck(Duration(milliseconds: nextIntervalMs));
+      }
+    });
+  }
+
+  /// Stops the background monitoring timer.
   void _stopPeriodicChecks() {
     _periodicTimer?.cancel();
     _periodicTimer = null;
@@ -256,16 +273,4 @@ class NetworkReachability with WidgetsBindingObserver {
   /// Performs a low-level reachability check against a single [target].
   Future<TargetReport> checkTarget({required NetworkTarget target}) =>
       target_probe.checkTarget(target: target);
-
-  // /// Performs a traceroute to the specified [host].
-  // Future<List<TraceHop>> traceRoute({
-  //   required String host,
-  //   required int maxHops,
-  //   required BigInt timeoutPerHopMs,
-  // }) =>
-  //     traceroute_probe.traceRoute(
-  //       host: host,
-  //       maxHops: maxHops,
-  //       timeoutPerHopMs: timeoutPerHopMs,
-  //     );
 }

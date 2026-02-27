@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 2098187080;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1497467800;
 
 // Section: executor
 
@@ -1054,14 +1054,14 @@ fn wire__crate__api__probes__captive_portal__check_for_captive_portal_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_timeout_ms = <u64>::sse_decode(&mut deserializer);
+            let api__timeout_ms = <u64>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, ()>(
                     (move || async move {
                         let output_ok = Result::<_, ()>::Ok(
                             crate::api::probes::captive_portal::check_for_captive_portal(
-                                api_timeout_ms,
+                                api__timeout_ms,
                             )
                             .await,
                         )?;
@@ -1287,13 +1287,13 @@ fn wire__crate__api__probes__dns__detect_dns_hijacking_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_domain = <String>::sse_decode(&mut deserializer);
+            let api__domain = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, ()>(
                     (move || async move {
                         let output_ok = Result::<_, ()>::Ok(
-                            crate::api::probes::dns::detect_dns_hijacking(&api_domain).await,
+                            crate::api::probes::dns::detect_dns_hijacking(&api__domain).await,
                         )?;
                         Ok(output_ok)
                     })()
@@ -1453,6 +1453,57 @@ fn wire__crate__api__models__config__network_configuration_default_impl(
         },
     )
 }
+fn wire__crate__api__models__config__network_configuration_new_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "network_configuration_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_targets =
+                <Vec<crate::api::models::target::NetworkTarget>>::sse_decode(&mut deserializer);
+            let api_check_interval_ms = <u64>::sse_decode(&mut deserializer);
+            let api_cache_validity_ms = <u64>::sse_decode(&mut deserializer);
+            let api_quality_threshold =
+                <crate::api::models::config::QualityThresholds>::sse_decode(&mut deserializer);
+            let api_security =
+                <crate::api::models::config::SecurityConfig>::sse_decode(&mut deserializer);
+            let api_resilience =
+                <crate::api::models::config::ResilienceConfig>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::models::config::NetworkConfiguration::new(
+                            api_targets,
+                            api_check_interval_ms,
+                            api_cache_validity_ms,
+                            api_quality_threshold,
+                            api_security,
+                            api_resilience,
+                        ),
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__engine__security__perform_dns_security_check_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1550,6 +1601,50 @@ fn wire__crate__api__models__config__quality_thresholds_default_impl(
         },
     )
 }
+fn wire__crate__api__models__config__quality_thresholds_new_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "quality_thresholds_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_excellent = <u64>::sse_decode(&mut deserializer);
+            let api_great = <u64>::sse_decode(&mut deserializer);
+            let api_good = <u64>::sse_decode(&mut deserializer);
+            let api_moderate = <u64>::sse_decode(&mut deserializer);
+            let api_poor = <u64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::models::config::QualityThresholds::new(
+                            api_excellent,
+                            api_great,
+                            api_good,
+                            api_moderate,
+                            api_poor,
+                        ))?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__models__config__resilience_config_default_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1578,6 +1673,55 @@ fn wire__crate__api__models__config__resilience_config_default_impl(
                     let output_ok = Result::<_, ()>::Ok(
                         crate::api::models::config::ResilienceConfig::default(),
                     )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__models__config__resilience_config_new_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "resilience_config_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_strategy =
+                <crate::api::models::config::CheckStrategy>::sse_decode(&mut deserializer);
+            let api_circuit_breaker_threshold = <u8>::sse_decode(&mut deserializer);
+            let api_circuit_breaker_cooldown_ms = <u64>::sse_decode(&mut deserializer);
+            let api_num_jitter_samples = <u8>::sse_decode(&mut deserializer);
+            let api_jitter_threshold_percent = <f64>::sse_decode(&mut deserializer);
+            let api_stability_thershold = <u8>::sse_decode(&mut deserializer);
+            let api_critical_packet_loss_precent = <f32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::models::config::ResilienceConfig::new(
+                            api_strategy,
+                            api_circuit_breaker_threshold,
+                            api_circuit_breaker_cooldown_ms,
+                            api_num_jitter_samples,
+                            api_jitter_threshold_percent,
+                            api_stability_thershold,
+                            api_critical_packet_loss_precent,
+                        ))?;
                     Ok(output_ok)
                 })())
             }
@@ -2225,31 +2369,49 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        33 => wire__crate__api__engine__security__perform_dns_security_check_impl(
+        33 => wire__crate__api__models__config__network_configuration_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        34 => wire__crate__api__models__config__quality_thresholds_default_impl(
+        34 => wire__crate__api__engine__security__perform_dns_security_check_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        35 => wire__crate__api__models__config__resilience_config_default_impl(
+        35 => wire__crate__api__models__config__quality_thresholds_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        36 => wire__crate__api__models__config__security_config_default_impl(
+        36 => wire__crate__api__models__config__quality_thresholds_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        37 => wire__crate__api__models__net_info__security_flags_default_impl(
+        37 => wire__crate__api__models__config__resilience_config_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        38 => wire__crate__api__models__config__resilience_config_new_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        39 => wire__crate__api__models__config__security_config_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        40 => wire__crate__api__models__net_info__security_flags_default_impl(
             port,
             ptr,
             rust_vec_len,

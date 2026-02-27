@@ -51,3 +51,9 @@ class CircuitBreakerOpenException extends NetworkReachabilityException {
   /// Creates a new [CircuitBreakerOpenException] with the given [message] and [retryAfter].
   CircuitBreakerOpenException(super.message, {this.retryAfter});
 }
+
+/// Thrown when a network check operation times out.
+class NetworkTimeoutException extends NetworkReachabilityException {
+  /// Creates a new [NetworkTimeoutException] with the given [message].
+  NetworkTimeoutException(super.message);
+}
