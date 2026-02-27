@@ -1054,14 +1054,14 @@ fn wire__crate__api__probes__captive_portal__check_for_captive_portal_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api__timeout_ms = <u64>::sse_decode(&mut deserializer);
+            let api_timeout_ms = <u64>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, ()>(
                     (move || async move {
                         let output_ok = Result::<_, ()>::Ok(
                             crate::api::probes::captive_portal::check_for_captive_portal(
-                                api__timeout_ms,
+                                api_timeout_ms,
                             )
                             .await,
                         )?;
@@ -1287,13 +1287,13 @@ fn wire__crate__api__probes__dns__detect_dns_hijacking_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api__domain = <String>::sse_decode(&mut deserializer);
+            let api_domain = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, ()>(
                     (move || async move {
                         let output_ok = Result::<_, ()>::Ok(
-                            crate::api::probes::dns::detect_dns_hijacking(&api__domain).await,
+                            crate::api::probes::dns::detect_dns_hijacking(&api_domain).await,
                         )?;
                         Ok(output_ok)
                     })()
