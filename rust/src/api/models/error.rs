@@ -42,6 +42,7 @@ impl From<anyhow::Error> for NetworkError {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 impl From<tokio::time::error::Elapsed> for NetworkError {
     fn from(_: tokio::time::error::Elapsed) -> Self {
         NetworkError::TimeoutError
@@ -53,11 +54,11 @@ mod tests {
     use super::*;
     use anyhow::anyhow;
     use std::io;
-    use tokio::time::{self, error::Elapsed};
 
-    async fn create_elapsed_error() -> Elapsed {
-        time::timeout(time::Duration::from_millis(1), async {
-            time::sleep(time::Duration::from_millis(10)).await;
+    #[cfg(not(target_arch = "wasm32"))]
+    async fn create_elapsed_error() -> tokio::time::error::Elapsed {
+        tokio::time::timeout(tokio::time::Duration::from_millis(1), async {
+            tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
         })
         .await
         .unwrap_err()
@@ -94,6 +95,7 @@ mod tests {
         assert!(matches!(network_error, NetworkError::UnknownError(_)));
     }
 
+    #[cfg(not(target_arch = "wasm32"))]
     #[tokio::test(flavor = "current_thread")]
     async fn test_network_error_from_tokio_elapsed() {
         let elapsed_error = create_elapsed_error().await;

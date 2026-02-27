@@ -8,51 +8,54 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = "=2.11.1"
-
-tokio = { version = "1.49.0", features = ["full"] }
 anyhow = "1.0.101"
 futures = "0.3.31"
-socket2 = "0.6.2"
+chrono = "0.4"
+async-trait = "0.1"
 ipnet = "2.11.0"
+
+# ── Native (non-web) dependencies ─────────────────────────────────────────────
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { version = "1.49.0", features = ["full"] }
+socket2 = "0.6.2"
 trust-dns-resolver = "0.23.2"
 dns-lookup = "3.0.1"
 network-interface = "2.0.5"
-chrono = "0.4"
 surge-ping = "0.8.1"
-reqwest = "0.13.2"
+reqwest = { version = "0.12", features = ["json"] }
 
-
-
-
-
-#
-## ── macOS + iOS ───────────────────────────────────────────────────────────────
-#[target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
-#system-configuration = "0.6"
-#core-foundation = "0.9"
-#libc = "0.2"
-#
-## ── Windows ───────────────────────────────────────────────────────────────────
-#[target.'cfg(target_os = "windows")'.dependencies]
-#windows = { version = "0.58", features = [
-#    "Networking_Connectivity",
-#] }
-#
-# [target.'cfg(target_os = "android")'.dependencies]
-# jni = { version = "0.21", features = ["invocation"] }
-#
-#
-## ── Web / WASM ────────────────────────────────────────────────────────────────
-#[target.'cfg(target_arch = "wasm32")'.dependencies]
-#web-sys = { version = "0.3", features = [
-#    "Navigator",
-#    "NetworkInformation",
-#    "Window",
-#] }
-#wasm-bindgen = "0.2"
+# ── Web / WASM dependencies ───────────────────────────────────────────────────
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+web-sys = { version = "0.3", features = [
+    "Navigator",
+    "NetworkInformation",
+    "Window",
+    "Performance",
+    "Request",
+    "RequestInit",
+    "RequestMode",
+    "RequestRedirect",
+    "Response",
+    "ResponseType",
+] }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+reqwest = { version = "0.12", features = ["json"] }
+getrandom = { version = "0.2", features = ["js"] }
 
 [dev-dependencies]
 mockito = "1.2.0"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
+
+[profile.release]
+lto = true
+opt-level = 'z'
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false

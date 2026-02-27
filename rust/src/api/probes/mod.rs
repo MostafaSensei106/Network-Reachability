@@ -1,5 +1,7 @@
 //! Functions for performing individual network checks (probes).
 
+/// The base trait for all network probes.
+pub mod base;
 /// Probes for detecting captive portals (login pages).
 pub mod captive_portal;
 /// Probes for DNS integrity and hijacking detection.

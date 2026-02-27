@@ -1,26 +1,11 @@
-use crate::api::{
-    constants::LibConstants,
-    models::{ConnectionType, SecurityFlagsResult},
-};
-use network_interface::{NetworkInterface, NetworkInterfaceConfig};
+use crate::api::models::{ConnectionType, SecurityFlagsResult};
 
 /// Inspects system network interfaces to detect connection type and potential security flags.
-///
-/// This function iterates through the system's available network interfaces,
-/// skipping loopback and inactive ones. It identifies the most likely connection
-/// type (VPN, WiFi, Ethernet, etc.) based on common interface name prefixes
-/// (e.g., "tun", "wlan", "en").
-///
-/// A VPN connection is given the highest priority. If a VPN is detected, the
-/// connection type will be [ConnectionType::Vpn] and the relevant security flag
-/// will be set, regardless of other present interfaces.
-///
-/// # Returns
-///
-/// A tuple containing:
-/// 1. `SecurityFlags` - A struct with flags like `is_vpn_detected` and the active `interface_name`.
-/// 2. `ConnectionType` - The determined type of the network connection.
+#[cfg(not(target_arch = "wasm32"))]
 pub fn detect_security_and_network_type() -> (SecurityFlagsResult, ConnectionType) {
+    use crate::api::constants::LibConstants;
+    use network_interface::{NetworkInterface, NetworkInterfaceConfig};
+
     let interfaces = NetworkInterface::show().unwrap_or_default();
 
     let mut security_flags_res = SecurityFlagsResult::default();
@@ -65,20 +50,49 @@ pub fn detect_security_and_network_type() -> (SecurityFlagsResult, ConnectionTyp
     (security_flags_res, conn_type)
 }
 
+/// Web implementation using Navigator.connection.
+#[cfg(target_arch = "wasm32")]
+pub fn detect_security_and_network_type() -> (SecurityFlagsResult, ConnectionType) {
+    let mut security_flags_res = SecurityFlagsResult::default();
+    security_flags_res.interface_name = "browser".to_string();
+    let mut conn_type = ConnectionType::Unknown;
+
+    if let Some(window) = web_sys::window() {
+        let navigator = window.navigator();
+
+        let connection =
+            js_sys::Reflect::get(&navigator, &wasm_bindgen::JsValue::from_str("connection")).ok();
+
+        if let Some(conn) = connection {
+            if !conn.is_undefined() && !conn.is_null() {
+                let effective_type =
+                    js_sys::Reflect::get(&conn, &wasm_bindgen::JsValue::from_str("effectiveType"))
+                        .ok();
+                if let Some(et) = effective_type {
+                    if let Some(s) = et.as_string() {
+                        conn_type = match s.as_str() {
+                            "wifi" | "ethernet" => ConnectionType::Wifi,
+                            "cellular" | "4g" | "3g" | "2g" => ConnectionType::Cellular,
+                            _ => ConnectionType::Unknown,
+                        };
+                    }
+                }
+            }
+        }
+    }
+
+    (security_flags_res, conn_type)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
+    #[cfg(not(target_arch = "wasm32"))]
     fn test_detect_security_and_network_type_simple() {
-        // This test is limited because it depends on the host's network interfaces.
-        // A more robust test would use a mock library for `network_interface::show()`.
         let (flags, _conn_type) = detect_security_and_network_type();
-
-        // We can at least assert that it found *something*.
         assert!(!flags.interface_name.is_empty());
         assert_ne!(flags.interface_name, "unknown");
-        // On CI runners, the connection type might be unknown, so we can't assert this.
-        // assert_ne!(conn_type, ConnectionType::Unknown);
     }
 }

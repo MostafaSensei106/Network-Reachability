@@ -329,9 +329,9 @@ mod tests {
     #[test]
     fn test_network_configuration_default() {
         let config = NetworkConfiguration::default();
-        assert_eq!(config.targets.len(), 3);
+        assert_eq!(config.targets.len(), 4);
         assert_eq!(config.targets[0].label, LibConstants::CLOUDFLARE_NAME_HTTP);
-        assert_eq!(config.targets[1].label, LibConstants::GOOGLE_NAME_HTTP);
+        assert_eq!(config.targets[1].label, LibConstants::CLOUDFLARE_NAME_HTTPS);
         assert_eq!(config.resilience.strategy, CheckStrategy::Race);
         assert!(!config.security.block_vpn);
     }
