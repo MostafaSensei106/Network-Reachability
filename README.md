@@ -89,7 +89,7 @@ Since this library uses **Cargokit** to bridge Flutter and Rust, you need the Ru
   ```
 
 > [!IMPORTANT]
-> Once Rust is installed, **Cargokit** will automatically detect your Flutter build target and compile the Rust core into a high-performance native shared library  specifically for that device. You only need to set this up once!
+> Once Rust is installed, **Cargokit** will automatically detect your Flutter build target and compile the Rust core into a high-performance native shared library  specifically for that OS and architecture. You only need to set this up once!
 
 ### 2. Add the Dependency
 
