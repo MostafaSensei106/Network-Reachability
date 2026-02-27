@@ -7,7 +7,7 @@ import '../../frb_generated.dart';
 import '../models/net_info.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-/// Web implementation using Fetch with redirect: manual.
+/// Checks for the presence of a captive portal.
 Future<CaptivePortalStatus> checkForCaptivePortal(
         {required BigInt timeoutMs}) =>
     RustLib.instance.api

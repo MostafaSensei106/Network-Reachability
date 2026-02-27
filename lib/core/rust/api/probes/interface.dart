@@ -7,6 +7,6 @@ import '../../frb_generated.dart';
 import '../models/net_info.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-/// Web implementation using Navigator.connection.
+/// Inspects system network interfaces to detect connection type and potential security flags.
 Future<(SecurityFlagsResult, ConnectionType)> detectSecurityAndNetworkType() =>
     RustLib.instance.api.crateApiProbesInterfaceDetectSecurityAndNetworkType();
