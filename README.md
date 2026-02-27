@@ -28,47 +28,42 @@ Most network libraries tell you if you're `connected` or `disconnected`. In the 
 
 ### 📊 How we compare
 
-| Feature | `connectivity_plus` | `internet_connection_checker` | **Network-Reachability** |
-| :--- | :---: | :---: | :---: |
-| **Connection Type (WiFi/Cellular)** | ✅ | ❌ | ✅ |
-| **Actual Internet Verification** | ❌ | ✅ | ✅ |
-| **High-Performance Rust Core** | ❌ | ❌ | **🚀 Yes** |
-| **Latency, Jitter & Packet Loss** | ❌ | ❌ | **📈 Detailed Stats** |
-| **Security (VPN & DNS Hijack)** | ❌ | ❌ | **🛡️ Advanced** |
-| **Guarded Actions (`guard()`)** | ❌ | ❌ | **🔒 Built-in** |
-| **Circuit Breaker Pattern** | ❌ | ❌ | **🔋 Resilient** |
-| **Captive Portal Detection** | ❌ | ✅ | **🌐 Integrated** |
-
-**Network-Reachability answers the questions that truly matter:**
-
-- **Is the connection good enough?** Instead of a simple boolean, you get a detailed `ConnectionQuality` report (`Excellent`, `Great`, `Good`, `Moderate`, `Poor`, `Unstable`, `CaptivePortal`, `Offline`), including concrete metrics like **latency**, **jitter**, and **packet loss**. This allows you to tailor the user experience—for example, by disabling video streaming on a `Poor` connection.
-- **Is the backend reachable and stable?** This library doesn't just check for a generic internet connection. It probes your actual server endpoints (`NetworkTarget`). If your backend is down, the app will know.
-- **Is the network secure?** For sensitive applications (banking, enterprise), knowing the network environment is critical. This library actively detects security risks like **VPNs**, **DNS hijacking**, and **proxies**, allowing you to block operations on untrusted networks.
-- **How should my app behave during network issues?** With a built-in **Circuit Breaker**, the library can automatically stop your app from hammering a failing backend service, preventing cascading failures and providing a better user experience until the service recovers.
-
-This library gives you the deep network intelligence needed to build resilient, secure, and user-friendly applications that adapt gracefully to real-world network conditions.
+| Feature | `connectivity_plus` | `internet_checker` | **Network-Reachability** |
+| :--- | :---: | :---: | :--- |
+| **Connection Type** | ✅ | ❌ | **✅ WiFi, Cellular, Ethernet, etc.** |
+| **Internet Verification** | ❌ | ✅ | **✅ Deep Multi-Target Probing** |
+| **Performance Engine** | Dart/Native | Dart | **🚀 High-Perf Rust Native Core** |
+| **UI Responsiveness** | ✅ | ⚠️ | **⚡ Zero UI-Thread Blocking** |
+| **Detailed Metrics** | ❌ | ❌ | **📈 Latency, Jitter, Packet Loss** |
+| **Security Suite** | ❌ | ❌ | **🛡️ VPN, Proxy & DNS Hijack** |
+| **Resilience Logic** | ❌ | ❌ | **🔋 Circuit Breaker (Open/Half-Open)** |
+| **Request Coalescing** | ❌ | ❌ | **🤝 Thundering Herd Protection** |
+| **Battery Management** | ❌ | ❌ | **🔋 Adaptive Lifecycle Polling** |
+| **Action Protection** | ❌ | ❌ | **🔒 `guard()` Smart Wrapper** |
 
 ---
 
 ## ✨ Key Features
 
-- **Deep Quality Analysis**: Get a multi-faceted view of the network quality, including **average latency**, **jitter** (latency variation), and **packet loss** percentage. The final `ConnectionQuality` enum gives you an instant, actionable summary.
+- **🚀 High-Performance Rust Core**: All heavy lifting—DNS resolution, multi-protocol pings, and quality calculations—happens in a native Rust engine. This ensures sub-millisecond precision without ever dropping a frame in your Flutter UI.
 
-- **`guard()` Protected Actions**: The library's crown jewel. Wrap any network-dependent function (like an API call) in a `guard()`. It will only execute if the network meets your predefined quality and security rules, throwing specific, catchable exceptions otherwise.
+- **🔒 The `guard()` Pattern**: Wrap your API calls in a smart safety net.
+  - Automatically verifies quality before execution.
+  - Prevents "Ghost Requests" on unstable networks.
+  - Built-in `CircuitBreaker` integration.
 
-- **Built-in Circuit Breaker**: Automatically detects when essential backend services are failing. The circuit breaker will "open" and temporarily block further requests, preventing your app from causing server overloads and providing immediate feedback to the user.
+- **🔋 Battery-Aware Intelligence**:
+  - **Adaptive Polling**: Automatically slows down checks on `Excellent` connections to save battery, but speeds up during `Poor` phases to detect recovery instantly.
+  - **Lifecycle Aware**: Automatically pauses all network activity when the app goes to background.
 
-- **Advanced Security Probes**: Go beyond application-level security. Detect and react to environmental threats:
-  - **VPN & Proxy Detection**: Block or flag connections from anonymized networks.
-  - **DNS Hijack Detection**: Protect against man-in-the-middle attacks by comparing system DNS against a trusted resolver.
-  - **Captive Portal Detection**: Identify when the user is stuck on a public WiFi login page.
+- **🤝 Thundering Herd Protection**: Built-in request coalescing ensures that if 100 widgets request a network check at the same microsecond, only **one** underlying probe is actually sent.
 
-- **Granular Configuration**: Take full control. Customize the `NetworkConfiguration` to:
-  - Define multiple `NetworkTarget` endpoints (HTTP , HTTPS , TCP , ICMP ) with priorities.
-  - Set your own `QualityThresholds` for what constitutes an "excellent" or "poor" connection.
-  - Fine-tune the `ResilienceConfig` like the circuit breaker sensitivity and jitter tolerance.
+- **🛡️ Enterprise-Grade Security**:
+  - **DNS Hijack Detection**: Detects if your ISP or a malicious actor is redirecting your traffic.
+  - **VPN/Proxy Shield**: Identify anonymized connections to protect sensitive data.
+  - **Captive Portal Engine**: Specifically identifies public WiFi login pages that block internet access.
 
-- **High-Performance Rust Core**: All heavy lifting and network probing is executed in a native Rust engine, ensuring that these complex checks are fast, efficient, and don't block the Flutter UI thread.
+- **📈 Stability Scoring**: Not just a "Yes/No" status. We calculate a `StabilityScore` (0-100) based on jitter (latency variance) and packet loss, helping you decide if the connection is reliable enough for heavy tasks.
 
 ---
 
