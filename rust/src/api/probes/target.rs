@@ -13,13 +13,13 @@ pub struct NativeProbe;
 #[async_trait]
 impl NetworkProbe for NativeProbe {
     async fn check(&self, target: &NetworkTarget) -> TargetReport {
+        use crate::api::models::NetworkError;
+        use std::time::{Duration, Instant};
         use tokio::{
             io::{AsyncReadExt, AsyncWriteExt},
             net::TcpStream,
             time::timeout,
         };
-        use std::time::{Duration, Instant};
-        use crate::api::models::NetworkError;
 
         let start = Instant::now();
         let addr_str = format!("{}:{}", target.host, target.port);
@@ -88,16 +88,19 @@ impl NetworkProbe for NativeProbe {
                     }
 
                     let _ = res.bytes().await.map_err(|e| {
-                        NetworkError::ConnectionError(format!("Failed to read response body: {}", e))
+                        NetworkError::ConnectionError(format!(
+                            "Failed to read response body: {}",
+                            e
+                        ))
                     })?;
                 }
 
                 TargetProtocol::Icmp => {
                     let payload = [0u8; 8];
 
-                    let ping_result = surge_ping::ping(addr.ip(), &payload)
-                        .await
-                        .map_err(|e| NetworkError::ConnectionError(format!("Ping failed: {}", e)))?;
+                    let ping_result = surge_ping::ping(addr.ip(), &payload).await.map_err(|e| {
+                        NetworkError::ConnectionError(format!("Ping failed: {}", e))
+                    })?;
 
                     let (_packet, rtt) = ping_result;
                     let is_loopback = addr.ip().is_loopback();
@@ -143,16 +146,15 @@ impl NetworkProbe for NativeProbe {
 }
 
 /// Web-specific implementation using Fetch API.
-#[cfg(target_arch = "wasm32")]
 pub struct WebProbe;
 
 #[cfg(target_arch = "wasm32")]
 #[async_trait(?Send)]
 impl NetworkProbe for WebProbe {
     async fn check(&self, target: &NetworkTarget) -> TargetReport {
-        use web_sys::{Request, RequestInit, RequestMode, Window};
-        use wasm_bindgen_futures::JsFuture;
         use js_sys::Date;
+        use wasm_bindgen_futures::JsFuture;
+        use web_sys::{Request, RequestInit, RequestMode, Window};
 
         let start = Date::now();
 
@@ -172,13 +174,15 @@ impl NetworkProbe for WebProbe {
 
         let request = match Request::new_with_str_and_init(&url, &opts) {
             Ok(req) => req,
-            Err(e) => return TargetReport {
-                label: target.label.clone(),
-                success: false,
-                latency_ms: 0,
-                error: Some(format!("Failed to create request: {:?}", e)),
-                is_essential: target.is_essential,
-            },
+            Err(e) => {
+                return TargetReport {
+                    label: target.label.clone(),
+                    success: false,
+                    latency_ms: 0,
+                    error: Some(format!("Failed to create request: {:?}", e)),
+                    is_essential: target.is_essential,
+                }
+            }
         };
 
         let fetch_promise = window.fetch_with_request(&request);
@@ -188,24 +192,34 @@ impl NetworkProbe for WebProbe {
         let latency = (end - start) as u64;
 
         match result {
-            Ok(_) => {
-                TargetReport {
-                    label: target.label.clone(),
-                    success: true,
-                    latency_ms: latency,
-                    error: None,
-                    is_essential: target.is_essential,
-                }
-            }
-            Err(e) => {
-                TargetReport {
-                    label: target.label.clone(),
-                    success: false,
-                    latency_ms: 0,
-                    error: Some(format!("Fetch failed: {:?}", e)),
-                    is_essential: target.is_essential,
-                }
-            }
+            Ok(_) => TargetReport {
+                label: target.label.clone(),
+                success: true,
+                latency_ms: latency,
+                error: None,
+                is_essential: target.is_essential,
+            },
+            Err(e) => TargetReport {
+                label: target.label.clone(),
+                success: false,
+                latency_ms: 0,
+                error: Some(format!("Fetch failed: {:?}", e)),
+                is_essential: target.is_essential,
+            },
+        }
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[async_trait]
+impl NetworkProbe for WebProbe {
+    async fn check(&self, target: &NetworkTarget) -> TargetReport {
+        TargetReport {
+            label: target.label.clone(),
+            success: false,
+            latency_ms: 0,
+            error: Some("WebProbe is only available on WASM".into()),
+            is_essential: target.is_essential,
         }
     }
 }

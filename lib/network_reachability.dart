@@ -1,48 +1,20 @@
 /// A comprehensive networking library for Dart and Flutter, built on a powerful Rust core.
 ///
 /// This library provides advanced network monitoring, reachability checks, and security features
-/// to ensure your application's network communication is reliable and secure.
-///
-/// It provides a high-level Dart API over a powerful Rust engine, allowing you to easily integrate
-/// network monitoring into your Dart and Flutter applications.
-///
-/// The library is designed to be highly customizable, with support for custom security policies,
-/// quality thresholds, and performance tuning.
-///
-/// The library also provides a set of custom exceptions that can be used to handle errors in a more
-/// fine-grained way.
-///
-/// The library is organized into several sub-libraries, each of which provides a specific set of functionality.
-///
-/// * The `core/logic` sub-library contains the core logic of the library, including the main entry points
-///   for performing network checks.
-/// * The `core/err` sub-library contains custom exceptions that can be used to handle errors in a more
-///   fine-grained way.
-/// * The `core/rust/api` sub-library contains the data models that are used to interact with the library.
-/// * The `core/rust/frb_generated` sub-library contains the auto-generated code for interacting with the Rust core.
-
+/// following Clean Architecture principles.
 library;
 
-// --- Core Logic ---
-export 'core/logic/network_reachability_logic.dart';
+// --- Application Layer ---
+export 'src/application/network_reachability_service.dart';
 
-// --- Custom Exceptions ---
-export 'core/err/exceptions.dart';
+// --- Domain Layer ---
+export 'src/domain/entities/entities.dart';
+export 'src/domain/repositories/network_probes_repository.dart';
 
-// --- Data Models ---
-// Export all generated models that the user will need to interact with.
-export 'core/rust/api/models/config.dart'
-    show
-        NetworkConfiguration,
-        ResilienceConfig,
-        SecurityConfig,
-        QualityThresholds,
-        CheckStrategy,
-        ConnectionQuality;
-export 'core/rust/api/models/net_info.dart'
-    show ConnectionType, CaptivePortalStatus, SecurityFlags;
-export 'core/rust/api/models/report.dart'
-    show NetworkReport, LatencyStats, NetworkStatus, TargetReport;
-export 'core/rust/api/models/target.dart' show NetworkTarget, TargetProtocol;
+// --- Core ---
+export 'src/core/constants/enums.dart';
+export 'src/core/exceptions/exceptions.dart';
+export 'src/core/extensions/model_extensions.dart';
 
-export 'core/rust/frb_generated.dart';
+// --- Rust Generated (Internal use usually, but exported for flexibility) ---
+export 'rust/frb_generated.dart';

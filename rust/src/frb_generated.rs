@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1497467800;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1006183107;
 
 // Section: executor
 
@@ -1073,6 +1073,62 @@ fn wire__crate__api__probes__captive_portal__check_for_captive_portal_impl(
         },
     )
 }
+fn wire__crate__api__probes__captive_portal__check_for_captive_portal_web_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "check_for_captive_portal_web",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_timeout_ms = <u64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, ()>(
+                    (move || async move {
+                        let output_ok = Result::<_, ()>::Ok(
+                            crate::api::probes::captive_portal::check_for_captive_portal_web(
+                                api_timeout_ms,
+                            )
+                            .await,
+                        )?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__probes__captive_portal__check_for_captive_portal_web_manual_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "check_for_captive_portal_web_manual", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
+            let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
+            let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api__timeout_ms = <u64>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
+                    transform_result_sse::<_, ()>((move || async move {
+                         let output_ok = Result::<_,()>::Ok(crate::api::probes::captive_portal::check_for_captive_portal_web_manual(api__timeout_ms).await)?;   Ok(output_ok)
+                    })().await)
+                } })
+}
 fn wire__crate__api__engine__check_network_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1303,6 +1359,44 @@ fn wire__crate__api__probes__dns__detect_dns_hijacking_impl(
         },
     )
 }
+fn wire__crate__api__probes__dns__detect_dns_hijacking_web_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "detect_dns_hijacking_web",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api__domain = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, ()>(
+                    (move || async move {
+                        let output_ok = Result::<_, ()>::Ok(
+                            crate::api::probes::dns::detect_dns_hijacking_web(&api__domain).await,
+                        )?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__probes__interface__detect_security_and_network_type_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1330,6 +1424,40 @@ fn wire__crate__api__probes__interface__detect_security_and_network_type_impl(
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Result::<_, ()>::Ok(
                         crate::api::probes::interface::detect_security_and_network_type(),
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__probes__interface__detect_security_and_network_type_web_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "detect_security_and_network_type_web",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::probes::interface::detect_security_and_network_type_web(),
                     )?;
                     Ok(output_ok)
                 })())
@@ -2317,101 +2445,125 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        23 => wire__crate__api__engine__check_network_impl(port, ptr, rust_vec_len, data_len),
-        24 => {
+        23 => wire__crate__api__probes__captive_portal__check_for_captive_portal_web_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        24 => wire__crate__api__probes__captive_portal__check_for_captive_portal_web_manual_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        25 => wire__crate__api__engine__check_network_impl(port, ptr, rust_vec_len, data_len),
+        26 => {
             wire__crate__api__probes__target__check_target_impl(port, ptr, rust_vec_len, data_len)
         }
-        25 => wire__crate__api__engine__sampler__collect_network_samples_impl(
+        27 => wire__crate__api__engine__sampler__collect_network_samples_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        26 => wire__crate__api__analysis__stats__compute_latency_stats_impl(
+        28 => wire__crate__api__analysis__stats__compute_latency_stats_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        27 => wire__crate__api__models__net_info__connection_type_default_impl(
+        29 => wire__crate__api__models__net_info__connection_type_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        28 => wire__crate__api__probes__dns__detect_dns_hijacking_impl(
+        30 => wire__crate__api__probes__dns__detect_dns_hijacking_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        29 => wire__crate__api__probes__interface__detect_security_and_network_type_impl(
+        31 => wire__crate__api__probes__dns__detect_dns_hijacking_web_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        30 => wire__crate__api__analysis__quality__evaluate_network_quality_impl(
+        32 => wire__crate__api__probes__interface__detect_security_and_network_type_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        31 => wire__crate__api__analysis__quality__evaluate_quality_impl(
+        33 => wire__crate__api__probes__interface__detect_security_and_network_type_web_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        32 => wire__crate__api__models__config__network_configuration_default_impl(
+        34 => wire__crate__api__analysis__quality__evaluate_network_quality_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        33 => wire__crate__api__models__config__network_configuration_new_impl(
+        35 => wire__crate__api__analysis__quality__evaluate_quality_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        34 => wire__crate__api__engine__security__perform_dns_security_check_impl(
+        36 => wire__crate__api__models__config__network_configuration_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        35 => wire__crate__api__models__config__quality_thresholds_default_impl(
+        37 => wire__crate__api__models__config__network_configuration_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        36 => wire__crate__api__models__config__quality_thresholds_new_impl(
+        38 => wire__crate__api__engine__security__perform_dns_security_check_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        37 => wire__crate__api__models__config__resilience_config_default_impl(
+        39 => wire__crate__api__models__config__quality_thresholds_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        38 => wire__crate__api__models__config__resilience_config_new_impl(
+        40 => wire__crate__api__models__config__quality_thresholds_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        39 => wire__crate__api__models__config__security_config_default_impl(
+        41 => wire__crate__api__models__config__resilience_config_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        40 => wire__crate__api__models__net_info__security_flags_default_impl(
+        42 => wire__crate__api__models__config__resilience_config_new_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        43 => wire__crate__api__models__config__security_config_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        44 => wire__crate__api__models__net_info__security_flags_default_impl(
             port,
             ptr,
             rust_vec_len,

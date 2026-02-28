@@ -62,22 +62,7 @@
 <section class="desc markdown">
   <p>A comprehensive networking library for Dart and Flutter, built on a powerful Rust core.</p>
 <p>This library provides advanced network monitoring, reachability checks, and security features
-to ensure your application's network communication is reliable and secure.</p>
-<p>It provides a high-level Dart API over a powerful Rust engine, allowing you to easily integrate
-network monitoring into your Dart and Flutter applications.</p>
-<p>The library is designed to be highly customizable, with support for custom security policies,
-quality thresholds, and performance tuning.</p>
-<p>The library also provides a set of custom exceptions that can be used to handle errors in a more
-fine-grained way.</p>
-<p>The library is organized into several sub-libraries, each of which provides a specific set of functionality.</p>
-<ul>
-<li>The <code>core/logic</code> sub-library contains the core logic of the library, including the main entry points
-for performing network checks.</li>
-<li>The <code>core/err</code> sub-library contains custom exceptions that can be used to handle errors in a more
-fine-grained way.</li>
-<li>The <code>core/rust/api</code> sub-library contains the data models that are used to interact with the library.</li>
-<li>The <code>core/rust/frb_generated</code> sub-library contains the auto-generated code for interacting with the Rust core.</li>
-</ul>
+following Clean Architecture principles.</p>
 </section>
 
 
@@ -85,7 +70,7 @@ fine-grained way.</li>
       <h2>Classes</h2>
       <dl>
           <dt id="CaptivePortalStatus">
-  <span class="name "><a href="../core_rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span> 
+  <span class="name "><a href="../rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span> 
 
 </dt>
 <dd>
@@ -93,7 +78,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="LatencyStats">
-  <span class="name "><a href="../core_rust_api_models_report/LatencyStats-class.html">LatencyStats</a></span> 
+  <span class="name "><a href="../rust_api_models_report/LatencyStats-class.html">LatencyStats</a></span> 
 
 </dt>
 <dd>
@@ -101,15 +86,23 @@ fine-grained way.</li>
 </dd>
 
           <dt id="NetworkConfiguration">
-  <span class="name "><a href="../core_rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a></span> 
+  <span class="name "><a href="../rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a></span> 
 
 </dt>
 <dd>
   The main configuration object for the network reachability engine.
 </dd>
 
+          <dt id="NetworkProbesRepository">
+  <span class="name "><a href="../network_reachability/NetworkProbesRepository-class.html">NetworkProbesRepository</a></span> 
+
+</dt>
+<dd>
+  Interface for network reachability probes.
+</dd>
+
           <dt id="NetworkReachability">
-  <span class="name "><a href="../core_logic_network_reachability_logic/NetworkReachability-class.html">NetworkReachability</a></span> 
+  <span class="name "><a href="../network_reachability/NetworkReachability-class.html">NetworkReachability</a></span> 
 
 </dt>
 <dd>
@@ -117,7 +110,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="NetworkReport">
-  <span class="name "><a href="../core_rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span> 
+  <span class="name "><a href="../rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span> 
 
 </dt>
 <dd>
@@ -125,7 +118,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="NetworkReportImpl">
-  <span class="name "><a href="../core_rust_frb_generated/NetworkReportImpl-class.html">NetworkReportImpl</a></span> 
+  <span class="name "><a href="../rust_frb_generated/NetworkReportImpl-class.html">NetworkReportImpl</a></span> 
 
 </dt>
 <dd>
@@ -133,7 +126,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="NetworkStatus">
-  <span class="name "><a href="../core_rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span> 
+  <span class="name "><a href="../rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span> 
 
 </dt>
 <dd>
@@ -141,7 +134,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="NetworkTarget">
-  <span class="name "><a href="../core_rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a></span> 
+  <span class="name "><a href="../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a></span> 
 
 </dt>
 <dd>
@@ -149,15 +142,15 @@ fine-grained way.</li>
 </dd>
 
           <dt id="QualityThresholds">
-  <span class="name "><a href="../core_rust_api_models_config/QualityThresholds-class.html">QualityThresholds</a></span> 
+  <span class="name "><a href="../rust_api_models_config/QualityThresholds-class.html">QualityThresholds</a></span> 
 
 </dt>
 <dd>
-  Defines the latency thresholds (in milliseconds) used to determine <a href="../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a>.
+  Defines the latency thresholds (in milliseconds) used to determine <a href="../rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a>.
 </dd>
 
           <dt id="ResilienceConfig">
-  <span class="name "><a href="../core_rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a></span> 
+  <span class="name "><a href="../rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a></span> 
 
 </dt>
 <dd>
@@ -165,7 +158,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="RustLib">
-  <span class="name "><a href="../core_rust_frb_generated/RustLib-class.html">RustLib</a></span> 
+  <span class="name "><a href="../rust_frb_generated/RustLib-class.html">RustLib</a></span> 
 
 </dt>
 <dd>
@@ -173,7 +166,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="RustLibApi">
-  <span class="name "><a href="../core_rust_frb_generated/RustLibApi-class.html">RustLibApi</a></span> 
+  <span class="name "><a href="../rust_frb_generated/RustLibApi-class.html">RustLibApi</a></span> 
 
 </dt>
 <dd>
@@ -181,7 +174,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="RustLibApiImpl">
-  <span class="name "><a href="../core_rust_frb_generated/RustLibApiImpl-class.html">RustLibApiImpl</a></span> 
+  <span class="name "><a href="../rust_frb_generated/RustLibApiImpl-class.html">RustLibApiImpl</a></span> 
 
 </dt>
 <dd>
@@ -189,7 +182,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="SecurityConfig">
-  <span class="name "><a href="../core_rust_api_models_config/SecurityConfig-class.html">SecurityConfig</a></span> 
+  <span class="name "><a href="../rust_api_models_config/SecurityConfig-class.html">SecurityConfig</a></span> 
 
 </dt>
 <dd>
@@ -197,15 +190,23 @@ fine-grained way.</li>
 </dd>
 
           <dt id="SecurityFlags">
-  <span class="name "><a href="../core_rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a></span> 
+  <span class="name "><a href="../rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a></span> 
 
 </dt>
 <dd>
   Internal representation of security-related attributes for the current connection.
 </dd>
 
+          <dt id="SecurityFlagsResult">
+  <span class="name "><a href="../rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a></span> 
+
+</dt>
+<dd>
+  
+</dd>
+
           <dt id="SecurityFlagsResultImpl">
-  <span class="name "><a href="../core_rust_frb_generated/SecurityFlagsResultImpl-class.html">SecurityFlagsResultImpl</a></span> 
+  <span class="name "><a href="../rust_frb_generated/SecurityFlagsResultImpl-class.html">SecurityFlagsResultImpl</a></span> 
 
 </dt>
 <dd>
@@ -213,11 +214,11 @@ fine-grained way.</li>
 </dd>
 
           <dt id="TargetReport">
-  <span class="name "><a href="../core_rust_api_models_report/TargetReport-class.html">TargetReport</a></span> 
+  <span class="name "><a href="../rust_api_models_report/TargetReport-class.html">TargetReport</a></span> 
 
 </dt>
 <dd>
-  Detailed outcome of a connectivity check against a specific <a href="../core_rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a>.
+  Detailed outcome of a connectivity check against a specific <a href="../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a>.
 </dd>
 
       </dl>
@@ -227,15 +228,23 @@ fine-grained way.</li>
       <h2>Enums</h2>
       <dl>
           <dt id="CheckStrategy">
-  <span class="name "><a href="../core_rust_api_models_config/CheckStrategy.html">CheckStrategy</a></span> 
+  <span class="name "><a href="../rust_api_models_config/CheckStrategy.html">CheckStrategy</a></span> 
 
 </dt>
 <dd>
   Defines the strategy used when evaluating multiple network targets.
 </dd>
 
+          <dt id="CircuitBreakerState">
+  <span class="name "><a href="../network_reachability/CircuitBreakerState.html">CircuitBreakerState</a></span> 
+
+</dt>
+<dd>
+  Enum representing the state of the circuit breaker pattern.
+</dd>
+
           <dt id="ConnectionQuality">
-  <span class="name "><a href="../core_rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a></span> 
+  <span class="name "><a href="../rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a></span> 
 
 </dt>
 <dd>
@@ -243,15 +252,23 @@ fine-grained way.</li>
 </dd>
 
           <dt id="ConnectionType">
-  <span class="name "><a href="../core_rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span> 
+  <span class="name "><a href="../rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span> 
 
 </dt>
 <dd>
   Represents the physical or logical medium of the active network connection.
 </dd>
 
+          <dt id="SecurityAlert">
+  <span class="name "><a href="../network_reachability/SecurityAlert.html">SecurityAlert</a></span> 
+
+</dt>
+<dd>
+  Enum representing specific security alerts or policy violations.
+</dd>
+
           <dt id="TargetProtocol">
-  <span class="name "><a href="../core_rust_api_models_target/TargetProtocol.html">TargetProtocol</a></span> 
+  <span class="name "><a href="../rust_api_models_target/TargetProtocol.html">TargetProtocol</a></span> 
 
 </dt>
 <dd>
@@ -263,6 +280,131 @@ fine-grained way.</li>
 
 
 
+    <section class="summary offset-anchor" id="extensions">
+      <h2>Extensions</h2>
+      <dl>
+          <dt id="CaptivePortalStatusCopyWith">
+  <span class="name "><a href="../network_reachability/CaptivePortalStatusCopyWith.html">CaptivePortalStatusCopyWith</a></span>
+  on <a href="../rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a> to provide an immutable way to copy the status.
+</dd>
+
+          <dt id="LatencyStatsCopyWith">
+  <span class="name "><a href="../network_reachability/LatencyStatsCopyWith.html">LatencyStatsCopyWith</a></span>
+  on <a href="../rust_api_models_report/LatencyStats-class.html">LatencyStats</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_report/LatencyStats-class.html">LatencyStats</a> to provide an immutable way to copy stats.
+</dd>
+
+          <dt id="NetworkConfigurationCopyWith">
+  <span class="name "><a href="../network_reachability/NetworkConfigurationCopyWith.html">NetworkConfigurationCopyWith</a></span>
+  on <a href="../rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a> to provide an immutable way to copy the config.
+</dd>
+
+          <dt id="NetworkReportCopyWith">
+  <span class="name "><a href="../network_reachability/NetworkReportCopyWith.html">NetworkReportCopyWith</a></span>
+  on <a href="../rust_api_models_report/NetworkReport-class.html">NetworkReport</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_report/NetworkReport-class.html">NetworkReport</a> to provide an immutable way to copy the report.
+</dd>
+
+          <dt id="NetworkStatusCopyWith">
+  <span class="name "><a href="../network_reachability/NetworkStatusCopyWith.html">NetworkStatusCopyWith</a></span>
+  on <a href="../rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a> to provide an immutable way to copy the status summary.
+</dd>
+
+          <dt id="NetworkTargetCopyWith">
+  <span class="name "><a href="../network_reachability/NetworkTargetCopyWith.html">NetworkTargetCopyWith</a></span>
+  on <a href="../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a> to provide an immutable way to copy the target definition.
+</dd>
+
+          <dt id="QualityThresholdsCopyWith">
+  <span class="name "><a href="../network_reachability/QualityThresholdsCopyWith.html">QualityThresholdsCopyWith</a></span>
+  on <a href="../rust_api_models_config/QualityThresholds-class.html">QualityThresholds</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_config/QualityThresholds-class.html">QualityThresholds</a> to provide an immutable way to copy the config.
+</dd>
+
+          <dt id="ResilienceConfigCopyWith">
+  <span class="name "><a href="../network_reachability/ResilienceConfigCopyWith.html">ResilienceConfigCopyWith</a></span>
+  on <a href="../rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a> to provide an immutable way to copy the config.
+</dd>
+
+          <dt id="SecurityConfigCopyWith">
+  <span class="name "><a href="../network_reachability/SecurityConfigCopyWith.html">SecurityConfigCopyWith</a></span>
+  on <a href="../rust_api_models_config/SecurityConfig-class.html">SecurityConfig</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_config/SecurityConfig-class.html">SecurityConfig</a> to provide an immutable way to copy the config.
+</dd>
+
+          <dt id="SecurityFlagsCopyWith">
+  <span class="name "><a href="../network_reachability/SecurityFlagsCopyWith.html">SecurityFlagsCopyWith</a></span>
+  on <a href="../rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a> to provide an immutable way to copy the flags.
+</dd>
+
+          <dt id="SecurityFlagsResultCopyWith">
+  <span class="name "><a href="../network_reachability/SecurityFlagsResultCopyWith.html">SecurityFlagsResultCopyWith</a></span>
+  on <a href="../rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a> to provide an immutable way to copy the result.
+</dd>
+
+          <dt id="TargetReportCopyWith">
+  <span class="name "><a href="../network_reachability/TargetReportCopyWith.html">TargetReportCopyWith</a></span>
+  on <a href="../rust_api_models_report/TargetReport-class.html">TargetReport</a>
+  
+
+</dt>
+<dd>
+  Extension on <a href="../rust_api_models_report/TargetReport-class.html">TargetReport</a> to provide an immutable way to copy the report for a single target.
+</dd>
+
+      </dl>
+    </section>
 
 
 
@@ -272,7 +414,7 @@ fine-grained way.</li>
       <h2>Exceptions / Errors</h2>
       <dl>
           <dt id="CircuitBreakerOpenException">
-  <span class="name "><a href="../core_err_exceptions/CircuitBreakerOpenException-class.html">CircuitBreakerOpenException</a></span> 
+  <span class="name "><a href="../network_reachability/CircuitBreakerOpenException-class.html">CircuitBreakerOpenException</a></span> 
 
 </dt>
 <dd>
@@ -280,7 +422,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="NetworkReachabilityException">
-  <span class="name "><a href="../core_err_exceptions/NetworkReachabilityException-class.html">NetworkReachabilityException</a></span> 
+  <span class="name "><a href="../network_reachability/NetworkReachabilityException-class.html">NetworkReachabilityException</a></span> 
 
 </dt>
 <dd>
@@ -288,7 +430,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="NetworkTimeoutException">
-  <span class="name "><a href="../core_err_exceptions/NetworkTimeoutException-class.html">NetworkTimeoutException</a></span> 
+  <span class="name "><a href="../network_reachability/NetworkTimeoutException-class.html">NetworkTimeoutException</a></span> 
 
 </dt>
 <dd>
@@ -296,7 +438,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="PoorConnectionException">
-  <span class="name "><a href="../core_err_exceptions/PoorConnectionException-class.html">PoorConnectionException</a></span> 
+  <span class="name "><a href="../network_reachability/PoorConnectionException-class.html">PoorConnectionException</a></span> 
 
 </dt>
 <dd>
@@ -304,7 +446,7 @@ fine-grained way.</li>
 </dd>
 
           <dt id="SecurityException">
-  <span class="name "><a href="../core_err_exceptions/SecurityException-class.html">SecurityException</a></span> 
+  <span class="name "><a href="../network_reachability/SecurityException-class.html">SecurityException</a></span> 
 
 </dt>
 <dd>
@@ -329,27 +471,23 @@ fine-grained way.</li>
     <h5><span class="package-name">network_reachability</span> <span class="package-kind">package</span></h5>
     <ol>
       <li class="section-title">Libraries</li>
-      <li><a href="../core_constants_enums/">core/constants/enums</a></li>
-      <li><a href="../core_err_exceptions/">core/err/exceptions</a></li>
-      <li><a href="../core_extensions_model_extensions/">core/extensions/model_extensions</a></li>
-      <li><a href="../core_logic_network_reachability_logic/">core/logic/network_reachability_logic</a></li>
-      <li><a href="../core_rust_api_analysis_quality/">core/rust/api/analysis/quality</a></li>
-      <li><a href="../core_rust_api_analysis_stats/">core/rust/api/analysis/stats</a></li>
-      <li><a href="../core_rust_api_engine/">core/rust/api/engine</a></li>
-      <li><a href="../core_rust_api_engine_sampler/">core/rust/api/engine/sampler</a></li>
-      <li><a href="../core_rust_api_engine_security/">core/rust/api/engine/security</a></li>
-      <li><a href="../core_rust_api_models_config/">core/rust/api/models/config</a></li>
-      <li><a href="../core_rust_api_models_net_info/">core/rust/api/models/net_info</a></li>
-      <li><a href="../core_rust_api_models_report/">core/rust/api/models/report</a></li>
-      <li><a href="../core_rust_api_models_target/">core/rust/api/models/target</a></li>
-      <li><a href="../core_rust_api_probes_captive_portal/">core/rust/api/probes/captive_portal</a></li>
-      <li><a href="../core_rust_api_probes_dns/">core/rust/api/probes/dns</a></li>
-      <li><a href="../core_rust_api_probes_interface/">core/rust/api/probes/interface</a></li>
-      <li><a href="../core_rust_api_probes_target/">core/rust/api/probes/target</a></li>
-      <li><a href="../core_rust_frb_generated/">core/rust/frb_generated</a></li>
-      <li><a href="../core_rust_frb_generated.io/">core/rust/frb_generated.io</a></li>
-      <li><a href="../core_rust_frb_generated.web/">core/rust/frb_generated.web</a></li>
       <li><a href="../network_reachability/">network_reachability</a></li>
+      <li><a href="../rust_api_analysis_quality/">rust/api/analysis/quality</a></li>
+      <li><a href="../rust_api_analysis_stats/">rust/api/analysis/stats</a></li>
+      <li><a href="../rust_api_engine/">rust/api/engine</a></li>
+      <li><a href="../rust_api_engine_sampler/">rust/api/engine/sampler</a></li>
+      <li><a href="../rust_api_engine_security/">rust/api/engine/security</a></li>
+      <li><a href="../rust_api_models_config/">rust/api/models/config</a></li>
+      <li><a href="../rust_api_models_net_info/">rust/api/models/net_info</a></li>
+      <li><a href="../rust_api_models_report/">rust/api/models/report</a></li>
+      <li><a href="../rust_api_models_target/">rust/api/models/target</a></li>
+      <li><a href="../rust_api_probes_captive_portal/">rust/api/probes/captive_portal</a></li>
+      <li><a href="../rust_api_probes_dns/">rust/api/probes/dns</a></li>
+      <li><a href="../rust_api_probes_interface/">rust/api/probes/interface</a></li>
+      <li><a href="../rust_api_probes_target/">rust/api/probes/target</a></li>
+      <li><a href="../rust_frb_generated/">rust/frb_generated</a></li>
+      <li><a href="../rust_frb_generated.io/">rust/frb_generated.io</a></li>
+      <li><a href="../rust_frb_generated.web/">rust/frb_generated.web</a></li>
 </ol>
 
   </div>
