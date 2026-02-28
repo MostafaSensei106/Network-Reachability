@@ -80,7 +80,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 1497467800;
+  int get rustContentHash => 1006183107;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -161,6 +161,14 @@ abstract class RustLibApi extends BaseApi {
   Future<CaptivePortalStatus> crateApiProbesCaptivePortalCheckForCaptivePortal(
       {required BigInt timeoutMs});
 
+  Future<CaptivePortalStatus>
+      crateApiProbesCaptivePortalCheckForCaptivePortalWeb(
+          {required BigInt timeoutMs});
+
+  Future<CaptivePortalStatus>
+      crateApiProbesCaptivePortalCheckForCaptivePortalWebManual(
+          {required BigInt timeoutMs});
+
   Future<NetworkReport> crateApiEngineCheckNetwork(
       {required NetworkConfiguration config});
 
@@ -180,8 +188,13 @@ abstract class RustLibApi extends BaseApi {
 
   Future<bool> crateApiProbesDnsDetectDnsHijacking({required String domain});
 
+  Future<bool> crateApiProbesDnsDetectDnsHijackingWeb({required String domain});
+
   Future<(SecurityFlagsResult, ConnectionType)>
       crateApiProbesInterfaceDetectSecurityAndNetworkType();
+
+  Future<(SecurityFlagsResult, ConnectionType)>
+      crateApiProbesInterfaceDetectSecurityAndNetworkTypeWeb();
 
   Future<ConnectionQuality> crateApiAnalysisQualityEvaluateNetworkQuality(
       {required bool isConnected,
@@ -888,6 +901,63 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
+  Future<CaptivePortalStatus>
+      crateApiProbesCaptivePortalCheckForCaptivePortalWeb(
+          {required BigInt timeoutMs}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(timeoutMs, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 23, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_captive_portal_status,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiProbesCaptivePortalCheckForCaptivePortalWebConstMeta,
+      argValues: [timeoutMs],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiProbesCaptivePortalCheckForCaptivePortalWebConstMeta =>
+          const TaskConstMeta(
+            debugName: "check_for_captive_portal_web",
+            argNames: ["timeoutMs"],
+          );
+
+  @override
+  Future<CaptivePortalStatus>
+      crateApiProbesCaptivePortalCheckForCaptivePortalWebManual(
+          {required BigInt timeoutMs}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(timeoutMs, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 24, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_captive_portal_status,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiProbesCaptivePortalCheckForCaptivePortalWebManualConstMeta,
+      argValues: [timeoutMs],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiProbesCaptivePortalCheckForCaptivePortalWebManualConstMeta =>
+          const TaskConstMeta(
+            debugName: "check_for_captive_portal_web_manual",
+            argNames: ["timeoutMs"],
+          );
+
+  @override
   Future<NetworkReport> crateApiEngineCheckNetwork(
       {required NetworkConfiguration config}) {
     return handler.executeNormal(NormalTask(
@@ -895,7 +965,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_network_configuration(config, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 23, port: port_);
+            funcId: 25, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -921,7 +991,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_network_target(target, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 24, port: port_);
+            funcId: 26, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_target_report,
@@ -948,7 +1018,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_network_configuration(config, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 25, port: port_);
+            funcId: 27, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -979,7 +1049,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_8(totalExpectedSamples, serializer);
         sse_encode_box_autoadd_quality_thresholds(thresholds, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 26, port: port_);
+            funcId: 28, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_latency_stats,
@@ -1003,7 +1073,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 27, port: port_);
+            funcId: 29, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_connection_type,
@@ -1028,7 +1098,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(domain, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 28, port: port_);
+            funcId: 30, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -1047,13 +1117,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<bool> crateApiProbesDnsDetectDnsHijackingWeb(
+      {required String domain}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(domain, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 31, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiProbesDnsDetectDnsHijackingWebConstMeta,
+      argValues: [domain],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiProbesDnsDetectDnsHijackingWebConstMeta =>
+      const TaskConstMeta(
+        debugName: "detect_dns_hijacking_web",
+        argNames: ["domain"],
+      );
+
+  @override
   Future<(SecurityFlagsResult, ConnectionType)>
       crateApiProbesInterfaceDetectSecurityAndNetworkType() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 29, port: port_);
+            funcId: 32, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1074,6 +1170,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
+  Future<(SecurityFlagsResult, ConnectionType)>
+      crateApiProbesInterfaceDetectSecurityAndNetworkTypeWeb() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 33, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiProbesInterfaceDetectSecurityAndNetworkTypeWebConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiProbesInterfaceDetectSecurityAndNetworkTypeWebConstMeta =>
+          const TaskConstMeta(
+            debugName: "detect_security_and_network_type_web",
+            argNames: [],
+          );
+
+  @override
   Future<ConnectionQuality> crateApiAnalysisQualityEvaluateNetworkQuality(
       {required bool isConnected,
       required LatencyStats stats,
@@ -1085,7 +1209,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_latency_stats(stats, serializer);
         sse_encode_box_autoadd_network_configuration(config, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 30, port: port_);
+            funcId: 34, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_connection_quality,
@@ -1112,7 +1236,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(latency, serializer);
         sse_encode_box_autoadd_quality_thresholds(threshold, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 31, port: port_);
+            funcId: 35, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_connection_quality,
@@ -1137,7 +1261,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 32, port: port_);
+            funcId: 36, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_network_configuration,
@@ -1173,7 +1297,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_security_config(security, serializer);
         sse_encode_box_autoadd_resilience_config(resilience, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 33, port: port_);
+            funcId: 37, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_network_configuration,
@@ -1216,7 +1340,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
             flags, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 34, port: port_);
+            funcId: 38, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1240,7 +1364,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 35, port: port_);
+            funcId: 39, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_quality_thresholds,
@@ -1274,7 +1398,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(moderate, serializer);
         sse_encode_u_64(poor, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 36, port: port_);
+            funcId: 40, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_quality_thresholds,
@@ -1298,7 +1422,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 37, port: port_);
+            funcId: 41, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_resilience_config,
@@ -1336,7 +1460,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_8(stabilityThershold, serializer);
         sse_encode_f_32(criticalPacketLossPrecent, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 38, port: port_);
+            funcId: 42, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_resilience_config,
@@ -1376,7 +1500,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 39, port: port_);
+            funcId: 43, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_security_config,
@@ -1400,7 +1524,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 40, port: port_);
+            funcId: 44, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_security_flags,

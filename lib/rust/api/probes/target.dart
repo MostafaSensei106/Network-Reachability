@@ -8,8 +8,8 @@ import '../models/report.dart';
 import '../models/target.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they have generic arguments: `check`
-// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `NativeProbe`
+// These functions are ignored because they have generic arguments: `check`, `check`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `NativeProbe`, `WebProbe`
 
 /// Performs a network check against a single, specified target.
 Future<TargetReport> checkTarget({required NetworkTarget target}) =>

@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:network_reachability/core/logic/network_reachability_logic.dart';
-import 'package:network_reachability/core/rust/frb_generated.dart';
+import 'package:network_reachability/network_reachability.dart';
 import 'package:test/test.dart';
 import '../mocks/mock_rust_api.dart';
 

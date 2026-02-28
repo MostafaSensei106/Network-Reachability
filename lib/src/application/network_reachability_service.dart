@@ -1,30 +1,23 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:network_reachability/core/constants/enums.dart';
-
-import '../err/exceptions.dart';
-import '../rust/api/engine.dart' as rust_engine;
-import '../rust/api/models/config.dart';
-import '../rust/api/models/net_info.dart';
-import '../rust/api/models/report.dart';
-import '../rust/api/models/target.dart';
-import '../rust/api/probes/captive_portal.dart' as captive_portal_probe;
-import '../rust/api/probes/dns.dart' as dns_probe;
-import '../rust/api/probes/interface.dart' as interface_probe;
-import '../rust/api/probes/target.dart' as target_probe;
+import '../core/constants/enums.dart';
+import '../core/exceptions/exceptions.dart';
+import '../domain/entities/entities.dart';
+import '../domain/repositories/network_probes_repository.dart';
+import '../data/repositories/network_probes_repository_impl.dart';
+import '../../rust/api/engine.dart' as rust_engine;
 
 /// The main class for interacting with the network reachability engine.
 ///
-/// This class provides a high-level API for:
+/// This service provides a high-level API for:
 /// * Performing manual network checks via [check].
 /// * Protecting sensitive operations using [guard].
 /// * Monitoring real-time status changes through [onStatusChange].
-/// * Sideloading advanced probes (Traceroute, DNS Hijack detection, etc.).
 ///
 /// It implements [WidgetsBindingObserver] to handle app lifecycle changes,
 /// ensuring battery efficiency by pausing periodic checks in the background.
-class NetworkReachability with WidgetsBindingObserver {
+final class NetworkReachability with WidgetsBindingObserver {
   static NetworkReachability? _instance;
 
   /// The singleton instance of the network reachability engine.
@@ -39,6 +32,8 @@ class NetworkReachability with WidgetsBindingObserver {
   }
 
   late final NetworkConfiguration _config;
+  final NetworkProbesRepository _probesRepository;
+
   final StreamController<NetworkStatus> _statusController =
       StreamController.broadcast();
   Timer? _periodicTimer;
@@ -54,8 +49,7 @@ class NetworkReachability with WidgetsBindingObserver {
   DateTime? _circuitBreakerResetTime;
 
   /// Private constructor for the singleton.
-  NetworkReachability._(NetworkConfiguration config) {
-    _config = config;
+  NetworkReachability._(this._config, this._probesRepository) {
     WidgetsBinding.instance.addObserver(this);
     _startPeriodicChecks();
   }
@@ -64,12 +58,22 @@ class NetworkReachability with WidgetsBindingObserver {
   ///
   /// This must be called once at app startup. It sets up the singleton
   /// with either a [config] or the default settings fetched from Rust.
-  static Future<void> init({NetworkConfiguration? config}) async {
+  ///
+  /// [config] An optional [NetworkConfiguration] to override defaults.
+  /// [probesRepository] An optional [NetworkProbesRepository] for custom probe logic or mocking.
+  ///
+  /// Returns a [Future] that completes when initialization is done.
+  static Future<void> init({
+    NetworkConfiguration? config,
+    NetworkProbesRepository? probesRepository,
+  }) async {
     if (_instance != null) {
       _instance?.dispose();
     }
     final finalConfig = config ?? await NetworkConfiguration.default_();
-    _instance = NetworkReachability._(finalConfig);
+    final finalRepository =
+        probesRepository ?? const NetworkProbesRepositoryImpl();
+    _instance = NetworkReachability._(finalConfig, finalRepository);
   }
 
   /// A stream of [NetworkStatus] updates emitted during periodic checks.
@@ -82,6 +86,10 @@ class NetworkReachability with WidgetsBindingObserver {
   ///
   /// This method is "Thundering Herd" safe; multiple simultaneous calls will
   /// result in a single underlying network probe.
+  ///
+  /// [forceRefresh] Whether to bypass the cache and force a new network probe.
+  ///
+  /// Returns a [Future] that resolves to a [NetworkReport].
   Future<NetworkReport> check({bool forceRefresh = false}) async {
     // 1. Return cached report if still valid and not forcing refresh
     if (!forceRefresh &&
@@ -147,8 +155,13 @@ class NetworkReachability with WidgetsBindingObserver {
   /// 3. Validates against [SecurityConfig] (VPN, DNS Hijack).
   /// 4. Validates against [minQuality].
   ///
+  /// [action] The asynchronous operation to protect.
+  /// [minQuality] The minimum [ConnectionQuality] required to proceed.
+  ///
   /// Throws [CircuitBreakerOpenException], [SecurityException], or [PoorConnectionException]
   /// if any check fails.
+  ///
+  /// Returns the result of [action] if all checks pass.
   Future<T> guard<T>({
     required Future<T> Function() action,
     ConnectionQuality minQuality = ConnectionQuality.good,
@@ -257,20 +270,34 @@ class NetworkReachability with WidgetsBindingObserver {
   // --- Advanced Probes ---
 
   /// Checks for the presence of a captive portal using a non-SSL probe.
+  ///
+  /// [timeoutMs] The maximum time to wait for the probe response.
+  ///
+  /// Returns a [Future] that resolves to a [CaptivePortalStatus].
   Future<CaptivePortalStatus> checkForCaptivePortal(
           {required BigInt timeoutMs}) =>
-      captive_portal_probe.checkForCaptivePortal(timeoutMs: timeoutMs);
+      _probesRepository.checkForCaptivePortal(timeoutMs: timeoutMs);
 
   /// Detects potential DNS hijacking by comparing system resolution vs Cloudflare.
+  ///
+  /// [domain] The domain name to test resolution for.
+  ///
+  /// Returns a [Future] that resolves to `true` if hijacking is detected.
   Future<bool> detectDnsHijacking({required String domain}) =>
-      dns_probe.detectDnsHijacking(domain: domain);
+      _probesRepository.detectDnsHijacking(domain: domain);
 
   /// Inspects system network interfaces to determine connection type and security flags.
+  ///
+  /// Returns a [Future] that resolves to a tuple containing [SecurityFlagsResult] and [ConnectionType].
   Future<(SecurityFlagsResult, ConnectionType)>
       detectSecurityAndNetworkType() =>
-          interface_probe.detectSecurityAndNetworkType();
+          _probesRepository.detectSecurityAndNetworkType();
 
   /// Performs a low-level reachability check against a single [target].
+  ///
+  /// [target] The [NetworkTarget] to probe.
+  ///
+  /// Returns a [Future] that resolves to a [TargetReport].
   Future<TargetReport> checkTarget({required NetworkTarget target}) =>
-      target_probe.checkTarget(target: target);
+      _probesRepository.checkTarget(target: target);
 }

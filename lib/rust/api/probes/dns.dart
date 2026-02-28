@@ -9,3 +9,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 /// Detects potential DNS hijacking.
 Future<bool> detectDnsHijacking({required String domain}) =>
     RustLib.instance.api.crateApiProbesDnsDetectDnsHijacking(domain: domain);
+
+/// Web-specific implementation (currently a placeholder as browser environment is limited).
+Future<bool> detectDnsHijackingWeb({required String domain}) =>
+    RustLib.instance.api.crateApiProbesDnsDetectDnsHijackingWeb(domain: domain);

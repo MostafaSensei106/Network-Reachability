@@ -12,3 +12,16 @@ Future<CaptivePortalStatus> checkForCaptivePortal(
         {required BigInt timeoutMs}) =>
     RustLib.instance.api
         .crateApiProbesCaptivePortalCheckForCaptivePortal(timeoutMs: timeoutMs);
+
+/// Web implementation using Fetch with redirect: manual.
+Future<CaptivePortalStatus> checkForCaptivePortalWebManual(
+        {required BigInt timeoutMs}) =>
+    RustLib.instance.api
+        .crateApiProbesCaptivePortalCheckForCaptivePortalWebManual(
+            timeoutMs: timeoutMs);
+
+/// Unified entry point for captive portal check.
+Future<CaptivePortalStatus> checkForCaptivePortalWeb(
+        {required BigInt timeoutMs}) =>
+    RustLib.instance.api.crateApiProbesCaptivePortalCheckForCaptivePortalWeb(
+        timeoutMs: timeoutMs);

@@ -10,12 +10,10 @@ pub mod dns;
 pub mod interface;
 /// Probes for individual target reachability.
 pub mod target;
-/// Traceroute implementation (currently experimental).
-pub mod traceroute;
 
 // Re-export public functions for easy access from the engine
-pub use captive_portal::check_for_captive_portal;
-pub use dns::detect_dns_hijacking;
-pub use interface::detect_security_and_network_type;
+pub use captive_portal::{check_for_captive_portal, check_for_captive_portal_web};
+pub use dns::{detect_dns_hijacking, detect_dns_hijacking_web};
+pub use interface::{detect_security_and_network_type, detect_security_and_network_type_web};
 pub use target::check_target;
 // pub use traceroute::trace_route;

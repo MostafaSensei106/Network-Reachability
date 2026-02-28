@@ -27,7 +27,7 @@ enum SecurityAlert {
   /// The resolved IP addresses from the system DNS do not match trusted resolvers.
   dnsHijackDetected,
 
-  /// A system-level proxy server was detected (future implementation).
+  /// A system-level proxy server was detected.
   proxyDetected,
 
   /// The active network interface is not in the allowed list.

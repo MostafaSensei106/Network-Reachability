@@ -1,6 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:network_reachability/core/constants/enums.dart';
-import 'package:network_reachability/core/extensions/model_extensions.dart';
 import 'package:network_reachability/network_reachability.dart';
 import 'package:test/test.dart';
 import '../mocks/mock_rust_api.dart';
