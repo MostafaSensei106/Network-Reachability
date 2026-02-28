@@ -45,4 +45,4 @@ export 'core/rust/api/models/report.dart'
     show NetworkReport, LatencyStats, NetworkStatus, TargetReport;
 export 'core/rust/api/models/target.dart' show NetworkTarget, TargetProtocol;
 
-export 'core/rust/frb_generated.dart' show RustLib;
+export 'core/rust/frb_generated.dart';
