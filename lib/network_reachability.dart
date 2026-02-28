@@ -9,7 +9,6 @@ export 'src/application/network_reachability_service.dart';
 
 // --- Domain Layer ---
 export 'src/domain/entities/entities.dart';
-export 'src/domain/repositories/network_probes_repository.dart';
 
 // --- Core ---
 export 'src/core/constants/enums.dart';
