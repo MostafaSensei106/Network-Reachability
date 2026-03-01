@@ -1,7 +1,7 @@
 name: network_reachability
 description: An advanced network monitoring and resilience library for Flutter, powered by a high-performance Rust core.
 
-version: 0.0.1+1
+version: 0.0.1+2
 
 repository: https://github.com/MostafaSensei106/Network-Reachability
 
