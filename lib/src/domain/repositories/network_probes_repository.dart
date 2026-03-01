@@ -12,7 +12,8 @@ abstract interface class NetworkProbesRepository {
   /// [timeoutMs] The maximum time allowed for the probe.
   ///
   /// Returns a [Future] resolving to [CaptivePortalStatus].
-  Future<CaptivePortalStatus> checkForCaptivePortal({required BigInt timeoutMs});
+  Future<CaptivePortalStatus> checkForCaptivePortal(
+      {required BigInt timeoutMs});
 
   /// Detects potential DNS hijacking for a given domain.
   ///

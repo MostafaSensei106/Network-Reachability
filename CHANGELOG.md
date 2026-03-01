@@ -1,3 +1,12 @@
+## 0.0.1+2
+
+- Structural Overhaul (Clean Architecture)
+
+- Refactor(Core): Complete transition to Clean Architecture. The library is now strictly layered into Data, Domain, and Application layers.
+
+- Decoupling: Isolated the Rust FFI (Native Bridge) from the Dart logic. This allows for better testability and easier implementation of future platform-specific probes.
+
+
 ## 0.0.1+1
 
 - feat(packaging): Add ios and macOS support to support the Swift Package Manager.
