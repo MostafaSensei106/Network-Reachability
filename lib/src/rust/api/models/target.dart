@@ -53,6 +53,7 @@ class NetworkTarget {
   /// disqualify the entire network status regardless of other successes.
   final bool isEssential;
 
+  // ignore: public_member_api_docs
   const NetworkTarget({
     required this.label,
     required this.host,
