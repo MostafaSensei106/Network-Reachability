@@ -56,7 +56,7 @@
       
 <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span>
 <span class="name ">guard</span>&lt;<wbr><span class="type-parameter">T</span>&gt;(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="guard-param-action"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">action</span>(), </span></li>
-<li><span class="parameter" id="guard-param-minQuality"><span class="type-annotation"><a href="../../rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a></span> <span class="parameter-name">minQuality</span> = <span class="default-value">ConnectionQuality.good</span>, </span></li>
+<li><span class="parameter" id="guard-param-minQuality"><span class="type-annotation"><a href="../../network_reachability/ConnectionQuality.html">ConnectionQuality</a></span> <span class="parameter-name">minQuality</span> = <span class="default-value">ConnectionQuality.good</span>, </span></li>
 </ol>})
 
       
@@ -64,19 +64,27 @@
     </section>
     
 <section class="desc markdown">
-  <p>A wrapper to protect network-dependent operations (e.g., API calls).</p>
-<p>This method performs a multi-stage validation:</p>
+  <p>Protects a network-sensitive <code>action</code> by validating the connection first.</p>
+<p>This is the recommended way to execute critical API calls. It performs
+multiple checks in sequence:</p>
 <ol>
-<li>Checks if the circuit breaker is <a href="../../network_reachability/CircuitBreakerState.html">CircuitBreakerState.open</a>.</li>
-<li>Performs/reuses a network <a href="../../network_reachability/NetworkReachability/check.html">check</a>.</li>
-<li>Validates against <a href="../../rust_api_models_config/SecurityConfig-class.html">SecurityConfig</a> (VPN, DNS Hijack).</li>
-<li>Validates against <code>minQuality</code>.</li>
+<li><strong>Circuit Breaker:</strong> Blocks immediately if the connection is known to be failing.</li>
+<li><strong>Connectivity:</strong> Ensures the device is actually online.</li>
+<li><strong>Security:</strong> Validates <a href="../../network_reachability/SecurityConfig-class.html">SecurityConfig</a> (e.g., checks for VPN or DNS Hijacking).</li>
+<li><strong>Quality:</strong> Ensures the connection meets the <code>minQuality</code> requirement.</li>
 </ol>
-<p><code>action</code> The asynchronous operation to protect.
-<code>minQuality</code> The minimum <a href="../../rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a> required to proceed.</p>
-<p>Throws <a href="../../network_reachability/CircuitBreakerOpenException-class.html">CircuitBreakerOpenException</a>, <a href="../../network_reachability/SecurityException-class.html">SecurityException</a>, or <a href="../../network_reachability/PoorConnectionException-class.html">PoorConnectionException</a>
-if any check fails.</p>
-<p>Returns the result of <code>action</code> if all checks pass.</p>
+<h3 id="parameters">Parameters:</h3>
+<ul>
+<li><code>action</code>: The asynchronous operation to execute if the network is healthy.</li>
+<li><code>minQuality</code>: The minimum acceptable <a href="../../network_reachability/ConnectionQuality.html">ConnectionQuality</a>. Defaults to <a href="../../network_reachability/ConnectionQuality.html">ConnectionQuality.good</a>.</li>
+</ul>
+<h3 id="throws">Throws:</h3>
+<ul>
+<li><a href="../../network_reachability/CircuitBreakerOpenException-class.html">CircuitBreakerOpenException</a>: If the circuit is open due to recent failures.</li>
+<li><a href="../../network_reachability/SecurityException-class.html">SecurityException</a>: If a VPN is detected (if blocked) or DNS spoofing is found.</li>
+<li><a href="../../network_reachability/PoorConnectionException-class.html">PoorConnectionException</a>: If the quality is below the requested threshold.</li>
+</ul>
+<p>Returns the result of the <code>action</code>.</p>
 </section>
 
 
@@ -157,7 +165,7 @@ if any check fails.</p>
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

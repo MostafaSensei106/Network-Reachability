@@ -55,7 +55,7 @@
     <section class="multi-line-signature">
       
 <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
-<span class="name ">init</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="init-param-config"><span class="type-annotation"><a href="../../rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a>?</span> <span class="parameter-name">config</span>, </span></li>
+<span class="name ">init</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="init-param-config"><span class="type-annotation"><a href="../../network_reachability/NetworkConfiguration-class.html">NetworkConfiguration</a>?</span> <span class="parameter-name">config</span>, </span></li>
 <li><span class="parameter" id="init-param-probesRepository"><span class="type-annotation">NetworkProbesRepository?</span> <span class="parameter-name">probesRepository</span>, </span></li>
 </ol>})
 
@@ -64,12 +64,14 @@
     </section>
     
 <section class="desc markdown">
-  <p>Initializes the network reachability engine.</p>
-<p>This must be called once at app startup. It sets up the singleton
-with either a <code>config</code> or the default settings fetched from Rust.</p>
-<p><code>config</code> An optional <a href="../../rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a> to override defaults.
-<code>probesRepository</code> An optional <code>NetworkProbesRepository</code> for custom probe logic or mocking.</p>
-<p>Returns a <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a> that completes when initialization is done.</p>
+  <p>Initializes the Network Reachability engine.</p>
+<p>This method must be called once, typically inside <code>main()</code>, before accessing <a href="../../network_reachability/NetworkReachability/instance.html">instance</a>.</p>
+<ul>
+<li><code>config</code>: Custom settings for targets, intervals, and security. If null,
+defaults are fetched from the Rust backend.</li>
+<li><code>probesRepository</code>: Custom implementation of probes (useful for testing/mocking).</li>
+</ul>
+<p>Returns a <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a> that completes when the service is ready.</p>
 </section>
 
 
@@ -115,7 +117,7 @@ with either a <code>config</code> or the default settings fetched from Rust.</p>
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

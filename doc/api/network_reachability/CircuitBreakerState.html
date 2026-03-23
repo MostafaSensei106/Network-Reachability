@@ -59,9 +59,10 @@
 
     
 <section class="desc markdown">
-  <p>Enum representing the state of the circuit breaker pattern.</p>
-<p>The circuit breaker is used to prevent an application from repeatedly
-trying to execute an operation that is likely to fail.</p>
+  <p>Represents the operational state of the Circuit Breaker pattern.</p>
+<p>The circuit breaker is a resilience pattern that prevents an application
+from repeatedly attempting an operation that is likely to fail, such as
+making network requests when the internet is completely down.</p>
 </section>
 
 
@@ -100,8 +101,10 @@ trying to execute an operation that is likely to fail.</p>
 
 </dt>
 <dd>
-  <p>The circuit is closed. Requests flow normally.
-Transitions to <a href="../network_reachability/CircuitBreakerState.html">open</a> after a threshold of consecutive failures.</p>
+  <p>The circuit is healthy and closed.</p>
+<p>Requests are allowed to pass through to the network. If a certain number
+of consecutive failures occur (defined by <code>circuitBreakerThreshold</code>),
+the circuit transitions to <a href="../network_reachability/CircuitBreakerState.html">open</a>.</p>
   
 
 </dd>
@@ -113,8 +116,10 @@ Transitions to <a href="../network_reachability/CircuitBreakerState.html">open</
 
 </dt>
 <dd>
-  <p>The circuit is open. Requests are blocked immediately.
-Transitions to <a href="../network_reachability/CircuitBreakerState.html">halfOpen</a> after a cooldown period.</p>
+  <p>The circuit is broken and open.</p>
+<p>Requests are blocked immediately without even attempting a network probe.
+This state persists for a cooldown period (<code>circuitBreakerCooldownMs</code>),
+after which it transitions to <a href="../network_reachability/CircuitBreakerState.html">halfOpen</a>.</p>
   
 
 </dd>
@@ -126,8 +131,10 @@ Transitions to <a href="../network_reachability/CircuitBreakerState.html">halfOp
 
 </dt>
 <dd>
-  <p>The circuit is half-open. A single trial request is allowed.
-If it succeeds, the circuit moves to <a href="../network_reachability/CircuitBreakerState.html">closed</a>. If it fails, it moves back to <a href="../network_reachability/CircuitBreakerState.html">open</a>.</p>
+  <p>The circuit is in a trial state.</p>
+<p>A single request is allowed to pass through. If it succeeds, the circuit
+returns to <a href="../network_reachability/CircuitBreakerState.html">closed</a>. If it fails, it returns to <a href="../network_reachability/CircuitBreakerState.html">open</a> and the cooldown
+period restarts.</p>
   
 
 </dd>
@@ -295,7 +302,7 @@ If it succeeds, the circuit moves to <a href="../network_reachability/CircuitBre
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

@@ -55,7 +55,11 @@
 
     
 <section class="desc markdown">
-  <p>Thrown by the <code>guard</code> method when a security requirement is not met (e.g., VPN detected).</p>
+  <p>Exception thrown when a security policy is violated.</p>
+<p>This occurs if a VPN is detected (and <code>blockVpn</code> is true) or if
+DNS hijacking is suspected.</p>
+<p><strong>Handling:</strong> Warn the user that their connection might be insecure or
+that they need to disable their VPN to continue.</p>
 </section>
 
 
@@ -119,7 +123,7 @@
 
 </dt>
 <dd class="inherited">
-  The message associated with this exception.
+  A human-readable description of the error.
   <div class="features"><span class="feature">final</span><span class="feature">inherited</span></div>
 
 </dd>
@@ -131,7 +135,7 @@
 
 </dt>
 <dd>
-  The reason this exception was thrown.
+  The specific security reason why this exception was thrown.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -233,7 +237,7 @@
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>
