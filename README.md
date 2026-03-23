@@ -232,7 +232,7 @@ Future<void> initializeWithCustomConfig() async {
         label: 'my-backend-primary',
         host: 'api.mydomain.com',
         port: 443,
-        protocol: TargetProtocol.tcp,
+        protocol: TargetProtocol.http,
         timeoutMs: BigInt.from(2000),
         isEssential: true, // This target affects the circuit breaker if it fails the app goes offline
         priority: 1,
