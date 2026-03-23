@@ -59,9 +59,9 @@
 
     
 <section class="desc markdown">
-  <p>Enum representing specific security alerts or policy violations.</p>
-<p>This enum is used by the <a href="../network_reachability/NetworkReachability/guard.html">NetworkReachability.guard</a> function to identify
-why a network-dependent action was blocked.</p>
+  <p>Identifies specific security violations or network policy alerts.</p>
+<p>These alerts are primarily used by the <a href="../network_reachability/NetworkReachability/guard.html">NetworkReachability.guard</a> method
+to explain why a sensitive operation was blocked.</p>
 </section>
 
 
@@ -100,7 +100,8 @@ why a network-dependent action was blocked.</p>
 
 </dt>
 <dd>
-  <p>A VPN connection was detected on the active interface.</p>
+  <p>A VPN or tunnel interface (e.g., WireGuard, OpenVPN) was detected.</p>
+<p>Often used to enforce region-locking or prevent bypass of security filters.</p>
   
 
 </dd>
@@ -112,7 +113,9 @@ why a network-dependent action was blocked.</p>
 
 </dt>
 <dd>
-  <p>The resolved IP addresses from the system DNS do not match trusted resolvers.</p>
+  <p>The system's DNS resolution results do not match trusted resolvers.</p>
+<p>Indicates that the network might be intercepting or tampering with
+DNS traffic (Man-in-the-Middle attack).</p>
   
 
 </dd>
@@ -124,7 +127,8 @@ why a network-dependent action was blocked.</p>
 
 </dt>
 <dd>
-  <p>A system-level proxy server was detected.</p>
+  <p>An HTTP or SOCKS proxy was detected in the system settings.</p>
+<p>This can be an indicator of traffic monitoring or unauthorized interception.</p>
   
 
 </dd>
@@ -136,7 +140,7 @@ why a network-dependent action was blocked.</p>
 
 </dt>
 <dd>
-  <p>The active network interface is not in the allowed list.</p>
+  <p>The active network interface is not permitted by the application policy.</p>
   
 
 </dd>
@@ -304,7 +308,7 @@ why a network-dependent action was blocked.</p>
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

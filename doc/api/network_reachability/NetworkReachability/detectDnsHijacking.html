@@ -63,9 +63,8 @@
     </section>
     
 <section class="desc markdown">
-  <p>Detects potential DNS hijacking by comparing system resolution vs Cloudflare.</p>
-<p><code>domain</code> The domain name to test resolution for.</p>
-<p>Returns a <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a> that resolves to <code>true</code> if hijacking is detected.</p>
+  <p>Checks for potential DNS tampering by comparing system results against trusted resolvers.</p>
+<p><code>domain</code>: The domain to test (e.g., 'google.com').</p>
 </section>
 
 
@@ -101,7 +100,7 @@
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

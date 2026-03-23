@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="../../rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a></span>
-<span class="name ">copyWith</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="copyWith-param-strategy"><span class="type-annotation"><a href="../../rust_api_models_config/CheckStrategy.html">CheckStrategy</a>?</span> <span class="parameter-name">strategy</span>, </span></li>
+<span class="returntype"><a href="../../network_reachability/ResilienceConfig-class.html">ResilienceConfig</a></span>
+<span class="name ">copyWith</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="copyWith-param-strategy"><span class="type-annotation"><a href="../../network_reachability/CheckStrategy.html">CheckStrategy</a>?</span> <span class="parameter-name">strategy</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-circuitBreakerThreshold"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">circuitBreakerThreshold</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-circuitBreakerCooldownMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">circuitBreakerCooldownMs</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-numJitterSamples"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">numJitterSamples</span>, </span></li>
@@ -69,15 +69,16 @@
     </section>
     
 <section class="desc markdown">
-  <p>Creates a copy of <a href="../../rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a> with the given fields replaced by the new values.</p>
-<p><code>strategy</code> Evaluation strategy for multiple targets.
-<code>circuitBreakerThreshold</code> Number of failures before opening the circuit.
-<code>circuitBreakerCooldownMs</code> Duration to wait before trial checks.
-<code>numJitterSamples</code> Number of samples for stability analysis.
-<code>jitterThresholdPercent</code> Threshold for flagging high jitter.
-<code>stabilityThershold</code> Minimum stability score required.
-<code>criticalPacketLossPrecent</code> Packet loss threshold for unstable status.</p>
-<p>Returns a new <a href="../../rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a> instance.</p>
+  <p>Creates a copy with modified resilience parameters.</p>
+<ul>
+<li><code>strategy</code>: How multiple targets are evaluated (Consensus vs Race).</li>
+<li><code>circuitBreakerThreshold</code>: Failures before opening the circuit.</li>
+<li><code>circuitBreakerCooldownMs</code>: Wait time before retry probes.</li>
+<li><code>numJitterSamples</code>: Number of probes to use for jitter analysis.</li>
+<li><code>jitterThresholdPercent</code>: Variance threshold for marking as 'Unstable'.</li>
+<li><code>stabilityThershold</code>: Minimum stability score (0-100) required.</li>
+<li><code>criticalPacketLossPrecent</code>: Loss % that triggers an 'Offline' or 'Unstable' status.</li>
+</ul>
 </section>
 
 
@@ -125,7 +126,7 @@
     <li class="self-crumb">copyWith method</li>
 </ol>
 
-    <h5>ResilienceConfigCopyWith extension on <a href="../../rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a></h5>
+    <h5>ResilienceConfigCopyWith extension on <a href="../../network_reachability/ResilienceConfig-class.html">ResilienceConfig</a></h5>
     <div id="dartdoc-sidebar-left-content"></div>
   </div><!--/.sidebar-offcanvas-->
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
@@ -134,7 +135,7 @@
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

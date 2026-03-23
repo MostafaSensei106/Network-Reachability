@@ -55,15 +55,36 @@
 
     
 <section class="desc markdown">
-  <p>The main class for interacting with the network reachability engine.</p>
-<p>This service provides a high-level API for:</p>
+  <p>The central entry point for the Network Reachability library.</p>
+<p>This service provides a robust, high-level API for monitoring and validating
+network connectivity. It handles complex logic such as request coalescing,
+caching, and resilience patterns like the circuit breaker.</p>
+<h3 id="core-features">Core Features:</h3>
 <ul>
-<li>Performing manual network checks via <a href="../network_reachability/NetworkReachability/check.html">check</a>.</li>
-<li>Protecting sensitive operations using <a href="../network_reachability/NetworkReachability/guard.html">guard</a>.</li>
-<li>Monitoring real-time status changes through <a href="../network_reachability/NetworkReachability/onStatusChange.html">onStatusChange</a>.</li>
+<li><strong>Manual Checks:</strong> Trigger precise network probes using <a href="../network_reachability/NetworkReachability/check.html">check</a>.</li>
+<li><strong>Security Guard:</strong> Protect sensitive operations from insecure networks using <a href="../network_reachability/NetworkReachability/guard.html">guard</a>.</li>
+<li><strong>Real-time Monitoring:</strong> Listen to connectivity changes via <a href="../network_reachability/NetworkReachability/onStatusChange.html">onStatusChange</a>.</li>
+<li><strong>Lifecycle Awareness:</strong> Automatically manages battery efficiency by pausing
+background checks when the app is minimized.</li>
 </ul>
-<p>It implements <a href="https://api.flutter.dev/flutter/widgets/WidgetsBindingObserver-class.html">WidgetsBindingObserver</a> to handle app lifecycle changes,
-ensuring battery efficiency by pausing periodic checks in the background.</p>
+<h3 id="example-usage">Example Usage:</h3>
+<pre class="language-dart"><code class="language-dart"> 1. Initialize at app startup
+await NetworkReachability.init();
+
+ 2. Perform a one-time check
+final report = await NetworkReachability.instance.check();
+print('Connected: ${report.status.isConnected}, Quality: ${report.status.quality}');
+
+ 3. Protect an API call
+try {
+  await NetworkReachability.instance.guard(
+    action: () =&gt; myApi.fetchData(),
+    minQuality: ConnectionQuality.good,
+  );
+} on NetworkReachabilityException catch (e) {
+  print('Operation blocked: ${e.message}');
+}
+</code></pre>
 </section>
 
 
@@ -109,12 +130,12 @@ ensuring battery efficiency by pausing periodic checks in the background.</p>
 
         <dt id="onStatusChange" class="property">
   <span class="name"><a href="../network_reachability/NetworkReachability/onStatusChange.html">onStatusChange</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span>&gt;</span></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../network_reachability/NetworkStatus-class.html">NetworkStatus</a></span>&gt;</span></span>
   
 
 </dt>
 <dd>
-  A stream of <a href="../rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a> updates emitted during periodic checks.
+  A stream that emits <a href="../network_reachability/NetworkStatus-class.html">NetworkStatus</a> updates whenever a periodic check completes.
   <div class="features"><span class="feature">no setter</span></div>
 
 </dd>
@@ -142,39 +163,39 @@ ensuring battery efficiency by pausing periodic checks in the background.</p>
     <dl class="callables">
         <dt id="check" class="callable">
   <span class="name"><a href="../network_reachability/NetworkReachability/check.html">check</a></span><span class="signature">(<wbr>{<span class="parameter" id="check-param-forceRefresh"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">forceRefresh</span> = <span class="default-value">false</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../network_reachability/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
   </span>
   
 
 </dt>
 <dd>
-  Performs a network check with request coalescing and caching.
+  Performs a comprehensive network check.
   
 
 </dd>
 
         <dt id="checkForCaptivePortal" class="callable">
   <span class="name"><a href="../network_reachability/NetworkReachability/checkForCaptivePortal.html">checkForCaptivePortal</a></span><span class="signature">(<wbr>{<span class="parameter" id="checkForCaptivePortal-param-timeoutMs"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a></span> <span class="parameter-name">timeoutMs</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span>&gt;</span></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../network_reachability/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span>&gt;</span></span>
   </span>
   
 
 </dt>
 <dd>
-  Checks for the presence of a captive portal using a non-SSL probe.
+  Detects if the current network is a "Captive Portal" (e.g., public WiFi login page).
   
 
 </dd>
 
         <dt id="checkTarget" class="callable">
-  <span class="name"><a href="../network_reachability/NetworkReachability/checkTarget.html">checkTarget</a></span><span class="signature">(<wbr>{<span class="parameter" id="checkTarget-param-target"><span>required</span> <span class="type-annotation"><a href="../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a></span> <span class="parameter-name">target</span></span>})
-    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../rust_api_models_report/TargetReport-class.html">TargetReport</a></span>&gt;</span></span>
+  <span class="name"><a href="../network_reachability/NetworkReachability/checkTarget.html">checkTarget</a></span><span class="signature">(<wbr>{<span class="parameter" id="checkTarget-param-target"><span>required</span> <span class="type-annotation"><a href="../network_reachability/NetworkTarget-class.html">NetworkTarget</a></span> <span class="parameter-name">target</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../network_reachability/TargetReport-class.html">TargetReport</a></span>&gt;</span></span>
   </span>
   
 
 </dt>
 <dd>
-  Performs a low-level reachability check against a single <code>target</code>.
+  Performs a targeted reachability probe against a single endpoint.
   
 
 </dd>
@@ -187,20 +208,20 @@ ensuring battery efficiency by pausing periodic checks in the background.</p>
 
 </dt>
 <dd>
-  Detects potential DNS hijacking by comparing system resolution vs Cloudflare.
+  Checks for potential DNS tampering by comparing system results against trusted resolvers.
   
 
 </dd>
 
         <dt id="detectSecurityAndNetworkType" class="callable">
   <span class="name"><a href="../network_reachability/NetworkReachability/detectSecurityAndNetworkType.html">detectSecurityAndNetworkType</a></span><span class="signature">(<wbr>)
-    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">(<span class="field"><span class="type-annotation"><a href="../rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a></span>, </span><span class="field"><span class="type-annotation"><a href="../rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span></span>)</span>&gt;</span></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">(<span class="field"><span class="type-annotation"><a href="../network_reachability/SecurityFlagsResult-class.html">SecurityFlagsResult</a></span>, </span><span class="field"><span class="type-annotation"><a href="../network_reachability/ConnectionType.html">ConnectionType</a></span></span>)</span>&gt;</span></span>
   </span>
   
 
 </dt>
 <dd>
-  Inspects system network interfaces to determine connection type and security flags.
+  Inspects active network interfaces to determine connectivity type and security status.
   
 
 </dd>
@@ -227,7 +248,7 @@ features.
 
 </dt>
 <dd>
-  Automatically manages periodic checks based on the Flutter app lifecycle.
+  Observes Flutter's app lifecycle to manage battery consumption.
   <div class="features"><span class="feature">override</span></div>
 
 </dd>
@@ -377,20 +398,20 @@ navigator.
 
 </dt>
 <dd>
-  Disposes of the engine, removes lifecycle observers, and closes streams.
+  Releases resources, removes observers, and shuts down the service.
   
 
 </dd>
 
         <dt id="guard" class="callable">
-  <span class="name"><a href="../network_reachability/NetworkReachability/guard.html">guard</a></span><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span><span class="signature">(<wbr>{<span class="parameter" id="guard-param-action"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">action</span>(), </span><span class="parameter" id="guard-param-minQuality"><span class="type-annotation"><a href="../rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a></span> <span class="parameter-name">minQuality</span> = <span class="default-value">ConnectionQuality.good</span></span>})
+  <span class="name"><a href="../network_reachability/NetworkReachability/guard.html">guard</a></span><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span><span class="signature">(<wbr>{<span class="parameter" id="guard-param-action"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">action</span>(), </span><span class="parameter" id="guard-param-minQuality"><span class="type-annotation"><a href="../network_reachability/ConnectionQuality.html">ConnectionQuality</a></span> <span class="parameter-name">minQuality</span> = <span class="default-value">ConnectionQuality.good</span></span>})
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span>
   </span>
   
 
 </dt>
 <dd>
-  A wrapper to protect network-dependent operations (e.g., API calls).
+  Protects a network-sensitive <code>action</code> by validating the connection first.
   
 
 </dd>
@@ -523,7 +544,7 @@ view to the top.
 
 </dt>
 <dd>
-  The singleton instance of the network reachability engine.
+  Access the singleton instance of the network reachability service.
   <div class="features"><span class="feature">no setter</span></div>
 
 </dd>
@@ -535,14 +556,14 @@ view to the top.
     <h2>Static Methods</h2>
     <dl class="callables">
         <dt id="init" class="callable">
-  <span class="name"><a href="../network_reachability/NetworkReachability/init.html">init</a></span><span class="signature">(<wbr>{<span class="parameter" id="init-param-config"><span class="type-annotation"><a href="../rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a>?</span> <span class="parameter-name">config</span>, </span><span class="parameter" id="init-param-probesRepository"><span class="type-annotation">NetworkProbesRepository?</span> <span class="parameter-name">probesRepository</span></span>})
+  <span class="name"><a href="../network_reachability/NetworkReachability/init.html">init</a></span><span class="signature">(<wbr>{<span class="parameter" id="init-param-config"><span class="type-annotation"><a href="../network_reachability/NetworkConfiguration-class.html">NetworkConfiguration</a>?</span> <span class="parameter-name">config</span>, </span><span class="parameter" id="init-param-probesRepository"><span class="type-annotation">NetworkProbesRepository?</span> <span class="parameter-name">probesRepository</span></span>})
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
   </span>
   
 
 </dt>
 <dd>
-  Initializes the network reachability engine.
+  Initializes the Network Reachability engine.
   
 
 </dd>
@@ -574,7 +595,7 @@ view to the top.
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

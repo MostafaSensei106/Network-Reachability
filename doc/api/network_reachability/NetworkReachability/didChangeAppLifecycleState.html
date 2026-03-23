@@ -68,7 +68,9 @@
     </section>
     
 <section class="desc markdown">
-  <p>Automatically manages periodic checks based on the Flutter app lifecycle.</p>
+  <p>Observes Flutter's app lifecycle to manage battery consumption.</p>
+<p>It automatically stops periodic checks when the app goes into the background
+and resumes them when the app returns to the foreground.</p>
 </section>
 
 
@@ -111,7 +113,7 @@ void didChangeAppLifecycleState(AppLifecycleState state) {
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

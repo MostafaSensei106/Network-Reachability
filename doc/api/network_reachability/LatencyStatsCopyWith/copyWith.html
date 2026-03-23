@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="../../rust_api_models_report/LatencyStats-class.html">LatencyStats</a></span>
+<span class="returntype"><a href="../../network_reachability/LatencyStats-class.html">LatencyStats</a></span>
 <span class="name ">copyWith</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="copyWith-param-latencyMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">latencyMs</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-jitterMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">jitterMs</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-packetLossPercent"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">packetLossPercent</span>, </span></li>
@@ -69,15 +69,13 @@
     </section>
     
 <section class="desc markdown">
-  <p>Creates a copy of <a href="../../rust_api_models_report/LatencyStats-class.html">LatencyStats</a> with the given fields replaced by the new values.</p>
-<p><code>latencyMs</code> Representative latency value.
-<code>jitterMs</code> Measured jitter.
-<code>packetLossPercent</code> Percentage of packets lost.
-<code>minLatencyMs</code> Minimum latency sample.
-<code>avgLatencyMs</code> Average latency sample.
-<code>maxLatencyMs</code> Maximum latency sample.
-<code>stabilityScore</code> Calculated stability score (0-100).</p>
-<p>Returns a new <a href="../../rust_api_models_report/LatencyStats-class.html">LatencyStats</a> instance.</p>
+  <p>Creates a copy of stats with updated metrics.</p>
+<ul>
+<li><code>latencyMs</code>: The primary representative latency.</li>
+<li><code>jitterMs</code>: Calculated variance between samples.</li>
+<li><code>packetLossPercent</code>: % of failed probes.</li>
+<li><code>stabilityScore</code>: Overall health score (0-100).</li>
+</ul>
 </section>
 
 
@@ -121,7 +119,7 @@
     <li class="self-crumb">copyWith method</li>
 </ol>
 
-    <h5>LatencyStatsCopyWith extension on <a href="../../rust_api_models_report/LatencyStats-class.html">LatencyStats</a></h5>
+    <h5>LatencyStatsCopyWith extension on <a href="../../network_reachability/LatencyStats-class.html">LatencyStats</a></h5>
     <div id="dartdoc-sidebar-left-content"></div>
   </div><!--/.sidebar-offcanvas-->
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
@@ -130,7 +128,7 @@
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

@@ -60,9 +60,24 @@
 
     
 <section class="desc markdown">
-  <p>A comprehensive networking library for Dart and Flutter, built on a powerful Rust core.</p>
-<p>This library provides advanced network monitoring, reachability checks, and security features
-following Clean Architecture principles.</p>
+  <h1 id="network-reachability">Network Reachability</h1>
+<p>A high-performance, comprehensive networking library for Dart and Flutter,
+powered by a multi-threaded Rust engine.</p>
+<p>This library goes beyond simple "is it connected?" checks by providing:</p>
+<ul>
+<li><strong>Deep Quality Analysis:</strong> Detailed latency, jitter, and packet loss metrics.</li>
+<li><strong>Security Probes:</strong> Detection of VPNs, DNS hijacking, and proxies.</li>
+<li><strong>Resilience Patterns:</strong> Built-in circuit breakers and adaptive polling.</li>
+<li><strong>Multi-platform:</strong> Consistent behavior across Android, iOS, Web, and Desktop.</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<p>The library follows Clean Architecture principles:</p>
+<ul>
+<li><strong>Application Layer:</strong> <a href="../network_reachability/NetworkReachability-class.html">NetworkReachability</a> service (main API).</li>
+<li><strong>Domain Layer:</strong> Immutable entities like <a href="../network_reachability/NetworkReport-class.html">NetworkReport</a> and <a href="../network_reachability/NetworkStatus-class.html">NetworkStatus</a>.</li>
+<li><strong>Core:</strong> Enums, custom <a href="../network_reachability/NetworkReachabilityException-class.html">NetworkReachabilityException</a>s, and helper extensions.</li>
+</ul>
+<p>For getting started, see <a href="../network_reachability/NetworkReachability/init.html">NetworkReachability.init</a>.</p>
 </section>
 
 
@@ -70,7 +85,7 @@ following Clean Architecture principles.</p>
       <h2>Classes</h2>
       <dl>
           <dt id="CaptivePortalStatus">
-  <span class="name "><a href="../rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span> 
+  <span class="name "><a href="../network_reachability/CaptivePortalStatus-class.html">CaptivePortalStatus</a></span> 
 
 </dt>
 <dd>
@@ -78,7 +93,7 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="LatencyStats">
-  <span class="name "><a href="../rust_api_models_report/LatencyStats-class.html">LatencyStats</a></span> 
+  <span class="name "><a href="../network_reachability/LatencyStats-class.html">LatencyStats</a></span> 
 
 </dt>
 <dd>
@@ -86,11 +101,11 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="NetworkConfiguration">
-  <span class="name "><a href="../rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a></span> 
+  <span class="name "><a href="../network_reachability/NetworkConfiguration-class.html">NetworkConfiguration</a></span> 
 
 </dt>
 <dd>
-  The main configuration object for the network reachability engine.
+  The master configuration for the Network Reachability Engine.
 </dd>
 
           <dt id="NetworkReachability">
@@ -98,11 +113,11 @@ following Clean Architecture principles.</p>
 
 </dt>
 <dd>
-  The main class for interacting with the network reachability engine.
+  The central entry point for the Network Reachability library.
 </dd>
 
           <dt id="NetworkReport">
-  <span class="name "><a href="../rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span> 
+  <span class="name "><a href="../network_reachability/NetworkReport-class.html">NetworkReport</a></span> 
 
 </dt>
 <dd>
@@ -110,7 +125,7 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="NetworkReportImpl">
-  <span class="name "><a href="../rust_frb_generated/NetworkReportImpl-class.html">NetworkReportImpl</a></span> 
+  <span class="name "><a href="../network_reachability/NetworkReportImpl-class.html">NetworkReportImpl</a></span> 
 
 </dt>
 <dd>
@@ -118,7 +133,7 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="NetworkStatus">
-  <span class="name "><a href="../rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a></span> 
+  <span class="name "><a href="../network_reachability/NetworkStatus-class.html">NetworkStatus</a></span> 
 
 </dt>
 <dd>
@@ -126,7 +141,7 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="NetworkTarget">
-  <span class="name "><a href="../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a></span> 
+  <span class="name "><a href="../network_reachability/NetworkTarget-class.html">NetworkTarget</a></span> 
 
 </dt>
 <dd>
@@ -134,23 +149,23 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="QualityThresholds">
-  <span class="name "><a href="../rust_api_models_config/QualityThresholds-class.html">QualityThresholds</a></span> 
+  <span class="name "><a href="../network_reachability/QualityThresholds-class.html">QualityThresholds</a></span> 
 
 </dt>
 <dd>
-  Defines the latency thresholds (in milliseconds) used to determine <a href="../rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a>.
+  Defines the latency thresholds (in milliseconds) used to categorize <code>`ConnectionQuality`</code>.
 </dd>
 
           <dt id="ResilienceConfig">
-  <span class="name "><a href="../rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a></span> 
+  <span class="name "><a href="../network_reachability/ResilienceConfig-class.html">ResilienceConfig</a></span> 
 
 </dt>
 <dd>
-  Configuration for resilience, stability analysis, and performance tuning.
+  Configuration for network resilience, failure handling, and statistical analysis.
 </dd>
 
           <dt id="RustLib">
-  <span class="name "><a href="../rust_frb_generated/RustLib-class.html">RustLib</a></span> 
+  <span class="name "><a href="../network_reachability/RustLib-class.html">RustLib</a></span> 
 
 </dt>
 <dd>
@@ -158,7 +173,7 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="RustLibApi">
-  <span class="name "><a href="../rust_frb_generated/RustLibApi-class.html">RustLibApi</a></span> 
+  <span class="name "><a href="../network_reachability/RustLibApi-class.html">RustLibApi</a></span> 
 
 </dt>
 <dd>
@@ -166,7 +181,7 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="RustLibApiImpl">
-  <span class="name "><a href="../rust_frb_generated/RustLibApiImpl-class.html">RustLibApiImpl</a></span> 
+  <span class="name "><a href="../network_reachability/RustLibApiImpl-class.html">RustLibApiImpl</a></span> 
 
 </dt>
 <dd>
@@ -174,15 +189,15 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="SecurityConfig">
-  <span class="name "><a href="../rust_api_models_config/SecurityConfig-class.html">SecurityConfig</a></span> 
+  <span class="name "><a href="../network_reachability/SecurityConfig-class.html">SecurityConfig</a></span> 
 
 </dt>
 <dd>
-  Configuration for security-related network checks.
+  Configuration for security-related network checks and policy enforcement.
 </dd>
 
           <dt id="SecurityFlags">
-  <span class="name "><a href="../rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a></span> 
+  <span class="name "><a href="../network_reachability/SecurityFlags-class.html">SecurityFlags</a></span> 
 
 </dt>
 <dd>
@@ -190,7 +205,7 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="SecurityFlagsResult">
-  <span class="name "><a href="../rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a></span> 
+  <span class="name "><a href="../network_reachability/SecurityFlagsResult-class.html">SecurityFlagsResult</a></span> 
 
 </dt>
 <dd>
@@ -198,7 +213,7 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="SecurityFlagsResultImpl">
-  <span class="name "><a href="../rust_frb_generated/SecurityFlagsResultImpl-class.html">SecurityFlagsResultImpl</a></span> 
+  <span class="name "><a href="../network_reachability/SecurityFlagsResultImpl-class.html">SecurityFlagsResultImpl</a></span> 
 
 </dt>
 <dd>
@@ -206,11 +221,11 @@ following Clean Architecture principles.</p>
 </dd>
 
           <dt id="TargetReport">
-  <span class="name "><a href="../rust_api_models_report/TargetReport-class.html">TargetReport</a></span> 
+  <span class="name "><a href="../network_reachability/TargetReport-class.html">TargetReport</a></span> 
 
 </dt>
 <dd>
-  Detailed outcome of a connectivity check against a specific <a href="../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a>.
+  Detailed outcome of a connectivity check against a specific target.
 </dd>
 
       </dl>
@@ -220,11 +235,11 @@ following Clean Architecture principles.</p>
       <h2>Enums</h2>
       <dl>
           <dt id="CheckStrategy">
-  <span class="name "><a href="../rust_api_models_config/CheckStrategy.html">CheckStrategy</a></span> 
+  <span class="name "><a href="../network_reachability/CheckStrategy.html">CheckStrategy</a></span> 
 
 </dt>
 <dd>
-  Defines the strategy used when evaluating multiple network targets.
+  Defines the strategy used when evaluating multiple network targets during a check cycle.
 </dd>
 
           <dt id="CircuitBreakerState">
@@ -232,19 +247,19 @@ following Clean Architecture principles.</p>
 
 </dt>
 <dd>
-  Enum representing the state of the circuit breaker pattern.
+  Represents the operational state of the Circuit Breaker pattern.
 </dd>
 
           <dt id="ConnectionQuality">
-  <span class="name "><a href="../rust_api_models_config/ConnectionQuality.html">ConnectionQuality</a></span> 
+  <span class="name "><a href="../network_reachability/ConnectionQuality.html">ConnectionQuality</a></span> 
 
 </dt>
 <dd>
-  Represents the perceived quality of the network connection based on latency and stability.
+  Represents the perceived quality of the network connection based on latency, jitter, and stability.
 </dd>
 
           <dt id="ConnectionType">
-  <span class="name "><a href="../rust_api_models_net_info/ConnectionType.html">ConnectionType</a></span> 
+  <span class="name "><a href="../network_reachability/ConnectionType.html">ConnectionType</a></span> 
 
 </dt>
 <dd>
@@ -256,15 +271,15 @@ following Clean Architecture principles.</p>
 
 </dt>
 <dd>
-  Enum representing specific security alerts or policy violations.
+  Identifies specific security violations or network policy alerts.
 </dd>
 
           <dt id="TargetProtocol">
-  <span class="name "><a href="../rust_api_models_target/TargetProtocol.html">TargetProtocol</a></span> 
+  <span class="name "><a href="../network_reachability/TargetProtocol.html">TargetProtocol</a></span> 
 
 </dt>
 <dd>
-  Supported protocols for network reachability checks.
+  Supported network protocols for performing reachability probes.
 </dd>
 
       </dl>
@@ -277,122 +292,122 @@ following Clean Architecture principles.</p>
       <dl>
           <dt id="CaptivePortalStatusCopyWith">
   <span class="name "><a href="../network_reachability/CaptivePortalStatusCopyWith.html">CaptivePortalStatusCopyWith</a></span>
-  on <a href="../rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a>
+  on <a href="../network_reachability/CaptivePortalStatus-class.html">CaptivePortalStatus</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_net_info/CaptivePortalStatus-class.html">CaptivePortalStatus</a> to provide an immutable way to copy the status.
+  Extension on <a href="../network_reachability/CaptivePortalStatus-class.html">CaptivePortalStatus</a> for status immutability.
 </dd>
 
           <dt id="LatencyStatsCopyWith">
   <span class="name "><a href="../network_reachability/LatencyStatsCopyWith.html">LatencyStatsCopyWith</a></span>
-  on <a href="../rust_api_models_report/LatencyStats-class.html">LatencyStats</a>
+  on <a href="../network_reachability/LatencyStats-class.html">LatencyStats</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_report/LatencyStats-class.html">LatencyStats</a> to provide an immutable way to copy stats.
+  Extension on <a href="../network_reachability/LatencyStats-class.html">LatencyStats</a> for granular metric management.
 </dd>
 
           <dt id="NetworkConfigurationCopyWith">
   <span class="name "><a href="../network_reachability/NetworkConfigurationCopyWith.html">NetworkConfigurationCopyWith</a></span>
-  on <a href="../rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a>
+  on <a href="../network_reachability/NetworkConfiguration-class.html">NetworkConfiguration</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_config/NetworkConfiguration-class.html">NetworkConfiguration</a> to provide an immutable way to copy the config.
+  Extension on <a href="../network_reachability/NetworkConfiguration-class.html">NetworkConfiguration</a> to enable easy immutability.
 </dd>
 
           <dt id="NetworkReportCopyWith">
   <span class="name "><a href="../network_reachability/NetworkReportCopyWith.html">NetworkReportCopyWith</a></span>
-  on <a href="../rust_api_models_report/NetworkReport-class.html">NetworkReport</a>
+  on <a href="../network_reachability/NetworkReport-class.html">NetworkReport</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_report/NetworkReport-class.html">NetworkReport</a> to provide an immutable way to copy the report.
+  Extension on <a href="../network_reachability/NetworkReport-class.html">NetworkReport</a> (Opaque pointer) to allow mutation.
 </dd>
 
           <dt id="NetworkStatusCopyWith">
   <span class="name "><a href="../network_reachability/NetworkStatusCopyWith.html">NetworkStatusCopyWith</a></span>
-  on <a href="../rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a>
+  on <a href="../network_reachability/NetworkStatus-class.html">NetworkStatus</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_report/NetworkStatus-class.html">NetworkStatus</a> to provide an immutable way to copy the status summary.
+  Extension on <a href="../network_reachability/NetworkStatus-class.html">NetworkStatus</a> for summary updates.
 </dd>
 
           <dt id="NetworkTargetCopyWith">
   <span class="name "><a href="../network_reachability/NetworkTargetCopyWith.html">NetworkTargetCopyWith</a></span>
-  on <a href="../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a>
+  on <a href="../network_reachability/NetworkTarget-class.html">NetworkTarget</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a> to provide an immutable way to copy the target definition.
+  Extension on <a href="../network_reachability/NetworkTarget-class.html">NetworkTarget</a> to modify probe endpoint definitions.
 </dd>
 
           <dt id="QualityThresholdsCopyWith">
   <span class="name "><a href="../network_reachability/QualityThresholdsCopyWith.html">QualityThresholdsCopyWith</a></span>
-  on <a href="../rust_api_models_config/QualityThresholds-class.html">QualityThresholds</a>
+  on <a href="../network_reachability/QualityThresholds-class.html">QualityThresholds</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_config/QualityThresholds-class.html">QualityThresholds</a> to provide an immutable way to copy the config.
+  Extension on <a href="../network_reachability/QualityThresholds-class.html">QualityThresholds</a> for easy updates to latency categorization.
 </dd>
 
           <dt id="ResilienceConfigCopyWith">
   <span class="name "><a href="../network_reachability/ResilienceConfigCopyWith.html">ResilienceConfigCopyWith</a></span>
-  on <a href="../rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a>
+  on <a href="../network_reachability/ResilienceConfig-class.html">ResilienceConfig</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_config/ResilienceConfig-class.html">ResilienceConfig</a> to provide an immutable way to copy the config.
+  Extension on <a href="../network_reachability/ResilienceConfig-class.html">ResilienceConfig</a> to tune circuit breaker and stability scoring.
 </dd>
 
           <dt id="SecurityConfigCopyWith">
   <span class="name "><a href="../network_reachability/SecurityConfigCopyWith.html">SecurityConfigCopyWith</a></span>
-  on <a href="../rust_api_models_config/SecurityConfig-class.html">SecurityConfig</a>
+  on <a href="../network_reachability/SecurityConfig-class.html">SecurityConfig</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_config/SecurityConfig-class.html">SecurityConfig</a> to provide an immutable way to copy the config.
+  Extension on <a href="../network_reachability/SecurityConfig-class.html">SecurityConfig</a> for toggling network security probes.
 </dd>
 
           <dt id="SecurityFlagsCopyWith">
   <span class="name "><a href="../network_reachability/SecurityFlagsCopyWith.html">SecurityFlagsCopyWith</a></span>
-  on <a href="../rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a>
+  on <a href="../network_reachability/SecurityFlags-class.html">SecurityFlags</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_net_info/SecurityFlags-class.html">SecurityFlags</a> to provide an immutable way to copy the flags.
+  Extension on <a href="../network_reachability/SecurityFlags-class.html">SecurityFlags</a> for interface security metadata.
 </dd>
 
           <dt id="SecurityFlagsResultCopyWith">
   <span class="name "><a href="../network_reachability/SecurityFlagsResultCopyWith.html">SecurityFlagsResultCopyWith</a></span>
-  on <a href="../rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a>
+  on <a href="../network_reachability/SecurityFlagsResult-class.html">SecurityFlagsResult</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_net_info/SecurityFlagsResult-class.html">SecurityFlagsResult</a> to provide an immutable way to copy the result.
+  Extension on <a href="../network_reachability/SecurityFlagsResult-class.html">SecurityFlagsResult</a> (Opaque pointer) to allow mutation.
 </dd>
 
           <dt id="TargetReportCopyWith">
   <span class="name "><a href="../network_reachability/TargetReportCopyWith.html">TargetReportCopyWith</a></span>
-  on <a href="../rust_api_models_report/TargetReport-class.html">TargetReport</a>
+  on <a href="../network_reachability/TargetReport-class.html">TargetReport</a>
   
 
 </dt>
 <dd>
-  Extension on <a href="../rust_api_models_report/TargetReport-class.html">TargetReport</a> to provide an immutable way to copy the report for a single target.
+  Extension on <a href="../network_reachability/TargetReport-class.html">TargetReport</a> for single target metrics.
 </dd>
 
       </dl>
@@ -410,7 +425,7 @@ following Clean Architecture principles.</p>
 
 </dt>
 <dd>
-  Thrown by the <code>guard</code> method when the circuit breaker is open due to repeated backend failures.
+  Exception thrown when the Circuit Breaker is active.
 </dd>
 
           <dt id="NetworkReachabilityException">
@@ -418,7 +433,7 @@ following Clean Architecture principles.</p>
 
 </dt>
 <dd>
-  Base class for all network reachability exceptions.
+  Base class for all exceptions thrown by the Network Reachability library.
 </dd>
 
           <dt id="NetworkTimeoutException">
@@ -426,7 +441,7 @@ following Clean Architecture principles.</p>
 
 </dt>
 <dd>
-  Thrown when a network check operation times out.
+  Exception thrown when a network probe or check exceeds its allocated time.
 </dd>
 
           <dt id="PoorConnectionException">
@@ -434,7 +449,7 @@ following Clean Architecture principles.</p>
 
 </dt>
 <dd>
-  Thrown by the <code>guard</code> method when the connection quality is below the required minimum.
+  Exception thrown when the network quality is too low for a requested operation.
 </dd>
 
           <dt id="SecurityException">
@@ -442,7 +457,7 @@ following Clean Architecture principles.</p>
 
 </dt>
 <dd>
-  Thrown by the <code>guard</code> method when a security requirement is not met (e.g., VPN detected).
+  Exception thrown when a security policy is violated.
 </dd>
 
       </dl>
@@ -464,22 +479,6 @@ following Clean Architecture principles.</p>
     <ol>
       <li class="section-title">Libraries</li>
       <li><a href="../network_reachability/">network_reachability</a></li>
-      <li><a href="../rust_api_analysis_quality/">rust/api/analysis/quality</a></li>
-      <li><a href="../rust_api_analysis_stats/">rust/api/analysis/stats</a></li>
-      <li><a href="../rust_api_engine/">rust/api/engine</a></li>
-      <li><a href="../rust_api_engine_sampler/">rust/api/engine/sampler</a></li>
-      <li><a href="../rust_api_engine_security/">rust/api/engine/security</a></li>
-      <li><a href="../rust_api_models_config/">rust/api/models/config</a></li>
-      <li><a href="../rust_api_models_net_info/">rust/api/models/net_info</a></li>
-      <li><a href="../rust_api_models_report/">rust/api/models/report</a></li>
-      <li><a href="../rust_api_models_target/">rust/api/models/target</a></li>
-      <li><a href="../rust_api_probes_captive_portal/">rust/api/probes/captive_portal</a></li>
-      <li><a href="../rust_api_probes_dns/">rust/api/probes/dns</a></li>
-      <li><a href="../rust_api_probes_interface/">rust/api/probes/interface</a></li>
-      <li><a href="../rust_api_probes_target/">rust/api/probes/target</a></li>
-      <li><a href="../rust_frb_generated/">rust/frb_generated</a></li>
-      <li><a href="../rust_frb_generated.io/">rust/frb_generated.io</a></li>
-      <li><a href="../rust_frb_generated.web/">rust/frb_generated.web</a></li>
 </ol>
 
   </div>
@@ -490,7 +489,7 @@ following Clean Architecture principles.</p>
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

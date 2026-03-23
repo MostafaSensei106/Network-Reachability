@@ -54,8 +54,8 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../rust_api_models_report/TargetReport-class.html">TargetReport</a></span>&gt;</span></span>
-<span class="name ">checkTarget</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="checkTarget-param-target"><span>required</span> <span class="type-annotation"><a href="../../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a></span> <span class="parameter-name">target</span>, </span></li>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../network_reachability/TargetReport-class.html">TargetReport</a></span>&gt;</span></span>
+<span class="name ">checkTarget</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="checkTarget-param-target"><span>required</span> <span class="type-annotation"><a href="../../network_reachability/NetworkTarget-class.html">NetworkTarget</a></span> <span class="parameter-name">target</span>, </span></li>
 </ol>})
 
       
@@ -63,9 +63,8 @@
     </section>
     
 <section class="desc markdown">
-  <p>Performs a low-level reachability check against a single <code>target</code>.</p>
-<p><code>target</code> The <a href="../../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a> to probe.</p>
-<p>Returns a <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a> that resolves to a <a href="../../rust_api_models_report/TargetReport-class.html">TargetReport</a>.</p>
+  <p>Performs a targeted reachability probe against a single endpoint.</p>
+<p><code>target</code>: The configuration for the endpoint to probe.</p>
 </section>
 
 
@@ -101,7 +100,7 @@
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

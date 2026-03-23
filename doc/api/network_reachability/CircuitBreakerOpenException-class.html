@@ -55,7 +55,11 @@
 
     
 <section class="desc markdown">
-  <p>Thrown by the <code>guard</code> method when the circuit breaker is open due to repeated backend failures.</p>
+  <p>Exception thrown when the Circuit Breaker is active.</p>
+<p>This indicates that the network has been consistently failing, and the
+library is intentionally blocking requests to save resources.</p>
+<p><strong>Handling:</strong> You should respect the <a href="../network_reachability/CircuitBreakerOpenException/retryAfter.html">retryAfter</a> duration and avoid
+attempting new network requests until that time has passed.</p>
 </section>
 
 
@@ -119,7 +123,7 @@
 
 </dt>
 <dd class="inherited">
-  The message associated with this exception.
+  A human-readable description of the error.
   <div class="features"><span class="feature">final</span><span class="feature">inherited</span></div>
 
 </dd>
@@ -131,7 +135,7 @@
 
 </dt>
 <dd>
-  The duration to wait before attempting another request.
+  The suggested duration to wait before trying again.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -233,7 +237,7 @@
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

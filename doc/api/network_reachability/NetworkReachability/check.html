@@ -54,7 +54,7 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../rust_api_models_report/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../network_reachability/NetworkReport-class.html">NetworkReport</a></span>&gt;</span></span>
 <span class="name ">check</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="check-param-forceRefresh"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">forceRefresh</span> = <span class="default-value">false</span>, </span></li>
 </ol>})
 
@@ -63,13 +63,17 @@
     </section>
     
 <section class="desc markdown">
-  <p>Performs a network check with request coalescing and caching.</p>
-<p>If <code>forceRefresh</code> is false (default), it may return a cached report if it's
-within the <code>cacheValidityMs</code> window.</p>
-<p>This method is "Thundering Herd" safe; multiple simultaneous calls will
-result in a single underlying network probe.</p>
-<p><code>forceRefresh</code> Whether to bypass the cache and force a new network probe.</p>
-<p>Returns a <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a> that resolves to a <a href="../../rust_api_models_report/NetworkReport-class.html">NetworkReport</a>.</p>
+  <p>Performs a comprehensive network check.</p>
+<p>To ensure efficiency, this method employs:</p>
+<ol>
+<li><strong>Caching:</strong> Returns a recent report if within the <code>cacheValidityMs</code> window.</li>
+<li><strong>Request Coalescing:</strong> If multiple callers trigger <a href="../../network_reachability/NetworkReachability/check.html">check</a> simultaneously,
+only one network probe is executed, and its result is shared among all callers.</li>
+</ol>
+<ul>
+<li><code>forceRefresh</code>: If true, ignores the cache and forces a new network probe.</li>
+</ul>
+<p>Returns a <a href="../../network_reachability/NetworkReport-class.html">NetworkReport</a> containing detailed statistics and security flags.</p>
 </section>
 
 
@@ -86,7 +90,7 @@ result in a single underlying network probe.</p>
     return _lastReport!;
   }
 
-  &#47;&#47; 2. Coalesce concurrent requests
+  &#47;&#47; 2. Coalesce concurrent requests (Thundering Herd Protection)
   if (_pendingCheck != null) {
     return _pendingCheck!;
   }
@@ -126,7 +130,7 @@ result in a single underlying network probe.</p>
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>

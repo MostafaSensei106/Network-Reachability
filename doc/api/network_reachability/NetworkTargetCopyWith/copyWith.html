@@ -54,11 +54,11 @@
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="../../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a></span>
+<span class="returntype"><a href="../../network_reachability/NetworkTarget-class.html">NetworkTarget</a></span>
 <span class="name ">copyWith</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="copyWith-param-label"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">label</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-host"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">host</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-port"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">port</span>, </span></li>
-<li><span class="parameter" id="copyWith-param-protocol"><span class="type-annotation"><a href="../../rust_api_models_target/TargetProtocol.html">TargetProtocol</a>?</span> <span class="parameter-name">protocol</span>, </span></li>
+<li><span class="parameter" id="copyWith-param-protocol"><span class="type-annotation"><a href="../../network_reachability/TargetProtocol.html">TargetProtocol</a>?</span> <span class="parameter-name">protocol</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-timeoutMs"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/BigInt-class.html">BigInt</a>?</span> <span class="parameter-name">timeoutMs</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-priority"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">priority</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-isEssential"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">isEssential</span>, </span></li>
@@ -69,15 +69,12 @@
     </section>
     
 <section class="desc markdown">
-  <p>Creates a copy of <a href="../../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a> with the given fields replaced by the new values.</p>
-<p><code>label</code> Human-readable identifier.
-<code>host</code> Domain or IP address.
-<code>port</code> Destination port.
-<code>protocol</code> Communication protocol (TCP, ICMP, etc.).
-<code>timeoutMs</code> Connection timeout.
-<code>priority</code> Relative priority for sorting.
-<code>isEssential</code> Criticality flag.</p>
-<p>Returns a new <a href="../../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a> instance.</p>
+  <p>Returns a copy of the target configuration.</p>
+<ul>
+<li><code>host</code>: IP or Domain.</li>
+<li><code>protocol</code>: ICMP, TCP, HTTP, or HTTPS.</li>
+<li><code>isEssential</code>: If true, failure of this target triggers the circuit breaker.</li>
+</ul>
 </section>
 
 
@@ -121,7 +118,7 @@
     <li class="self-crumb">copyWith method</li>
 </ol>
 
-    <h5>NetworkTargetCopyWith extension on <a href="../../rust_api_models_target/NetworkTarget-class.html">NetworkTarget</a></h5>
+    <h5>NetworkTargetCopyWith extension on <a href="../../network_reachability/NetworkTarget-class.html">NetworkTarget</a></h5>
     <div id="dartdoc-sidebar-left-content"></div>
   </div><!--/.sidebar-offcanvas-->
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
@@ -130,7 +127,7 @@
 <footer>
   <span class="no-break">
     network_reachability
-      0.0.1+2
+      0.0.1+3
   </span>
   
 </footer>
