@@ -1,23 +1,18 @@
-//! Functions for calculating statistical metrics and scores for network performance.
+//! # Network Statistics & Scoring
+//!
+//! This module handles the heavy lifting of statistical analysis. It transforms
+//! a collection of raw latency samples into meaningful metrics like Jitter,
+//! P95 Latency, and a consolidated Stability Score.
 
 use crate::api::models::{LatencyStats, QualityThresholds};
 
-/// Calculates statistical metrics for a series of latency samples.
+/// Calculates basic statistical metrics for a set of latency samples.
 ///
-/// This function computes the minimum, maximum, and mean latency, along with the
-/// standard deviation, which is used as a measure of jitter.
-///
-/// # Arguments
-///
-/// * `latencies` - A slice of u64 latency values in milliseconds.
+/// Useful for quick analysis of a probe cycle.
 ///
 /// # Returns
 ///
-/// A tuple containing:
-/// 1. `Option<u64>`: Minimum latency.
-/// 2. `Option<u64>`: Maximum latency.
-/// 3. `Option<u64>`: Mean (average) latency.
-/// 4. `Option<f64>`: Standard deviation (jitter).
+/// A tuple: `(Min, Max, Mean, StandardDeviation)`.
 pub fn calculate_jitter_stats(
     latencies: &[u64],
 ) -> (Option<u64>, Option<u64>, Option<u64>, Option<f64>) {
@@ -33,7 +28,6 @@ pub fn calculate_jitter_stats(
     let mean_latency = sum / count;
 
     if count < 2 {
-        // Standard deviation requires at least 2 samples
         return (
             Some(min_latency),
             Some(max_latency),
@@ -49,7 +43,8 @@ pub fn calculate_jitter_stats(
             diff * diff
         })
         .sum();
-    // Use (count - 1) for sample standard deviation
+
+    // Sample standard deviation (Bessel's correction)
     let std_dev = (variance_sum / (count as f64 - 1.0)).sqrt();
 
     (
@@ -60,15 +55,21 @@ pub fn calculate_jitter_stats(
     )
 }
 
-/// Computes final latency and stability statistics from a set of samples.
+/// Computes a comprehensive stability report and health score.
 ///
-/// The scoring system is tuned for: Home WiFi + Mobile 4G/5G networks.
-/// Priority weights:
-/// - Latency Absolute:   30% (penalizes high latency values directly)
-/// - Latency Stability:  25% (measures variance / coefficient of variation)
-/// - Loss Score:         25% (measures reliability)
-/// - Jitter Score:       15% (measures packet arrival consistency)
-/// - Spike Score:          5% (measures outlier impact)
+/// The scoring system is specifically tuned for modern mobile (4G/5G) and
+/// WiFi networks. It uses a weighted composite model:
+///
+/// ### Scoring Weights:
+/// * **P95 Latency (35%):** Penalizes "tail latency" (occasional slow packets).
+/// * **Packet Loss (30%):** Heavily penalizes unreliability.
+/// * **Mean Latency (20%):** Baseline speed assessment.
+/// * **IQR Jitter (15%):** Measures arrival consistency using Interquartile Range.
+///
+/// # Arguments
+/// * `latencies`: Successful probe results.
+/// * `total_expected_samples`: Used to calculate packet loss.
+/// * `thresholds`: User-defined latency boundaries.
 pub fn compute_latency_stats(
     latencies: &[u64],
     total_expected_samples: u8,
@@ -101,6 +102,7 @@ pub fn compute_latency_stats(
     let mean_f64: f64 = sorted.iter().sum::<u64>() as f64 / n as f64;
     let mean_ms = mean_f64.round() as u64;
 
+    // Helper for calculating N-th percentile
     let percentile = |p: f64| -> f64 {
         if n == 1 {
             return sorted[0] as f64;
@@ -118,6 +120,7 @@ pub fn compute_latency_stats(
     let min_lat = sorted.first().copied();
     let max_lat = sorted.last().copied();
 
+    // IQR is more robust against outliers than standard deviation for small samples
     let iqr_jitter = p75 - p25;
 
     let variance: f64 = if n > 1 {
@@ -134,11 +137,9 @@ pub fn compute_latency_stats(
     };
     let std_dev = variance.sqrt();
 
-    // ── Dynamic stepped scorer built from user thresholds ───────────────────
+    // Stepped scorer: maps a latency value to a 0-100 score based on user thresholds
     let score_latency = |ms: f64| -> f64 {
         let t = &thresholds;
-
-        // Convert thresholds to f64 once
         let (ex, gr, go, mo, po) = (
             t.excellent as f64,
             t.great as f64,
@@ -147,7 +148,6 @@ pub fn compute_latency_stats(
             t.poor as f64,
         );
 
-        // Upper bound for the "unusable" tail: 2× poor threshold
         let unusable = po * 2.0;
 
         if ms <= ex {
@@ -165,10 +165,9 @@ pub fn compute_latency_stats(
         }
     };
 
-    // ── 1. P95 Latency Score (35%) ───────────────────────────────────────────
     let p95_score = score_latency(p95);
 
-    // ── 2. Loss Score (30%) ──────────────────────────────────────────────────
+    // Loss Scorer: sharp drops after 1% loss, zero score after 15%
     let loss_f64 = packet_loss_percent as f64;
     let loss_score: f64 = if loss_f64 <= 0.0 {
         100.0
@@ -182,10 +181,9 @@ pub fn compute_latency_stats(
         0.0
     };
 
-    // ── 3. Mean Latency Score (20%) ──────────────────────────────────────────
     let mean_score = score_latency(mean_f64);
 
-    // ── 4. IQR Jitter Score (15%) ────────────────────────────────────────────
+    // Jitter Scorer: penalizes relative variance
     let jitter_score: f64 = if mean_f64 > f64::EPSILON {
         let relative_iqr = (iqr_jitter / mean_f64) * 100.0;
         if relative_iqr <= 10.0 {
@@ -203,10 +201,11 @@ pub fn compute_latency_stats(
         100.0
     };
 
-    // ── Composite ────────────────────────────────────────────────────────────
+    // Calculate Final Weighted Score
     let mut weighted_score =
         p95_score * 0.35 + loss_score * 0.30 + mean_score * 0.20 + jitter_score * 0.15;
 
+    // Severe penalty for > 50% loss (network is effectively dying)
     if packet_loss_percent > 50.0 {
         let survival = (100.0 - packet_loss_percent as f64) / 50.0;
         weighted_score *= survival;
@@ -223,7 +222,7 @@ pub fn compute_latency_stats(
     }
 }
 
-/// Linear interpolation — maps `value` in [in_min, in_max] to [out_min, out_max]
+/// Helper: Performs linear interpolation between two points.
 #[inline]
 fn lerp(out_min: f64, out_max: f64, value: f64, in_min: f64, in_max: f64) -> f64 {
     if (in_max - in_min).abs() < f64::EPSILON {

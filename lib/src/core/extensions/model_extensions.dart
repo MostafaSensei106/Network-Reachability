@@ -1,20 +1,21 @@
-import 'package:network_reachability/rust/api/models/config.dart';
-import 'package:network_reachability/rust/api/models/net_info.dart';
-import 'package:network_reachability/rust/api/models/report.dart';
-import 'package:network_reachability/rust/api/models/target.dart';
+import 'package:network_reachability/src/rust/api/models/config.dart';
+import 'package:network_reachability/src/rust/api/models/net_info.dart';
+import 'package:network_reachability/src/rust/api/models/report.dart';
+import 'package:network_reachability/src/rust/api/models/target.dart';
 
-/// Extension on [NetworkConfiguration] to provide an immutable way to copy the config.
+/// Extension on [NetworkConfiguration] to enable easy immutability.
+///
+/// Use [copyWith] to create a new configuration based on the current one
+/// but with specific fields modified.
 extension NetworkConfigurationCopyWith on NetworkConfiguration {
-  /// Creates a copy of [NetworkConfiguration] with the given fields replaced by the new values.
+  /// Creates a copy of the current configuration with updated fields.
   ///
-  /// [targets] Optional list of [NetworkTarget] to update.
-  /// [checkIntervalMs] Optional interval between checks to update.
-  /// [cacheValidityMs] Optional cache duration to update.
-  /// [qualityThreshold] Optional [QualityThresholds] to update.
-  /// [security] Optional [SecurityConfig] to update.
-  /// [resilience] Optional [ResilienceConfig] to update.
-  ///
-  /// Returns a new [NetworkConfiguration] instance.
+  /// * [targets]: The list of [NetworkTarget] to monitor.
+  /// * [checkIntervalMs]: How often to run periodic checks (0 to disable).
+  /// * [cacheValidityMs]: How long to keep results in memory.
+  /// * [qualityThreshold]: Custom thresholds for Good/Poor latency.
+  /// * [security]: VPN and DNS hijacking security preferences.
+  /// * [resilience]: Settings for Circuit Breaker and stability analysis.
   NetworkConfiguration copyWith({
     List<NetworkTarget>? targets,
     BigInt? checkIntervalMs,
@@ -34,17 +35,15 @@ extension NetworkConfigurationCopyWith on NetworkConfiguration {
   }
 }
 
-/// Extension on [QualityThresholds] to provide an immutable way to copy the config.
+/// Extension on [QualityThresholds] for easy updates to latency categorization.
 extension QualityThresholdsCopyWith on QualityThresholds {
-  /// Creates a copy of [QualityThresholds] with the given fields replaced by the new values.
+  /// Returns a new [QualityThresholds] with overridden values.
   ///
-  /// [excellent] Latency threshold for Excellent quality.
-  /// [great] Latency threshold for Great quality.
-  /// [good] Latency threshold for Good quality.
-  /// [moderate] Latency threshold for Moderate quality.
-  /// [poor] Latency threshold for Poor quality.
-  ///
-  /// Returns a new [QualityThresholds] instance.
+  /// * [excellent]: Max latency for 'Excellent' (e.g., < 50ms).
+  /// * [great]: Max latency for 'Great' (e.g., < 100ms).
+  /// * [good]: Max latency for 'Good' (e.g., < 150ms).
+  /// * [moderate]: Max latency for 'Moderate' (e.g., < 250ms).
+  /// * [poor]: Max latency for 'Poor' (e.g., < 500ms).
   QualityThresholds copyWith({
     BigInt? excellent,
     BigInt? great,
@@ -62,19 +61,17 @@ extension QualityThresholdsCopyWith on QualityThresholds {
   }
 }
 
-/// Extension on [ResilienceConfig] to provide an immutable way to copy the config.
+/// Extension on [ResilienceConfig] to tune circuit breaker and stability scoring.
 extension ResilienceConfigCopyWith on ResilienceConfig {
-  /// Creates a copy of [ResilienceConfig] with the given fields replaced by the new values.
+  /// Creates a copy with modified resilience parameters.
   ///
-  /// [strategy] Evaluation strategy for multiple targets.
-  /// [circuitBreakerThreshold] Number of failures before opening the circuit.
-  /// [circuitBreakerCooldownMs] Duration to wait before trial checks.
-  /// [numJitterSamples] Number of samples for stability analysis.
-  /// [jitterThresholdPercent] Threshold for flagging high jitter.
-  /// [stabilityThershold] Minimum stability score required.
-  /// [criticalPacketLossPrecent] Packet loss threshold for unstable status.
-  ///
-  /// Returns a new [ResilienceConfig] instance.
+  /// * [strategy]: How multiple targets are evaluated (Consensus vs Race).
+  /// * [circuitBreakerThreshold]: Failures before opening the circuit.
+  /// * [circuitBreakerCooldownMs]: Wait time before retry probes.
+  /// * [numJitterSamples]: Number of probes to use for jitter analysis.
+  /// * [jitterThresholdPercent]: Variance threshold for marking as 'Unstable'.
+  /// * [stabilityThershold]: Minimum stability score (0-100) required.
+  /// * [criticalPacketLossPrecent]: Loss % that triggers an 'Offline' or 'Unstable' status.
   ResilienceConfig copyWith({
     CheckStrategy? strategy,
     int? circuitBreakerThreshold,
@@ -100,14 +97,12 @@ extension ResilienceConfigCopyWith on ResilienceConfig {
   }
 }
 
-/// Extension on [SecurityConfig] to provide an immutable way to copy the config.
+/// Extension on [SecurityConfig] for toggling network security probes.
 extension SecurityConfigCopyWith on SecurityConfig {
-  /// Creates a copy of [SecurityConfig] with the given fields replaced by the new values.
+  /// Creates a copy with updated security settings.
   ///
-  /// [blockVpn] Whether to flag VPN connections.
-  /// [detectDnsHijack] Whether to perform DNS spoofing checks.
-  ///
-  /// Returns a new [SecurityConfig] instance.
+  /// * [blockVpn]: If true, VPN interfaces will be flagged.
+  /// * [detectDnsHijack]: If true, performs active DNS spoofing checks.
   SecurityConfig copyWith({
     bool? blockVpn,
     bool? detectDnsHijack,
@@ -119,14 +114,9 @@ extension SecurityConfigCopyWith on SecurityConfig {
   }
 }
 
-/// Extension on [CaptivePortalStatus] to provide an immutable way to copy the status.
+/// Extension on [CaptivePortalStatus] for status immutability.
 extension CaptivePortalStatusCopyWith on CaptivePortalStatus {
-  /// Creates a copy of [CaptivePortalStatus] with the given fields replaced by the new values.
-  ///
-  /// [isCaptivePortal] Whether a portal was detected.
-  /// [redirectUrl] The URL the user was redirected to.
-  ///
-  /// Returns a new [CaptivePortalStatus] instance.
+  /// Returns a modified status of the captive portal probe.
   CaptivePortalStatus copyWith({
     bool? isCaptivePortal,
     String? redirectUrl,
@@ -138,16 +128,9 @@ extension CaptivePortalStatusCopyWith on CaptivePortalStatus {
   }
 }
 
-/// Extension on [SecurityFlags] to provide an immutable way to copy the flags.
+/// Extension on [SecurityFlags] for interface security metadata.
 extension SecurityFlagsCopyWith on SecurityFlags {
-  /// Creates a copy of [SecurityFlags] with the given fields replaced by the new values.
-  ///
-  /// [isVpnDetected] VPN detection status.
-  /// [isDnsSpoofed] DNS spoofing status.
-  /// [isProxyDetected] Proxy detection status.
-  /// [interfaceName] Name of the network interface.
-  ///
-  /// Returns a new [SecurityFlags] instance.
+  /// Returns a copy of [SecurityFlags] with updated values.
   SecurityFlags copyWith({
     bool? isVpnDetected,
     bool? isDnsSpoofed,
@@ -163,17 +146,11 @@ extension SecurityFlagsCopyWith on SecurityFlags {
   }
 }
 
-/// Extension on [SecurityFlagsResult] to provide an immutable way to copy the result.
+/// Extension on [SecurityFlagsResult] (Opaque pointer) to allow mutation.
+///
+/// **Note:** This extension mutates the underlying Rust-managed data directly.
 extension SecurityFlagsResultCopyWith on SecurityFlagsResult {
-  /// Creates a copy of [SecurityFlagsResult] by modifying fields on the opaque pointer.
-  ///
-  /// Note: This performs mutation on the underlying Rust-managed memory.
-  ///
-  /// [isVpnDetected] VPN detection status.
-  /// [isDnsSpoofed] DNS spoofing status.
-  /// [isProxyDetected] Proxy detection status.
-  ///
-  /// Returns the modified [SecurityFlagsResult] instance.
+  /// Mutates the opaque result object with new flag values.
   SecurityFlagsResult copyWith({
     bool? isVpnDetected,
     bool? isDnsSpoofed,
@@ -186,19 +163,14 @@ extension SecurityFlagsResultCopyWith on SecurityFlagsResult {
   }
 }
 
-/// Extension on [LatencyStats] to provide an immutable way to copy stats.
+/// Extension on [LatencyStats] for granular metric management.
 extension LatencyStatsCopyWith on LatencyStats {
-  /// Creates a copy of [LatencyStats] with the given fields replaced by the new values.
+  /// Creates a copy of stats with updated metrics.
   ///
-  /// [latencyMs] Representative latency value.
-  /// [jitterMs] Measured jitter.
-  /// [packetLossPercent] Percentage of packets lost.
-  /// [minLatencyMs] Minimum latency sample.
-  /// [avgLatencyMs] Average latency sample.
-  /// [maxLatencyMs] Maximum latency sample.
-  /// [stabilityScore] Calculated stability score (0-100).
-  ///
-  /// Returns a new [LatencyStats] instance.
+  /// * [latencyMs]: The primary representative latency.
+  /// * [jitterMs]: Calculated variance between samples.
+  /// * [packetLossPercent]: % of failed probes.
+  /// * [stabilityScore]: Overall health score (0-100).
   LatencyStats copyWith({
     BigInt? latencyMs,
     BigInt? jitterMs,
@@ -220,19 +192,9 @@ extension LatencyStatsCopyWith on LatencyStats {
   }
 }
 
-/// Extension on [NetworkReport] to provide an immutable way to copy the report.
+/// Extension on [NetworkReport] (Opaque pointer) to allow mutation.
 extension NetworkReportCopyWith on NetworkReport {
-  /// Creates a copy of [NetworkReport] by modifying fields on the opaque pointer.
-  ///
-  /// Note: This performs mutation on the underlying Rust-managed memory.
-  ///
-  /// [timestampMs] Epoch timestamp of the check.
-  /// [status] Consolidated network status.
-  /// [connectionType] Identified interface type.
-  /// [securityFlagsResult] Security probe results.
-  /// [targetReports] Individual results for all targets.
-  ///
-  /// Returns the modified [NetworkReport] instance.
+  /// Mutates the underlying report object.
   NetworkReport copyWith({
     BigInt? timestampMs,
     NetworkStatus? status,
@@ -249,16 +211,9 @@ extension NetworkReportCopyWith on NetworkReport {
   }
 }
 
-/// Extension on [NetworkStatus] to provide an immutable way to copy the status summary.
+/// Extension on [NetworkStatus] for summary updates.
 extension NetworkStatusCopyWith on NetworkStatus {
-  /// Creates a copy of [NetworkStatus] with the given fields replaced by the new values.
-  ///
-  /// [isConnected] Whether connection is active.
-  /// [quality] Categorical assessment of quality.
-  /// [latencyStats] Detailed performance metrics.
-  /// [winnerTarget] Label of the fastest responding target.
-  ///
-  /// Returns a new [NetworkStatus] instance.
+  /// Returns a copy of the high-level status with modified values.
   NetworkStatus copyWith({
     bool? isConnected,
     ConnectionQuality? quality,
@@ -274,17 +229,9 @@ extension NetworkStatusCopyWith on NetworkStatus {
   }
 }
 
-/// Extension on [TargetReport] to provide an immutable way to copy the report for a single target.
+/// Extension on [TargetReport] for single target metrics.
 extension TargetReportCopyWith on TargetReport {
-  /// Creates a copy of [TargetReport] with the given fields replaced by the new values.
-  ///
-  /// [label] Unique identifier for the target.
-  /// [success] Whether the target was reached.
-  /// [latencyMs] Measured response time.
-  /// [error] Error message if failed.
-  /// [isEssential] Whether failure triggers circuit breaker.
-  ///
-  /// Returns a new [TargetReport] instance.
+  /// Returns a copy of the report for a specific target.
   TargetReport copyWith({
     String? label,
     bool? success,
@@ -302,19 +249,13 @@ extension TargetReportCopyWith on TargetReport {
   }
 }
 
-/// Extension on [NetworkTarget] to provide an immutable way to copy the target definition.
+/// Extension on [NetworkTarget] to modify probe endpoint definitions.
 extension NetworkTargetCopyWith on NetworkTarget {
-  /// Creates a copy of [NetworkTarget] with the given fields replaced by the new values.
+  /// Returns a copy of the target configuration.
   ///
-  /// [label] Human-readable identifier.
-  /// [host] Domain or IP address.
-  /// [port] Destination port.
-  /// [protocol] Communication protocol (TCP, ICMP, etc.).
-  /// [timeoutMs] Connection timeout.
-  /// [priority] Relative priority for sorting.
-  /// [isEssential] Criticality flag.
-  ///
-  /// Returns a new [NetworkTarget] instance.
+  /// * [host]: IP or Domain.
+  /// * [protocol]: ICMP, TCP, HTTP, or HTTPS.
+  /// * [isEssential]: If true, failure of this target triggers the circuit breaker.
   NetworkTarget copyWith({
     String? label,
     String? host,

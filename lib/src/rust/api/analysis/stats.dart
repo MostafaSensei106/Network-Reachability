@@ -10,36 +10,33 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `lerp`
 
-/// Calculates statistical metrics for a series of latency samples.
+/// Calculates basic statistical metrics for a set of latency samples.
 ///
-/// This function computes the minimum, maximum, and mean latency, along with the
-/// standard deviation, which is used as a measure of jitter.
-///
-/// # Arguments
-///
-/// * `latencies` - A slice of u64 latency values in milliseconds.
+/// Useful for quick analysis of a probe cycle.
 ///
 /// # Returns
 ///
-/// A tuple containing:
-/// 1. `Option<u64>`: Minimum latency.
-/// 2. `Option<u64>`: Maximum latency.
-/// 3. `Option<u64>`: Mean (average) latency.
-/// 4. `Option<f64>`: Standard deviation (jitter).
+/// A tuple: `(Min, Max, Mean, StandardDeviation)`.
 Future<(BigInt?, BigInt?, BigInt?, double?)> calculateJitterStats(
         {required Uint64List latencies}) =>
     RustLib.instance.api
         .crateApiAnalysisStatsCalculateJitterStats(latencies: latencies);
 
-/// Computes final latency and stability statistics from a set of samples.
+/// Computes a comprehensive stability report and health score.
 ///
-/// The scoring system is tuned for: Home WiFi + Mobile 4G/5G networks.
-/// Priority weights:
-/// - Latency Absolute:   30% (penalizes high latency values directly)
-/// - Latency Stability:  25% (measures variance / coefficient of variation)
-/// - Loss Score:         25% (measures reliability)
-/// - Jitter Score:       15% (measures packet arrival consistency)
-/// - Spike Score:          5% (measures outlier impact)
+/// The scoring system is specifically tuned for modern mobile (4G/5G) and
+/// WiFi networks. It uses a weighted composite model:
+///
+/// ### Scoring Weights:
+/// * **P95 Latency (35%):** Penalizes "tail latency" (occasional slow packets).
+/// * **Packet Loss (30%):** Heavily penalizes unreliability.
+/// * **Mean Latency (20%):** Baseline speed assessment.
+/// * **IQR Jitter (15%):** Measures arrival consistency using Interquartile Range.
+///
+/// # Arguments
+/// * `latencies`: Successful probe results.
+/// * `total_expected_samples`: Used to calculate packet loss.
+/// * `thresholds`: User-defined latency boundaries.
 Future<LatencyStats> computeLatencyStats(
         {required Uint64List latencies,
         required int totalExpectedSamples,

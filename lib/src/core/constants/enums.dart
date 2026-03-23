@@ -1,35 +1,52 @@
-/// Enum representing the state of the circuit breaker pattern.
+/// Represents the operational state of the Circuit Breaker pattern.
 ///
-/// The circuit breaker is used to prevent an application from repeatedly
-/// trying to execute an operation that is likely to fail.
+/// The circuit breaker is a resilience pattern that prevents an application
+/// from repeatedly attempting an operation that is likely to fail, such as
+/// making network requests when the internet is completely down.
 enum CircuitBreakerState {
-  /// The circuit is closed. Requests flow normally.
-  /// Transitions to [open] after a threshold of consecutive failures.
+  /// The circuit is healthy and closed.
+  ///
+  /// Requests are allowed to pass through to the network. If a certain number
+  /// of consecutive failures occur (defined by `circuitBreakerThreshold`),
+  /// the circuit transitions to [open].
   closed,
 
-  /// The circuit is open. Requests are blocked immediately.
-  /// Transitions to [halfOpen] after a cooldown period.
+  /// The circuit is broken and open.
+  ///
+  /// Requests are blocked immediately without even attempting a network probe.
+  /// This state persists for a cooldown period (`circuitBreakerCooldownMs`),
+  /// after which it transitions to [halfOpen].
   open,
 
-  /// The circuit is half-open. A single trial request is allowed.
-  /// If it succeeds, the circuit moves to [closed]. If it fails, it moves back to [open].
+  /// The circuit is in a trial state.
+  ///
+  /// A single request is allowed to pass through. If it succeeds, the circuit
+  /// returns to [closed]. If it fails, it returns to [open] and the cooldown
+  /// period restarts.
   halfOpen,
 }
 
-/// Enum representing specific security alerts or policy violations.
+/// Identifies specific security violations or network policy alerts.
 ///
-/// This enum is used by the [NetworkReachability.guard] function to identify
-/// why a network-dependent action was blocked.
+/// These alerts are primarily used by the [NetworkReachability.guard] method
+/// to explain why a sensitive operation was blocked.
 enum SecurityAlert {
-  /// A VPN connection was detected on the active interface.
+  /// A VPN or tunnel interface (e.g., WireGuard, OpenVPN) was detected.
+  ///
+  /// Often used to enforce region-locking or prevent bypass of security filters.
   vpnDetected,
 
-  /// The resolved IP addresses from the system DNS do not match trusted resolvers.
+  /// The system's DNS resolution results do not match trusted resolvers.
+  ///
+  /// Indicates that the network might be intercepting or tampering with
+  /// DNS traffic (Man-in-the-Middle attack).
   dnsHijackDetected,
 
-  /// A system-level proxy server was detected.
+  /// An HTTP or SOCKS proxy was detected in the system settings.
+  ///
+  /// This can be an indicator of traffic monitoring or unauthorized interception.
   proxyDetected,
 
-  /// The active network interface is not in the allowed list.
+  /// The active network interface is not permitted by the application policy.
   unallowedInterface,
 }

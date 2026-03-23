@@ -1189,9 +1189,7 @@ dependencies = [
  "dns-lookup",
  "flutter_rust_bridge",
  "futures",
- "getrandom 0.2.17",
  "ipnet",
- "js-sys",
  "mockito",
  "network-interface",
  "reqwest",
@@ -1199,9 +1197,6 @@ dependencies = [
  "surge-ping",
  "tokio",
  "trust-dns-resolver",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "web-sys",
 ]
 
 [[package]]

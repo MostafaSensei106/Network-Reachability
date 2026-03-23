@@ -68,7 +68,7 @@ pub fn analyze_single_sample(
         CheckStrategy::Race => success_count > 0,
         CheckStrategy::Consensus => {
             let total = config.targets.len();
-            success_count >= (total / 2) + 1
+            success_count >= (total / 2)
         }
     };
 

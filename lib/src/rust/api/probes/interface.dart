@@ -11,7 +11,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<(SecurityFlagsResult, ConnectionType)> detectSecurityAndNetworkType() =>
     RustLib.instance.api.crateApiProbesInterfaceDetectSecurityAndNetworkType();
 
-/// Web implementation using Navigator.connection.
+/// Web implementation stub (WASM removed).
 Future<(SecurityFlagsResult, ConnectionType)>
     detectSecurityAndNetworkTypeWeb() => RustLib.instance.api
         .crateApiProbesInterfaceDetectSecurityAndNetworkTypeWeb();

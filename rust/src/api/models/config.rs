@@ -1,88 +1,141 @@
-//! Configuration-related data structures.
+//! Configuration-related data structures for the network reachability engine.
+//!
+//! This module contains the core configuration types that control how the engine
+//! performs network checks, evaluates quality, and handles failures.
 
 use super::target::{NetworkTarget, TargetProtocol};
 use crate::api::constants::LibConstants;
 
-/// Defines the strategy used when evaluating multiple network targets.
+/// Defines the strategy used when evaluating multiple network targets during a check cycle.
 ///
-/// This strategy determines how the engine decides if the network is "up"
-/// when multiple targets are configured.
+/// When the engine is configured with multiple targets, the `CheckStrategy` determines
+/// the logic for deciding the overall "connected" status of the network.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum CheckStrategy {
     /// The first target to respond successfully determines the result.
     ///
-    /// This is the fastest strategy as it doesn't wait for other targets.
-    /// It's ideal for performance-sensitive applications where any connectivity
-    /// to a trusted endpoint is sufficient.
-    Race,
-    /// A majority of targets must respond successfully for the check to be
-    /// considered a success.
+    /// # Behavior
+    /// In this mode, the engine initiates checks for all configured targets concurrently.
+    /// As soon as a single target returns a successful response, the network is marked
+    /// as "connected" and the engine returns the result immediately.
     ///
-    /// This strategy is more robust against localized outages or transient
-    /// failures of individual endpoints. It is slower than [Race] because
-    /// it may wait for multiple responses.
+    /// # Use Case
+    /// This is the fastest strategy and is ideal for performance-sensitive applications
+    /// where knowing *any* path to the internet is open is sufficient. It minimizes
+    /// latency for the check itself.
+    Race,
+
+    /// A majority of targets must respond successfully for the check to be considered a success.
+    ///
+    /// # Behavior
+    /// The engine waits for a quorum of targets to respond. For example, if 3 targets
+    /// are configured, at least 2 must succeed for the overall status to be "connected".
+    /// If the majority fails, the network is considered "offline" or "unstable".
+    ///
+    /// # Use Case
+    /// This strategy provides high robustness against transient failures of specific
+    /// servers (e.g., a specific DNS provider being down). It's best for critical
+    /// applications that require high confidence in the network's reliability.
     Consensus,
 }
 
-/// Represents the perceived quality of the network connection based on latency and stability.
+/// Represents the perceived quality of the network connection based on latency, jitter, and stability.
+///
+/// The engine maps raw metrics (like RTT in milliseconds) to these categories using
+/// the thresholds defined in [`QualityThresholds`].
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ConnectionQuality {
-    /// Excellent connection with very low latency.
+    /// Excellent connection with very low latency and high stability.
     ///
-    /// Typically < 50ms. Suitable for high-performance real-time tasks like
-    /// competitive gaming or high-frequency trading.
+    /// Typically < 50ms.
+    /// **User Experience:** Instantaneous page loads, seamless 4K streaming, and
+    /// zero-lag competitive gaming.
     Excellent,
+
     /// Great connection with low latency.
     ///
-    /// Typically < 100ms. Suitable for VoIP, video conferencing, and smooth browsing.
+    /// Typically < 100ms.
+    /// **User Experience:** Fast browsing, high-quality video calls (VoIP/Zoom)
+    /// without noticeable delay.
     Great,
+
     /// Good, usable connection with acceptable latency.
     ///
-    /// Typically < 150ms. Suitable for most standard web applications and streaming.
+    /// Typically < 150ms.
+    /// **User Experience:** Reliable for most tasks, though large file uploads
+    /// or fast-paced games might show slight degradation.
     Good,
+
     /// Moderate connection with noticeable latency.
     ///
-    /// Typically < 250ms. Users might notice slight delays in interactive elements.
+    /// Typically < 250ms.
+    /// **User Experience:** Noticeable delays when opening new pages. Video streaming
+    /// might occasionally buffer at the start.
     Moderate,
+
     /// Poor connection with high latency.
     ///
-    /// Typically < 500ms. Basic browsing will feel slow, and real-time apps will struggle.
+    /// Typically < 500ms.
+    /// **User Experience:** Frustratingly slow. Interactive applications feel
+    /// "heavy" and unresponsive.
     Poor,
+
     /// Connection is active, but high jitter or packet loss makes it unreliable.
     ///
-    /// The network is "connected" but the experience will be degraded and unpredictable.
+    /// This state occurs when latency is technically okay, but the "consistency"
+    /// is missing (e.g., standard deviation of samples is too high).
+    /// **User Experience:** "Stuttering" in calls, frequent disconnects,
+    /// and unpredictable performance.
     Unstable,
+
     /// A captive portal (login page) was detected.
     ///
-    /// The device is connected to an AP, but internet access is restricted until
-    /// the user interacts with the portal (e.g., at an airport or hotel).
+    /// The device is connected to a WiFi access point, but internet access is
+    /// intercepted by a gateway (common in hotels/airports).
+    /// **User Experience:** No internet access until the user signs in or
+    /// accepts terms.
     CaptivePortal,
+
     /// No connection detected or all essential targets failed.
     ///
-    /// The network is completely unreachable or unusable.
+    /// **User Experience:** The app should enter its "Offline Mode".
     Offline,
 }
 
-/// Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
+/// Defines the latency thresholds (in milliseconds) used to categorize [`ConnectionQuality`].
 ///
-/// These values allow customizing what "Good" or "Poor" means for your specific application.
+/// These values act as the "buckets" that convert raw Round-Trip Time (RTT) values
+/// into user-friendly quality ratings.
 #[derive(Debug, Clone, Copy)]
 pub struct QualityThresholds {
-    /// Latency at or below this value is considered [ConnectionQuality::Excellent].
+    /// Maximum latency (ms) to be considered [`ConnectionQuality::Excellent`].
+    /// *Default: 50ms*
     pub excellent: u64,
-    /// Latency at or below this value is considered [ConnectionQuality::Great].
+    /// Maximum latency (ms) to be considered [`ConnectionQuality::Great`].
+    /// *Default: 100ms*
     pub great: u64,
-    /// Latency at or below this value is considered [ConnectionQuality::Good].
+    /// Maximum latency (ms) to be considered [`ConnectionQuality::Good`].
+    /// *Default: 150ms*
     pub good: u64,
-    /// Latency at or below this value is considered [ConnectionQuality::Moderate].
+    /// Maximum latency (ms) to be considered [`ConnectionQuality::Moderate`].
+    /// *Default: 250ms*
     pub moderate: u64,
-    /// Latency at or below this value is considered [ConnectionQuality::Poor].
-    /// Anything higher is categorized as [ConnectionQuality::Unstable] or [ConnectionQuality::Poor].
+    /// Maximum latency (ms) to be considered [`ConnectionQuality::Poor`].
+    /// Anything above this is typically marked as [`ConnectionQuality::Poor`] or
+    /// [`ConnectionQuality::Unstable`].
+    /// *Default: 500ms*
     pub poor: u64,
 }
 
 impl QualityThresholds {
-    /// Creates a new [QualityThresholds] instance.
+    /// Creates a new custom [`QualityThresholds`] instance.
+    ///
+    /// # Arguments
+    /// * `excellent` - Threshold for 'Excellent' (ms).
+    /// * `great` - Threshold for 'Great' (ms).
+    /// * `good` - Threshold for 'Good' (ms).
+    /// * `moderate` - Threshold for 'Moderate' (ms).
+    /// * `poor` - Threshold for 'Poor' (ms).
     pub fn new(excellent: u64, great: u64, good: u64, moderate: u64, poor: u64) -> Self {
         Self {
             excellent,
@@ -94,14 +147,14 @@ impl QualityThresholds {
     }
 }
 
-/// Provides sensible default latency thresholds for most mobile and web applications.
+/// Provides industry-standard default latency thresholds for most applications.
 ///
-/// Defaults:
-/// - Excellent: 50ms
-/// - Great: 100ms
-/// - Good: 150ms
-/// - Moderate: 250ms
-/// - Poor: 500ms
+/// These defaults are tuned for general-purpose mobile and web apps:
+/// - **Excellent:** 50ms (Fiber/High-speed Cable)
+/// - **Great:** 100ms (Average Broadband)
+/// - **Good:** 150ms (Stable 4G/LTE)
+/// - **Moderate:** 250ms (3G/Slower Satellite)
+/// - **Poor:** 500ms (Highly congested or edge networks)
 impl Default for QualityThresholds {
     fn default() -> Self {
         Self {
@@ -114,53 +167,75 @@ impl Default for QualityThresholds {
     }
 }
 
-/// Configuration for security-related network checks.
+/// Configuration for security-related network checks and policy enforcement.
+///
+/// These settings allow the engine to detect environmental factors that might
+/// be undesirable or indicate a compromised connection.
 #[derive(Debug, Clone, Default)]
 pub struct SecurityConfig {
-    /// If true, the reachability engine will flag or block connections if a VPN is detected.
+    /// If enabled, the engine will flag connections that originate from a VPN interface.
     ///
-    /// This is useful for region-locked content or compliance requirements.
+    /// Useful for applications that enforce geo-fencing or need to prevent
+    /// identity masking.
     pub block_vpn: bool,
-    /// If true, performs a check to detect potential DNS hijacking.
+
+    /// If enabled, performs deep DNS validation to detect hijacking.
     ///
-    /// This involves comparing results from the system DNS with a trusted resolver.
-    /// Note: This adds a small amount of latency to each check.
+    /// The engine will compare the results of the local system resolver with
+    /// a trusted upstream resolver (like Cloudflare or Google). If they differ
+    /// significantly for static domains, it flags a potential spoofing attempt.
     pub detect_dns_hijack: bool,
 }
 
-/// Configuration for resilience, stability analysis, and performance tuning.
+/// Configuration for network resilience, failure handling, and statistical analysis.
+///
+/// This struct controls the "brain" of the engine: how it handles noise,
+/// how it reacts to failure, and how it calculates jitter.
 #[derive(Debug, Clone)]
 pub struct ResilienceConfig {
-    /// The evaluation strategy to use when checking multiple targets.
+    /// The evaluation strategy (Race vs Consensus) for multi-target checks.
     pub strategy: CheckStrategy,
-    /// The number of consecutive failures of essential targets before the
-    /// circuit breaker opens.
+
+    /// Number of consecutive failures before the "Circuit Breaker" opens.
     ///
-    /// A value of 0 disables the circuit breaker mechanism.
+    /// When the circuit breaker is 'Open', the engine stops sending probes to
+    /// save resources and battery, assuming the network is definitely down.
+    /// *Set to 0 to disable.*
     pub circuit_breaker_threshold: u8,
-    /// The cooldown period in milliseconds.
+
+    /// Duration (ms) the engine waits before attempting a "Half-Open" probe.
     ///
-    /// After this time, the circuit breaker transitions from 'Open' to 'Half-Open',
-    /// allowing a trial check to see if the network has recovered.
+    /// Once the circuit breaker is open, it waits for this cooldown before
+    /// trying one more check to see if connectivity has returned.
     pub circuit_breaker_cooldown_ms: u64,
-    /// Number of samples to take for jitter and stability analysis.
+
+    /// Number of packets/samples to send per target for statistical analysis.
     ///
-    /// Higher values provide more accurate stability metrics but increase check duration.
-    /// Must be > 1 to enable jitter calculation.
+    /// Higher values (e.g., 10+) provide extremely accurate jitter and packet loss
+    /// metrics but increase the battery/data usage and duration of each check.
+    /// *Minimum 2 required for jitter calculation.*
     pub num_jitter_samples: u8,
-    /// The percentage of mean latency that the standard deviation must exceed
-    /// to be flagged as high jitter.
+
+    /// Percentage threshold for jitter classification.
     ///
-    /// High jitter can downgrade the perceived [ConnectionQuality] to [ConnectionQuality::Unstable].
+    /// If the standard deviation of latency samples divided by the mean exceeds
+    /// this percentage, the connection is marked as 'Unstable'.
     pub jitter_threshold_percent: f64,
-    /// The minimum stability score (0-100) required to avoid the 'Unstable' quality tag.
+
+    /// Minimum stability score (0-100) required for a 'Stable' rating.
+    ///
+    /// A score calculated from packet loss and jitter consistency.
     pub stability_thershold: u8,
-    /// The packet loss percentage above which the connection is marked as [ConnectionQuality::Unstable].
+
+    /// Critical packet loss percentage (0.0 - 100.0).
+    ///
+    /// If packet loss exceeds this value, the connection is immediately
+    /// downgraded to 'Unstable' or 'Offline'.
     pub critical_packet_loss_precent: f32,
 }
 
 impl ResilienceConfig {
-    /// Creates a new [ResilienceConfig] instance.
+    /// Creates a new custom [`ResilienceConfig`].
     pub fn new(
         strategy: CheckStrategy,
         circuit_breaker_threshold: u8,
@@ -182,20 +257,17 @@ impl ResilienceConfig {
     }
 }
 
-/// Provides a standard resilience configuration balanced for stability and speed.
+/// Balanced default resilience configuration.
 ///
-/// Defaults:
-/// - Strategy: [CheckStrategy::Race]
-/// - Circuit Breaker: Disabled (threshold 0)
-/// - Cooldown: 1 minute
-/// - Jitter Samples: 5
-/// - Stability Threshold: 80
+/// - Strategy: [`CheckStrategy::Race`] (optimized for speed)
+/// - Jitter Samples: 5 (good balance of accuracy and speed)
+/// - Circuit Breaker: Disabled by default.
 impl Default for ResilienceConfig {
     fn default() -> Self {
         Self {
             strategy: CheckStrategy::Race,
-            circuit_breaker_threshold: 0,       // Disabled by default
-            circuit_breaker_cooldown_ms: 60000, // 1 minute default
+            circuit_breaker_threshold: 0,
+            circuit_breaker_cooldown_ms: 60000, // 1 minute
             num_jitter_samples: LibConstants::DEFAULT_JITTER_SAMPLES,
             jitter_threshold_percent: LibConstants::DEFAULT_JITTER_THRESHOLD_PERCENT,
             stability_thershold: LibConstants::DEFAULT_STABILITY_THRESHOLD,
@@ -204,32 +276,41 @@ impl Default for ResilienceConfig {
     }
 }
 
-/// The main configuration object for the network reachability engine.
+/// The master configuration for the Network Reachability Engine.
 ///
-/// This struct aggregates all settings including targets, intervals,
-/// quality thresholds, and security/resilience preferences.
+/// This structure is the entry point for customizing how the engine behaves.
+/// It should be initialized once and passed to the engine during startup.
 #[derive(Debug, Clone)]
 pub struct NetworkConfiguration {
-    /// A list of network endpoints ([NetworkTarget]) to be monitored.
+    /// The list of endpoints ([`NetworkTarget` models](super::target::NetworkTarget))
+    /// to probe.
     pub targets: Vec<NetworkTarget>,
-    /// The interval in milliseconds between automatic periodic checks.
+
+    /// Frequency (ms) of background checks.
     ///
-    /// Set to 0 to disable periodic background checks and rely on manual triggers.
+    /// If set to 5000, the engine will automatically run a check every 5 seconds
+    /// and stream results. Set to 0 to disable periodic checks.
     pub check_interval_ms: u64,
-    /// The duration (in milliseconds) for which a network report is cached.
+
+    /// Cache duration (ms) for results.
     ///
-    /// Rapid consecutive calls will return the cached report to save battery and bandwidth.
+    /// If a manual check is requested within this window of a previous check,
+    /// the engine will return the cached result instead of performing new
+    /// network I/O. This saves significant battery and data.
     pub cache_validity_ms: u64,
-    /// Custom latency thresholds for determining connection quality.
+
+    /// Thresholds for quality categorization.
     pub quality_threshold: QualityThresholds,
-    /// Security-specific settings such as VPN and DNS hijacking detection.
+
+    /// Security policy settings.
     pub security: SecurityConfig,
-    /// Resilience settings including circuit breakers and jitter analysis.
+
+    /// Performance and resilience settings.
     pub resilience: ResilienceConfig,
 }
 
 impl NetworkConfiguration {
-    /// Creates a new [NetworkConfiguration] instance.
+    /// Constructs a full [`NetworkConfiguration`].
     pub fn new(
         targets: Vec<NetworkTarget>,
         check_interval_ms: u64,
@@ -249,12 +330,13 @@ impl NetworkConfiguration {
     }
 }
 
-/// Creates a production-ready default configuration.
+/// Standard production-ready configuration.
 ///
-/// The default setup includes:
-/// - Monitoring multiple high-availability targets (Cloudflare and Google).
-/// - Automatic periodic checks every 5 seconds.
-/// - 2-second result caching to prevent redundant probes.
+/// Includes:
+/// - **Targets:** Cloudflare (HTTP/HTTPS/TCP/ICMP) and Google (TCP/ICMP).
+/// - **Interval:** 5 seconds.
+/// - **Cache:** 2 seconds.
+/// - **Defaults:** Balanced quality and resilience settings.
 impl Default for NetworkConfiguration {
     fn default() -> Self {
         Self {
@@ -287,9 +369,9 @@ impl Default for NetworkConfiguration {
                     is_essential: false,
                 },
                 NetworkTarget {
-                    label: LibConstants::CLOUDFLARE_NAME.into(),
-                    host: LibConstants::GOOGLE_DNS.into(),
-                    port: LibConstants::DEFAULT_PORT,
+                    label: "Cloudflare ICMP".into(),
+                    host: LibConstants::CLOUDFLARE_DNS.into(),
+                    port: 0,
                     protocol: TargetProtocol::Icmp,
                     timeout_ms: LibConstants::DEFAULT_HTTP_TIMEOUT_MS,
                     priority: 1,
@@ -297,7 +379,7 @@ impl Default for NetworkConfiguration {
                 },
             ],
             check_interval_ms: LibConstants::DEFAULT_CHECK_INTERVAL_MS,
-            cache_validity_ms: LibConstants::DEFAULT_CACHE_VALIDITY_MS, // 2 seconds default cache
+            cache_validity_ms: LibConstants::DEFAULT_CACHE_VALIDITY_MS,
             quality_threshold: QualityThresholds::default(),
             security: SecurityConfig::default(),
             resilience: ResilienceConfig::default(),
