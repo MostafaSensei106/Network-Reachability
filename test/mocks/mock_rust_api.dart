@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:network_reachability/rust/api/models/config.dart';
-import 'package:network_reachability/rust/api/models/net_info.dart';
-import 'package:network_reachability/rust/api/models/report.dart';
-import 'package:network_reachability/rust/api/models/target.dart';
-import 'package:network_reachability/rust/frb_generated.dart';
+import 'package:network_reachability/src/rust/api/models/config.dart';
+import 'package:network_reachability/src/rust/api/models/net_info.dart';
+import 'package:network_reachability/src/rust/api/models/report.dart';
+import 'package:network_reachability/src/rust/api/models/target.dart';
+import 'package:network_reachability/src/rust/frb_generated.dart';
 
 class MockSecurityFlagsResult implements SecurityFlagsResult {
   @override

@@ -1,16 +1,11 @@
 //! Probe for checking a single network target.
 
-use async_trait::async_trait;
-
 use crate::api::models::{NetworkTarget, TargetProtocol, TargetReport};
 use crate::api::probes::base::NetworkProbe;
 
 /// Native implementation of network reachability checks.
-#[cfg(not(target_arch = "wasm32"))]
-pub struct NativeProbe;
+pub struct NativeProbe {}
 
-#[cfg(not(target_arch = "wasm32"))]
-#[async_trait]
 impl NetworkProbe for NativeProbe {
     async fn check(&self, target: &NetworkTarget) -> TargetReport {
         use crate::api::models::NetworkError;
@@ -145,80 +140,16 @@ impl NetworkProbe for NativeProbe {
     }
 }
 
-/// Web-specific implementation using Fetch API.
-pub struct WebProbe;
+/// Web-specific implementation stub (WASM removed).
+pub struct WebProbe {}
 
-#[cfg(target_arch = "wasm32")]
-#[async_trait(?Send)]
-impl NetworkProbe for WebProbe {
-    async fn check(&self, target: &NetworkTarget) -> TargetReport {
-        use js_sys::Date;
-        use wasm_bindgen_futures::JsFuture;
-        use web_sys::{Request, RequestInit, RequestMode, Window};
-
-        let start = Date::now();
-
-        // Map protocols to http/https for Fetch
-        let scheme = match target.protocol {
-            TargetProtocol::Https => "https",
-            _ => "http", // Fallback to http for ICMP/TCP as we can't do raw sockets in browser
-        };
-
-        let url = format!("{}://{}:{}", scheme, target.host, target.port);
-
-        let opts = RequestInit::new();
-        opts.set_method("HEAD");
-        opts.set_mode(RequestMode::NoCors);
-
-        let window: Window = web_sys::window().expect("Window not found");
-
-        let request = match Request::new_with_str_and_init(&url, &opts) {
-            Ok(req) => req,
-            Err(e) => {
-                return TargetReport {
-                    label: target.label.clone(),
-                    success: false,
-                    latency_ms: 0,
-                    error: Some(format!("Failed to create request: {:?}", e)),
-                    is_essential: target.is_essential,
-                }
-            }
-        };
-
-        let fetch_promise = window.fetch_with_request(&request);
-        let result = JsFuture::from(fetch_promise).await;
-
-        let end = Date::now();
-        let latency = (end - start) as u64;
-
-        match result {
-            Ok(_) => TargetReport {
-                label: target.label.clone(),
-                success: true,
-                latency_ms: latency,
-                error: None,
-                is_essential: target.is_essential,
-            },
-            Err(e) => TargetReport {
-                label: target.label.clone(),
-                success: false,
-                latency_ms: 0,
-                error: Some(format!("Fetch failed: {:?}", e)),
-                is_essential: target.is_essential,
-            },
-        }
-    }
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-#[async_trait]
 impl NetworkProbe for WebProbe {
     async fn check(&self, target: &NetworkTarget) -> TargetReport {
         TargetReport {
             label: target.label.clone(),
             success: false,
             latency_ms: 0,
-            error: Some("WebProbe is only available on WASM".into()),
+            error: Some("WebProbe is not available (WASM support removed)".into()),
             is_essential: target.is_essential,
         }
     }
@@ -226,12 +157,5 @@ impl NetworkProbe for WebProbe {
 
 /// Performs a network check against a single, specified target.
 pub async fn check_target(target: &NetworkTarget) -> TargetReport {
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        NativeProbe.check(target).await
-    }
-    #[cfg(target_arch = "wasm32")]
-    {
-        WebProbe.check(target).await
-    }
+    NativeProbe {}.check(target).await
 }

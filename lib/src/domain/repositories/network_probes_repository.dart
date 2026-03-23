@@ -2,35 +2,40 @@ import '../entities/net_info.dart';
 import '../entities/report.dart';
 import '../entities/target.dart';
 
-/// Interface for network reachability probes.
+/// Contract for performing low-level network reachability probes.
 ///
-/// This repository defines the contract for platform-specific network probes
-/// such as captive portal detection, DNS hijacking detection, and interface inspection.
+/// This interface abstracts the platform-specific logic required to inspect
+/// network interfaces, check for captive portals, and validate DNS integrity.
+///
+/// Implementations of this repository are provided for Native (Rust FFI)
+/// and Web (Rust WASM) environments.
 abstract interface class NetworkProbesRepository {
-  /// Checks for the presence of a captive portal.
+  /// Probes the network to see if it's behind a "Captive Portal" (login page).
   ///
-  /// [timeoutMs] The maximum time allowed for the probe.
+  /// This typically involves making an unencrypted HTTP request to a known
+  /// endpoint (like Google's connectivity check) and checking for redirects.
   ///
-  /// Returns a [Future] resolving to [CaptivePortalStatus].
+  /// * [timeoutMs]: Maximum duration for the probe to complete.
   Future<CaptivePortalStatus> checkForCaptivePortal(
       {required BigInt timeoutMs});
 
-  /// Detects potential DNS hijacking for a given domain.
+  /// Validates if DNS queries are being intercepted or tampered with.
   ///
-  /// [domain] The hostname to resolve and validate.
+  /// * [domain]: The hostname to resolve and compare against trusted results.
   ///
-  /// Returns a [Future] resolving to `true` if hijacking is detected.
+  /// Returns true if a mismatch is detected, suggesting hijacking.
   Future<bool> detectDnsHijacking({required String domain});
 
-  /// Inspects system network interfaces to determine connection type and security flags.
+  /// Scans the system's network interfaces.
   ///
-  /// Returns a [Future] resolving to a tuple of [SecurityFlagsResult] and [ConnectionType].
+  /// Identifies the [ConnectionType] (WiFi, Cellular, etc.) and populates
+  /// security flags such as VPN or Proxy detection.
   Future<(SecurityFlagsResult, ConnectionType)> detectSecurityAndNetworkType();
 
-  /// Performs a low-level reachability check against a single network target.
+  /// Executes a single, low-level reachability probe against a specific target.
   ///
-  /// [target] The specific endpoint configuration to probe.
+  /// * [target]: The endpoint configuration (host, port, protocol).
   ///
-  /// Returns a [Future] resolving to a [TargetReport].
+  /// Returns a [TargetReport] with latency and success status.
   Future<TargetReport> checkTarget({required NetworkTarget target});
 }

@@ -89,7 +89,7 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
             ),
           ),
           Text(
-            'CORE ENGINE v0.0.1+2',
+            'CORE ENGINE v0.0.1+3',
             style: TextStyle(fontSize: 10, color: Colors.white38),
           ),
         ],

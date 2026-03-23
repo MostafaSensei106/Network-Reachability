@@ -1,28 +1,51 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:network_reachability/src/rust/api/engine.dart' as rust_engine;
 import '../core/constants/enums.dart';
 import '../core/exceptions/exceptions.dart';
 import '../domain/entities/entities.dart';
 import '../domain/repositories/network_probes_repository.dart';
 import '../data/repositories/network_probes_repository_impl.dart';
-import '../../rust/api/engine.dart' as rust_engine;
 
-/// The main class for interacting with the network reachability engine.
+/// The central entry point for the Network Reachability library.
 ///
-/// This service provides a high-level API for:
-/// * Performing manual network checks via [check].
-/// * Protecting sensitive operations using [guard].
-/// * Monitoring real-time status changes through [onStatusChange].
+/// This service provides a robust, high-level API for monitoring and validating
+/// network connectivity. It handles complex logic such as request coalescing,
+/// caching, and resilience patterns like the circuit breaker.
 ///
-/// It implements [WidgetsBindingObserver] to handle app lifecycle changes,
-/// ensuring battery efficiency by pausing periodic checks in the background.
+/// ### Core Features:
+/// * **Manual Checks:** Trigger precise network probes using [check].
+/// * **Security Guard:** Protect sensitive operations from insecure networks using [guard].
+/// * **Real-time Monitoring:** Listen to connectivity changes via [onStatusChange].
+/// * **Lifecycle Awareness:** Automatically manages battery efficiency by pausing
+///   background checks when the app is minimized.
+///
+/// ### Example Usage:
+/// ```dart
+///  1. Initialize at app startup
+/// await NetworkReachability.init();
+///
+///  2. Perform a one-time check
+/// final report = await NetworkReachability.instance.check();
+/// print('Connected: ${report.status.isConnected}, Quality: ${report.status.quality}');
+///
+///  3. Protect an API call
+/// try {
+///   await NetworkReachability.instance.guard(
+///     action: () => myApi.fetchData(),
+///     minQuality: ConnectionQuality.good,
+///   );
+/// } on NetworkReachabilityException catch (e) {
+///   print('Operation blocked: ${e.message}');
+/// }
+/// ```
 final class NetworkReachability with WidgetsBindingObserver {
   static NetworkReachability? _instance;
 
-  /// The singleton instance of the network reachability engine.
+  /// Access the singleton instance of the network reachability service.
   ///
-  /// Throws an [Exception] if accessed before calling [init].
+  /// Throws an [Exception] if [init] has not been called beforehand.
   static NetworkReachability get instance {
     if (_instance == null) {
       throw Exception(
@@ -31,16 +54,24 @@ final class NetworkReachability with WidgetsBindingObserver {
     return _instance!;
   }
 
+  /// The active configuration for the network engine.
   late final NetworkConfiguration _config;
+
+  /// The repository responsible for low-level platform probes.
   final NetworkProbesRepository _probesRepository;
 
+  /// Controller for the broadcast stream of network status updates.
   final StreamController<NetworkStatus> _statusController =
       StreamController.broadcast();
+
+  /// Internal timer for periodic monitoring.
   Timer? _periodicTimer;
 
   // --- State & Performance ---
   NetworkReport? _lastReport;
   DateTime? _lastReportTime;
+
+  /// Holds the active probe future to implement "Request Coalescing" (Thundering Herd safety).
   Future<NetworkReport>? _pendingCheck;
 
   // --- Circuit Breaker State ---
@@ -48,21 +79,21 @@ final class NetworkReachability with WidgetsBindingObserver {
   CircuitBreakerState _circuitState = CircuitBreakerState.closed;
   DateTime? _circuitBreakerResetTime;
 
-  /// Private constructor for the singleton.
+  /// Internal constructor. Use [init] to create the instance.
   NetworkReachability._(this._config, this._probesRepository) {
     WidgetsBinding.instance.addObserver(this);
     _startPeriodicChecks();
   }
 
-  /// Initializes the network reachability engine.
+  /// Initializes the Network Reachability engine.
   ///
-  /// This must be called once at app startup. It sets up the singleton
-  /// with either a [config] or the default settings fetched from Rust.
+  /// This method must be called once, typically inside `main()`, before accessing [instance].
   ///
-  /// [config] An optional [NetworkConfiguration] to override defaults.
-  /// [probesRepository] An optional [NetworkProbesRepository] for custom probe logic or mocking.
+  /// * [config]: Custom settings for targets, intervals, and security. If null,
+  ///   defaults are fetched from the Rust backend.
+  /// * [probesRepository]: Custom implementation of probes (useful for testing/mocking).
   ///
-  /// Returns a [Future] that completes when initialization is done.
+  /// Returns a [Future] that completes when the service is ready.
   static Future<void> init({
     NetworkConfiguration? config,
     NetworkProbesRepository? probesRepository,
@@ -76,20 +107,22 @@ final class NetworkReachability with WidgetsBindingObserver {
     _instance = NetworkReachability._(finalConfig, finalRepository);
   }
 
-  /// A stream of [NetworkStatus] updates emitted during periodic checks.
+  /// A stream that emits [NetworkStatus] updates whenever a periodic check completes.
+  ///
+  /// This is useful for building reactive UIs that show "Offline" banners or
+  /// quality indicators.
   Stream<NetworkStatus> get onStatusChange => _statusController.stream;
 
-  /// Performs a network check with request coalescing and caching.
+  /// Performs a comprehensive network check.
   ///
-  /// If [forceRefresh] is false (default), it may return a cached report if it's
-  /// within the `cacheValidityMs` window.
+  /// To ensure efficiency, this method employs:
+  /// 1. **Caching:** Returns a recent report if within the `cacheValidityMs` window.
+  /// 2. **Request Coalescing:** If multiple callers trigger [check] simultaneously,
+  ///    only one network probe is executed, and its result is shared among all callers.
   ///
-  /// This method is "Thundering Herd" safe; multiple simultaneous calls will
-  /// result in a single underlying network probe.
+  /// * [forceRefresh]: If true, ignores the cache and forces a new network probe.
   ///
-  /// [forceRefresh] Whether to bypass the cache and force a new network probe.
-  ///
-  /// Returns a [Future] that resolves to a [NetworkReport].
+  /// Returns a [NetworkReport] containing detailed statistics and security flags.
   Future<NetworkReport> check({bool forceRefresh = false}) async {
     // 1. Return cached report if still valid and not forcing refresh
     if (!forceRefresh &&
@@ -100,7 +133,7 @@ final class NetworkReachability with WidgetsBindingObserver {
       return _lastReport!;
     }
 
-    // 2. Coalesce concurrent requests
+    // 2. Coalesce concurrent requests (Thundering Herd Protection)
     if (_pendingCheck != null) {
       return _pendingCheck!;
     }
@@ -114,7 +147,7 @@ final class NetworkReachability with WidgetsBindingObserver {
     }
   }
 
-  /// Internal implementation of the network check orchestration.
+  /// Internal core logic for executing the check via the Rust bridge.
   Future<NetworkReport> _performCheck() async {
     final report = await rust_engine.checkNetwork(config: _config);
     _lastReport = report;
@@ -124,7 +157,10 @@ final class NetworkReachability with WidgetsBindingObserver {
     return report;
   }
 
-  /// Updates the internal circuit breaker state machine based on target success/failure.
+  /// Updates the Circuit Breaker state based on the success of essential targets.
+  ///
+  /// If essential targets fail repeatedly, the circuit opens to prevent further
+  /// useless requests, saving device resources and avoiding backend hammering.
   void _updateCircuitBreaker(NetworkReport report) {
     final threshold = _config.resilience.circuitBreakerThreshold;
     if (threshold == 0) return;
@@ -147,21 +183,25 @@ final class NetworkReachability with WidgetsBindingObserver {
     }
   }
 
-  /// A wrapper to protect network-dependent operations (e.g., API calls).
+  /// Protects a network-sensitive [action] by validating the connection first.
   ///
-  /// This method performs a multi-stage validation:
-  /// 1. Checks if the circuit breaker is [CircuitBreakerState.open].
-  /// 2. Performs/reuses a network [check].
-  /// 3. Validates against [SecurityConfig] (VPN, DNS Hijack).
-  /// 4. Validates against [minQuality].
+  /// This is the recommended way to execute critical API calls. It performs
+  /// multiple checks in sequence:
+  /// 1. **Circuit Breaker:** Blocks immediately if the connection is known to be failing.
+  /// 2. **Connectivity:** Ensures the device is actually online.
+  /// 3. **Security:** Validates [SecurityConfig] (e.g., checks for VPN or DNS Hijacking).
+  /// 4. **Quality:** Ensures the connection meets the [minQuality] requirement.
   ///
-  /// [action] The asynchronous operation to protect.
-  /// [minQuality] The minimum [ConnectionQuality] required to proceed.
+  /// ### Parameters:
+  /// * [action]: The asynchronous operation to execute if the network is healthy.
+  /// * [minQuality]: The minimum acceptable [ConnectionQuality]. Defaults to [ConnectionQuality.good].
   ///
-  /// Throws [CircuitBreakerOpenException], [SecurityException], or [PoorConnectionException]
-  /// if any check fails.
+  /// ### Throws:
+  /// * [CircuitBreakerOpenException]: If the circuit is open due to recent failures.
+  /// * [SecurityException]: If a VPN is detected (if blocked) or DNS spoofing is found.
+  /// * [PoorConnectionException]: If the quality is below the requested threshold.
   ///
-  /// Returns the result of [action] if all checks pass.
+  /// Returns the result of the [action].
   Future<T> guard<T>({
     required Future<T> Function() action,
     ConnectionQuality minQuality = ConnectionQuality.good,
@@ -210,7 +250,10 @@ final class NetworkReachability with WidgetsBindingObserver {
     return await action();
   }
 
-  /// Automatically manages periodic checks based on the Flutter app lifecycle.
+  /// Observes Flutter's app lifecycle to manage battery consumption.
+  ///
+  /// It automatically stops periodic checks when the app goes into the background
+  /// and resumes them when the app returns to the foreground.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
@@ -221,7 +264,7 @@ final class NetworkReachability with WidgetsBindingObserver {
     }
   }
 
-  /// Starts the [Timer] for background monitoring with an adaptive interval.
+  /// Initializes background monitoring with the interval defined in the config.
   void _startPeriodicChecks() {
     _stopPeriodicChecks();
     final interval = _config.checkIntervalMs;
@@ -230,7 +273,10 @@ final class NetworkReachability with WidgetsBindingObserver {
     }
   }
 
-  /// Schedules the next periodic check with a dynamic delay.
+  /// Schedules the next background probe with an adaptive interval.
+  ///
+  /// If the connection is [ConnectionQuality.excellent], the interval is doubled
+  /// (up to 30s) to save power. If quality drops, it reverts to the base interval.
   void _scheduleNextCheck(Duration delay) {
     _periodicTimer = Timer(delay, () async {
       final report = await check(forceRefresh: true);
@@ -239,27 +285,24 @@ final class NetworkReachability with WidgetsBindingObserver {
       }
 
       // Adaptive interval logic:
-      // 1. If quality is Excellent, we can afford to check less frequently (e.g., 2x interval).
-      // 2. If quality is Poor or Offline, we stick to the base interval to detect recovery.
       int nextIntervalMs = _config.checkIntervalMs.toInt();
       if (report.status.quality == ConnectionQuality.excellent) {
         nextIntervalMs = (nextIntervalMs * 2).clamp(0, 30000); // Max 30s
       }
 
-      // Only schedule next if we haven't been stopped
       if (_periodicTimer != null) {
         _scheduleNextCheck(Duration(milliseconds: nextIntervalMs));
       }
     });
   }
 
-  /// Stops the background monitoring timer.
+  /// Cancels the active background timer.
   void _stopPeriodicChecks() {
     _periodicTimer?.cancel();
     _periodicTimer = null;
   }
 
-  /// Disposes of the engine, removes lifecycle observers, and closes streams.
+  /// Releases resources, removes observers, and shuts down the service.
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _stopPeriodicChecks();
@@ -267,37 +310,31 @@ final class NetworkReachability with WidgetsBindingObserver {
     _instance = null;
   }
 
-  // --- Advanced Probes ---
+  // --- Advanced Probes (Low-level API) ---
 
-  /// Checks for the presence of a captive portal using a non-SSL probe.
+  /// Detects if the current network is a "Captive Portal" (e.g., public WiFi login page).
   ///
-  /// [timeoutMs] The maximum time to wait for the probe response.
-  ///
-  /// Returns a [Future] that resolves to a [CaptivePortalStatus].
+  /// [timeoutMs]: Maximum time to wait for the probe.
   Future<CaptivePortalStatus> checkForCaptivePortal(
           {required BigInt timeoutMs}) =>
       _probesRepository.checkForCaptivePortal(timeoutMs: timeoutMs);
 
-  /// Detects potential DNS hijacking by comparing system resolution vs Cloudflare.
+  /// Checks for potential DNS tampering by comparing system results against trusted resolvers.
   ///
-  /// [domain] The domain name to test resolution for.
-  ///
-  /// Returns a [Future] that resolves to `true` if hijacking is detected.
+  /// [domain]: The domain to test (e.g., 'google.com').
   Future<bool> detectDnsHijacking({required String domain}) =>
       _probesRepository.detectDnsHijacking(domain: domain);
 
-  /// Inspects system network interfaces to determine connection type and security flags.
+  /// Inspects active network interfaces to determine connectivity type and security status.
   ///
-  /// Returns a [Future] that resolves to a tuple containing [SecurityFlagsResult] and [ConnectionType].
+  /// Returns a tuple containing [SecurityFlagsResult] and [ConnectionType].
   Future<(SecurityFlagsResult, ConnectionType)>
       detectSecurityAndNetworkType() =>
           _probesRepository.detectSecurityAndNetworkType();
 
-  /// Performs a low-level reachability check against a single [target].
+  /// Performs a targeted reachability probe against a single endpoint.
   ///
-  /// [target] The [NetworkTarget] to probe.
-  ///
-  /// Returns a [Future] that resolves to a [TargetReport].
+  /// [target]: The configuration for the endpoint to probe.
   Future<TargetReport> checkTarget({required NetworkTarget target}) =>
       _probesRepository.checkTarget(target: target);
 }

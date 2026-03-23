@@ -1,20 +1,26 @@
-//! Functions for analyzing latency data to determine connection quality and stability.
+//! # Network Quality Evaluation
+//!
+//! This module provides the logic for translating raw performance metrics
+//! (latency, loss, stability) into human-readable quality categories.
 
+pub use super::stats::calculate_jitter_stats;
 use crate::api::models::{
     ConnectionQuality, LatencyStats, NetworkConfiguration, QualityThresholds,
 };
-pub use super::stats::calculate_jitter_stats;
 
-/// Evaluates connection quality based on a latency value and a set of thresholds.
+/// Categorizes a single latency measurement against configured thresholds.
+///
+/// This is a simple threshold-based classifier used for individual probes.
 ///
 /// # Arguments
 ///
-/// * `latency` - The latency value in milliseconds.
-/// * `threshold` - A reference to the [QualityThresholds] to compare against.
+/// * `latency` - Measured round-trip time in milliseconds.
+/// * `threshold` - The [QualityThresholds] defining the boundaries for each category.
 ///
 /// # Returns
 ///
-/// A [ConnectionQuality] enum variant representing the quality level.
+/// A [ConnectionQuality] variant. If latency exceeds the `poor` threshold,
+/// it returns [ConnectionQuality::Offline].
 pub fn evaluate_quality(latency: u64, threshold: &QualityThresholds) -> ConnectionQuality {
     if latency <= threshold.excellent {
         ConnectionQuality::Excellent
@@ -27,13 +33,23 @@ pub fn evaluate_quality(latency: u64, threshold: &QualityThresholds) -> Connecti
     } else if latency <= threshold.poor {
         ConnectionQuality::Poor
     } else {
-        // If latency is higher than the 'poor' threshold, it's considered unusable
-        // for many applications, effectively offline for quality purposes.
         ConnectionQuality::Offline
     }
 }
 
-/// Evaluates the final network quality by combining speed, stability, and loss.
+/// Computes the final, consolidated network quality.
+///
+/// Unlike [evaluate_quality], this function considers the "Big Three" of networking:
+/// 1. **Speed:** Absolute latency.
+/// 2. **Reliability:** Packet loss percentage.
+/// 3. **Consistency:** Stability score (derived from jitter and variance).
+///
+/// # Logic Flow
+///
+/// * If not connected, returns `Offline`.
+/// * If packet loss exceeds the critical threshold, returns `Unstable`.
+/// * If stability is low, the quality is downgraded by one or more levels.
+/// * Otherwise, the quality is primarily determined by speed (latency).
 pub fn evaluate_network_quality(
     is_connected: bool,
     stats: &LatencyStats,
@@ -43,12 +59,16 @@ pub fn evaluate_network_quality(
         return ConnectionQuality::Offline;
     }
 
+    // 1. Check for critical packet loss first
     if stats.packet_loss_percent > config.resilience.critical_packet_loss_precent {
         return ConnectionQuality::Unstable;
     }
 
+    // 2. Initial assessment based purely on latency
     let quality_based_on_speed = evaluate_quality(stats.latency_ms, &config.quality_threshold);
 
+    // 3. Apply stability-based downgrades
+    // If stability is below the threshold, we slide the quality down the scale.
     if stats.stability_score < config.resilience.stability_thershold {
         return match quality_based_on_speed {
             ConnectionQuality::Excellent => ConnectionQuality::Great,
@@ -60,6 +80,7 @@ pub fn evaluate_network_quality(
         };
     }
 
+    // 4. Fine-grained stability checks for high-end connections
     if quality_based_on_speed == ConnectionQuality::Excellent && stats.stability_score < 85 {
         return ConnectionQuality::Great;
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:network_reachability/network_reachability.dart';
 import 'package:test/test.dart';
+
 import '../mocks/mock_rust_api.dart';
 
 void main() {

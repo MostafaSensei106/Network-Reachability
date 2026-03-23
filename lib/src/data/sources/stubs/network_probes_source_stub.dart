@@ -1,10 +1,13 @@
-import 'package:network_reachability/rust/api/models/net_info.dart';
-import 'package:network_reachability/rust/api/models/report.dart';
-import 'package:network_reachability/rust/api/models/target.dart';
+import 'package:network_reachability/src/rust/api/models/net_info.dart';
+import 'package:network_reachability/src/rust/api/models/report.dart';
+import 'package:network_reachability/src/rust/api/models/target.dart';
 
-/// A stub data source for network probes that throws [UnimplementedError].
+/// A **Stub** implementation of the network probe data source.
 ///
-/// This implementation is used as a fallback when the platform is neither Native nor Web.
+/// This class exists solely to satisfy the Dart compiler on platforms where
+/// the specific Native or Web implementations are not available.
+///
+/// All methods throw an [UnimplementedError] if called.
 final class NetworkProbesSource {
   /// Stub for checking for captive portals.
   static Future<CaptivePortalStatus> checkForCaptivePortal(

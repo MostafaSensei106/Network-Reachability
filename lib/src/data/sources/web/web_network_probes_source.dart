@@ -1,45 +1,33 @@
-import '../../../../rust/api/models/net_info.dart';
-import '../../../../rust/api/models/report.dart';
-import '../../../../rust/api/models/target.dart';
-import '../../../../rust/api/probes/captive_portal.dart' as rust_captive_portal;
-import '../../../../rust/api/probes/dns.dart' as rust_dns;
-import '../../../../rust/api/probes/interface.dart' as rust_interface;
-import '../../../../rust/api/probes/target.dart' as rust_target;
+import '../../../../src/rust/api/models/net_info.dart';
+import '../../../../src/rust/api/models/report.dart';
+import '../../../../src/rust/api/models/target.dart';
+import '../../../../src/rust/api/probes/captive_portal.dart'
+    as rust_captive_portal;
+import '../../../../src/rust/api/probes/dns.dart' as rust_dns;
+import '../../../../src/rust/api/probes/interface.dart' as rust_interface;
+import '../../../../src/rust/api/probes/target.dart' as rust_target;
 
-/// Web-specific data source for network probes.
+/// Data source for network probes on the **Web platform**.
 ///
-/// This class handles interaction with browser-native APIs (Fetch, Navigator)
-/// via Rust WASM glue code.
+/// This implementation interacts with browser-native APIs (like `Fetch` and
+/// `Navigator.connection`) through Rust code compiled to WebAssembly (WASM).
 final class NetworkProbesSource {
-  /// Checks for the presence of a captive portal using the web Fetch-based probe.
-  ///
-  /// [timeoutMs] The timeout for the probe.
-  ///
-  /// Returns a [Future] resolving to [CaptivePortalStatus].
+  /// Uses the browser's `Fetch` API with `redirect: manual` to detect captive portals.
   static Future<CaptivePortalStatus> checkForCaptivePortal(
           {required BigInt timeoutMs}) =>
       rust_captive_portal.checkForCaptivePortalWeb(timeoutMs: timeoutMs);
 
-  /// Detects potential DNS hijacking in a web environment (best effort).
-  ///
-  /// [domain] The domain to test.
-  ///
-  /// Returns a [Future] resolving to `false` (currently unsupported on web).
+  /// Always returns false as browser security restrictions (CORS/SOP)
+  /// prevent low-level DNS integrity checks on the web.
   static Future<bool> detectDnsHijacking({required String domain}) =>
       rust_dns.detectDnsHijackingWeb(domain: domain);
 
-  /// Inspects browser network interfaces using the Navigator.connection API.
-  ///
-  /// Returns a [Future] resolving to a tuple of [SecurityFlagsResult] and [ConnectionType].
+  /// Uses the browser's `Navigator.connection` API to determine connection type.
   static Future<(SecurityFlagsResult, ConnectionType)>
       detectSecurityAndNetworkType() =>
           rust_interface.detectSecurityAndNetworkTypeWeb();
 
-  /// Performs a reachability check using the browser Fetch API.
-  ///
-  /// [target] The target to probe.
-  ///
-  /// Returns a [Future] resolving to [TargetReport].
+  /// Performs a reachability probe using the browser's `Fetch` API.
   static Future<TargetReport> checkTarget({required NetworkTarget target}) =>
       rust_target.checkTarget(target: target);
 }
