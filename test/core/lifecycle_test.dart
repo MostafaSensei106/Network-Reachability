@@ -16,9 +16,9 @@ void main() {
     mockApi.reset();
   });
 
-  tearDown(() {
+  tearDown(() async {
     try {
-      NetworkReachability.instance.dispose();
+      await NetworkReachability.instance.dispose();
     } catch (_) {}
   });
 
@@ -44,16 +44,22 @@ void main() {
       // Wait for a few intervals
       await Future.delayed(const Duration(milliseconds: 300));
 
-      expect(mockApi.checkCallCount, 0,
-          reason: 'Periodic checks must stop when app is paused');
+      expect(
+        mockApi.checkCallCount,
+        0,
+        reason: 'Periodic checks must stop when app is paused',
+      );
 
       // 3. Resume the app
       NetworkReachability.instance
           .didChangeAppLifecycleState(AppLifecycleState.resumed);
 
       await Future.delayed(const Duration(milliseconds: 150));
-      expect(mockApi.checkCallCount, greaterThan(0),
-          reason: 'Periodic checks must resume when app is resumed');
+      expect(
+        mockApi.checkCallCount,
+        greaterThan(0),
+        reason: 'Periodic checks must resume when app is resumed',
+      );
     });
   });
 }

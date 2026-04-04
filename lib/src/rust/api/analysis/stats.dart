@@ -3,10 +3,11 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
 import '../../frb_generated.dart';
 import '../models/config.dart';
 import '../models/report.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `lerp`
 
@@ -17,8 +18,9 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 /// # Returns
 ///
 /// A tuple: `(Min, Max, Mean, StandardDeviation)`.
-Future<(BigInt?, BigInt?, BigInt?, double?)> calculateJitterStats(
-        {required Uint64List latencies}) =>
+Future<(BigInt?, BigInt?, BigInt?, double?)> calculateJitterStats({
+  required final Uint64List latencies,
+}) =>
     RustLib.instance.api
         .crateApiAnalysisStatsCalculateJitterStats(latencies: latencies);
 
@@ -37,11 +39,13 @@ Future<(BigInt?, BigInt?, BigInt?, double?)> calculateJitterStats(
 /// * `latencies`: Successful probe results.
 /// * `total_expected_samples`: Used to calculate packet loss.
 /// * `thresholds`: User-defined latency boundaries.
-Future<LatencyStats> computeLatencyStats(
-        {required Uint64List latencies,
-        required int totalExpectedSamples,
-        required QualityThresholds thresholds}) =>
+Future<LatencyStats> computeLatencyStats({
+  required final Uint64List latencies,
+  required final int totalExpectedSamples,
+  required final QualityThresholds thresholds,
+}) =>
     RustLib.instance.api.crateApiAnalysisStatsComputeLatencyStats(
-        latencies: latencies,
-        totalExpectedSamples: totalExpectedSamples,
-        thresholds: thresholds);
+      latencies: latencies,
+      totalExpectedSamples: totalExpectedSamples,
+      thresholds: thresholds,
+    );

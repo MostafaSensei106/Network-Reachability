@@ -3,8 +3,9 @@
 
 // ignore_for_file: public_member_api_docs, invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
+import '../../frb_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `eq`, `fmt`, `fmt`
 
@@ -13,6 +14,16 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 /// A `NetworkTarget` combines an address, a port, and a protocol to
 /// define a unique "probe point".
 class NetworkTarget {
+  const NetworkTarget({
+    required this.label,
+    required this.host,
+    required this.port,
+    required this.protocol,
+    required this.timeoutMs,
+    required this.priority,
+    required this.isEssential,
+  });
+
   /// A human-readable identifier (e.g., "Google Cloud DNS", "Internal API").
   /// This label is used in [`TargetReport`](super::report::TargetReport) results.
   final String label;
@@ -53,16 +64,6 @@ class NetworkTarget {
   /// disqualify the entire network status regardless of other successes.
   final bool isEssential;
 
-  const NetworkTarget({
-    required this.label,
-    required this.host,
-    required this.port,
-    required this.protocol,
-    required this.timeoutMs,
-    required this.priority,
-    required this.isEssential,
-  });
-
   @override
   int get hashCode =>
       label.hashCode ^
@@ -74,7 +75,7 @@ class NetworkTarget {
       isEssential.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is NetworkTarget &&
           runtimeType == other.runtimeType &&

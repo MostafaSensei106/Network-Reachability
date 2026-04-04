@@ -3,8 +3,9 @@
 
 // ignore_for_file: public_member_api_docs, invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
+import '../../frb_generated.dart';
 
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `TraceHop`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
@@ -19,13 +20,13 @@ abstract class SecurityFlagsResult implements RustOpaqueInterface {
 
   bool get isVpnDetected;
 
-  set interfaceName(String interfaceName);
+  set interfaceName(final String interfaceName);
 
-  set isDnsSpoofed(bool isDnsSpoofed);
+  set isDnsSpoofed(final bool isDnsSpoofed);
 
-  set isProxyDetected(bool isProxyDetected);
+  set isProxyDetected(final bool isProxyDetected);
 
-  set isVpnDetected(bool isVpnDetected);
+  set isVpnDetected(final bool isVpnDetected);
 
   /// Returns a "Safe/Clean" default state where no security issues are detected.
   static Future<SecurityFlagsResult> default_() =>
@@ -38,6 +39,11 @@ abstract class SecurityFlagsResult implements RustOpaqueInterface {
 /// airports and cafes. They appear as "connected" to the OS but block all
 /// non-authentication traffic.
 class CaptivePortalStatus {
+  const CaptivePortalStatus({
+    required this.isCaptivePortal,
+    this.redirectUrl,
+  });
+
   /// True if the engine detected that HTTP requests are being redirected.
   ///
   /// If this is true, the `ConnectionQuality` will likely be set to
@@ -50,16 +56,11 @@ class CaptivePortalStatus {
   /// The application can use this to open a WebView for the user.
   final String? redirectUrl;
 
-  const CaptivePortalStatus({
-    required this.isCaptivePortal,
-    this.redirectUrl,
-  });
-
   @override
   int get hashCode => isCaptivePortal.hashCode ^ redirectUrl.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is CaptivePortalStatus &&
           runtimeType == other.runtimeType &&
@@ -111,6 +112,13 @@ enum ConnectionType {
 ///
 /// This structure stores raw findings from the engine's security probes.
 class SecurityFlags {
+  const SecurityFlags({
+    required this.isVpnDetected,
+    required this.isDnsSpoofed,
+    required this.isProxyDetected,
+    required this.interfaceName,
+  });
+
   /// True if the active network interface is identified as a tunnel/VPN.
   ///
   /// Detected by looking for interface names like `tun`, `tap`, `ppp`, or `utun`.
@@ -131,13 +139,6 @@ class SecurityFlags {
   /// Examples: `wlan0` (Linux WiFi), `en0` (macOS WiFi), `eth0` (Ethernet).
   final String interfaceName;
 
-  const SecurityFlags({
-    required this.isVpnDetected,
-    required this.isDnsSpoofed,
-    required this.isProxyDetected,
-    required this.interfaceName,
-  });
-
   /// Returns a "Safe/Clean" default state where no security issues are detected.
   static Future<SecurityFlags> default_() =>
       RustLib.instance.api.crateApiModelsNetInfoSecurityFlagsDefault();
@@ -150,7 +151,7 @@ class SecurityFlags {
       interfaceName.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is SecurityFlags &&
           runtimeType == other.runtimeType &&

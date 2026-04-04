@@ -3,20 +3,21 @@
 
 // ignore_for_file: public_member_api_docs, invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
 import '../../frb_generated.dart';
 import '../models/report.dart';
 import '../models/target.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// Performs a network check against a single, specified target.
-Future<TargetReport> checkTarget({required NetworkTarget target}) =>
+Future<TargetReport> checkTarget({required final NetworkTarget target}) =>
     RustLib.instance.api.crateApiProbesTargetCheckTarget(target: target);
 
 /// Native implementation of network reachability checks.
 class NativeProbe {
   const NativeProbe();
 
-  Future<TargetReport> check({required NetworkTarget target}) =>
+  Future<TargetReport> check({required final NetworkTarget target}) =>
       RustLib.instance.api
           .crateApiProbesTargetNativeProbeCheck(that: this, target: target);
 
@@ -24,7 +25,7 @@ class NativeProbe {
   int get hashCode => 0;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is NativeProbe && runtimeType == other.runtimeType;
 }
@@ -33,7 +34,7 @@ class NativeProbe {
 class WebProbe {
   const WebProbe();
 
-  Future<TargetReport> check({required NetworkTarget target}) =>
+  Future<TargetReport> check({required final NetworkTarget target}) =>
       RustLib.instance.api
           .crateApiProbesTargetWebProbeCheck(that: this, target: target);
 
@@ -41,7 +42,7 @@ class WebProbe {
   int get hashCode => 0;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is WebProbe && runtimeType == other.runtimeType;
 }

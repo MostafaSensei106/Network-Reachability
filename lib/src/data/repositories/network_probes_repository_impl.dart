@@ -1,8 +1,7 @@
-import 'package:network_reachability/src/rust/api/models/net_info.dart';
-import 'package:network_reachability/src/rust/api/models/report.dart';
-import 'package:network_reachability/src/rust/api/models/target.dart';
-
 import '../../domain/repositories/network_probes_repository.dart';
+import '../../rust/api/models/net_info.dart';
+import '../../rust/api/models/report.dart';
+import '../../rust/api/models/target.dart';
 import '../sources/network_probes_source.dart';
 
 /// Concrete implementation of [NetworkProbesRepository].
@@ -15,12 +14,13 @@ final class NetworkProbesRepositoryImpl implements NetworkProbesRepository {
   const NetworkProbesRepositoryImpl();
 
   @override
-  Future<CaptivePortalStatus> checkForCaptivePortal(
-          {required BigInt timeoutMs}) =>
+  Future<CaptivePortalStatus> checkForCaptivePortal({
+    required final BigInt timeoutMs,
+  }) =>
       NetworkProbesSource.checkForCaptivePortal(timeoutMs: timeoutMs);
 
   @override
-  Future<bool> detectDnsHijacking({required String domain}) =>
+  Future<bool> detectDnsHijacking({required final String domain}) =>
       NetworkProbesSource.detectDnsHijacking(domain: domain);
 
   @override
@@ -29,6 +29,6 @@ final class NetworkProbesRepositoryImpl implements NetworkProbesRepository {
           NetworkProbesSource.detectSecurityAndNetworkType();
 
   @override
-  Future<TargetReport> checkTarget({required NetworkTarget target}) =>
+  Future<TargetReport> checkTarget({required final NetworkTarget target}) =>
       NetworkProbesSource.checkTarget(target: target);
 }

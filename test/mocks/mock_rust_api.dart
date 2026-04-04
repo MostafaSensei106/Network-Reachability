@@ -6,6 +6,12 @@ import 'package:network_reachability/src/rust/api/models/target.dart';
 import 'package:network_reachability/src/rust/frb_generated.dart';
 
 class MockSecurityFlagsResult implements SecurityFlagsResult {
+  MockSecurityFlagsResult({
+    required this.interfaceName,
+    required this.isDnsSpoofed,
+    required this.isProxyDetected,
+    required this.isVpnDetected,
+  });
   @override
   String interfaceName;
   @override
@@ -19,16 +25,16 @@ class MockSecurityFlagsResult implements SecurityFlagsResult {
   void dispose() {}
   @override
   bool get isDisposed => false;
-
-  MockSecurityFlagsResult({
-    required this.interfaceName,
-    required this.isDnsSpoofed,
-    required this.isProxyDetected,
-    required this.isVpnDetected,
-  });
 }
 
 class MockNetworkReport implements NetworkReport {
+  MockNetworkReport({
+    required this.connectionType,
+    required this.securityFlagsResult,
+    required this.status,
+    required this.targetReports,
+    required this.timestampMs,
+  });
   @override
   ConnectionType connectionType;
   @override
@@ -44,17 +50,12 @@ class MockNetworkReport implements NetworkReport {
   void dispose() {}
   @override
   bool get isDisposed => false;
-
-  MockNetworkReport({
-    required this.connectionType,
-    required this.securityFlagsResult,
-    required this.status,
-    required this.targetReports,
-    required this.timestampMs,
-  });
 }
 
 class MockRustLibApi implements RustLibApi {
+  MockRustLibApi() {
+    reset();
+  }
   int checkCallCount = 0;
 
   late MockNetworkReport mockNetworkReport;
@@ -67,10 +68,6 @@ class MockRustLibApi implements RustLibApi {
   late bool mockDnsHijackingResult;
   late (SecurityFlagsResult, ConnectionType) mockSecurityAndNetworkTypeResult;
   late TargetReport mockTargetReportProbe;
-
-  MockRustLibApi() {
-    reset();
-  }
 
   void reset() {
     checkCallCount = 0;
@@ -136,7 +133,7 @@ class MockRustLibApi implements RustLibApi {
           timeoutMs: BigInt.from(1000),
           priority: 1,
           isEssential: true,
-        )
+        ),
       ],
       checkIntervalMs: BigInt.from(5000),
       cacheValidityMs: BigInt.from(500), // 500ms cache
@@ -166,8 +163,9 @@ class MockRustLibApi implements RustLibApi {
   }
 
   @override
-  Future<NetworkReport> crateApiEngineCheckNetwork(
-      {required NetworkConfiguration config}) async {
+  Future<NetworkReport> crateApiEngineCheckNetwork({
+    required final NetworkConfiguration config,
+  }) async {
     checkCallCount++;
     return mockNetworkReport;
   }
@@ -195,14 +193,16 @@ class MockRustLibApi implements RustLibApi {
   }
 
   @override
-  Future<CaptivePortalStatus> crateApiProbesCaptivePortalCheckForCaptivePortal(
-      {required BigInt timeoutMs}) async {
+  Future<CaptivePortalStatus> crateApiProbesCaptivePortalCheckForCaptivePortal({
+    required final BigInt timeoutMs,
+  }) async {
     return mockCaptivePortalStatus;
   }
 
   @override
-  Future<bool> crateApiProbesDnsDetectDnsHijacking(
-      {required String domain}) async {
+  Future<bool> crateApiProbesDnsDetectDnsHijacking({
+    required final String domain,
+  }) async {
     return mockDnsHijackingResult;
   }
 
@@ -213,11 +213,13 @@ class MockRustLibApi implements RustLibApi {
   }
 
   @override
-  Future<TargetReport> crateApiProbesTargetCheckTarget(
-      {required NetworkTarget target}) async {
+  Future<TargetReport> crateApiProbesTargetCheckTarget({
+    required final NetworkTarget target,
+  }) async {
     return mockTargetReportProbe;
   }
 
   @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  dynamic noSuchMethod(final Invocation invocation) =>
+      super.noSuchMethod(invocation);
 }

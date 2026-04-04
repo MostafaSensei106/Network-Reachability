@@ -3,9 +3,10 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
 import '../../frb_generated.dart';
 import '../models/net_info.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// Inspects system network interfaces to detect connection type and potential security flags.
 Future<(SecurityFlagsResult, ConnectionType)> detectSecurityAndNetworkType() =>

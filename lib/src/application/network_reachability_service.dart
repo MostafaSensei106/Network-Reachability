@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:network_reachability/src/rust/api/engine.dart' as rust_engine;
+
 import '../core/constants/enums.dart';
 import '../core/exceptions/exceptions.dart';
+import '../data/repositories/network_probes_repository_impl.dart';
 import '../domain/entities/entities.dart';
 import '../domain/repositories/network_probes_repository.dart';
-import '../data/repositories/network_probes_repository_impl.dart';
+import '../rust/api/engine.dart' as rust_engine;
 
 /// The central entry point for the Network Reachability library.
 ///
@@ -41,6 +42,11 @@ import '../data/repositories/network_probes_repository_impl.dart';
 /// }
 /// ```
 final class NetworkReachability with WidgetsBindingObserver {
+  /// Internal constructor. Use [init] to create the instance.
+  NetworkReachability._(this._config, this._probesRepository) {
+    WidgetsBinding.instance.addObserver(this);
+    _startPeriodicChecks();
+  }
   static NetworkReachability? _instance;
 
   /// Access the singleton instance of the network reachability service.
@@ -49,7 +55,8 @@ final class NetworkReachability with WidgetsBindingObserver {
   static NetworkReachability get instance {
     if (_instance == null) {
       throw Exception(
-          'NetworkReachability has not been initialized. Call NetworkReachability.init() first.');
+        'NetworkReachability has not been initialized. Call NetworkReachability.init() first.',
+      );
     }
     return _instance!;
   }
@@ -79,12 +86,6 @@ final class NetworkReachability with WidgetsBindingObserver {
   CircuitBreakerState _circuitState = CircuitBreakerState.closed;
   DateTime? _circuitBreakerResetTime;
 
-  /// Internal constructor. Use [init] to create the instance.
-  NetworkReachability._(this._config, this._probesRepository) {
-    WidgetsBinding.instance.addObserver(this);
-    _startPeriodicChecks();
-  }
-
   /// Initializes the Network Reachability engine.
   ///
   /// This method must be called once, typically inside `main()`, before accessing [instance].
@@ -95,11 +96,11 @@ final class NetworkReachability with WidgetsBindingObserver {
   ///
   /// Returns a [Future] that completes when the service is ready.
   static Future<void> init({
-    NetworkConfiguration? config,
-    NetworkProbesRepository? probesRepository,
+    final NetworkConfiguration? config,
+    final NetworkProbesRepository? probesRepository,
   }) async {
     if (_instance != null) {
-      _instance?.dispose();
+      await _instance?.dispose();
     }
     final finalConfig = config ?? await NetworkConfiguration.default_();
     final finalRepository =
@@ -123,7 +124,7 @@ final class NetworkReachability with WidgetsBindingObserver {
   /// * [forceRefresh]: If true, ignores the cache and forces a new network probe.
   ///
   /// Returns a [NetworkReport] containing detailed statistics and security flags.
-  Future<NetworkReport> check({bool forceRefresh = false}) async {
+  Future<NetworkReport> check({final bool forceRefresh = false}) async {
     // 1. Return cached report if still valid and not forcing refresh
     if (!forceRefresh &&
         _lastReport != null &&
@@ -161,19 +162,22 @@ final class NetworkReachability with WidgetsBindingObserver {
   ///
   /// If essential targets fail repeatedly, the circuit opens to prevent further
   /// useless requests, saving device resources and avoiding backend hammering.
-  void _updateCircuitBreaker(NetworkReport report) {
+  void _updateCircuitBreaker(final NetworkReport report) {
     final threshold = _config.resilience.circuitBreakerThreshold;
     if (threshold == 0) return;
 
     final essentialTargetFailed =
-        report.targetReports.any((r) => r.isEssential && !r.success);
+        report.targetReports.any((final r) => r.isEssential && !r.success);
 
     if (essentialTargetFailed) {
       _consecutiveFailures++;
       if (_consecutiveFailures >= threshold) {
         _circuitState = CircuitBreakerState.open;
-        _circuitBreakerResetTime = DateTime.now().add(Duration(
-            milliseconds: _config.resilience.circuitBreakerCooldownMs.toInt()));
+        _circuitBreakerResetTime = DateTime.now().add(
+          Duration(
+            milliseconds: _config.resilience.circuitBreakerCooldownMs.toInt(),
+          ),
+        );
       }
     } else {
       // Any success on essential targets resets or closes the breaker
@@ -203,8 +207,8 @@ final class NetworkReachability with WidgetsBindingObserver {
   ///
   /// Returns the result of the [action].
   Future<T> guard<T>({
-    required Future<T> Function() action,
-    ConnectionQuality minQuality = ConnectionQuality.good,
+    required final Future<T> Function() action,
+    final ConnectionQuality minQuality = ConnectionQuality.good,
   }) async {
     // 1. Handle Circuit Breaker State
     if (_circuitState == CircuitBreakerState.open) {
@@ -212,8 +216,9 @@ final class NetworkReachability with WidgetsBindingObserver {
           DateTime.now().isBefore(_circuitBreakerResetTime!)) {
         final remaining = _circuitBreakerResetTime!.difference(DateTime.now());
         throw CircuitBreakerOpenException(
-            'Circuit breaker is open due to recent failures. Retry after ${remaining.inSeconds}s',
-            retryAfter: remaining);
+          'Circuit breaker is open due to recent failures. Retry after ${remaining.inSeconds}s',
+          retryAfter: remaining,
+        );
       } else {
         // Transition to Half-Open to allow a probe
         _circuitState = CircuitBreakerState.halfOpen;
@@ -226,19 +231,24 @@ final class NetworkReachability with WidgetsBindingObserver {
     // 3. Validate security requirements
     if (_config.security.blockVpn && report.securityFlagsResult.isVpnDetected) {
       throw SecurityException(
-          SecurityAlert.vpnDetected, 'VPN connection is not allowed.');
+        SecurityAlert.vpnDetected,
+        'VPN connection is not allowed.',
+      );
     }
     if (_config.security.detectDnsHijack &&
         report.securityFlagsResult.isDnsSpoofed) {
-      throw SecurityException(SecurityAlert.dnsHijackDetected,
-          'DNS hijacking was detected. Connection is insecure.');
+      throw SecurityException(
+        SecurityAlert.dnsHijackDetected,
+        'DNS hijacking was detected. Connection is insecure.',
+      );
     }
 
     // 4. Validate quality requirements
     if (!report.status.isConnected ||
         report.status.quality.index > minQuality.index) {
       throw PoorConnectionException(
-          'Connection quality (${report.status.quality.name}) is below required (${minQuality.name}).');
+        'Connection quality (${report.status.quality.name}) is below required (${minQuality.name}).',
+      );
     }
 
     // 5. Success: Close circuit if it was half-open
@@ -247,7 +257,7 @@ final class NetworkReachability with WidgetsBindingObserver {
       _consecutiveFailures = 0;
     }
 
-    return await action();
+    return action();
   }
 
   /// Observes Flutter's app lifecycle to manage battery consumption.
@@ -255,7 +265,7 @@ final class NetworkReachability with WidgetsBindingObserver {
   /// It automatically stops periodic checks when the app goes into the background
   /// and resumes them when the app returns to the foreground.
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(final AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
       _stopPeriodicChecks();
@@ -277,7 +287,7 @@ final class NetworkReachability with WidgetsBindingObserver {
   ///
   /// If the connection is [ConnectionQuality.excellent], the interval is doubled
   /// (up to 30s) to save power. If quality drops, it reverts to the base interval.
-  void _scheduleNextCheck(Duration delay) {
+  void _scheduleNextCheck(final Duration delay) {
     _periodicTimer = Timer(delay, () async {
       final report = await check(forceRefresh: true);
       if (!_statusController.isClosed) {
@@ -285,7 +295,7 @@ final class NetworkReachability with WidgetsBindingObserver {
       }
 
       // Adaptive interval logic:
-      int nextIntervalMs = _config.checkIntervalMs.toInt();
+      var nextIntervalMs = _config.checkIntervalMs.toInt();
       if (report.status.quality == ConnectionQuality.excellent) {
         nextIntervalMs = (nextIntervalMs * 2).clamp(0, 30000); // Max 30s
       }
@@ -303,10 +313,10 @@ final class NetworkReachability with WidgetsBindingObserver {
   }
 
   /// Releases resources, removes observers, and shuts down the service.
-  void dispose() {
+  Future<void> dispose() async {
     WidgetsBinding.instance.removeObserver(this);
     _stopPeriodicChecks();
-    _statusController.close();
+    await _statusController.close();
     _instance = null;
   }
 
@@ -315,14 +325,15 @@ final class NetworkReachability with WidgetsBindingObserver {
   /// Detects if the current network is a "Captive Portal" (e.g., public WiFi login page).
   ///
   /// [timeoutMs]: Maximum time to wait for the probe.
-  Future<CaptivePortalStatus> checkForCaptivePortal(
-          {required BigInt timeoutMs}) =>
+  Future<CaptivePortalStatus> checkForCaptivePortal({
+    required final BigInt timeoutMs,
+  }) =>
       _probesRepository.checkForCaptivePortal(timeoutMs: timeoutMs);
 
   /// Checks for potential DNS tampering by comparing system results against trusted resolvers.
   ///
   /// [domain]: The domain to test (e.g., 'google.com').
-  Future<bool> detectDnsHijacking({required String domain}) =>
+  Future<bool> detectDnsHijacking({required final String domain}) =>
       _probesRepository.detectDnsHijacking(domain: domain);
 
   /// Inspects active network interfaces to determine connectivity type and security status.
@@ -335,6 +346,6 @@ final class NetworkReachability with WidgetsBindingObserver {
   /// Performs a targeted reachability probe against a single endpoint.
   ///
   /// [target]: The configuration for the endpoint to probe.
-  Future<TargetReport> checkTarget({required NetworkTarget target}) =>
+  Future<TargetReport> checkTarget({required final NetworkTarget target}) =>
       _probesRepository.checkTarget(target: target);
 }

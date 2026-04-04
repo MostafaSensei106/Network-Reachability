@@ -17,9 +17,9 @@ void main() {
     mockApi.reset();
   });
 
-  tearDown(() {
+  tearDown(() async {
     try {
-      NetworkReachability.instance.dispose();
+      await NetworkReachability.instance.dispose();
     } catch (_) {}
   });
 
@@ -67,9 +67,9 @@ void main() {
       final completer = Completer<void>();
       stream.listen(null, onDone: () => completer.complete());
 
-      NetworkReachability.instance.dispose();
+      await NetworkReachability.instance.dispose();
 
-      expect(completer.future, completes);
+      await expectLater(completer.future, completes);
     });
   });
 }

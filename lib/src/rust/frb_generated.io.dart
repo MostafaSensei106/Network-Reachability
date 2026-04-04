@@ -3,6 +3,12 @@
 
 // ignore_for_file: public_member_api_docs, unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'dart:async';
+import 'dart:convert';
+import 'dart:ffi' as ffi;
+
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
+
 import 'api/analysis/quality.dart';
 import 'api/analysis/stats.dart';
 import 'api/engine.dart';
@@ -16,11 +22,7 @@ import 'api/probes/captive_portal.dart';
 import 'api/probes/dns.dart';
 import 'api/probes/interface.dart';
 import 'api/probes/target.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustLibApiImplPlatform({
@@ -41,150 +43,164 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   NetworkReport
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
   SecurityFlagsResult
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
   NetworkReport
       dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
   SecurityFlagsResult
       dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
   NetworkReport
       dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
   SecurityFlagsResult
       dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
   NetworkReport
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
   SecurityFlagsResult
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
-  String dco_decode_String(dynamic raw);
+  String dco_decode_String(final dynamic raw);
 
   @protected
-  bool dco_decode_bool(dynamic raw);
+  bool dco_decode_bool(final dynamic raw);
 
   @protected
-  double dco_decode_box_autoadd_f_64(dynamic raw);
+  double dco_decode_box_autoadd_f_64(final dynamic raw);
 
   @protected
-  LatencyStats dco_decode_box_autoadd_latency_stats(dynamic raw);
+  LatencyStats dco_decode_box_autoadd_latency_stats(final dynamic raw);
 
   @protected
-  NativeProbe dco_decode_box_autoadd_native_probe(dynamic raw);
+  NativeProbe dco_decode_box_autoadd_native_probe(final dynamic raw);
 
   @protected
   NetworkConfiguration dco_decode_box_autoadd_network_configuration(
-      dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
-  NetworkTarget dco_decode_box_autoadd_network_target(dynamic raw);
+  NetworkTarget dco_decode_box_autoadd_network_target(final dynamic raw);
 
   @protected
-  QualityThresholds dco_decode_box_autoadd_quality_thresholds(dynamic raw);
+  QualityThresholds dco_decode_box_autoadd_quality_thresholds(
+    final dynamic raw,
+  );
 
   @protected
-  ResilienceConfig dco_decode_box_autoadd_resilience_config(dynamic raw);
+  ResilienceConfig dco_decode_box_autoadd_resilience_config(final dynamic raw);
 
   @protected
-  SecurityConfig dco_decode_box_autoadd_security_config(dynamic raw);
+  SecurityConfig dco_decode_box_autoadd_security_config(final dynamic raw);
 
   @protected
-  BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+  BigInt dco_decode_box_autoadd_u_64(final dynamic raw);
 
   @protected
-  WebProbe dco_decode_box_autoadd_web_probe(dynamic raw);
+  WebProbe dco_decode_box_autoadd_web_probe(final dynamic raw);
 
   @protected
-  CaptivePortalStatus dco_decode_captive_portal_status(dynamic raw);
+  CaptivePortalStatus dco_decode_captive_portal_status(final dynamic raw);
 
   @protected
-  CheckStrategy dco_decode_check_strategy(dynamic raw);
+  CheckStrategy dco_decode_check_strategy(final dynamic raw);
 
   @protected
-  ConnectionQuality dco_decode_connection_quality(dynamic raw);
+  ConnectionQuality dco_decode_connection_quality(final dynamic raw);
 
   @protected
-  ConnectionType dco_decode_connection_type(dynamic raw);
+  ConnectionType dco_decode_connection_type(final dynamic raw);
 
   @protected
-  double dco_decode_f_32(dynamic raw);
+  double dco_decode_f_32(final dynamic raw);
 
   @protected
-  double dco_decode_f_64(dynamic raw);
+  double dco_decode_f_64(final dynamic raw);
 
   @protected
-  int dco_decode_i_32(dynamic raw);
+  int dco_decode_i_32(final dynamic raw);
 
   @protected
-  LatencyStats dco_decode_latency_stats(dynamic raw);
+  LatencyStats dco_decode_latency_stats(final dynamic raw);
 
   @protected
-  List<NetworkTarget> dco_decode_list_network_target(dynamic raw);
+  List<NetworkTarget> dco_decode_list_network_target(final dynamic raw);
 
   @protected
-  Uint64List dco_decode_list_prim_u_64_strict(dynamic raw);
+  Uint64List dco_decode_list_prim_u_64_strict(final dynamic raw);
 
   @protected
-  Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+  Uint8List dco_decode_list_prim_u_8_strict(final dynamic raw);
 
   @protected
-  List<TargetReport> dco_decode_list_target_report(dynamic raw);
+  List<TargetReport> dco_decode_list_target_report(final dynamic raw);
 
   @protected
-  NativeProbe dco_decode_native_probe(dynamic raw);
+  NativeProbe dco_decode_native_probe(final dynamic raw);
 
   @protected
-  NetworkConfiguration dco_decode_network_configuration(dynamic raw);
+  NetworkConfiguration dco_decode_network_configuration(final dynamic raw);
 
   @protected
-  NetworkStatus dco_decode_network_status(dynamic raw);
+  NetworkStatus dco_decode_network_status(final dynamic raw);
 
   @protected
-  NetworkTarget dco_decode_network_target(dynamic raw);
+  NetworkTarget dco_decode_network_target(final dynamic raw);
 
   @protected
-  String? dco_decode_opt_String(dynamic raw);
+  String? dco_decode_opt_String(final dynamic raw);
 
   @protected
-  double? dco_decode_opt_box_autoadd_f_64(dynamic raw);
+  double? dco_decode_opt_box_autoadd_f_64(final dynamic raw);
 
   @protected
-  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
+  BigInt? dco_decode_opt_box_autoadd_u_64(final dynamic raw);
 
   @protected
-  QualityThresholds dco_decode_quality_thresholds(dynamic raw);
+  QualityThresholds dco_decode_quality_thresholds(final dynamic raw);
 
   @protected
   (
     SecurityFlagsResult,
     ConnectionType
   ) dco_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type(
-      dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
   (Uint64List, List<TargetReport>)
-      dco_decode_record_list_prim_u_64_strict_list_target_report(dynamic raw);
+      dco_decode_record_list_prim_u_64_strict_list_target_report(
+    final dynamic raw,
+  );
 
   @protected
   (
@@ -193,198 +209,227 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     BigInt?,
     double?
   ) dco_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
-      dynamic raw);
+    final dynamic raw,
+  );
 
   @protected
-  ResilienceConfig dco_decode_resilience_config(dynamic raw);
+  ResilienceConfig dco_decode_resilience_config(final dynamic raw);
 
   @protected
-  SecurityConfig dco_decode_security_config(dynamic raw);
+  SecurityConfig dco_decode_security_config(final dynamic raw);
 
   @protected
-  SecurityFlags dco_decode_security_flags(dynamic raw);
+  SecurityFlags dco_decode_security_flags(final dynamic raw);
 
   @protected
-  TargetProtocol dco_decode_target_protocol(dynamic raw);
+  TargetProtocol dco_decode_target_protocol(final dynamic raw);
 
   @protected
-  TargetReport dco_decode_target_report(dynamic raw);
+  TargetReport dco_decode_target_report(final dynamic raw);
 
   @protected
-  int dco_decode_u_16(dynamic raw);
+  int dco_decode_u_16(final dynamic raw);
 
   @protected
-  BigInt dco_decode_u_64(dynamic raw);
+  BigInt dco_decode_u_64(final dynamic raw);
 
   @protected
-  int dco_decode_u_8(dynamic raw);
+  int dco_decode_u_8(final dynamic raw);
 
   @protected
-  void dco_decode_unit(dynamic raw);
+  void dco_decode_unit(final dynamic raw);
 
   @protected
-  BigInt dco_decode_usize(dynamic raw);
+  BigInt dco_decode_usize(final dynamic raw);
 
   @protected
-  WebProbe dco_decode_web_probe(dynamic raw);
+  WebProbe dco_decode_web_probe(final dynamic raw);
 
   @protected
   NetworkReport
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   SecurityFlagsResult
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   NetworkReport
       sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   SecurityFlagsResult
       sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   NetworkReport
       sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   SecurityFlagsResult
       sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   NetworkReport
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   SecurityFlagsResult
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  String sse_decode_String(SseDeserializer deserializer);
+  String sse_decode_String(final SseDeserializer deserializer);
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
+  bool sse_decode_bool(final SseDeserializer deserializer);
 
   @protected
-  double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
+  double sse_decode_box_autoadd_f_64(final SseDeserializer deserializer);
 
   @protected
   LatencyStats sse_decode_box_autoadd_latency_stats(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  NativeProbe sse_decode_box_autoadd_native_probe(SseDeserializer deserializer);
+  NativeProbe sse_decode_box_autoadd_native_probe(
+    final SseDeserializer deserializer,
+  );
 
   @protected
   NetworkConfiguration sse_decode_box_autoadd_network_configuration(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   NetworkTarget sse_decode_box_autoadd_network_target(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   QualityThresholds sse_decode_box_autoadd_quality_thresholds(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   ResilienceConfig sse_decode_box_autoadd_resilience_config(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   SecurityConfig sse_decode_box_autoadd_security_config(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+  BigInt sse_decode_box_autoadd_u_64(final SseDeserializer deserializer);
 
   @protected
-  WebProbe sse_decode_box_autoadd_web_probe(SseDeserializer deserializer);
+  WebProbe sse_decode_box_autoadd_web_probe(final SseDeserializer deserializer);
 
   @protected
   CaptivePortalStatus sse_decode_captive_portal_status(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  CheckStrategy sse_decode_check_strategy(SseDeserializer deserializer);
+  CheckStrategy sse_decode_check_strategy(final SseDeserializer deserializer);
 
   @protected
-  ConnectionQuality sse_decode_connection_quality(SseDeserializer deserializer);
+  ConnectionQuality sse_decode_connection_quality(
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  ConnectionType sse_decode_connection_type(SseDeserializer deserializer);
+  ConnectionType sse_decode_connection_type(final SseDeserializer deserializer);
 
   @protected
-  double sse_decode_f_32(SseDeserializer deserializer);
+  double sse_decode_f_32(final SseDeserializer deserializer);
 
   @protected
-  double sse_decode_f_64(SseDeserializer deserializer);
+  double sse_decode_f_64(final SseDeserializer deserializer);
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
+  int sse_decode_i_32(final SseDeserializer deserializer);
 
   @protected
-  LatencyStats sse_decode_latency_stats(SseDeserializer deserializer);
+  LatencyStats sse_decode_latency_stats(final SseDeserializer deserializer);
 
   @protected
   List<NetworkTarget> sse_decode_list_network_target(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  Uint64List sse_decode_list_prim_u_64_strict(SseDeserializer deserializer);
+  Uint64List sse_decode_list_prim_u_64_strict(
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+  Uint8List sse_decode_list_prim_u_8_strict(final SseDeserializer deserializer);
 
   @protected
   List<TargetReport> sse_decode_list_target_report(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  NativeProbe sse_decode_native_probe(SseDeserializer deserializer);
+  NativeProbe sse_decode_native_probe(final SseDeserializer deserializer);
 
   @protected
   NetworkConfiguration sse_decode_network_configuration(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  NetworkStatus sse_decode_network_status(SseDeserializer deserializer);
+  NetworkStatus sse_decode_network_status(final SseDeserializer deserializer);
 
   @protected
-  NetworkTarget sse_decode_network_target(SseDeserializer deserializer);
+  NetworkTarget sse_decode_network_target(final SseDeserializer deserializer);
 
   @protected
-  String? sse_decode_opt_String(SseDeserializer deserializer);
+  String? sse_decode_opt_String(final SseDeserializer deserializer);
 
   @protected
-  double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer);
+  double? sse_decode_opt_box_autoadd_f_64(final SseDeserializer deserializer);
 
   @protected
-  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
+  BigInt? sse_decode_opt_box_autoadd_u_64(final SseDeserializer deserializer);
 
   @protected
-  QualityThresholds sse_decode_quality_thresholds(SseDeserializer deserializer);
+  QualityThresholds sse_decode_quality_thresholds(
+    final SseDeserializer deserializer,
+  );
 
   @protected
   (
     SecurityFlagsResult,
     ConnectionType
   ) sse_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   (Uint64List, List<TargetReport>)
       sse_decode_record_list_prim_u_64_strict_list_target_report(
-          SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
   (
@@ -393,262 +438,365 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     BigInt?,
     double?
   ) sse_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
-      SseDeserializer deserializer);
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  ResilienceConfig sse_decode_resilience_config(SseDeserializer deserializer);
+  ResilienceConfig sse_decode_resilience_config(
+    final SseDeserializer deserializer,
+  );
 
   @protected
-  SecurityConfig sse_decode_security_config(SseDeserializer deserializer);
+  SecurityConfig sse_decode_security_config(final SseDeserializer deserializer);
 
   @protected
-  SecurityFlags sse_decode_security_flags(SseDeserializer deserializer);
+  SecurityFlags sse_decode_security_flags(final SseDeserializer deserializer);
 
   @protected
-  TargetProtocol sse_decode_target_protocol(SseDeserializer deserializer);
+  TargetProtocol sse_decode_target_protocol(final SseDeserializer deserializer);
 
   @protected
-  TargetReport sse_decode_target_report(SseDeserializer deserializer);
+  TargetReport sse_decode_target_report(final SseDeserializer deserializer);
 
   @protected
-  int sse_decode_u_16(SseDeserializer deserializer);
+  int sse_decode_u_16(final SseDeserializer deserializer);
 
   @protected
-  BigInt sse_decode_u_64(SseDeserializer deserializer);
+  BigInt sse_decode_u_64(final SseDeserializer deserializer);
 
   @protected
-  int sse_decode_u_8(SseDeserializer deserializer);
+  int sse_decode_u_8(final SseDeserializer deserializer);
 
   @protected
-  void sse_decode_unit(SseDeserializer deserializer);
+  void sse_decode_unit(final SseDeserializer deserializer);
 
   @protected
-  BigInt sse_decode_usize(SseDeserializer deserializer);
+  BigInt sse_decode_usize(final SseDeserializer deserializer);
 
   @protected
-  WebProbe sse_decode_web_probe(SseDeserializer deserializer);
+  WebProbe sse_decode_web_probe(final SseDeserializer deserializer);
 
   @protected
   void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          NetworkReport self, SseSerializer serializer);
+    final NetworkReport self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          SecurityFlagsResult self, SseSerializer serializer);
+    final SecurityFlagsResult self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void
       sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          NetworkReport self, SseSerializer serializer);
+    final NetworkReport self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void
       sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          SecurityFlagsResult self, SseSerializer serializer);
+    final SecurityFlagsResult self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void
       sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          NetworkReport self, SseSerializer serializer);
+    final NetworkReport self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void
       sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          SecurityFlagsResult self, SseSerializer serializer);
+    final SecurityFlagsResult self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-          NetworkReport self, SseSerializer serializer);
+    final NetworkReport self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-          SecurityFlagsResult self, SseSerializer serializer);
+    final SecurityFlagsResult self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_String(String self, SseSerializer serializer);
+  void sse_encode_String(final String self, final SseSerializer serializer);
 
   @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
+  void sse_encode_bool(final bool self, final SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
+  void sse_encode_box_autoadd_f_64(
+    final double self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_latency_stats(
-      LatencyStats self, SseSerializer serializer);
+    final LatencyStats self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_native_probe(
-      NativeProbe self, SseSerializer serializer);
+    final NativeProbe self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_network_configuration(
-      NetworkConfiguration self, SseSerializer serializer);
+    final NetworkConfiguration self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_network_target(
-      NetworkTarget self, SseSerializer serializer);
+    final NetworkTarget self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_quality_thresholds(
-      QualityThresholds self, SseSerializer serializer);
+    final QualityThresholds self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_resilience_config(
-      ResilienceConfig self, SseSerializer serializer);
+    final ResilienceConfig self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_security_config(
-      SecurityConfig self, SseSerializer serializer);
+    final SecurityConfig self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+  void sse_encode_box_autoadd_u_64(
+    final BigInt self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_web_probe(
-      WebProbe self, SseSerializer serializer);
+    final WebProbe self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_captive_portal_status(
-      CaptivePortalStatus self, SseSerializer serializer);
+    final CaptivePortalStatus self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_check_strategy(CheckStrategy self, SseSerializer serializer);
+  void sse_encode_check_strategy(
+    final CheckStrategy self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_connection_quality(
-      ConnectionQuality self, SseSerializer serializer);
+    final ConnectionQuality self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_connection_type(
-      ConnectionType self, SseSerializer serializer);
+    final ConnectionType self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_f_32(double self, SseSerializer serializer);
+  void sse_encode_f_32(final double self, final SseSerializer serializer);
 
   @protected
-  void sse_encode_f_64(double self, SseSerializer serializer);
+  void sse_encode_f_64(final double self, final SseSerializer serializer);
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
+  void sse_encode_i_32(final int self, final SseSerializer serializer);
 
   @protected
-  void sse_encode_latency_stats(LatencyStats self, SseSerializer serializer);
+  void sse_encode_latency_stats(
+    final LatencyStats self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_network_target(
-      List<NetworkTarget> self, SseSerializer serializer);
+    final List<NetworkTarget> self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_prim_u_64_strict(
-      Uint64List self, SseSerializer serializer);
+    final Uint64List self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_prim_u_8_strict(
-      Uint8List self, SseSerializer serializer);
+    final Uint8List self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_target_report(
-      List<TargetReport> self, SseSerializer serializer);
+    final List<TargetReport> self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_native_probe(NativeProbe self, SseSerializer serializer);
+  void sse_encode_native_probe(
+    final NativeProbe self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_network_configuration(
-      NetworkConfiguration self, SseSerializer serializer);
+    final NetworkConfiguration self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_network_status(NetworkStatus self, SseSerializer serializer);
+  void sse_encode_network_status(
+    final NetworkStatus self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_network_target(NetworkTarget self, SseSerializer serializer);
+  void sse_encode_network_target(
+    final NetworkTarget self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_opt_String(String? self, SseSerializer serializer);
+  void sse_encode_opt_String(
+    final String? self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer);
+  void sse_encode_opt_box_autoadd_f_64(
+    final double? self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
+  void sse_encode_opt_box_autoadd_u_64(
+    final BigInt? self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_quality_thresholds(
-      QualityThresholds self, SseSerializer serializer);
+    final QualityThresholds self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void
       sse_encode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type(
-          (SecurityFlagsResult, ConnectionType) self, SseSerializer serializer);
+    final (SecurityFlagsResult, ConnectionType) self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_record_list_prim_u_64_strict_list_target_report(
-      (Uint64List, List<TargetReport>) self, SseSerializer serializer);
+    final (Uint64List, List<TargetReport>) self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void
       sse_encode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
-          (BigInt?, BigInt?, BigInt?, double?) self, SseSerializer serializer);
+    final (BigInt?, BigInt?, BigInt?, double?) self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_resilience_config(
-      ResilienceConfig self, SseSerializer serializer);
+    final ResilienceConfig self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_security_config(
-      SecurityConfig self, SseSerializer serializer);
+    final SecurityConfig self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_security_flags(SecurityFlags self, SseSerializer serializer);
+  void sse_encode_security_flags(
+    final SecurityFlags self,
+    final SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_target_protocol(
-      TargetProtocol self, SseSerializer serializer);
+    final TargetProtocol self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_target_report(TargetReport self, SseSerializer serializer);
+  void sse_encode_target_report(
+    final TargetReport self,
+    final SseSerializer serializer,
+  );
 
   @protected
-  void sse_encode_u_16(int self, SseSerializer serializer);
+  void sse_encode_u_16(final int self, final SseSerializer serializer);
 
   @protected
-  void sse_encode_u_64(BigInt self, SseSerializer serializer);
+  void sse_encode_u_64(final BigInt self, final SseSerializer serializer);
 
   @protected
-  void sse_encode_u_8(int self, SseSerializer serializer);
+  void sse_encode_u_8(final int self, final SseSerializer serializer);
 
   @protected
-  void sse_encode_unit(void self, SseSerializer serializer);
+  void sse_encode_unit(final void self, final SseSerializer serializer);
 
   @protected
-  void sse_encode_usize(BigInt self, SseSerializer serializer);
+  void sse_encode_usize(final BigInt self, final SseSerializer serializer);
 
   @protected
-  void sse_encode_web_probe(WebProbe self, SseSerializer serializer);
+  void sse_encode_web_probe(
+    final WebProbe self,
+    final SseSerializer serializer,
+  );
 }
 
 // Section: wire_class
 
 class RustLibWire implements BaseWire {
-  factory RustLibWire.fromExternalLibrary(ExternalLibrary lib) =>
+  /// The symbols are looked up in [dynamicLibrary].
+  RustLibWire(final ffi.DynamicLibrary dynamicLibrary)
+      : _lookup = dynamicLibrary.lookup;
+  factory RustLibWire.fromExternalLibrary(final ExternalLibrary lib) =>
       RustLibWire(lib.ffiDynamicLibrary);
 
   /// Holds the symbol lookup function.
   final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
       _lookup;
 
-  /// The symbols are looked up in [dynamicLibrary].
-  RustLibWire(ffi.DynamicLibrary dynamicLibrary)
-      : _lookup = dynamicLibrary.lookup;
-
   void
       rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-    ffi.Pointer<ffi.Void> ptr,
+    final ffi.Pointer<ffi.Void> ptr,
   ) {
     return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
       ptr,
@@ -657,14 +805,15 @@ class RustLibWire implements BaseWire {
 
   late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReportPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_network_reachability_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport');
+    'frbgen_network_reachability_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport',
+  );
   late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport =
       _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReportPtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void
       rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
-    ffi.Pointer<ffi.Void> ptr,
+    final ffi.Pointer<ffi.Void> ptr,
   ) {
     return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport(
       ptr,
@@ -673,14 +822,15 @@ class RustLibWire implements BaseWire {
 
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReportPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_network_reachability_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport');
+    'frbgen_network_reachability_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport',
+  );
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReport =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerNetworkReportPtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void
       rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-    ffi.Pointer<ffi.Void> ptr,
+    final ffi.Pointer<ffi.Void> ptr,
   ) {
     return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
       ptr,
@@ -689,14 +839,15 @@ class RustLibWire implements BaseWire {
 
   late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResultPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_network_reachability_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult');
+    'frbgen_network_reachability_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult',
+  );
   late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult =
       _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResultPtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void
       rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
-    ffi.Pointer<ffi.Void> ptr,
+    final ffi.Pointer<ffi.Void> ptr,
   ) {
     return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
       ptr,
@@ -705,7 +856,8 @@ class RustLibWire implements BaseWire {
 
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResultPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_network_reachability_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult');
+    'frbgen_network_reachability_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult',
+  );
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResultPtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();

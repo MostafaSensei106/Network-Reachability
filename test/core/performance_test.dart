@@ -16,9 +16,9 @@ void main() {
     mockApi.reset();
   });
 
-  tearDown(() {
+  tearDown(() async {
     try {
-      NetworkReachability.instance.dispose();
+      await NetworkReachability.instance.dispose();
     } catch (_) {}
   });
 
@@ -36,8 +36,11 @@ void main() {
       ]);
 
       await futures;
-      expect(mockApi.checkCallCount, 1,
-          reason: 'Only 1 probe should be triggered for concurrent requests');
+      expect(
+        mockApi.checkCallCount,
+        1,
+        reason: 'Only 1 probe should be triggered for concurrent requests',
+      );
     });
 
     test('Caching: Subsequent calls within validity window use cache',
@@ -49,15 +52,21 @@ void main() {
       await NetworkReachability.instance.check(); // Cache hit
       await NetworkReachability.instance.check(); // Cache hit
 
-      expect(mockApi.checkCallCount, 1,
-          reason: 'Subsequent calls should use the cache');
+      expect(
+        mockApi.checkCallCount,
+        1,
+        reason: 'Subsequent calls should use the cache',
+      );
 
       // Wait for cache to expire
       await Future.delayed(const Duration(milliseconds: 600));
       await NetworkReachability.instance.check(); // Probe 2
 
-      expect(mockApi.checkCallCount, 2,
-          reason: 'A new probe should trigger after cache expiration');
+      expect(
+        mockApi.checkCallCount,
+        2,
+        reason: 'A new probe should trigger after cache expiration',
+      );
     });
 
     test('forceRefresh bypasses cache', () async {

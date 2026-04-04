@@ -3,11 +3,12 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
 import '../../frb_generated.dart';
 import '../models/config.dart';
 import '../models/report.dart';
 import '../models/target.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// Categorizes a single latency measurement against configured thresholds.
 ///
@@ -22,10 +23,14 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 ///
 /// A [ConnectionQuality] variant. If latency exceeds the `poor` threshold,
 /// it returns [ConnectionQuality::Offline].
-Future<ConnectionQuality> evaluateQuality(
-        {required BigInt latency, required QualityThresholds threshold}) =>
+Future<ConnectionQuality> evaluateQuality({
+  required final BigInt latency,
+  required final QualityThresholds threshold,
+}) =>
     RustLib.instance.api.crateApiAnalysisQualityEvaluateQuality(
-        latency: latency, threshold: threshold);
+      latency: latency,
+      threshold: threshold,
+    );
 
 /// Computes the final, consolidated network quality.
 ///
@@ -40,9 +45,13 @@ Future<ConnectionQuality> evaluateQuality(
 /// * If packet loss exceeds the critical threshold, returns `Unstable`.
 /// * If stability is low, the quality is downgraded by one or more levels.
 /// * Otherwise, the quality is primarily determined by speed (latency).
-Future<ConnectionQuality> evaluateNetworkQuality(
-        {required bool isConnected,
-        required LatencyStats stats,
-        required NetworkConfiguration config}) =>
+Future<ConnectionQuality> evaluateNetworkQuality({
+  required final bool isConnected,
+  required final LatencyStats stats,
+  required final NetworkConfiguration config,
+}) =>
     RustLib.instance.api.crateApiAnalysisQualityEvaluateNetworkQuality(
-        isConnected: isConnected, stats: stats, config: config);
+      isConnected: isConnected,
+      stats: stats,
+      config: config,
+    );

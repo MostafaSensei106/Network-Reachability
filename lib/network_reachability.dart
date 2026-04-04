@@ -20,15 +20,12 @@ library;
 
 // --- Application Layer ---
 export 'src/application/network_reachability_service.dart';
-
-// --- Domain Layer ---
-export 'src/domain/entities/entities.dart';
-
 // --- Core ---
 export 'src/core/constants/enums.dart';
 export 'src/core/exceptions/exceptions.dart';
 export 'src/core/extensions/model_extensions.dart';
-
+// --- Domain Layer ---
+export 'src/domain/entities/entities.dart';
 // --- Internal / Advanced ---
 // Export the Rust bridge only if you need low-level access to the generated API.
 export 'src/rust/frb_generated.dart';

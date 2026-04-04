@@ -3,10 +3,11 @@
 
 // ignore_for_file: public_member_api_docs, invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
 import '../../frb_generated.dart';
 import 'config.dart';
 import 'net_info.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`, `fmt`
 
@@ -22,15 +23,15 @@ abstract class NetworkReport implements RustOpaqueInterface {
 
   BigInt get timestampMs;
 
-  set connectionType(ConnectionType connectionType);
+  set connectionType(final ConnectionType connectionType);
 
-  set securityFlagsResult(SecurityFlagsResult securityFlagsResult);
+  set securityFlagsResult(final SecurityFlagsResult securityFlagsResult);
 
-  set status(NetworkStatus status);
+  set status(final NetworkStatus status);
 
-  set targetReports(List<TargetReport> targetReports);
+  set targetReports(final List<TargetReport> targetReports);
 
-  set timestampMs(BigInt timestampMs);
+  set timestampMs(final BigInt timestampMs);
 }
 
 /// A suite of statistical metrics derived from multiple latency samples.
@@ -39,6 +40,16 @@ abstract class NetworkReport implements RustOpaqueInterface {
 /// of the connection, helping identify subtle issues like bufferbloat
 /// or interference.
 class LatencyStats {
+  const LatencyStats({
+    required this.latencyMs,
+    required this.jitterMs,
+    required this.packetLossPercent,
+    required this.stabilityScore,
+    this.minLatencyMs,
+    this.avgLatencyMs,
+    this.maxLatencyMs,
+  });
+
   /// The representative latency value (usually the mean of all successful samples).
   /// Measured in milliseconds.
   final BigInt latencyMs;
@@ -73,16 +84,6 @@ class LatencyStats {
   /// Scores below 70 are typically flagged as [`ConnectionQuality::Unstable`].
   final int stabilityScore;
 
-  const LatencyStats({
-    required this.latencyMs,
-    required this.jitterMs,
-    required this.packetLossPercent,
-    this.minLatencyMs,
-    this.avgLatencyMs,
-    this.maxLatencyMs,
-    required this.stabilityScore,
-  });
-
   @override
   int get hashCode =>
       latencyMs.hashCode ^
@@ -94,7 +95,7 @@ class LatencyStats {
       stabilityScore.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is LatencyStats &&
           runtimeType == other.runtimeType &&
@@ -112,6 +113,13 @@ class LatencyStats {
 /// This structure is what most UI layers will use to determine whether to
 /// show a "Connected" or "Offline" banner.
 class NetworkStatus {
+  const NetworkStatus({
+    required this.isConnected,
+    required this.quality,
+    required this.latencyStats,
+    required this.winnerTarget,
+  });
+
   /// True if the network is functionally "up" based on the configured strategy.
   final bool isConnected;
 
@@ -129,13 +137,6 @@ class NetworkStatus {
   /// current "closest" endpoint.
   final String winnerTarget;
 
-  const NetworkStatus({
-    required this.isConnected,
-    required this.quality,
-    required this.latencyStats,
-    required this.winnerTarget,
-  });
-
   @override
   int get hashCode =>
       isConnected.hashCode ^
@@ -144,7 +145,7 @@ class NetworkStatus {
       winnerTarget.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is NetworkStatus &&
           runtimeType == other.runtimeType &&
@@ -159,6 +160,14 @@ class NetworkStatus {
 /// Each configured target (e.g., Google DNS, Cloudflare) generates its
 /// own `TargetReport` during a check cycle.
 class TargetReport {
+  const TargetReport({
+    required this.label,
+    required this.success,
+    required this.latencyMs,
+    required this.isEssential,
+    this.error,
+  });
+
   /// The unique label identifying the target (e.g., "Primary API Gateway").
   final String label;
 
@@ -184,14 +193,6 @@ class TargetReport {
   /// [`CheckStrategy`](super::config::CheckStrategy).
   final bool isEssential;
 
-  const TargetReport({
-    required this.label,
-    required this.success,
-    required this.latencyMs,
-    this.error,
-    required this.isEssential,
-  });
-
   @override
   int get hashCode =>
       label.hashCode ^
@@ -201,7 +202,7 @@ class TargetReport {
       isEssential.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is TargetReport &&
           runtimeType == other.runtimeType &&
