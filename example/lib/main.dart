@@ -89,7 +89,7 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
             ),
           ),
           Text(
-            'CORE ENGINE v0.0.1+3',
+            'CORE ENGINE v0.0.1+4',
             style: TextStyle(fontSize: 10, color: Colors.white38),
           ),
         ],
@@ -120,6 +120,7 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
   Widget _buildBody() {
     final status = _report!.status;
     return SingleChildScrollView(
+      controller: PageController(),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
