@@ -16,9 +16,9 @@ void main() {
     mockApi.reset();
   });
 
-  tearDown(() {
+  tearDown(() async {
     try {
-      NetworkReachability.instance.dispose();
+      await NetworkReachability.instance.dispose();
     } catch (_) {}
   });
 
@@ -34,8 +34,12 @@ void main() {
 
       expect(
         () => NetworkReachability.instance.guard(action: () async => 42),
-        throwsA(predicate((e) =>
-            e is SecurityException && e.reason == SecurityAlert.vpnDetected)),
+        throwsA(
+          predicate(
+            (final e) =>
+                e is SecurityException && e.reason == SecurityAlert.vpnDetected,
+          ),
+        ),
       );
     });
 
@@ -50,9 +54,13 @@ void main() {
 
       expect(
         () => NetworkReachability.instance.guard(action: () async => 42),
-        throwsA(predicate((e) =>
-            e is SecurityException &&
-            e.reason == SecurityAlert.dnsHijackDetected)),
+        throwsA(
+          predicate(
+            (final e) =>
+                e is SecurityException &&
+                e.reason == SecurityAlert.dnsHijackDetected,
+          ),
+        ),
       );
     });
   });

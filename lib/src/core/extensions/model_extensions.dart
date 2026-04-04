@@ -17,12 +17,12 @@ extension NetworkConfigurationCopyWith on NetworkConfiguration {
   /// * [security]: VPN and DNS hijacking security preferences.
   /// * [resilience]: Settings for Circuit Breaker and stability analysis.
   NetworkConfiguration copyWith({
-    List<NetworkTarget>? targets,
-    BigInt? checkIntervalMs,
-    BigInt? cacheValidityMs,
-    QualityThresholds? qualityThreshold,
-    SecurityConfig? security,
-    ResilienceConfig? resilience,
+    final List<NetworkTarget>? targets,
+    final BigInt? checkIntervalMs,
+    final BigInt? cacheValidityMs,
+    final QualityThresholds? qualityThreshold,
+    final SecurityConfig? security,
+    final ResilienceConfig? resilience,
   }) {
     return NetworkConfiguration(
       targets: targets ?? this.targets,
@@ -45,11 +45,11 @@ extension QualityThresholdsCopyWith on QualityThresholds {
   /// * [moderate]: Max latency for 'Moderate' (e.g., < 250ms).
   /// * [poor]: Max latency for 'Poor' (e.g., < 500ms).
   QualityThresholds copyWith({
-    BigInt? excellent,
-    BigInt? great,
-    BigInt? good,
-    BigInt? moderate,
-    BigInt? poor,
+    final BigInt? excellent,
+    final BigInt? great,
+    final BigInt? good,
+    final BigInt? moderate,
+    final BigInt? poor,
   }) {
     return QualityThresholds(
       excellent: excellent ?? this.excellent,
@@ -73,13 +73,13 @@ extension ResilienceConfigCopyWith on ResilienceConfig {
   /// * [stabilityThershold]: Minimum stability score (0-100) required.
   /// * [criticalPacketLossPrecent]: Loss % that triggers an 'Offline' or 'Unstable' status.
   ResilienceConfig copyWith({
-    CheckStrategy? strategy,
-    int? circuitBreakerThreshold,
-    BigInt? circuitBreakerCooldownMs,
-    int? numJitterSamples,
-    double? jitterThresholdPercent,
-    int? stabilityThershold,
-    double? criticalPacketLossPrecent,
+    final CheckStrategy? strategy,
+    final int? circuitBreakerThreshold,
+    final BigInt? circuitBreakerCooldownMs,
+    final int? numJitterSamples,
+    final double? jitterThresholdPercent,
+    final int? stabilityThershold,
+    final double? criticalPacketLossPrecent,
   }) {
     return ResilienceConfig(
       strategy: strategy ?? this.strategy,
@@ -104,8 +104,8 @@ extension SecurityConfigCopyWith on SecurityConfig {
   /// * [blockVpn]: If true, VPN interfaces will be flagged.
   /// * [detectDnsHijack]: If true, performs active DNS spoofing checks.
   SecurityConfig copyWith({
-    bool? blockVpn,
-    bool? detectDnsHijack,
+    final bool? blockVpn,
+    final bool? detectDnsHijack,
   }) {
     return SecurityConfig(
       blockVpn: blockVpn ?? this.blockVpn,
@@ -118,8 +118,8 @@ extension SecurityConfigCopyWith on SecurityConfig {
 extension CaptivePortalStatusCopyWith on CaptivePortalStatus {
   /// Returns a modified status of the captive portal probe.
   CaptivePortalStatus copyWith({
-    bool? isCaptivePortal,
-    String? redirectUrl,
+    final bool? isCaptivePortal,
+    final String? redirectUrl,
   }) {
     return CaptivePortalStatus(
       isCaptivePortal: isCaptivePortal ?? this.isCaptivePortal,
@@ -132,10 +132,10 @@ extension CaptivePortalStatusCopyWith on CaptivePortalStatus {
 extension SecurityFlagsCopyWith on SecurityFlags {
   /// Returns a copy of [SecurityFlags] with updated values.
   SecurityFlags copyWith({
-    bool? isVpnDetected,
-    bool? isDnsSpoofed,
-    bool? isProxyDetected,
-    String? interfaceName,
+    final bool? isVpnDetected,
+    final bool? isDnsSpoofed,
+    final bool? isProxyDetected,
+    final String? interfaceName,
   }) {
     return SecurityFlags(
       isVpnDetected: isVpnDetected ?? this.isVpnDetected,
@@ -152,9 +152,9 @@ extension SecurityFlagsCopyWith on SecurityFlags {
 extension SecurityFlagsResultCopyWith on SecurityFlagsResult {
   /// Mutates the opaque result object with new flag values.
   SecurityFlagsResult copyWith({
-    bool? isVpnDetected,
-    bool? isDnsSpoofed,
-    bool? isProxyDetected,
+    final bool? isVpnDetected,
+    final bool? isDnsSpoofed,
+    final bool? isProxyDetected,
   }) {
     this.isVpnDetected = isVpnDetected ?? this.isVpnDetected;
     this.isDnsSpoofed = isDnsSpoofed ?? this.isDnsSpoofed;
@@ -172,13 +172,13 @@ extension LatencyStatsCopyWith on LatencyStats {
   /// * [packetLossPercent]: % of failed probes.
   /// * [stabilityScore]: Overall health score (0-100).
   LatencyStats copyWith({
-    BigInt? latencyMs,
-    BigInt? jitterMs,
-    double? packetLossPercent,
-    BigInt? minLatencyMs,
-    BigInt? avgLatencyMs,
-    BigInt? maxLatencyMs,
-    int? stabilityScore,
+    final BigInt? latencyMs,
+    final BigInt? jitterMs,
+    final double? packetLossPercent,
+    final BigInt? minLatencyMs,
+    final BigInt? avgLatencyMs,
+    final BigInt? maxLatencyMs,
+    final int? stabilityScore,
   }) {
     return LatencyStats(
       latencyMs: latencyMs ?? this.latencyMs,
@@ -196,11 +196,11 @@ extension LatencyStatsCopyWith on LatencyStats {
 extension NetworkReportCopyWith on NetworkReport {
   /// Mutates the underlying report object.
   NetworkReport copyWith({
-    BigInt? timestampMs,
-    NetworkStatus? status,
-    ConnectionType? connectionType,
-    SecurityFlagsResult? securityFlagsResult,
-    List<TargetReport>? targetReports,
+    final BigInt? timestampMs,
+    final NetworkStatus? status,
+    final ConnectionType? connectionType,
+    final SecurityFlagsResult? securityFlagsResult,
+    final List<TargetReport>? targetReports,
   }) {
     this.timestampMs = timestampMs ?? this.timestampMs;
     this.status = status ?? this.status;
@@ -215,10 +215,10 @@ extension NetworkReportCopyWith on NetworkReport {
 extension NetworkStatusCopyWith on NetworkStatus {
   /// Returns a copy of the high-level status with modified values.
   NetworkStatus copyWith({
-    bool? isConnected,
-    ConnectionQuality? quality,
-    LatencyStats? latencyStats,
-    String? winnerTarget,
+    final bool? isConnected,
+    final ConnectionQuality? quality,
+    final LatencyStats? latencyStats,
+    final String? winnerTarget,
   }) {
     return NetworkStatus(
       isConnected: isConnected ?? this.isConnected,
@@ -233,11 +233,11 @@ extension NetworkStatusCopyWith on NetworkStatus {
 extension TargetReportCopyWith on TargetReport {
   /// Returns a copy of the report for a specific target.
   TargetReport copyWith({
-    String? label,
-    bool? success,
-    BigInt? latencyMs,
-    String? error,
-    bool? isEssential,
+    final String? label,
+    final bool? success,
+    final BigInt? latencyMs,
+    final String? error,
+    final bool? isEssential,
   }) {
     return TargetReport(
       label: label ?? this.label,
@@ -257,13 +257,13 @@ extension NetworkTargetCopyWith on NetworkTarget {
   /// * [protocol]: ICMP, TCP, HTTP, or HTTPS.
   /// * [isEssential]: If true, failure of this target triggers the circuit breaker.
   NetworkTarget copyWith({
-    String? label,
-    String? host,
-    int? port,
-    TargetProtocol? protocol,
-    BigInt? timeoutMs,
-    int? priority,
-    bool? isEssential,
+    final String? label,
+    final String? host,
+    final int? port,
+    final TargetProtocol? protocol,
+    final BigInt? timeoutMs,
+    final int? priority,
+    final bool? isEssential,
   }) {
     return NetworkTarget(
       label: label ?? this.label,

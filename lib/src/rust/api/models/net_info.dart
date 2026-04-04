@@ -20,13 +20,13 @@ abstract class SecurityFlagsResult implements RustOpaqueInterface {
 
   bool get isVpnDetected;
 
-  set interfaceName(String interfaceName);
+  set interfaceName(final String interfaceName);
 
-  set isDnsSpoofed(bool isDnsSpoofed);
+  set isDnsSpoofed(final bool isDnsSpoofed);
 
-  set isProxyDetected(bool isProxyDetected);
+  set isProxyDetected(final bool isProxyDetected);
 
-  set isVpnDetected(bool isVpnDetected);
+  set isVpnDetected(final bool isVpnDetected);
 
   /// Returns a "Safe/Clean" default state where no security issues are detected.
   static Future<SecurityFlagsResult> default_() =>
@@ -39,11 +39,11 @@ abstract class SecurityFlagsResult implements RustOpaqueInterface {
 /// airports and cafes. They appear as "connected" to the OS but block all
 /// non-authentication traffic.
 class CaptivePortalStatus {
-
   const CaptivePortalStatus({
     required this.isCaptivePortal,
     this.redirectUrl,
   });
+
   /// True if the engine detected that HTTP requests are being redirected.
   ///
   /// If this is true, the `ConnectionQuality` will likely be set to
@@ -60,7 +60,7 @@ class CaptivePortalStatus {
   int get hashCode => isCaptivePortal.hashCode ^ redirectUrl.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is CaptivePortalStatus &&
           runtimeType == other.runtimeType &&
@@ -112,13 +112,13 @@ enum ConnectionType {
 ///
 /// This structure stores raw findings from the engine's security probes.
 class SecurityFlags {
-
   const SecurityFlags({
     required this.isVpnDetected,
     required this.isDnsSpoofed,
     required this.isProxyDetected,
     required this.interfaceName,
   });
+
   /// True if the active network interface is identified as a tunnel/VPN.
   ///
   /// Detected by looking for interface names like `tun`, `tap`, `ppp`, or `utun`.
@@ -151,7 +151,7 @@ class SecurityFlags {
       interfaceName.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is SecurityFlags &&
           runtimeType == other.runtimeType &&

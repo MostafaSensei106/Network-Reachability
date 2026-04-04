@@ -5,9 +5,9 @@ import '../constants/enums.dart';
 /// Catch this type if you want to handle any connectivity-related error
 /// in a unified way.
 abstract base class NetworkReachabilityException implements Exception {
-
   /// Creates a new [NetworkReachabilityException] with the given [message].
   NetworkReachabilityException(this.message);
+
   /// A human-readable description of the error.
   final String message;
 
@@ -35,9 +35,9 @@ final class PoorConnectionException extends NetworkReachabilityException {
 /// **Handling:** Warn the user that their connection might be insecure or
 /// that they need to disable their VPN to continue.
 final class SecurityException extends NetworkReachabilityException {
-
   /// Creates a new [SecurityException] with the given [reason] and [message].
-  SecurityException(this.reason, String message) : super(message);
+  SecurityException(this.reason, final String message) : super(message);
+
   /// The specific security reason why this exception was thrown.
   final SecurityAlert reason;
 }
@@ -50,9 +50,9 @@ final class SecurityException extends NetworkReachabilityException {
 /// **Handling:** You should respect the [retryAfter] duration and avoid
 /// attempting new network requests until that time has passed.
 final class CircuitBreakerOpenException extends NetworkReachabilityException {
-
   /// Creates a new [CircuitBreakerOpenException] with the given [message] and [retryAfter].
   CircuitBreakerOpenException(super.message, {this.retryAfter});
+
   /// The suggested duration to wait before trying again.
   final Duration? retryAfter;
 }

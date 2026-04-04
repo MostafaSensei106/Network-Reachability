@@ -17,9 +17,9 @@ void main() {
     mockApi.reset();
   });
 
-  tearDown(() {
+  tearDown(() async {
     try {
-      NetworkReachability.instance.dispose();
+      await NetworkReachability.instance.dispose();
     } catch (_) {}
   });
 
@@ -31,8 +31,11 @@ void main() {
         circuitBreakerThreshold: 2,
       );
       await NetworkReachability.init(
-          config: config.copyWith(
-              resilience: resilience, cacheValidityMs: BigInt.zero));
+        config: config.copyWith(
+          resilience: resilience,
+          cacheValidityMs: BigInt.zero,
+        ),
+      );
 
       // Simulate a failing essential target
       mockApi.mockNetworkReport.targetReports = [
@@ -67,23 +70,29 @@ void main() {
         circuitBreakerCooldownMs: BigInt.from(100), // 100ms cooldown
       );
       await NetworkReachability.init(
-          config: config.copyWith(
-              resilience: resilience, cacheValidityMs: BigInt.zero));
+        config: config.copyWith(
+          resilience: resilience,
+          cacheValidityMs: BigInt.zero,
+        ),
+      );
 
       // 1. Force open state
       mockApi.mockNetworkReport.status =
           mockApi.mockNetworkReport.status.copyWith(isConnected: false);
       mockApi.mockNetworkReport.targetReports = [
         TargetReport(
-            label: 'e',
-            success: false,
-            latencyMs: BigInt.zero,
-            isEssential: true),
+          label: 'e',
+          success: false,
+          latencyMs: BigInt.zero,
+          isEssential: true,
+        ),
       ];
       await NetworkReachability.instance.check();
 
-      expect(() => NetworkReachability.instance.guard(action: () async => 42),
-          throwsA(isA<CircuitBreakerOpenException>()));
+      expect(
+        () => NetworkReachability.instance.guard(action: () async => 42),
+        throwsA(isA<CircuitBreakerOpenException>()),
+      );
 
       // 2. Wait for cooldown
       await Future.delayed(const Duration(milliseconds: 150));
@@ -93,18 +102,22 @@ void main() {
           mockApi.mockNetworkReport.status.copyWith(isConnected: true);
       mockApi.mockNetworkReport.targetReports = [
         TargetReport(
-            label: 'e',
-            success: true,
-            latencyMs: BigInt.from(30),
-            isEssential: true),
+          label: 'e',
+          success: true,
+          latencyMs: BigInt.from(30),
+          isEssential: true,
+        ),
       ];
 
       // Next guard should transition to Half-Open, allow probe, then Close circuit
       final result =
           await NetworkReachability.instance.guard(action: () async => 42);
-      expect(result, 42,
-          reason:
-              'Guard should allow traffic in Half-Open state if probe succeeds');
+      expect(
+        result,
+        42,
+        reason:
+            'Guard should allow traffic in Half-Open state if probe succeeds',
+      );
     });
 
     test('Transition: Half-Open -> Open if probe fails', () async {
@@ -114,18 +127,22 @@ void main() {
         circuitBreakerCooldownMs: BigInt.from(100),
       );
       await NetworkReachability.init(
-          config: config.copyWith(
-              resilience: resilience, cacheValidityMs: BigInt.zero));
+        config: config.copyWith(
+          resilience: resilience,
+          cacheValidityMs: BigInt.zero,
+        ),
+      );
 
       // 1. Force open
       mockApi.mockNetworkReport.status =
           mockApi.mockNetworkReport.status.copyWith(isConnected: false);
       mockApi.mockNetworkReport.targetReports = [
         TargetReport(
-            label: 'e',
-            success: false,
-            latencyMs: BigInt.zero,
-            isEssential: true),
+          label: 'e',
+          success: false,
+          latencyMs: BigInt.zero,
+          isEssential: true,
+        ),
       ];
       await NetworkReachability.instance.check();
 
@@ -135,10 +152,12 @@ void main() {
       // 3. Keep failing: Half-Open -> Open
       // (Guard will try to probe, probe fails, moves back to Open and re-throws)
       expect(
-          () => NetworkReachability.instance.guard(action: () async => 42),
-          throwsA(
-              isA<PoorConnectionException>()), // Fails probe, quality offline
-          reason: 'Failing probe should keep/re-open the circuit');
+        () => NetworkReachability.instance.guard(action: () async => 42),
+        throwsA(
+          isA<PoorConnectionException>(),
+        ), // Fails probe, quality offline
+        reason: 'Failing probe should keep/re-open the circuit',
+      );
     });
 
     test('Non-essential target failure does NOT open the circuit', () async {
@@ -153,10 +172,11 @@ void main() {
       // Simulate failure of a NON-essential target
       mockApi.mockNetworkReport.targetReports = [
         TargetReport(
-            label: 'non-e',
-            success: false,
-            latencyMs: BigInt.zero,
-            isEssential: false),
+          label: 'non-e',
+          success: false,
+          latencyMs: BigInt.zero,
+          isEssential: false,
+        ),
       ];
 
       await NetworkReachability.instance.check();
@@ -179,30 +199,33 @@ void main() {
       // 1. One failure
       mockApi.mockNetworkReport.targetReports = [
         TargetReport(
-            label: 'e',
-            success: false,
-            latencyMs: BigInt.zero,
-            isEssential: true),
+          label: 'e',
+          success: false,
+          latencyMs: BigInt.zero,
+          isEssential: true,
+        ),
       ];
       await NetworkReachability.instance.check();
 
       // 2. One success (resets the internal counter)
       mockApi.mockNetworkReport.targetReports = [
         TargetReport(
-            label: 'e',
-            success: true,
-            latencyMs: BigInt.from(50),
-            isEssential: true),
+          label: 'e',
+          success: true,
+          latencyMs: BigInt.from(50),
+          isEssential: true,
+        ),
       ];
       await NetworkReachability.instance.check();
 
       // 3. Another failure (if count was not reset, this would open the circuit)
       mockApi.mockNetworkReport.targetReports = [
         TargetReport(
-            label: 'e',
-            success: false,
-            latencyMs: BigInt.zero,
-            isEssential: true),
+          label: 'e',
+          success: false,
+          latencyMs: BigInt.zero,
+          isEssential: true,
+        ),
       ];
       await NetworkReachability.instance.check();
 

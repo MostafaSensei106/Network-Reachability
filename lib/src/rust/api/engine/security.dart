@@ -11,8 +11,11 @@ import '../models/net_info.dart';
 import '../models/target.dart';
 
 /// Runs the DNS hijack check by comparing resolution against trusted resolvers.
-Future<void> performDnsSecurityCheck(
-        {required NetworkConfiguration config,
-        required SecurityFlagsResult flags}) =>
+Future<void> performDnsSecurityCheck({
+  required final NetworkConfiguration config,
+  required final SecurityFlagsResult flags,
+}) =>
     RustLib.instance.api.crateApiEngineSecurityPerformDnsSecurityCheck(
-        config: config, flags: flags);
+      config: config,
+      flags: flags,
+    );

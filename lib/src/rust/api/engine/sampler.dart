@@ -11,14 +11,18 @@ import '../models/report.dart';
 import '../models/target.dart';
 
 /// Collects multiple latency samples by running checks against all configured targets.
-Future<(Uint64List, List<TargetReport>)> collectNetworkSamples(
-        {required NetworkConfiguration config}) =>
+Future<(Uint64List, List<TargetReport>)> collectNetworkSamples({
+  required final NetworkConfiguration config,
+}) =>
     RustLib.instance.api
         .crateApiEngineSamplerCollectNetworkSamples(config: config);
 
 /// Analyzes the results of a single sample run across all targets.
-Future<BigInt?> analyzeSingleSample(
-        {required List<TargetReport> reports,
-        required NetworkConfiguration config}) =>
+Future<BigInt?> analyzeSingleSample({
+  required final List<TargetReport> reports,
+  required final NetworkConfiguration config,
+}) =>
     RustLib.instance.api.crateApiEngineSamplerAnalyzeSingleSample(
-        reports: reports, config: config);
+      reports: reports,
+      config: config,
+    );

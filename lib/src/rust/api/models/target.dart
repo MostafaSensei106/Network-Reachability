@@ -14,7 +14,6 @@ import '../../frb_generated.dart';
 /// A `NetworkTarget` combines an address, a port, and a protocol to
 /// define a unique "probe point".
 class NetworkTarget {
-
   const NetworkTarget({
     required this.label,
     required this.host,
@@ -24,6 +23,7 @@ class NetworkTarget {
     required this.priority,
     required this.isEssential,
   });
+
   /// A human-readable identifier (e.g., "Google Cloud DNS", "Internal API").
   /// This label is used in [`TargetReport`](super::report::TargetReport) results.
   final String label;
@@ -75,7 +75,7 @@ class NetworkTarget {
       isEssential.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is NetworkTarget &&
           runtimeType == other.runtimeType &&

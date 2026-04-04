@@ -18,5 +18,7 @@ import 'models/target.dart';
 /// 3. Evaluates quality via [analysis::evaluate_network_quality].
 /// 4. Detects interface security and type.
 /// 5. Compiles a final [NetworkReport].
-Future<NetworkReport> checkNetwork({required NetworkConfiguration config}) =>
+Future<NetworkReport> checkNetwork({
+  required final NetworkConfiguration config,
+}) =>
     RustLib.instance.api.crateApiEngineCheckNetwork(config: config);

@@ -16,9 +16,9 @@ void main() {
     mockApi.reset();
   });
 
-  tearDown(() {
+  tearDown(() async {
     try {
-      NetworkReachability.instance.dispose();
+      await NetworkReachability.instance.dispose();
     } catch (_) {}
   });
 

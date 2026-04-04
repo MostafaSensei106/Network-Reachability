@@ -14,12 +14,13 @@ final class NetworkProbesRepositoryImpl implements NetworkProbesRepository {
   const NetworkProbesRepositoryImpl();
 
   @override
-  Future<CaptivePortalStatus> checkForCaptivePortal(
-          {required BigInt timeoutMs}) =>
+  Future<CaptivePortalStatus> checkForCaptivePortal({
+    required final BigInt timeoutMs,
+  }) =>
       NetworkProbesSource.checkForCaptivePortal(timeoutMs: timeoutMs);
 
   @override
-  Future<bool> detectDnsHijacking({required String domain}) =>
+  Future<bool> detectDnsHijacking({required final String domain}) =>
       NetworkProbesSource.detectDnsHijacking(domain: domain);
 
   @override
@@ -28,6 +29,6 @@ final class NetworkProbesRepositoryImpl implements NetworkProbesRepository {
           NetworkProbesSource.detectSecurityAndNetworkType();
 
   @override
-  Future<TargetReport> checkTarget({required NetworkTarget target}) =>
+  Future<TargetReport> checkTarget({required final NetworkTarget target}) =>
       NetworkProbesSource.checkTarget(target: target);
 }

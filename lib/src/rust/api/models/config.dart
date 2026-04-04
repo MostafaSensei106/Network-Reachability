@@ -111,7 +111,6 @@ enum ConnectionQuality {
 /// This structure is the entry point for customizing how the engine behaves.
 /// It should be initialized once and passed to the engine during startup.
 class NetworkConfiguration {
-
   const NetworkConfiguration({
     required this.targets,
     required this.checkIntervalMs,
@@ -120,6 +119,7 @@ class NetworkConfiguration {
     required this.security,
     required this.resilience,
   });
+
   /// The list of endpoints ([`NetworkTarget` models](super::target::NetworkTarget))
   /// to probe.
   final List<NetworkTarget> targets;
@@ -158,20 +158,22 @@ class NetworkConfiguration {
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   /// Constructs a full [`NetworkConfiguration`].
-  static Future<NetworkConfiguration> newInstance(
-          {required List<NetworkTarget> targets,
-          required BigInt checkIntervalMs,
-          required BigInt cacheValidityMs,
-          required QualityThresholds qualityThreshold,
-          required SecurityConfig security,
-          required ResilienceConfig resilience}) =>
+  static Future<NetworkConfiguration> newInstance({
+    required final List<NetworkTarget> targets,
+    required final BigInt checkIntervalMs,
+    required final BigInt cacheValidityMs,
+    required final QualityThresholds qualityThreshold,
+    required final SecurityConfig security,
+    required final ResilienceConfig resilience,
+  }) =>
       RustLib.instance.api.crateApiModelsConfigNetworkConfigurationNew(
-          targets: targets,
-          checkIntervalMs: checkIntervalMs,
-          cacheValidityMs: cacheValidityMs,
-          qualityThreshold: qualityThreshold,
-          security: security,
-          resilience: resilience);
+        targets: targets,
+        checkIntervalMs: checkIntervalMs,
+        cacheValidityMs: cacheValidityMs,
+        qualityThreshold: qualityThreshold,
+        security: security,
+        resilience: resilience,
+      );
 
   @override
   int get hashCode =>
@@ -183,7 +185,7 @@ class NetworkConfiguration {
       resilience.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is NetworkConfiguration &&
           runtimeType == other.runtimeType &&
@@ -200,7 +202,6 @@ class NetworkConfiguration {
 /// These values act as the "buckets" that convert raw Round-Trip Time (RTT) values
 /// into user-friendly quality ratings.
 class QualityThresholds {
-
   const QualityThresholds({
     required this.excellent,
     required this.great,
@@ -208,6 +209,7 @@ class QualityThresholds {
     required this.moderate,
     required this.poor,
   });
+
   /// Maximum latency (ms) to be considered [`ConnectionQuality::Excellent`].
   /// *Default: 50ms*
   final BigInt excellent;
@@ -250,18 +252,20 @@ class QualityThresholds {
   /// * `good` - Threshold for 'Good' (ms).
   /// * `moderate` - Threshold for 'Moderate' (ms).
   /// * `poor` - Threshold for 'Poor' (ms).
-  static Future<QualityThresholds> newInstance(
-          {required BigInt excellent,
-          required BigInt great,
-          required BigInt good,
-          required BigInt moderate,
-          required BigInt poor}) =>
+  static Future<QualityThresholds> newInstance({
+    required final BigInt excellent,
+    required final BigInt great,
+    required final BigInt good,
+    required final BigInt moderate,
+    required final BigInt poor,
+  }) =>
       RustLib.instance.api.crateApiModelsConfigQualityThresholdsNew(
-          excellent: excellent,
-          great: great,
-          good: good,
-          moderate: moderate,
-          poor: poor);
+        excellent: excellent,
+        great: great,
+        good: good,
+        moderate: moderate,
+        poor: poor,
+      );
 
   @override
   int get hashCode =>
@@ -272,7 +276,7 @@ class QualityThresholds {
       poor.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is QualityThresholds &&
           runtimeType == other.runtimeType &&
@@ -288,7 +292,6 @@ class QualityThresholds {
 /// This struct controls the "brain" of the engine: how it handles noise,
 /// how it reacts to failure, and how it calculates jitter.
 class ResilienceConfig {
-
   const ResilienceConfig({
     required this.strategy,
     required this.circuitBreakerThreshold,
@@ -298,6 +301,7 @@ class ResilienceConfig {
     required this.stabilityThershold,
     required this.criticalPacketLossPrecent,
   });
+
   /// The evaluation strategy (Race vs Consensus) for multi-target checks.
   final CheckStrategy strategy;
 
@@ -348,22 +352,24 @@ class ResilienceConfig {
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   /// Creates a new custom [`ResilienceConfig`].
-  static Future<ResilienceConfig> newInstance(
-          {required CheckStrategy strategy,
-          required int circuitBreakerThreshold,
-          required BigInt circuitBreakerCooldownMs,
-          required int numJitterSamples,
-          required double jitterThresholdPercent,
-          required int stabilityThershold,
-          required double criticalPacketLossPrecent}) =>
+  static Future<ResilienceConfig> newInstance({
+    required final CheckStrategy strategy,
+    required final int circuitBreakerThreshold,
+    required final BigInt circuitBreakerCooldownMs,
+    required final int numJitterSamples,
+    required final double jitterThresholdPercent,
+    required final int stabilityThershold,
+    required final double criticalPacketLossPrecent,
+  }) =>
       RustLib.instance.api.crateApiModelsConfigResilienceConfigNew(
-          strategy: strategy,
-          circuitBreakerThreshold: circuitBreakerThreshold,
-          circuitBreakerCooldownMs: circuitBreakerCooldownMs,
-          numJitterSamples: numJitterSamples,
-          jitterThresholdPercent: jitterThresholdPercent,
-          stabilityThershold: stabilityThershold,
-          criticalPacketLossPrecent: criticalPacketLossPrecent);
+        strategy: strategy,
+        circuitBreakerThreshold: circuitBreakerThreshold,
+        circuitBreakerCooldownMs: circuitBreakerCooldownMs,
+        numJitterSamples: numJitterSamples,
+        jitterThresholdPercent: jitterThresholdPercent,
+        stabilityThershold: stabilityThershold,
+        criticalPacketLossPrecent: criticalPacketLossPrecent,
+      );
 
   @override
   int get hashCode =>
@@ -376,7 +382,7 @@ class ResilienceConfig {
       criticalPacketLossPrecent.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is ResilienceConfig &&
           runtimeType == other.runtimeType &&
@@ -394,11 +400,11 @@ class ResilienceConfig {
 /// These settings allow the engine to detect environmental factors that might
 /// be undesirable or indicate a compromised connection.
 class SecurityConfig {
-
   const SecurityConfig({
     required this.blockVpn,
     required this.detectDnsHijack,
   });
+
   /// If enabled, the engine will flag connections that originate from a VPN interface.
   ///
   /// Useful for applications that enforce geo-fencing or need to prevent
@@ -419,7 +425,7 @@ class SecurityConfig {
   int get hashCode => blockVpn.hashCode ^ detectDnsHijack.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       identical(this, other) ||
       other is SecurityConfig &&
           runtimeType == other.runtimeType &&

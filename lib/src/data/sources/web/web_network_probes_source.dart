@@ -13,13 +13,14 @@ import '../../../../src/rust/api/probes/target.dart' as rust_target;
 /// `Navigator.connection`) through Rust code compiled to WebAssembly (WASM).
 final class NetworkProbesSource {
   /// Uses the browser's `Fetch` API with `redirect: manual` to detect captive portals.
-  static Future<CaptivePortalStatus> checkForCaptivePortal(
-          {required BigInt timeoutMs}) =>
+  static Future<CaptivePortalStatus> checkForCaptivePortal({
+    required final BigInt timeoutMs,
+  }) =>
       rust_captive_portal.checkForCaptivePortalWeb(timeoutMs: timeoutMs);
 
   /// Always returns false as browser security restrictions (CORS/SOP)
   /// prevent low-level DNS integrity checks on the web.
-  static Future<bool> detectDnsHijacking({required String domain}) =>
+  static Future<bool> detectDnsHijacking({required final String domain}) =>
       rust_dns.detectDnsHijackingWeb(domain: domain);
 
   /// Uses the browser's `Navigator.connection` API to determine connection type.
@@ -28,6 +29,8 @@ final class NetworkProbesSource {
           rust_interface.detectSecurityAndNetworkTypeWeb();
 
   /// Performs a reachability probe using the browser's `Fetch` API.
-  static Future<TargetReport> checkTarget({required NetworkTarget target}) =>
+  static Future<TargetReport> checkTarget({
+    required final NetworkTarget target,
+  }) =>
       rust_target.checkTarget(target: target);
 }

@@ -16,15 +16,16 @@ abstract interface class NetworkProbesRepository {
   /// endpoint (like Google's connectivity check) and checking for redirects.
   ///
   /// * [timeoutMs]: Maximum duration for the probe to complete.
-  Future<CaptivePortalStatus> checkForCaptivePortal(
-      {required BigInt timeoutMs});
+  Future<CaptivePortalStatus> checkForCaptivePortal({
+    required final BigInt timeoutMs,
+  });
 
   /// Validates if DNS queries are being intercepted or tampered with.
   ///
   /// * [domain]: The hostname to resolve and compare against trusted results.
   ///
   /// Returns true if a mismatch is detected, suggesting hijacking.
-  Future<bool> detectDnsHijacking({required String domain});
+  Future<bool> detectDnsHijacking({required final String domain});
 
   /// Scans the system's network interfaces.
   ///
@@ -37,5 +38,5 @@ abstract interface class NetworkProbesRepository {
   /// * [target]: The endpoint configuration (host, port, protocol).
   ///
   /// Returns a [TargetReport] with latency and success status.
-  Future<TargetReport> checkTarget({required NetworkTarget target});
+  Future<TargetReport> checkTarget({required final NetworkTarget target});
 }

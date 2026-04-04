@@ -9,20 +9,25 @@ import '../../frb_generated.dart';
 import '../models/net_info.dart';
 
 /// Checks for the presence of a captive portal.
-Future<CaptivePortalStatus> checkForCaptivePortal(
-        {required BigInt timeoutMs}) =>
+Future<CaptivePortalStatus> checkForCaptivePortal({
+  required final BigInt timeoutMs,
+}) =>
     RustLib.instance.api
         .crateApiProbesCaptivePortalCheckForCaptivePortal(timeoutMs: timeoutMs);
 
 /// Web implementation stub (WASM removed).
-Future<CaptivePortalStatus> checkForCaptivePortalWebManual(
-        {required BigInt timeoutMs}) =>
+Future<CaptivePortalStatus> checkForCaptivePortalWebManual({
+  required final BigInt timeoutMs,
+}) =>
     RustLib.instance.api
         .crateApiProbesCaptivePortalCheckForCaptivePortalWebManual(
-            timeoutMs: timeoutMs);
+      timeoutMs: timeoutMs,
+    );
 
 /// Unified entry point for captive portal check (WASM removed).
-Future<CaptivePortalStatus> checkForCaptivePortalWeb(
-        {required BigInt timeoutMs}) =>
+Future<CaptivePortalStatus> checkForCaptivePortalWeb({
+  required final BigInt timeoutMs,
+}) =>
     RustLib.instance.api.crateApiProbesCaptivePortalCheckForCaptivePortalWeb(
-        timeoutMs: timeoutMs);
+      timeoutMs: timeoutMs,
+    );
