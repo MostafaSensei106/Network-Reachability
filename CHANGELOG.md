@@ -2,9 +2,13 @@
 
 
 - deps: Update `flutter_rust_bridge` to `2.12.0`, `plugin_platform_interface` to `2.1.8`, and various other Flutter and Rust transitive dependencies (e.g., `hyper`, `tokio`, `wasm-bindgen` related, `icu` related).
+
 - example: Update internal version string in the example app and enhance the main scroll view with a `PageController`.
+
 - build: Regenerate Flutter/Rust bridge code with `flutter_rust_bridge 2.12.0`, introducing performance optimizations (e.g., `Vec::with_capacity`) and updated lint suppressions.
 
+- refactor(code): Enforce linter rules and ensure proper async disposal
+Introduce several new linter rules to `analysis_options.yaml` including `public_member_api_docs`, `prefer_final_parameters`, and `unnecessary_await_in_return`. Apply these rules across the codebase, updating parameters with `final` and removing redundant `await` keywords. Additionally, ensure `NetworkReachability.dispose()` is properly awaited for robust asynchronous cleanup.
 
 ## 0.0.1+3
 
