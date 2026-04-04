@@ -6,6 +6,13 @@ import 'package:network_reachability/src/rust/api/models/target.dart';
 import 'package:network_reachability/src/rust/frb_generated.dart';
 
 class MockSecurityFlagsResult implements SecurityFlagsResult {
+
+  MockSecurityFlagsResult({
+    required this.interfaceName,
+    required this.isDnsSpoofed,
+    required this.isProxyDetected,
+    required this.isVpnDetected,
+  });
   @override
   String interfaceName;
   @override
@@ -19,16 +26,17 @@ class MockSecurityFlagsResult implements SecurityFlagsResult {
   void dispose() {}
   @override
   bool get isDisposed => false;
-
-  MockSecurityFlagsResult({
-    required this.interfaceName,
-    required this.isDnsSpoofed,
-    required this.isProxyDetected,
-    required this.isVpnDetected,
-  });
 }
 
 class MockNetworkReport implements NetworkReport {
+
+  MockNetworkReport({
+    required this.connectionType,
+    required this.securityFlagsResult,
+    required this.status,
+    required this.targetReports,
+    required this.timestampMs,
+  });
   @override
   ConnectionType connectionType;
   @override
@@ -44,17 +52,13 @@ class MockNetworkReport implements NetworkReport {
   void dispose() {}
   @override
   bool get isDisposed => false;
-
-  MockNetworkReport({
-    required this.connectionType,
-    required this.securityFlagsResult,
-    required this.status,
-    required this.targetReports,
-    required this.timestampMs,
-  });
 }
 
 class MockRustLibApi implements RustLibApi {
+
+  MockRustLibApi() {
+    reset();
+  }
   int checkCallCount = 0;
 
   late MockNetworkReport mockNetworkReport;
@@ -67,10 +71,6 @@ class MockRustLibApi implements RustLibApi {
   late bool mockDnsHijackingResult;
   late (SecurityFlagsResult, ConnectionType) mockSecurityAndNetworkTypeResult;
   late TargetReport mockTargetReportProbe;
-
-  MockRustLibApi() {
-    reset();
-  }
 
   void reset() {
     checkCallCount = 0;

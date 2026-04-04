@@ -1,6 +1,10 @@
 ## 0.0.1+4
 
-- 
+
+- deps: Update `flutter_rust_bridge` to `2.12.0`, `plugin_platform_interface` to `2.1.8`, and various other Flutter and Rust transitive dependencies (e.g., `hyper`, `tokio`, `wasm-bindgen` related, `icu` related).
+- example: Update internal version string in the example app and enhance the main scroll view with a `PageController`.
+- build: Regenerate Flutter/Rust bridge code with `flutter_rust_bridge 2.12.0`, introducing performance optimizations (e.g., `Vec::with_capacity`) and updated lint suppressions.
+
 
 ## 0.0.1+3
 

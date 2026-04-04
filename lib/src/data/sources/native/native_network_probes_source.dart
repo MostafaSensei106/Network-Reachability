@@ -1,12 +1,12 @@
-import 'package:network_reachability/src/rust/api/models/net_info.dart';
-import 'package:network_reachability/src/rust/api/models/report.dart';
-import 'package:network_reachability/src/rust/api/models/target.dart';
-import 'package:network_reachability/src/rust/api/probes/captive_portal.dart'
+import '../../../rust/api/models/net_info.dart';
+import '../../../rust/api/models/report.dart';
+import '../../../rust/api/models/target.dart';
+import '../../../rust/api/probes/captive_portal.dart'
     as rust_captive_portal;
-import 'package:network_reachability/src/rust/api/probes/dns.dart' as rust_dns;
-import 'package:network_reachability/src/rust/api/probes/interface.dart'
+import '../../../rust/api/probes/dns.dart' as rust_dns;
+import '../../../rust/api/probes/interface.dart'
     as rust_interface;
-import 'package:network_reachability/src/rust/api/probes/target.dart'
+import '../../../rust/api/probes/target.dart'
     as rust_target;
 
 /// Data source for network probes on **Native platforms** (Android, iOS, Desktop).

@@ -1,8 +1,7 @@
-import 'package:network_reachability/src/rust/api/models/net_info.dart';
-import 'package:network_reachability/src/rust/api/models/report.dart';
-import 'package:network_reachability/src/rust/api/models/target.dart';
-
 import '../../domain/repositories/network_probes_repository.dart';
+import '../../rust/api/models/net_info.dart';
+import '../../rust/api/models/report.dart';
+import '../../rust/api/models/target.dart';
 import '../sources/network_probes_source.dart';
 
 /// Concrete implementation of [NetworkProbesRepository].

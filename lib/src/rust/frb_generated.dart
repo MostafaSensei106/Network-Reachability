@@ -3,6 +3,11 @@
 
 // ignore_for_file: public_member_api_docs, unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
 import 'api/analysis/quality.dart';
 import 'api/analysis/stats.dart';
 import 'api/engine.dart';
@@ -16,19 +21,16 @@ import 'api/probes/captive_portal.dart';
 import 'api/probes/dns.dart';
 import 'api/probes/interface.dart';
 import 'api/probes/target.dart';
-import 'dart:async';
-import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
-  @internal
-  static final instance = RustLib._();
 
   RustLib._();
+  @internal
+  static final instance = RustLib._();
 
   /// Initialize flutter_rust_bridge
   static Future<void> init({
@@ -87,7 +89,6 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
     stem: 'network_reachability',
     ioDirectory: 'rust/target/release/',
     webPrefix: 'pkg/',
-    wasmBindgenName: 'wasm_bindgen',
   );
 }
 
@@ -301,8 +302,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsReportNetworkReportAutoAccessorGetConnectionTypeConstMeta =>
           const TaskConstMeta(
-            debugName: "NetworkReport_auto_accessor_get_connection_type",
-            argNames: ["that"],
+            debugName: 'NetworkReport_auto_accessor_get_connection_type',
+            argNames: ['that'],
           );
 
   @override
@@ -331,8 +332,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsReportNetworkReportAutoAccessorGetSecurityFlagsResultConstMeta =>
           const TaskConstMeta(
-            debugName: "NetworkReport_auto_accessor_get_security_flags_result",
-            argNames: ["that"],
+            debugName: 'NetworkReport_auto_accessor_get_security_flags_result',
+            argNames: ['that'],
           );
 
   @override
@@ -359,8 +360,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsReportNetworkReportAutoAccessorGetStatusConstMeta =>
           const TaskConstMeta(
-            debugName: "NetworkReport_auto_accessor_get_status",
-            argNames: ["that"],
+            debugName: 'NetworkReport_auto_accessor_get_status',
+            argNames: ['that'],
           );
 
   @override
@@ -388,8 +389,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsReportNetworkReportAutoAccessorGetTargetReportsConstMeta =>
           const TaskConstMeta(
-            debugName: "NetworkReport_auto_accessor_get_target_reports",
-            argNames: ["that"],
+            debugName: 'NetworkReport_auto_accessor_get_target_reports',
+            argNames: ['that'],
           );
 
   @override
@@ -416,8 +417,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsReportNetworkReportAutoAccessorGetTimestampMsConstMeta =>
           const TaskConstMeta(
-            debugName: "NetworkReport_auto_accessor_get_timestamp_ms",
-            argNames: ["that"],
+            debugName: 'NetworkReport_auto_accessor_get_timestamp_ms',
+            argNames: ['that'],
           );
 
   @override
@@ -445,8 +446,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsReportNetworkReportAutoAccessorSetConnectionTypeConstMeta =>
           const TaskConstMeta(
-            debugName: "NetworkReport_auto_accessor_set_connection_type",
-            argNames: ["that", "connectionType"],
+            debugName: 'NetworkReport_auto_accessor_set_connection_type',
+            argNames: ['that', 'connectionType'],
           );
 
   @override
@@ -476,8 +477,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsReportNetworkReportAutoAccessorSetSecurityFlagsResultConstMeta =>
           const TaskConstMeta(
-            debugName: "NetworkReport_auto_accessor_set_security_flags_result",
-            argNames: ["that", "securityFlagsResult"],
+            debugName: 'NetworkReport_auto_accessor_set_security_flags_result',
+            argNames: ['that', 'securityFlagsResult'],
           );
 
   @override
@@ -505,8 +506,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsReportNetworkReportAutoAccessorSetStatusConstMeta =>
           const TaskConstMeta(
-            debugName: "NetworkReport_auto_accessor_set_status",
-            argNames: ["that", "status"],
+            debugName: 'NetworkReport_auto_accessor_set_status',
+            argNames: ['that', 'status'],
           );
 
   @override
@@ -535,8 +536,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsReportNetworkReportAutoAccessorSetTargetReportsConstMeta =>
           const TaskConstMeta(
-            debugName: "NetworkReport_auto_accessor_set_target_reports",
-            argNames: ["that", "targetReports"],
+            debugName: 'NetworkReport_auto_accessor_set_target_reports',
+            argNames: ['that', 'targetReports'],
           );
 
   @override
@@ -564,8 +565,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsReportNetworkReportAutoAccessorSetTimestampMsConstMeta =>
           const TaskConstMeta(
-            debugName: "NetworkReport_auto_accessor_set_timestamp_ms",
-            argNames: ["that", "timestampMs"],
+            debugName: 'NetworkReport_auto_accessor_set_timestamp_ms',
+            argNames: ['that', 'timestampMs'],
           );
 
   @override
@@ -592,8 +593,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetInterfaceNameConstMeta =>
           const TaskConstMeta(
-            debugName: "SecurityFlagsResult_auto_accessor_get_interface_name",
-            argNames: ["that"],
+            debugName: 'SecurityFlagsResult_auto_accessor_get_interface_name',
+            argNames: ['that'],
           );
 
   @override
@@ -620,8 +621,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsDnsSpoofedConstMeta =>
           const TaskConstMeta(
-            debugName: "SecurityFlagsResult_auto_accessor_get_is_dns_spoofed",
-            argNames: ["that"],
+            debugName: 'SecurityFlagsResult_auto_accessor_get_is_dns_spoofed',
+            argNames: ['that'],
           );
 
   @override
@@ -649,8 +650,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsProxyDetectedConstMeta =>
           const TaskConstMeta(
             debugName:
-                "SecurityFlagsResult_auto_accessor_get_is_proxy_detected",
-            argNames: ["that"],
+                'SecurityFlagsResult_auto_accessor_get_is_proxy_detected',
+            argNames: ['that'],
           );
 
   @override
@@ -677,8 +678,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorGetIsVpnDetectedConstMeta =>
           const TaskConstMeta(
-            debugName: "SecurityFlagsResult_auto_accessor_get_is_vpn_detected",
-            argNames: ["that"],
+            debugName: 'SecurityFlagsResult_auto_accessor_get_is_vpn_detected',
+            argNames: ['that'],
           );
 
   @override
@@ -706,8 +707,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetInterfaceNameConstMeta =>
           const TaskConstMeta(
-            debugName: "SecurityFlagsResult_auto_accessor_set_interface_name",
-            argNames: ["that", "interfaceName"],
+            debugName: 'SecurityFlagsResult_auto_accessor_set_interface_name',
+            argNames: ['that', 'interfaceName'],
           );
 
   @override
@@ -735,8 +736,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsDnsSpoofedConstMeta =>
           const TaskConstMeta(
-            debugName: "SecurityFlagsResult_auto_accessor_set_is_dns_spoofed",
-            argNames: ["that", "isDnsSpoofed"],
+            debugName: 'SecurityFlagsResult_auto_accessor_set_is_dns_spoofed',
+            argNames: ['that', 'isDnsSpoofed'],
           );
 
   @override
@@ -765,8 +766,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsProxyDetectedConstMeta =>
           const TaskConstMeta(
             debugName:
-                "SecurityFlagsResult_auto_accessor_set_is_proxy_detected",
-            argNames: ["that", "isProxyDetected"],
+                'SecurityFlagsResult_auto_accessor_set_is_proxy_detected',
+            argNames: ['that', 'isProxyDetected'],
           );
 
   @override
@@ -794,8 +795,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiModelsNetInfoSecurityFlagsResultAutoAccessorSetIsVpnDetectedConstMeta =>
           const TaskConstMeta(
-            debugName: "SecurityFlagsResult_auto_accessor_set_is_vpn_detected",
-            argNames: ["that", "isVpnDetected"],
+            debugName: 'SecurityFlagsResult_auto_accessor_set_is_vpn_detected',
+            argNames: ['that', 'isVpnDetected'],
           );
 
   @override
@@ -820,7 +821,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiModelsNetInfoSecurityFlagsResultDefaultConstMeta =>
       const TaskConstMeta(
-        debugName: "SecurityFlagsResult_default",
+        debugName: 'SecurityFlagsResult_default',
         argNames: [],
       );
 
@@ -848,8 +849,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiEngineSamplerAnalyzeSingleSampleConstMeta =>
       const TaskConstMeta(
-        debugName: "analyze_single_sample",
-        argNames: ["reports", "config"],
+        debugName: 'analyze_single_sample',
+        argNames: ['reports', 'config'],
       );
 
   @override
@@ -876,8 +877,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiAnalysisStatsCalculateJitterStatsConstMeta =>
       const TaskConstMeta(
-        debugName: "calculate_jitter_stats",
-        argNames: ["latencies"],
+        debugName: 'calculate_jitter_stats',
+        argNames: ['latencies'],
       );
 
   @override
@@ -903,8 +904,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiProbesCaptivePortalCheckForCaptivePortalConstMeta =>
           const TaskConstMeta(
-            debugName: "check_for_captive_portal",
-            argNames: ["timeoutMs"],
+            debugName: 'check_for_captive_portal',
+            argNames: ['timeoutMs'],
           );
 
   @override
@@ -931,8 +932,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiProbesCaptivePortalCheckForCaptivePortalWebConstMeta =>
           const TaskConstMeta(
-            debugName: "check_for_captive_portal_web",
-            argNames: ["timeoutMs"],
+            debugName: 'check_for_captive_portal_web',
+            argNames: ['timeoutMs'],
           );
 
   @override
@@ -960,8 +961,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiProbesCaptivePortalCheckForCaptivePortalWebManualConstMeta =>
           const TaskConstMeta(
-            debugName: "check_for_captive_portal_web_manual",
-            argNames: ["timeoutMs"],
+            debugName: 'check_for_captive_portal_web_manual',
+            argNames: ['timeoutMs'],
           );
 
   @override
@@ -986,8 +987,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   TaskConstMeta get kCrateApiEngineCheckNetworkConstMeta => const TaskConstMeta(
-        debugName: "check_network",
-        argNames: ["config"],
+        debugName: 'check_network',
+        argNames: ['config'],
       );
 
   @override
@@ -1012,8 +1013,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiProbesTargetCheckTargetConstMeta =>
       const TaskConstMeta(
-        debugName: "check_target",
-        argNames: ["target"],
+        debugName: 'check_target',
+        argNames: ['target'],
       );
 
   @override
@@ -1040,8 +1041,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiEngineSamplerCollectNetworkSamplesConstMeta =>
       const TaskConstMeta(
-        debugName: "collect_network_samples",
-        argNames: ["config"],
+        debugName: 'collect_network_samples',
+        argNames: ['config'],
       );
 
   @override
@@ -1070,8 +1071,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiAnalysisStatsComputeLatencyStatsConstMeta =>
       const TaskConstMeta(
-        debugName: "compute_latency_stats",
-        argNames: ["latencies", "totalExpectedSamples", "thresholds"],
+        debugName: 'compute_latency_stats',
+        argNames: ['latencies', 'totalExpectedSamples', 'thresholds'],
       );
 
   @override
@@ -1094,7 +1095,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiModelsNetInfoConnectionTypeDefaultConstMeta =>
       const TaskConstMeta(
-        debugName: "connection_type_default",
+        debugName: 'connection_type_default',
         argNames: [],
       );
 
@@ -1119,8 +1120,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiProbesDnsDetectDnsHijackingConstMeta =>
       const TaskConstMeta(
-        debugName: "detect_dns_hijacking",
-        argNames: ["domain"],
+        debugName: 'detect_dns_hijacking',
+        argNames: ['domain'],
       );
 
   @override
@@ -1145,8 +1146,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiProbesDnsDetectDnsHijackingWebConstMeta =>
       const TaskConstMeta(
-        debugName: "detect_dns_hijacking_web",
-        argNames: ["domain"],
+        debugName: 'detect_dns_hijacking_web',
+        argNames: ['domain'],
       );
 
   @override
@@ -1172,7 +1173,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiProbesInterfaceDetectSecurityAndNetworkTypeConstMeta =>
           const TaskConstMeta(
-            debugName: "detect_security_and_network_type",
+            debugName: 'detect_security_and_network_type',
             argNames: [],
           );
 
@@ -1200,7 +1201,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
       get kCrateApiProbesInterfaceDetectSecurityAndNetworkTypeWebConstMeta =>
           const TaskConstMeta(
-            debugName: "detect_security_and_network_type_web",
+            debugName: 'detect_security_and_network_type_web',
             argNames: [],
           );
 
@@ -1230,8 +1231,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiAnalysisQualityEvaluateNetworkQualityConstMeta =>
       const TaskConstMeta(
-        debugName: "evaluate_network_quality",
-        argNames: ["isConnected", "stats", "config"],
+        debugName: 'evaluate_network_quality',
+        argNames: ['isConnected', 'stats', 'config'],
       );
 
   @override
@@ -1257,8 +1258,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiAnalysisQualityEvaluateQualityConstMeta =>
       const TaskConstMeta(
-        debugName: "evaluate_quality",
-        argNames: ["latency", "threshold"],
+        debugName: 'evaluate_quality',
+        argNames: ['latency', 'threshold'],
       );
 
   @override
@@ -1284,8 +1285,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiProbesTargetNativeProbeCheckConstMeta =>
       const TaskConstMeta(
-        debugName: "native_probe_check",
-        argNames: ["that", "target"],
+        debugName: 'native_probe_check',
+        argNames: ['that', 'target'],
       );
 
   @override
@@ -1309,7 +1310,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiModelsConfigNetworkConfigurationDefaultConstMeta =>
       const TaskConstMeta(
-        debugName: "network_configuration_default",
+        debugName: 'network_configuration_default',
         argNames: [],
       );
 
@@ -1352,14 +1353,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiModelsConfigNetworkConfigurationNewConstMeta =>
       const TaskConstMeta(
-        debugName: "network_configuration_new",
+        debugName: 'network_configuration_new',
         argNames: [
-          "targets",
-          "checkIntervalMs",
-          "cacheValidityMs",
-          "qualityThreshold",
-          "security",
-          "resilience"
+          'targets',
+          'checkIntervalMs',
+          'cacheValidityMs',
+          'qualityThreshold',
+          'security',
+          'resilience'
         ],
       );
 
@@ -1388,8 +1389,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiEngineSecurityPerformDnsSecurityCheckConstMeta =>
       const TaskConstMeta(
-        debugName: "perform_dns_security_check",
-        argNames: ["config", "flags"],
+        debugName: 'perform_dns_security_check',
+        argNames: ['config', 'flags'],
       );
 
   @override
@@ -1412,7 +1413,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiModelsConfigQualityThresholdsDefaultConstMeta =>
       const TaskConstMeta(
-        debugName: "quality_thresholds_default",
+        debugName: 'quality_thresholds_default',
         argNames: [],
       );
 
@@ -1446,8 +1447,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiModelsConfigQualityThresholdsNewConstMeta =>
       const TaskConstMeta(
-        debugName: "quality_thresholds_new",
-        argNames: ["excellent", "great", "good", "moderate", "poor"],
+        debugName: 'quality_thresholds_new',
+        argNames: ['excellent', 'great', 'good', 'moderate', 'poor'],
       );
 
   @override
@@ -1470,7 +1471,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiModelsConfigResilienceConfigDefaultConstMeta =>
       const TaskConstMeta(
-        debugName: "resilience_config_default",
+        debugName: 'resilience_config_default',
         argNames: [],
       );
 
@@ -1516,15 +1517,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiModelsConfigResilienceConfigNewConstMeta =>
       const TaskConstMeta(
-        debugName: "resilience_config_new",
+        debugName: 'resilience_config_new',
         argNames: [
-          "strategy",
-          "circuitBreakerThreshold",
-          "circuitBreakerCooldownMs",
-          "numJitterSamples",
-          "jitterThresholdPercent",
-          "stabilityThershold",
-          "criticalPacketLossPrecent"
+          'strategy',
+          'circuitBreakerThreshold',
+          'circuitBreakerCooldownMs',
+          'numJitterSamples',
+          'jitterThresholdPercent',
+          'stabilityThershold',
+          'criticalPacketLossPrecent'
         ],
       );
 
@@ -1548,7 +1549,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiModelsConfigSecurityConfigDefaultConstMeta =>
       const TaskConstMeta(
-        debugName: "security_config_default",
+        debugName: 'security_config_default',
         argNames: [],
       );
 
@@ -1572,7 +1573,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiModelsNetInfoSecurityFlagsDefaultConstMeta =>
       const TaskConstMeta(
-        debugName: "security_flags_default",
+        debugName: 'security_flags_default',
         argNames: [],
       );
 
@@ -1599,8 +1600,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiProbesTargetWebProbeCheckConstMeta =>
       const TaskConstMeta(
-        debugName: "web_probe_check",
-        argNames: ["that", "target"],
+        debugName: 'web_probe_check',
+        argNames: ['that', 'target'],
       );
 
   RustArcIncrementStrongCountFnType
@@ -1851,7 +1852,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     final arr = raw as List<dynamic>;
     if (arr.isNotEmpty)
       throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
-    return NativeProbe();
+    return const NativeProbe();
   }
 
   @protected
@@ -2087,7 +2088,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     final arr = raw as List<dynamic>;
     if (arr.isNotEmpty)
       throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
-    return WebProbe();
+    return const WebProbe();
   }
 
   @protected
@@ -2165,7 +2166,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    final inner = sse_decode_list_prim_u_8_strict(deserializer);
     return utf8.decoder.convert(inner);
   }
 
@@ -2246,8 +2247,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   CaptivePortalStatus sse_decode_captive_portal_status(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_isCaptivePortal = sse_decode_bool(deserializer);
-    var var_redirectUrl = sse_decode_opt_String(deserializer);
+    final var_isCaptivePortal = sse_decode_bool(deserializer);
+    final var_redirectUrl = sse_decode_opt_String(deserializer);
     return CaptivePortalStatus(
         isCaptivePortal: var_isCaptivePortal, redirectUrl: var_redirectUrl);
   }
@@ -2255,7 +2256,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   CheckStrategy sse_decode_check_strategy(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_i_32(deserializer);
+    final inner = sse_decode_i_32(deserializer);
     return CheckStrategy.values[inner];
   }
 
@@ -2263,14 +2264,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ConnectionQuality sse_decode_connection_quality(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_i_32(deserializer);
+    final inner = sse_decode_i_32(deserializer);
     return ConnectionQuality.values[inner];
   }
 
   @protected
   ConnectionType sse_decode_connection_type(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_i_32(deserializer);
+    final inner = sse_decode_i_32(deserializer);
     return ConnectionType.values[inner];
   }
 
@@ -2295,13 +2296,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   LatencyStats sse_decode_latency_stats(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_latencyMs = sse_decode_u_64(deserializer);
-    var var_jitterMs = sse_decode_u_64(deserializer);
-    var var_packetLossPercent = sse_decode_f_32(deserializer);
-    var var_minLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
-    var var_avgLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
-    var var_maxLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
-    var var_stabilityScore = sse_decode_u_8(deserializer);
+    final var_latencyMs = sse_decode_u_64(deserializer);
+    final var_jitterMs = sse_decode_u_64(deserializer);
+    final var_packetLossPercent = sse_decode_f_32(deserializer);
+    final var_minLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
+    final var_avgLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
+    final var_maxLatencyMs = sse_decode_opt_box_autoadd_u_64(deserializer);
+    final var_stabilityScore = sse_decode_u_8(deserializer);
     return LatencyStats(
         latencyMs: var_latencyMs,
         jitterMs: var_jitterMs,
@@ -2317,8 +2318,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <NetworkTarget>[];
+    final len_ = sse_decode_i_32(deserializer);
+    final ans_ = <NetworkTarget>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
       ans_.add(sse_decode_network_target(deserializer));
     }
@@ -2328,14 +2329,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   Uint64List sse_decode_list_prim_u_64_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var len_ = sse_decode_i_32(deserializer);
+    final len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint64List(len_);
   }
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var len_ = sse_decode_i_32(deserializer);
+    final len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
   }
 
@@ -2344,8 +2345,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <TargetReport>[];
+    final len_ = sse_decode_i_32(deserializer);
+    final ans_ = <TargetReport>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
       ans_.add(sse_decode_target_report(deserializer));
     }
@@ -2355,19 +2356,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   NativeProbe sse_decode_native_probe(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return NativeProbe();
+    return const NativeProbe();
   }
 
   @protected
   NetworkConfiguration sse_decode_network_configuration(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_targets = sse_decode_list_network_target(deserializer);
-    var var_checkIntervalMs = sse_decode_u_64(deserializer);
-    var var_cacheValidityMs = sse_decode_u_64(deserializer);
-    var var_qualityThreshold = sse_decode_quality_thresholds(deserializer);
-    var var_security = sse_decode_security_config(deserializer);
-    var var_resilience = sse_decode_resilience_config(deserializer);
+    final var_targets = sse_decode_list_network_target(deserializer);
+    final var_checkIntervalMs = sse_decode_u_64(deserializer);
+    final var_cacheValidityMs = sse_decode_u_64(deserializer);
+    final var_qualityThreshold = sse_decode_quality_thresholds(deserializer);
+    final var_security = sse_decode_security_config(deserializer);
+    final var_resilience = sse_decode_resilience_config(deserializer);
     return NetworkConfiguration(
         targets: var_targets,
         checkIntervalMs: var_checkIntervalMs,
@@ -2380,10 +2381,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   NetworkStatus sse_decode_network_status(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_isConnected = sse_decode_bool(deserializer);
-    var var_quality = sse_decode_connection_quality(deserializer);
-    var var_latencyStats = sse_decode_latency_stats(deserializer);
-    var var_winnerTarget = sse_decode_String(deserializer);
+    final var_isConnected = sse_decode_bool(deserializer);
+    final var_quality = sse_decode_connection_quality(deserializer);
+    final var_latencyStats = sse_decode_latency_stats(deserializer);
+    final var_winnerTarget = sse_decode_String(deserializer);
     return NetworkStatus(
         isConnected: var_isConnected,
         quality: var_quality,
@@ -2394,13 +2395,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   NetworkTarget sse_decode_network_target(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_label = sse_decode_String(deserializer);
-    var var_host = sse_decode_String(deserializer);
-    var var_port = sse_decode_u_16(deserializer);
-    var var_protocol = sse_decode_target_protocol(deserializer);
-    var var_timeoutMs = sse_decode_u_64(deserializer);
-    var var_priority = sse_decode_u_8(deserializer);
-    var var_isEssential = sse_decode_bool(deserializer);
+    final var_label = sse_decode_String(deserializer);
+    final var_host = sse_decode_String(deserializer);
+    final var_port = sse_decode_u_16(deserializer);
+    final var_protocol = sse_decode_target_protocol(deserializer);
+    final var_timeoutMs = sse_decode_u_64(deserializer);
+    final var_priority = sse_decode_u_8(deserializer);
+    final var_isEssential = sse_decode_bool(deserializer);
     return NetworkTarget(
         label: var_label,
         host: var_host,
@@ -2448,11 +2449,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   QualityThresholds sse_decode_quality_thresholds(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_excellent = sse_decode_u_64(deserializer);
-    var var_great = sse_decode_u_64(deserializer);
-    var var_good = sse_decode_u_64(deserializer);
-    var var_moderate = sse_decode_u_64(deserializer);
-    var var_poor = sse_decode_u_64(deserializer);
+    final var_excellent = sse_decode_u_64(deserializer);
+    final var_great = sse_decode_u_64(deserializer);
+    final var_good = sse_decode_u_64(deserializer);
+    final var_moderate = sse_decode_u_64(deserializer);
+    final var_poor = sse_decode_u_64(deserializer);
     return QualityThresholds(
         excellent: var_excellent,
         great: var_great,
@@ -2468,10 +2469,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) sse_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_security_flags_result_connection_type(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 =
+    final var_field0 =
         sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
             deserializer);
-    var var_field1 = sse_decode_connection_type(deserializer);
+    final var_field1 = sse_decode_connection_type(deserializer);
     return (var_field0, var_field1);
   }
 
@@ -2480,8 +2481,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       sse_decode_record_list_prim_u_64_strict_list_target_report(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 = sse_decode_list_prim_u_64_strict(deserializer);
-    var var_field1 = sse_decode_list_target_report(deserializer);
+    final var_field0 = sse_decode_list_prim_u_64_strict(deserializer);
+    final var_field1 = sse_decode_list_target_report(deserializer);
     return (var_field0, var_field1);
   }
 
@@ -2494,23 +2495,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) sse_decode_record_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_u_64_opt_box_autoadd_f_64(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 = sse_decode_opt_box_autoadd_u_64(deserializer);
-    var var_field1 = sse_decode_opt_box_autoadd_u_64(deserializer);
-    var var_field2 = sse_decode_opt_box_autoadd_u_64(deserializer);
-    var var_field3 = sse_decode_opt_box_autoadd_f_64(deserializer);
+    final var_field0 = sse_decode_opt_box_autoadd_u_64(deserializer);
+    final var_field1 = sse_decode_opt_box_autoadd_u_64(deserializer);
+    final var_field2 = sse_decode_opt_box_autoadd_u_64(deserializer);
+    final var_field3 = sse_decode_opt_box_autoadd_f_64(deserializer);
     return (var_field0, var_field1, var_field2, var_field3);
   }
 
   @protected
   ResilienceConfig sse_decode_resilience_config(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_strategy = sse_decode_check_strategy(deserializer);
-    var var_circuitBreakerThreshold = sse_decode_u_8(deserializer);
-    var var_circuitBreakerCooldownMs = sse_decode_u_64(deserializer);
-    var var_numJitterSamples = sse_decode_u_8(deserializer);
-    var var_jitterThresholdPercent = sse_decode_f_64(deserializer);
-    var var_stabilityThershold = sse_decode_u_8(deserializer);
-    var var_criticalPacketLossPrecent = sse_decode_f_32(deserializer);
+    final var_strategy = sse_decode_check_strategy(deserializer);
+    final var_circuitBreakerThreshold = sse_decode_u_8(deserializer);
+    final var_circuitBreakerCooldownMs = sse_decode_u_64(deserializer);
+    final var_numJitterSamples = sse_decode_u_8(deserializer);
+    final var_jitterThresholdPercent = sse_decode_f_64(deserializer);
+    final var_stabilityThershold = sse_decode_u_8(deserializer);
+    final var_criticalPacketLossPrecent = sse_decode_f_32(deserializer);
     return ResilienceConfig(
         strategy: var_strategy,
         circuitBreakerThreshold: var_circuitBreakerThreshold,
@@ -2524,8 +2525,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   SecurityConfig sse_decode_security_config(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_blockVpn = sse_decode_bool(deserializer);
-    var var_detectDnsHijack = sse_decode_bool(deserializer);
+    final var_blockVpn = sse_decode_bool(deserializer);
+    final var_detectDnsHijack = sse_decode_bool(deserializer);
     return SecurityConfig(
         blockVpn: var_blockVpn, detectDnsHijack: var_detectDnsHijack);
   }
@@ -2533,10 +2534,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   SecurityFlags sse_decode_security_flags(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_isVpnDetected = sse_decode_bool(deserializer);
-    var var_isDnsSpoofed = sse_decode_bool(deserializer);
-    var var_isProxyDetected = sse_decode_bool(deserializer);
-    var var_interfaceName = sse_decode_String(deserializer);
+    final var_isVpnDetected = sse_decode_bool(deserializer);
+    final var_isDnsSpoofed = sse_decode_bool(deserializer);
+    final var_isProxyDetected = sse_decode_bool(deserializer);
+    final var_interfaceName = sse_decode_String(deserializer);
     return SecurityFlags(
         isVpnDetected: var_isVpnDetected,
         isDnsSpoofed: var_isDnsSpoofed,
@@ -2547,18 +2548,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   TargetProtocol sse_decode_target_protocol(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_i_32(deserializer);
+    final inner = sse_decode_i_32(deserializer);
     return TargetProtocol.values[inner];
   }
 
   @protected
   TargetReport sse_decode_target_report(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_label = sse_decode_String(deserializer);
-    var var_success = sse_decode_bool(deserializer);
-    var var_latencyMs = sse_decode_u_64(deserializer);
-    var var_error = sse_decode_opt_String(deserializer);
-    var var_isEssential = sse_decode_bool(deserializer);
+    final var_label = sse_decode_String(deserializer);
+    final var_success = sse_decode_bool(deserializer);
+    final var_latencyMs = sse_decode_u_64(deserializer);
+    final var_error = sse_decode_opt_String(deserializer);
+    final var_isEssential = sse_decode_bool(deserializer);
     return TargetReport(
         label: var_label,
         success: var_success,
@@ -2599,7 +2600,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   WebProbe sse_decode_web_probe(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return WebProbe();
+    return const WebProbe();
   }
 
   @protected
@@ -2668,7 +2669,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           NetworkReport self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as NetworkReportImpl).frbInternalSseEncode(move: null),
+        (self as NetworkReportImpl).frbInternalSseEncode(),
         serializer);
   }
 
@@ -2678,7 +2679,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           SecurityFlagsResult self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as SecurityFlagsResultImpl).frbInternalSseEncode(move: null),
+        (self as SecurityFlagsResultImpl).frbInternalSseEncode(),
         serializer);
   }
 

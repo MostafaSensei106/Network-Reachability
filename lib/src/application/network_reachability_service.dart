@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:network_reachability/src/rust/api/engine.dart' as rust_engine;
+
 import '../core/constants/enums.dart';
 import '../core/exceptions/exceptions.dart';
+import '../data/repositories/network_probes_repository_impl.dart';
 import '../domain/entities/entities.dart';
 import '../domain/repositories/network_probes_repository.dart';
-import '../data/repositories/network_probes_repository_impl.dart';
+import '../rust/api/engine.dart' as rust_engine;
 
 /// The central entry point for the Network Reachability library.
 ///
@@ -41,6 +42,11 @@ import '../data/repositories/network_probes_repository_impl.dart';
 /// }
 /// ```
 final class NetworkReachability with WidgetsBindingObserver {
+  /// Internal constructor. Use [init] to create the instance.
+  NetworkReachability._(this._config, this._probesRepository) {
+    WidgetsBinding.instance.addObserver(this);
+    _startPeriodicChecks();
+  }
   static NetworkReachability? _instance;
 
   /// Access the singleton instance of the network reachability service.
@@ -78,12 +84,6 @@ final class NetworkReachability with WidgetsBindingObserver {
   int _consecutiveFailures = 0;
   CircuitBreakerState _circuitState = CircuitBreakerState.closed;
   DateTime? _circuitBreakerResetTime;
-
-  /// Internal constructor. Use [init] to create the instance.
-  NetworkReachability._(this._config, this._probesRepository) {
-    WidgetsBinding.instance.addObserver(this);
-    _startPeriodicChecks();
-  }
 
   /// Initializes the Network Reachability engine.
   ///
@@ -285,7 +285,7 @@ final class NetworkReachability with WidgetsBindingObserver {
       }
 
       // Adaptive interval logic:
-      int nextIntervalMs = _config.checkIntervalMs.toInt();
+      var nextIntervalMs = _config.checkIntervalMs.toInt();
       if (report.status.quality == ConnectionQuality.excellent) {
         nextIntervalMs = (nextIntervalMs * 2).clamp(0, 30000); // Max 30s
       }
@@ -303,10 +303,10 @@ final class NetworkReachability with WidgetsBindingObserver {
   }
 
   /// Releases resources, removes observers, and shuts down the service.
-  void dispose() {
+  Future<void> dispose() async {
     WidgetsBinding.instance.removeObserver(this);
     _stopPeriodicChecks();
-    _statusController.close();
+    await _statusController.close();
     _instance = null;
   }
 

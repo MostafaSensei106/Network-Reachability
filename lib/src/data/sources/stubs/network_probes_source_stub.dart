@@ -1,6 +1,6 @@
-import 'package:network_reachability/src/rust/api/models/net_info.dart';
-import 'package:network_reachability/src/rust/api/models/report.dart';
-import 'package:network_reachability/src/rust/api/models/target.dart';
+import '../../../rust/api/models/net_info.dart';
+import '../../../rust/api/models/report.dart';
+import '../../../rust/api/models/target.dart';
 
 /// A **Stub** implementation of the network probe data source.
 ///

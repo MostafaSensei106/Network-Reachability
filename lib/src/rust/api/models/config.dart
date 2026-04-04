@@ -3,8 +3,9 @@
 
 // ignore_for_file: public_member_api_docs, invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
+import '../../frb_generated.dart';
 import 'target.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
@@ -110,6 +111,15 @@ enum ConnectionQuality {
 /// This structure is the entry point for customizing how the engine behaves.
 /// It should be initialized once and passed to the engine during startup.
 class NetworkConfiguration {
+
+  const NetworkConfiguration({
+    required this.targets,
+    required this.checkIntervalMs,
+    required this.cacheValidityMs,
+    required this.qualityThreshold,
+    required this.security,
+    required this.resilience,
+  });
   /// The list of endpoints ([`NetworkTarget` models](super::target::NetworkTarget))
   /// to probe.
   final List<NetworkTarget> targets;
@@ -135,15 +145,6 @@ class NetworkConfiguration {
 
   /// Performance and resilience settings.
   final ResilienceConfig resilience;
-
-  const NetworkConfiguration({
-    required this.targets,
-    required this.checkIntervalMs,
-    required this.cacheValidityMs,
-    required this.qualityThreshold,
-    required this.security,
-    required this.resilience,
-  });
 
   /// Standard production-ready configuration.
   ///
@@ -199,6 +200,14 @@ class NetworkConfiguration {
 /// These values act as the "buckets" that convert raw Round-Trip Time (RTT) values
 /// into user-friendly quality ratings.
 class QualityThresholds {
+
+  const QualityThresholds({
+    required this.excellent,
+    required this.great,
+    required this.good,
+    required this.moderate,
+    required this.poor,
+  });
   /// Maximum latency (ms) to be considered [`ConnectionQuality::Excellent`].
   /// *Default: 50ms*
   final BigInt excellent;
@@ -220,14 +229,6 @@ class QualityThresholds {
   /// [`ConnectionQuality::Unstable`].
   /// *Default: 500ms*
   final BigInt poor;
-
-  const QualityThresholds({
-    required this.excellent,
-    required this.great,
-    required this.good,
-    required this.moderate,
-    required this.poor,
-  });
 
   /// Provides industry-standard default latency thresholds for most applications.
   ///
@@ -287,6 +288,16 @@ class QualityThresholds {
 /// This struct controls the "brain" of the engine: how it handles noise,
 /// how it reacts to failure, and how it calculates jitter.
 class ResilienceConfig {
+
+  const ResilienceConfig({
+    required this.strategy,
+    required this.circuitBreakerThreshold,
+    required this.circuitBreakerCooldownMs,
+    required this.numJitterSamples,
+    required this.jitterThresholdPercent,
+    required this.stabilityThershold,
+    required this.criticalPacketLossPrecent,
+  });
   /// The evaluation strategy (Race vs Consensus) for multi-target checks.
   final CheckStrategy strategy;
 
@@ -326,16 +337,6 @@ class ResilienceConfig {
   /// If packet loss exceeds this value, the connection is immediately
   /// downgraded to 'Unstable' or 'Offline'.
   final double criticalPacketLossPrecent;
-
-  const ResilienceConfig({
-    required this.strategy,
-    required this.circuitBreakerThreshold,
-    required this.circuitBreakerCooldownMs,
-    required this.numJitterSamples,
-    required this.jitterThresholdPercent,
-    required this.stabilityThershold,
-    required this.criticalPacketLossPrecent,
-  });
 
   /// Balanced default resilience configuration.
   ///
@@ -393,6 +394,11 @@ class ResilienceConfig {
 /// These settings allow the engine to detect environmental factors that might
 /// be undesirable or indicate a compromised connection.
 class SecurityConfig {
+
+  const SecurityConfig({
+    required this.blockVpn,
+    required this.detectDnsHijack,
+  });
   /// If enabled, the engine will flag connections that originate from a VPN interface.
   ///
   /// Useful for applications that enforce geo-fencing or need to prevent
@@ -405,11 +411,6 @@ class SecurityConfig {
   /// a trusted upstream resolver (like Cloudflare or Google). If they differ
   /// significantly for static domains, it flags a potential spoofing attempt.
   final bool detectDnsHijack;
-
-  const SecurityConfig({
-    required this.blockVpn,
-    required this.detectDnsHijack,
-  });
 
   static Future<SecurityConfig> default_() =>
       RustLib.instance.api.crateApiModelsConfigSecurityConfigDefault();

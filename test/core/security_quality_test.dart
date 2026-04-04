@@ -74,7 +74,6 @@ void main() {
       expect(
         () => NetworkReachability.instance.guard(
           action: () async => 42,
-          minQuality: ConnectionQuality.good,
         ),
         throwsA(isA<PoorConnectionException>()),
       );

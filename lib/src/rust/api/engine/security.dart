@@ -3,11 +3,12 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
 import '../../frb_generated.dart';
 import '../models/config.dart';
 import '../models/net_info.dart';
 import '../models/target.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// Runs the DNS hijack check by comparing resolution against trusted resolvers.
 Future<void> performDnsSecurityCheck(
