@@ -33,7 +33,7 @@ dev_dependencies:
   test: ^1.29.0
 
   ffi: ^2.1.3
-  ffigen: ^20.1.1
+  ffigen: ^21.0.0
   flutter_test:
     sdk: flutter
   integration_test:
