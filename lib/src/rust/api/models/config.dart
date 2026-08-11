@@ -319,13 +319,13 @@ class ResilienceConfig {
   /// Minimum stability score (0-100) required for a 'Stable' rating.
   ///
   /// A score calculated from packet loss and jitter consistency.
-  final int stabilityThershold;
+  final int stabilityThreshold;
 
   /// Critical packet loss percentage (0.0 - 100.0).
   ///
   /// If packet loss exceeds this value, the connection is immediately
   /// downgraded to 'Unstable' or 'Offline'.
-  final double criticalPacketLossPrecent;
+  final double criticalPacketLossPercent;
 
   const ResilienceConfig({
     required this.strategy,
@@ -333,8 +333,8 @@ class ResilienceConfig {
     required this.circuitBreakerCooldownMs,
     required this.numJitterSamples,
     required this.jitterThresholdPercent,
-    required this.stabilityThershold,
-    required this.criticalPacketLossPrecent,
+    required this.stabilityThreshold,
+    required this.criticalPacketLossPercent,
   });
 
   /// Balanced default resilience configuration.
@@ -353,16 +353,16 @@ class ResilienceConfig {
           required BigInt circuitBreakerCooldownMs,
           required int numJitterSamples,
           required double jitterThresholdPercent,
-          required int stabilityThershold,
-          required double criticalPacketLossPrecent}) =>
+          required int stabilityThreshold,
+          required double criticalPacketLossPercent}) =>
       RustLib.instance.api.crateApiModelsConfigResilienceConfigNew(
           strategy: strategy,
           circuitBreakerThreshold: circuitBreakerThreshold,
           circuitBreakerCooldownMs: circuitBreakerCooldownMs,
           numJitterSamples: numJitterSamples,
           jitterThresholdPercent: jitterThresholdPercent,
-          stabilityThershold: stabilityThershold,
-          criticalPacketLossPrecent: criticalPacketLossPrecent);
+          stabilityThreshold: stabilityThreshold,
+          criticalPacketLossPercent: criticalPacketLossPercent);
 
   @override
   int get hashCode =>
@@ -371,8 +371,8 @@ class ResilienceConfig {
       circuitBreakerCooldownMs.hashCode ^
       numJitterSamples.hashCode ^
       jitterThresholdPercent.hashCode ^
-      stabilityThershold.hashCode ^
-      criticalPacketLossPrecent.hashCode;
+      stabilityThreshold.hashCode ^
+      criticalPacketLossPercent.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -384,8 +384,8 @@ class ResilienceConfig {
           circuitBreakerCooldownMs == other.circuitBreakerCooldownMs &&
           numJitterSamples == other.numJitterSamples &&
           jitterThresholdPercent == other.jitterThresholdPercent &&
-          stabilityThershold == other.stabilityThershold &&
-          criticalPacketLossPrecent == other.criticalPacketLossPrecent;
+          stabilityThreshold == other.stabilityThreshold &&
+          criticalPacketLossPercent == other.criticalPacketLossPercent;
 }
 
 /// Configuration for security-related network checks and policy enforcement.

@@ -17,7 +17,13 @@ chrono = "0.4"
 async-trait = "0.1"
 ipnet = "2.11.0"
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-tokio = { version = "1.49.0", default-features = false, features = ["rt-multi-thread", "net", "time", "sync", "macros"] }
+tokio = { version = "1.49.0", default-features = false, features = [
+    "rt-multi-thread",
+    "net",
+    "time",
+    "sync",
+    "macros",
+] }
 socket2 = "0.6.2"
 trust-dns-resolver = "0.23.2"
 surge-ping = "0.8.1"
@@ -29,7 +35,6 @@ network-interface = "2.0.5"
 reqwest = { version = "0.13.2", default-features = false }
 
 
-
 [dev-dependencies]
 mockito = "1.2.0"
 
@@ -37,8 +42,8 @@ mockito = "1.2.0"
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
 
 [profile.release]
-lto = true
-opt-level = 'z'
+opt-level = 3
+lto = "thin"
 codegen-units = 1
 panic = "abort"
-strip = true
+strip = "symbols"

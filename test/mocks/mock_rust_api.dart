@@ -90,7 +90,7 @@ class MockRustLibApi implements RustLibApi {
       numJitterSamples: 3,
       jitterThresholdPercent: 0.2,
       stabilityThreshold: 70,
-      criticalPacketLossPrecent: 15.0,
+      criticalPacketLossPercent: 15.0,
     );
 
     mockNetworkReport = MockNetworkReport(

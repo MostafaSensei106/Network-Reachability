@@ -1708,8 +1708,8 @@ fn wire__crate__api__models__config__resilience_config_new_impl(
             let api_circuit_breaker_cooldown_ms = <u64>::sse_decode(&mut deserializer);
             let api_num_jitter_samples = <u8>::sse_decode(&mut deserializer);
             let api_jitter_threshold_percent = <f64>::sse_decode(&mut deserializer);
-            let api_stability_thershold = <u8>::sse_decode(&mut deserializer);
-            let api_critical_packet_loss_precent = <f32>::sse_decode(&mut deserializer);
+            let api_stability_threshold = <u8>::sse_decode(&mut deserializer);
+            let api_critical_packet_loss_percent = <f32>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
@@ -1720,8 +1720,8 @@ fn wire__crate__api__models__config__resilience_config_new_impl(
                             api_circuit_breaker_cooldown_ms,
                             api_num_jitter_samples,
                             api_jitter_threshold_percent,
-                            api_stability_thershold,
-                            api_critical_packet_loss_precent,
+                            api_stability_threshold,
+                            api_critical_packet_loss_percent,
                         ))?;
                     Ok(output_ok)
                 })())
@@ -2178,16 +2178,16 @@ impl SseDecode for crate::api::models::config::ResilienceConfig {
         let mut var_circuitBreakerCooldownMs = <u64>::sse_decode(deserializer);
         let mut var_numJitterSamples = <u8>::sse_decode(deserializer);
         let mut var_jitterThresholdPercent = <f64>::sse_decode(deserializer);
-        let mut var_stabilityThershold = <u8>::sse_decode(deserializer);
-        let mut var_criticalPacketLossPrecent = <f32>::sse_decode(deserializer);
+        let mut var_stabilityThreshold = <u8>::sse_decode(deserializer);
+        let mut var_criticalPacketLossPercent = <f32>::sse_decode(deserializer);
         return crate::api::models::config::ResilienceConfig {
             strategy: var_strategy,
             circuit_breaker_threshold: var_circuitBreakerThreshold,
             circuit_breaker_cooldown_ms: var_circuitBreakerCooldownMs,
             num_jitter_samples: var_numJitterSamples,
             jitter_threshold_percent: var_jitterThresholdPercent,
-            stability_thershold: var_stabilityThershold,
-            critical_packet_loss_precent: var_criticalPacketLossPrecent,
+            stability_threshold: var_stabilityThreshold,
+            critical_packet_loss_percent: var_criticalPacketLossPercent,
         };
     }
 }
@@ -2717,8 +2717,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::config::ResilienceCon
                 .into_dart(),
             self.num_jitter_samples.into_into_dart().into_dart(),
             self.jitter_threshold_percent.into_into_dart().into_dart(),
-            self.stability_thershold.into_into_dart().into_dart(),
-            self.critical_packet_loss_precent
+            self.stability_threshold.into_into_dart().into_dart(),
+            self.critical_packet_loss_percent
                 .into_into_dart()
                 .into_dart(),
         ]
@@ -3137,8 +3137,8 @@ impl SseEncode for crate::api::models::config::ResilienceConfig {
         <u64>::sse_encode(self.circuit_breaker_cooldown_ms, serializer);
         <u8>::sse_encode(self.num_jitter_samples, serializer);
         <f64>::sse_encode(self.jitter_threshold_percent, serializer);
-        <u8>::sse_encode(self.stability_thershold, serializer);
-        <f32>::sse_encode(self.critical_packet_loss_precent, serializer);
+        <u8>::sse_encode(self.stability_threshold, serializer);
+        <f32>::sse_encode(self.critical_packet_loss_percent, serializer);
     }
 }
 

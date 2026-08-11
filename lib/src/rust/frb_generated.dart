@@ -224,8 +224,8 @@ abstract class RustLibApi extends BaseApi {
       required BigInt circuitBreakerCooldownMs,
       required int numJitterSamples,
       required double jitterThresholdPercent,
-      required int stabilityThershold,
-      required double criticalPacketLossPrecent});
+      required int stabilityThreshold,
+      required double criticalPacketLossPercent});
 
   Future<SecurityConfig> crateApiModelsConfigSecurityConfigDefault();
 
@@ -1324,8 +1324,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       required BigInt circuitBreakerCooldownMs,
       required int numJitterSamples,
       required double jitterThresholdPercent,
-      required int stabilityThershold,
-      required double criticalPacketLossPrecent}) {
+      required int stabilityThreshold,
+      required double criticalPacketLossPercent}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -1334,8 +1334,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(circuitBreakerCooldownMs, serializer);
         sse_encode_u_8(numJitterSamples, serializer);
         sse_encode_f_64(jitterThresholdPercent, serializer);
-        sse_encode_u_8(stabilityThershold, serializer);
-        sse_encode_f_32(criticalPacketLossPrecent, serializer);
+        sse_encode_u_8(stabilityThreshold, serializer);
+        sse_encode_f_32(criticalPacketLossPercent, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 38, port: port_);
       },
@@ -1350,8 +1350,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         circuitBreakerCooldownMs,
         numJitterSamples,
         jitterThresholdPercent,
-        stabilityThershold,
-        criticalPacketLossPrecent
+        stabilityThreshold,
+        criticalPacketLossPercent
       ],
       apiImpl: this,
     ));
@@ -1366,8 +1366,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           "circuitBreakerCooldownMs",
           "numJitterSamples",
           "jitterThresholdPercent",
-          "stabilityThershold",
-          "criticalPacketLossPrecent"
+          "stabilityThreshold",
+          "criticalPacketLossPercent"
         ],
       );
 
@@ -1794,8 +1794,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       circuitBreakerCooldownMs: dco_decode_u_64(arr[2]),
       numJitterSamples: dco_decode_u_8(arr[3]),
       jitterThresholdPercent: dco_decode_f_64(arr[4]),
-      stabilityThershold: dco_decode_u_8(arr[5]),
-      criticalPacketLossPrecent: dco_decode_f_32(arr[6]),
+      stabilityThreshold: dco_decode_u_8(arr[5]),
+      criticalPacketLossPercent: dco_decode_f_32(arr[6]),
     );
   }
 
@@ -2276,16 +2276,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_circuitBreakerCooldownMs = sse_decode_u_64(deserializer);
     var var_numJitterSamples = sse_decode_u_8(deserializer);
     var var_jitterThresholdPercent = sse_decode_f_64(deserializer);
-    var var_stabilityThershold = sse_decode_u_8(deserializer);
-    var var_criticalPacketLossPrecent = sse_decode_f_32(deserializer);
+    var var_stabilityThreshold = sse_decode_u_8(deserializer);
+    var var_criticalPacketLossPercent = sse_decode_f_32(deserializer);
     return ResilienceConfig(
         strategy: var_strategy,
         circuitBreakerThreshold: var_circuitBreakerThreshold,
         circuitBreakerCooldownMs: var_circuitBreakerCooldownMs,
         numJitterSamples: var_numJitterSamples,
         jitterThresholdPercent: var_jitterThresholdPercent,
-        stabilityThershold: var_stabilityThershold,
-        criticalPacketLossPrecent: var_criticalPacketLossPrecent);
+        stabilityThreshold: var_stabilityThreshold,
+        criticalPacketLossPercent: var_criticalPacketLossPercent);
   }
 
   @protected
@@ -2716,8 +2716,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_64(self.circuitBreakerCooldownMs, serializer);
     sse_encode_u_8(self.numJitterSamples, serializer);
     sse_encode_f_64(self.jitterThresholdPercent, serializer);
-    sse_encode_u_8(self.stabilityThershold, serializer);
-    sse_encode_f_32(self.criticalPacketLossPrecent, serializer);
+    sse_encode_u_8(self.stabilityThreshold, serializer);
+    sse_encode_f_32(self.criticalPacketLossPercent, serializer);
   }
 
   @protected

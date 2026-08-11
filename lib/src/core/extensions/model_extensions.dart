@@ -79,7 +79,7 @@ extension ResilienceConfigCopyWith on ResilienceConfig {
     final int? numJitterSamples,
     final double? jitterThresholdPercent,
     final int? stabilityThreshold,
-    final double? criticalPacketLossPrecent,
+    final double? criticalPacketLossPercent,
   }) {
     return ResilienceConfig(
       strategy: strategy ?? this.strategy,
@@ -91,8 +91,8 @@ extension ResilienceConfigCopyWith on ResilienceConfig {
       jitterThresholdPercent:
           jitterThresholdPercent ?? this.jitterThresholdPercent,
       stabilityThreshold: stabilityThreshold ?? this.stabilityThreshold,
-      criticalPacketLossPrecent:
-          criticalPacketLossPrecent ?? this.criticalPacketLossPrecent,
+      criticalPacketLossPercent:
+          criticalPacketLossPercent ?? this.criticalPacketLossPercent,
     );
   }
 }

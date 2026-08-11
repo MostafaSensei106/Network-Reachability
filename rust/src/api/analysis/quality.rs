@@ -60,7 +60,7 @@ pub fn evaluate_network_quality(
     }
 
     // 1. Check for critical packet loss first
-    if stats.packet_loss_percent > config.resilience.critical_packet_loss_precent {
+    if stats.packet_loss_percent > config.resilience.critical_packet_loss_percent {
         return ConnectionQuality::Unstable;
     }
 
@@ -69,7 +69,7 @@ pub fn evaluate_network_quality(
 
     // 3. Apply stability-based downgrades
     // If stability is below the threshold, we slide the quality down the scale.
-    if stats.stability_score < config.resilience.stability_thershold {
+    if stats.stability_score < config.resilience.stability_threshold {
         return match quality_based_on_speed {
             ConnectionQuality::Excellent => ConnectionQuality::Great,
             ConnectionQuality::Great => ConnectionQuality::Good,
@@ -143,8 +143,8 @@ mod tests {
     #[test]
     fn test_evaluate_network_quality_logic() {
         let mut config = NetworkConfiguration::default();
-        config.resilience.stability_thershold = 50;
-        config.resilience.critical_packet_loss_precent = 10.0;
+        config.resilience.stability_threshold = 50;
+        config.resilience.critical_packet_loss_percent = 10.0;
 
         // Offline
         let stats = LatencyStats {

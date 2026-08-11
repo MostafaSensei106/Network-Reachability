@@ -225,13 +225,13 @@ pub struct ResilienceConfig {
     /// Minimum stability score (0-100) required for a 'Stable' rating.
     ///
     /// A score calculated from packet loss and jitter consistency.
-    pub stability_thershold: u8,
+    pub stability_threshold: u8,
 
     /// Critical packet loss percentage (0.0 - 100.0).
     ///
     /// If packet loss exceeds this value, the connection is immediately
     /// downgraded to 'Unstable' or 'Offline'.
-    pub critical_packet_loss_precent: f32,
+    pub critical_packet_loss_percent: f32,
 }
 
 impl ResilienceConfig {
@@ -242,8 +242,8 @@ impl ResilienceConfig {
         circuit_breaker_cooldown_ms: u64,
         num_jitter_samples: u8,
         jitter_threshold_percent: f64,
-        stability_thershold: u8,
-        critical_packet_loss_precent: f32,
+        stability_threshold: u8,
+        critical_packet_loss_percent: f32,
     ) -> Self {
         Self {
             strategy,
@@ -251,8 +251,8 @@ impl ResilienceConfig {
             circuit_breaker_cooldown_ms,
             num_jitter_samples,
             jitter_threshold_percent,
-            stability_thershold,
-            critical_packet_loss_precent,
+            stability_threshold,
+            critical_packet_loss_percent,
         }
     }
 }
@@ -270,8 +270,8 @@ impl Default for ResilienceConfig {
             circuit_breaker_cooldown_ms: 60000, // 1 minute
             num_jitter_samples: LibConstants::DEFAULT_JITTER_SAMPLES,
             jitter_threshold_percent: LibConstants::DEFAULT_JITTER_THRESHOLD_PERCENT,
-            stability_thershold: LibConstants::DEFAULT_STABILITY_THRESHOLD,
-            critical_packet_loss_precent: LibConstants::DEFAULT_CRITICAL_PACKET_LOSS_PRECENT,
+            stability_threshold: LibConstants::DEFAULT_STABILITY_THRESHOLD,
+            critical_packet_loss_percent: LibConstants::DEFAULT_CRITICAL_PACKET_LOSS_PERCENT,
         }
     }
 }
