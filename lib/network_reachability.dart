@@ -19,6 +19,7 @@
 library;
 
 // --- Application Layer ---
+export 'src/application/connectivity.dart';
 export 'src/application/network_reachability_service.dart';
 // --- Core ---
 export 'src/core/constants/enums.dart';

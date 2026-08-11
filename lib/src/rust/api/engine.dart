@@ -3,12 +3,11 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-
 import '../frb_generated.dart';
 import 'models/config.dart';
 import 'models/report.dart';
 import 'models/target.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// The main entry point for running a comprehensive network check.
 ///
@@ -18,7 +17,5 @@ import 'models/target.dart';
 /// 3. Evaluates quality via [analysis::evaluate_network_quality].
 /// 4. Detects interface security and type.
 /// 5. Compiles a final [NetworkReport].
-Future<NetworkReport> checkNetwork({
-  required final NetworkConfiguration config,
-}) =>
+Future<NetworkReport> checkNetwork({required NetworkConfiguration config}) =>
     RustLib.instance.api.crateApiEngineCheckNetwork(config: config);

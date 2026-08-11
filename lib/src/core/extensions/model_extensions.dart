@@ -70,7 +70,7 @@ extension ResilienceConfigCopyWith on ResilienceConfig {
   /// * [circuitBreakerCooldownMs]: Wait time before retry probes.
   /// * [numJitterSamples]: Number of probes to use for jitter analysis.
   /// * [jitterThresholdPercent]: Variance threshold for marking as 'Unstable'.
-  /// * [stabilityThershold]: Minimum stability score (0-100) required.
+  /// * [stabilityThreshold]: Minimum stability score (0-100) required.
   /// * [criticalPacketLossPrecent]: Loss % that triggers an 'Offline' or 'Unstable' status.
   ResilienceConfig copyWith({
     final CheckStrategy? strategy,
@@ -78,7 +78,7 @@ extension ResilienceConfigCopyWith on ResilienceConfig {
     final BigInt? circuitBreakerCooldownMs,
     final int? numJitterSamples,
     final double? jitterThresholdPercent,
-    final int? stabilityThershold,
+    final int? stabilityThreshold,
     final double? criticalPacketLossPrecent,
   }) {
     return ResilienceConfig(
@@ -90,7 +90,7 @@ extension ResilienceConfigCopyWith on ResilienceConfig {
       numJitterSamples: numJitterSamples ?? this.numJitterSamples,
       jitterThresholdPercent:
           jitterThresholdPercent ?? this.jitterThresholdPercent,
-      stabilityThershold: stabilityThershold ?? this.stabilityThershold,
+      stabilityThreshold: stabilityThreshold ?? this.stabilityThreshold,
       criticalPacketLossPrecent:
           criticalPacketLossPrecent ?? this.criticalPacketLossPrecent,
     );

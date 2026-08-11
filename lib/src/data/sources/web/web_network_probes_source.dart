@@ -16,17 +16,17 @@ final class NetworkProbesSource {
   static Future<CaptivePortalStatus> checkForCaptivePortal({
     required final BigInt timeoutMs,
   }) =>
-      rust_captive_portal.checkForCaptivePortalWeb(timeoutMs: timeoutMs);
+      rust_captive_portal.checkForCaptivePortal(timeoutMs: timeoutMs);
 
   /// Always returns false as browser security restrictions (CORS/SOP)
   /// prevent low-level DNS integrity checks on the web.
   static Future<bool> detectDnsHijacking({required final String domain}) =>
-      rust_dns.detectDnsHijackingWeb(domain: domain);
+      rust_dns.detectDnsHijacking(domain: domain);
 
   /// Uses the browser's `Navigator.connection` API to determine connection type.
   static Future<(SecurityFlagsResult, ConnectionType)>
       detectSecurityAndNetworkType() =>
-          rust_interface.detectSecurityAndNetworkTypeWeb();
+          rust_interface.detectSecurityAndNetworkType();
 
   /// Performs a reachability probe using the browser's `Fetch` API.
   static Future<TargetReport> checkTarget({

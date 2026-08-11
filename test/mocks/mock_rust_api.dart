@@ -89,7 +89,7 @@ class MockRustLibApi implements RustLibApi {
       circuitBreakerCooldownMs: BigInt.from(1000), // 1s for faster testing
       numJitterSamples: 3,
       jitterThresholdPercent: 0.2,
-      stabilityThershold: 70,
+      stabilityThreshold: 70,
       criticalPacketLossPrecent: 15.0,
     );
 

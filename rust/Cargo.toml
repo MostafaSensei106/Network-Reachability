@@ -3,6 +3,9 @@ name = "network_reachability"
 version = "0.1.0"
 edition = "2021"
 
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
 [lib]
 crate-type = ["cdylib", "staticlib"]
 
@@ -13,13 +16,17 @@ futures = "0.3.31"
 chrono = "0.4"
 async-trait = "0.1"
 ipnet = "2.11.0"
-tokio = { version = "1.49.0", features = ["full"] }
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { version = "1.49.0", default-features = false, features = ["rt-multi-thread", "net", "time", "sync", "macros"] }
 socket2 = "0.6.2"
 trust-dns-resolver = "0.23.2"
-dns-lookup = "3.0.1"
-network-interface = "2.0.5"
 surge-ping = "0.8.1"
 reqwest = "0.13.2"
+dns-lookup = "3.0.1"
+network-interface = "2.0.5"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+reqwest = { version = "0.13.2", default-features = false }
 
 
 

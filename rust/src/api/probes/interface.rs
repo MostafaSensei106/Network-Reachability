@@ -1,6 +1,7 @@
 use crate::api::models::{ConnectionType, SecurityFlagsResult};
 
 /// Inspects system network interfaces to detect connection type and potential security flags.
+#[cfg(not(target_arch = "wasm32"))]
 pub fn detect_security_and_network_type() -> (SecurityFlagsResult, ConnectionType) {
     use crate::api::constants::LibConstants;
     use network_interface::{NetworkInterface, NetworkInterfaceConfig};
@@ -49,8 +50,8 @@ pub fn detect_security_and_network_type() -> (SecurityFlagsResult, ConnectionTyp
     (security_flags_res, conn_type)
 }
 
-/// Web implementation stub (WASM removed).
-pub fn detect_security_and_network_type_web() -> (SecurityFlagsResult, ConnectionType) {
+#[cfg(target_arch = "wasm32")]
+pub fn detect_security_and_network_type() -> (SecurityFlagsResult, ConnectionType) {
     (SecurityFlagsResult::default(), ConnectionType::Unknown)
 }
 

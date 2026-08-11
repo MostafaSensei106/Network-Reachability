@@ -3,6 +3,7 @@
 use crate::api::{constants::LibConstants, models::CaptivePortalStatus};
 
 /// Checks for the presence of a captive portal.
+#[cfg(not(target_arch = "wasm32"))]
 pub async fn check_for_captive_portal(timeout_ms: u64) -> CaptivePortalStatus {
     use std::time::Duration;
     let client = match reqwest::ClientBuilder::new()
@@ -38,15 +39,10 @@ pub async fn check_for_captive_portal(timeout_ms: u64) -> CaptivePortalStatus {
     }
 }
 
-/// Web implementation stub (WASM removed).
-pub async fn check_for_captive_portal_web_manual(_timeout_ms: u64) -> CaptivePortalStatus {
+#[cfg(target_arch = "wasm32")]
+pub async fn check_for_captive_portal(_timeout_ms: u64) -> CaptivePortalStatus {
     CaptivePortalStatus {
         is_captive_portal: false,
         redirect_url: None,
     }
-}
-
-/// Unified entry point for captive portal check (WASM removed).
-pub async fn check_for_captive_portal_web(timeout_ms: u64) -> CaptivePortalStatus {
-    check_for_captive_portal_web_manual(timeout_ms).await
 }

@@ -2,10 +2,14 @@
 
 use crate::api::models::{NetworkTarget, TargetProtocol, TargetReport};
 use crate::api::probes::base::NetworkProbe;
+use flutter_rust_bridge::frb;
 
 /// Native implementation of network reachability checks.
-pub struct NativeProbe {}
+#[cfg(not(target_arch = "wasm32"))]
+#[frb(ignore)]
+struct NativeProbe {}
 
+#[cfg(not(target_arch = "wasm32"))]
 impl NetworkProbe for NativeProbe {
     async fn check(&self, target: &NetworkTarget) -> TargetReport {
         use crate::api::models::NetworkError;
@@ -62,14 +66,18 @@ impl NetworkProbe for NativeProbe {
                         "http"
                     };
                     let url = format!("{}://{}:{}", scheme, target.host, target.port);
-                    let client = reqwest::Client::builder()
-                        .danger_accept_invalid_certs(true)
-                        .timeout(timeout_duration)
-                        .build()
-                        .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
+                    
+                    static CLIENT: std::sync::OnceLock<reqwest::Client> = std::sync::OnceLock::new();
+                    let client = CLIENT.get_or_init(|| {
+                        reqwest::Client::builder()
+                            .danger_accept_invalid_certs(true)
+                            .build()
+                            .unwrap_or_default()
+                    });
 
                     let res = client
                         .get(&url)
+                        .timeout(timeout_duration)
                         .send()
                         .await
                         .map_err(|e| NetworkError::ConnectionError(e.to_string()))?;
@@ -93,17 +101,24 @@ impl NetworkProbe for NativeProbe {
                 TargetProtocol::Icmp => {
                     let payload = [0u8; 8];
 
-                    let ping_result = surge_ping::ping(addr.ip(), &payload).await.map_err(|e| {
-                        NetworkError::ConnectionError(format!("Ping failed: {}", e))
-                    })?;
+                    let ping_result = surge_ping::ping(addr.ip(), &payload).await;
 
-                    let (_packet, rtt) = ping_result;
-                    let is_loopback = addr.ip().is_loopback();
+                    match ping_result {
+                        Ok((_packet, rtt)) => {
+                            let is_loopback = addr.ip().is_loopback();
 
-                    if !is_loopback && rtt < Duration::from_micros(100) {
-                        return Err(NetworkError::ConnectionError(
-                            "Suspiciously low RTT - possible local interception".to_string(),
-                        ));
+                            if !is_loopback && rtt < Duration::from_micros(100) {
+                                return Err(NetworkError::ConnectionError(
+                                    "Suspiciously low RTT - possible local interception".to_string(),
+                                ));
+                            }
+                        }
+                        Err(e) => {
+                            // Fallback to TCP port 80 if ping fails (e.g., due to permissions)
+                            let _ = TcpStream::connect((addr.ip(), 80))
+                                .await
+                                .map_err(|_| NetworkError::ConnectionError(format!("Ping and TCP fallback failed: {}", e)))?;
+                        }
                     }
                 }
             }
@@ -141,7 +156,8 @@ impl NetworkProbe for NativeProbe {
 }
 
 /// Web-specific implementation stub (WASM removed).
-pub struct WebProbe {}
+#[frb(ignore)]
+struct WebProbe {}
 
 impl NetworkProbe for WebProbe {
     async fn check(&self, target: &NetworkTarget) -> TargetReport {
@@ -155,7 +171,12 @@ impl NetworkProbe for WebProbe {
     }
 }
 
-/// Performs a network check against a single, specified target.
+#[cfg(not(target_arch = "wasm32"))]
 pub async fn check_target(target: &NetworkTarget) -> TargetReport {
     NativeProbe {}.check(target).await
+}
+
+#[cfg(target_arch = "wasm32")]
+pub async fn check_target(target: &NetworkTarget) -> TargetReport {
+    WebProbe {}.check(target).await
 }

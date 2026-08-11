@@ -1,6 +1,7 @@
 //! Probe for detecting DNS hijacking.
 
 /// Detects potential DNS hijacking.
+#[cfg(not(target_arch = "wasm32"))]
 pub async fn detect_dns_hijacking(domain: &str) -> bool {
     use std::net::IpAddr;
     use tokio::task;
@@ -39,8 +40,7 @@ pub async fn detect_dns_hijacking(domain: &str) -> bool {
     !is_subset
 }
 
-/// Web-specific implementation stub (WASM removed).
-pub async fn detect_dns_hijacking_web(_domain: &str) -> bool {
-    // Browsers don't expose raw DNS responses or IP addresses easily due to security.
+#[cfg(target_arch = "wasm32")]
+pub async fn detect_dns_hijacking(_domain: &str) -> bool {
     false
 }

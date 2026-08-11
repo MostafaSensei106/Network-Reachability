@@ -13,8 +13,9 @@
 
 include: package:lints/recommended.yaml
 
-exclude:
-- "lib/src/rust/**"
+analyzer:
+  exclude:
+    - "lib/src/rust/**"
 
 # Specify additional rules.
 linter:
