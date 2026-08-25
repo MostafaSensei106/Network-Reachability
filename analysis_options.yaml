@@ -16,6 +16,13 @@ include: package:lints/recommended.yaml
 analyzer:
   exclude:
     - "lib/src/rust/**"
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 
 # Specify additional rules.
 linter:
