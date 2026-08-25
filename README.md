@@ -17,9 +17,7 @@
   <a href="#-basic-usage">Basic Usage</a> •
   <a href="#-observer-pattern--shared-state">Observer Pattern</a> •
   <a href="#-advanced-usage">Advanced Usage</a> •
-  <a href="#-webassembly--web-support">Web Support</a> •
   <a href="#-architecture">Architecture</a> •
-  <a href="#-donations--support">Support & Donate</a> •
   <a href="#-contributing">Contributing</a>
 </p>
 
