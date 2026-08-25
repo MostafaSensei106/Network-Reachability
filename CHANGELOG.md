@@ -18,6 +18,10 @@
   - Added Observer Pattern and shared state guard demo actions.
   - Updated example dashboard header to `CORE ENGINE v0.1.0`.
 
+- deps: Update `flutter_rust_bridge` to `2.13.0`
+  - Updated `flutter_rust_bridge` dependencies across Dart (`pubspec.yaml`) and Rust (`Cargo.toml`).
+  - Improved WebAssembly bridge compatibility and JS-interop binding efficiency.
+
 - perf(core): Optimization of memory allocations and background timers
   - Pre-allocated constant `ConnectivityResult` lists in `Connectivity` facade to eliminate GC pressure.
   - Added stream pipeline caching to `Connectivity.onConnectivityChanged`.
