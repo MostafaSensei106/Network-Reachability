@@ -7,7 +7,7 @@ import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'target.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
 
 /// Defines the strategy used when evaluating multiple network targets during a check cycle.
 ///
@@ -39,6 +39,72 @@ enum CheckStrategy {
   /// servers (e.g., a specific DNS provider being down). It's best for critical
   /// applications that require high confidence in the network's reliability.
   consensus,
+  ;
+}
+
+/// Pre-built configuration profiles optimized for specific application types.
+///
+/// Each preset adjusts check intervals, jitter samples, quality thresholds,
+/// and resilience settings to match the latency and reliability requirements
+/// of different workloads.
+///
+/// # Usage
+/// ```rust
+/// let config = NetworkConfiguration::from_preset(ConfigPreset::Gaming);
+/// ```
+enum ConfigPreset {
+  /// Balanced configuration for general-purpose mobile and web apps.
+  ///
+  /// **Optimized for:** Browsing, social media, standard REST APIs.
+  /// **Check Interval:** 5s | **Jitter Samples:** 5 | **Strategy:** Race
+  default_,
+
+  /// Ultra-low-latency configuration for competitive online gaming.
+  ///
+  /// **Optimized for:** FPS, MOBA, fighting games, real-time multiplayer.
+  /// **Check Interval:** 2s | **Jitter Samples:** 8 | **Strategy:** Race
+  ///
+  /// Tighter quality thresholds ensure even minor latency spikes are
+  /// detected and reported immediately. Circuit breaker activates faster
+  /// to prevent playing on a degraded connection.
+  gaming,
+
+  /// High-throughput configuration for video and audio streaming.
+  ///
+  /// **Optimized for:** Netflix, YouTube, Twitch, Spotify, podcasts.
+  /// **Check Interval:** 8s | **Jitter Samples:** 4 | **Strategy:** Consensus
+  ///
+  /// Prioritizes sustained bandwidth and jitter stability over absolute
+  /// latency. Uses Consensus strategy because streaming buffers can absorb
+  /// a single target failure.
+  streaming,
+
+  /// Configuration for real-time communication (VoIP, video calls).
+  ///
+  /// **Optimized for:** Zoom, Teams, WhatsApp calls, Discord voice chat.
+  /// **Check Interval:** 3s | **Jitter Samples:** 6 | **Strategy:** Race
+  ///
+  /// Extremely sensitive to jitter and packet loss since these directly
+  /// cause audio stuttering and video freezing.
+  voIp,
+
+  /// Battery-efficient configuration for IoT and background services.
+  ///
+  /// **Optimized for:** Smart home hubs, sensor telemetry, background sync.
+  /// **Check Interval:** 30s | **Jitter Samples:** 3 | **Strategy:** Race
+  ///
+  /// Minimizes radio wake-ups and CPU usage. Relaxed thresholds accept
+  /// higher latency as long as data eventually arrives.
+  ioT,
+
+  /// Minimal-overhead configuration for enterprise/corporate apps.
+  ///
+  /// **Optimized for:** ERP systems, internal dashboards, file uploads.
+  /// **Check Interval:** 10s | **Jitter Samples:** 5 | **Strategy:** Consensus
+  ///
+  /// Uses Consensus for high confidence, moderate intervals, and enables
+  /// the circuit breaker to protect backend APIs from hammering.
+  enterprise,
   ;
 }
 
@@ -154,6 +220,27 @@ class NetworkConfiguration {
   /// - **Defaults:** Balanced quality and resilience settings.
   static Future<NetworkConfiguration> default_() =>
       RustLib.instance.api.crateApiModelsConfigNetworkConfigurationDefault();
+
+  /// Creates a [`NetworkConfiguration`] from a predefined [`ConfigPreset`].
+  ///
+  /// Each preset provides carefully tuned parameters for its target use-case
+  /// while using standard default targets (Cloudflare + Google).
+  ///
+  /// # Examples
+  /// ```rust
+  /// // Ultra-low-latency gaming configuration
+  /// let gaming_config = NetworkConfiguration::from_preset(ConfigPreset::Gaming);
+  ///
+  /// // High-throughput streaming configuration
+  /// let streaming_config = NetworkConfiguration::from_preset(ConfigPreset::Streaming);
+  ///
+  /// // Battery-saving IoT configuration
+  /// let iot_config = NetworkConfiguration::from_preset(ConfigPreset::IoT);
+  /// ```
+  static Future<NetworkConfiguration> fromPreset(
+          {required ConfigPreset preset}) =>
+      RustLib.instance.api
+          .crateApiModelsConfigNetworkConfigurationFromPreset(preset: preset);
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   /// Constructs a full [`NetworkConfiguration`].

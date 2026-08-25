@@ -118,6 +118,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CheckStrategy dco_decode_check_strategy(dynamic raw);
 
   @protected
+  ConfigPreset dco_decode_config_preset(dynamic raw);
+
+  @protected
   ConnectionQuality dco_decode_connection_quality(dynamic raw);
 
   @protected
@@ -300,6 +303,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CheckStrategy sse_decode_check_strategy(SseDeserializer deserializer);
+
+  @protected
+  ConfigPreset sse_decode_config_preset(SseDeserializer deserializer);
 
   @protected
   ConnectionQuality sse_decode_connection_quality(SseDeserializer deserializer);
@@ -488,6 +494,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_check_strategy(CheckStrategy self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_config_preset(ConfigPreset self, SseSerializer serializer);
 
   @protected
   void sse_encode_connection_quality(

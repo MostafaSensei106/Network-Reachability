@@ -1,6 +1,6 @@
-//! Probe for checking a single network target.
-
-use crate::api::models::{NetworkTarget, TargetProtocol, TargetReport};
+use crate::api::models::{NetworkTarget, TargetReport};
+#[cfg(not(target_arch = "wasm32"))]
+use crate::api::models::TargetProtocol;
 use crate::api::probes::base::NetworkProbe;
 use flutter_rust_bridge::frb;
 
@@ -21,11 +21,10 @@ impl NetworkProbe for NativeProbe {
         };
 
         let start = Instant::now();
-        let addr_str = format!("{}:{}", target.host, target.port);
         let timeout_duration = Duration::from_millis(target.timeout_ms);
 
         let result = timeout(timeout_duration, async {
-            let mut addrs = tokio::net::lookup_host(&addr_str)
+            let mut addrs = tokio::net::lookup_host((target.host.as_str(), target.port))
                 .await
                 .map_err(|e| NetworkError::DnsResolutionError(e.to_string()))?;
 
@@ -76,7 +75,7 @@ impl NetworkProbe for NativeProbe {
                     });
 
                     let res = client
-                        .get(&url)
+                        .head(&url)
                         .timeout(timeout_duration)
                         .send()
                         .await
@@ -89,13 +88,7 @@ impl NetworkProbe for NativeProbe {
                             status
                         )));
                     }
-
-                    let _ = res.bytes().await.map_err(|e| {
-                        NetworkError::ConnectionError(format!(
-                            "Failed to read response body: {}",
-                            e
-                        ))
-                    })?;
+                    // Drop the response immediately — no need to read the body for a reachability check.
                 }
 
                 TargetProtocol::Icmp => {

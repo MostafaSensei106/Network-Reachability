@@ -39,6 +39,72 @@ pub enum CheckStrategy {
     Consensus,
 }
 
+/// Pre-built configuration profiles optimized for specific application types.
+///
+/// Each preset adjusts check intervals, jitter samples, quality thresholds,
+/// and resilience settings to match the latency and reliability requirements
+/// of different workloads.
+///
+/// # Usage
+/// ```rust
+/// let config = NetworkConfiguration::from_preset(ConfigPreset::Gaming);
+/// ```
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ConfigPreset {
+    /// Balanced configuration for general-purpose mobile and web apps.
+    ///
+    /// **Optimized for:** Browsing, social media, standard REST APIs.
+    /// **Check Interval:** 5s | **Jitter Samples:** 5 | **Strategy:** Race
+    Default,
+
+    /// Ultra-low-latency configuration for competitive online gaming.
+    ///
+    /// **Optimized for:** FPS, MOBA, fighting games, real-time multiplayer.
+    /// **Check Interval:** 2s | **Jitter Samples:** 8 | **Strategy:** Race
+    ///
+    /// Tighter quality thresholds ensure even minor latency spikes are
+    /// detected and reported immediately. Circuit breaker activates faster
+    /// to prevent playing on a degraded connection.
+    Gaming,
+
+    /// High-throughput configuration for video and audio streaming.
+    ///
+    /// **Optimized for:** Netflix, YouTube, Twitch, Spotify, podcasts.
+    /// **Check Interval:** 8s | **Jitter Samples:** 4 | **Strategy:** Consensus
+    ///
+    /// Prioritizes sustained bandwidth and jitter stability over absolute
+    /// latency. Uses Consensus strategy because streaming buffers can absorb
+    /// a single target failure.
+    Streaming,
+
+    /// Configuration for real-time communication (VoIP, video calls).
+    ///
+    /// **Optimized for:** Zoom, Teams, WhatsApp calls, Discord voice chat.
+    /// **Check Interval:** 3s | **Jitter Samples:** 6 | **Strategy:** Race
+    ///
+    /// Extremely sensitive to jitter and packet loss since these directly
+    /// cause audio stuttering and video freezing.
+    VoIP,
+
+    /// Battery-efficient configuration for IoT and background services.
+    ///
+    /// **Optimized for:** Smart home hubs, sensor telemetry, background sync.
+    /// **Check Interval:** 30s | **Jitter Samples:** 3 | **Strategy:** Race
+    ///
+    /// Minimizes radio wake-ups and CPU usage. Relaxed thresholds accept
+    /// higher latency as long as data eventually arrives.
+    IoT,
+
+    /// Minimal-overhead configuration for enterprise/corporate apps.
+    ///
+    /// **Optimized for:** ERP systems, internal dashboards, file uploads.
+    /// **Check Interval:** 10s | **Jitter Samples:** 5 | **Strategy:** Consensus
+    ///
+    /// Uses Consensus for high confidence, moderate intervals, and enables
+    /// the circuit breaker to protect backend APIs from hammering.
+    Enterprise,
+}
+
 /// Represents the perceived quality of the network connection based on latency, jitter, and stability.
 ///
 /// The engine maps raw metrics (like RTT in milliseconds) to these categories using
@@ -328,6 +394,134 @@ impl NetworkConfiguration {
             resilience,
         }
     }
+
+    /// Creates a [`NetworkConfiguration`] from a predefined [`ConfigPreset`].
+    ///
+    /// Each preset provides carefully tuned parameters for its target use-case
+    /// while using standard default targets (Cloudflare + Google).
+    ///
+    /// # Examples
+    /// ```rust
+    /// // Ultra-low-latency gaming configuration
+    /// let gaming_config = NetworkConfiguration::from_preset(ConfigPreset::Gaming);
+    ///
+    /// // High-throughput streaming configuration
+    /// let streaming_config = NetworkConfiguration::from_preset(ConfigPreset::Streaming);
+    ///
+    /// // Battery-saving IoT configuration
+    /// let iot_config = NetworkConfiguration::from_preset(ConfigPreset::IoT);
+    /// ```
+    pub fn from_preset(preset: ConfigPreset) -> Self {
+        let base = Self::default();
+
+        match preset {
+            ConfigPreset::Default => base,
+
+            ConfigPreset::Gaming => Self {
+                check_interval_ms: 2000,
+                cache_validity_ms: 1000,
+                quality_threshold: QualityThresholds {
+                    excellent: 20,
+                    great: 50,
+                    good: 80,
+                    moderate: 120,
+                    poor: 200,
+                },
+                resilience: ResilienceConfig {
+                    strategy: CheckStrategy::Race,
+                    circuit_breaker_threshold: 3,
+                    circuit_breaker_cooldown_ms: 30000,
+                    num_jitter_samples: 8,
+                    jitter_threshold_percent: 0.15,
+                    stability_threshold: 60,
+                    critical_packet_loss_percent: 2.0,
+                },
+                ..base
+            },
+
+            ConfigPreset::Streaming => Self {
+                check_interval_ms: 8000,
+                cache_validity_ms: 4000,
+                quality_threshold: QualityThresholds {
+                    excellent: 50,
+                    great: 120,
+                    good: 250,
+                    moderate: 500,
+                    poor: 1200,
+                },
+                resilience: ResilienceConfig {
+                    strategy: CheckStrategy::Consensus,
+                    circuit_breaker_threshold: 5,
+                    circuit_breaker_cooldown_ms: 60000,
+                    num_jitter_samples: 4,
+                    jitter_threshold_percent: 0.25,
+                    stability_threshold: 35,
+                    critical_packet_loss_percent: 8.0,
+                },
+                ..base
+            },
+
+            ConfigPreset::VoIP => Self {
+                check_interval_ms: 3000,
+                cache_validity_ms: 1500,
+                quality_threshold: QualityThresholds {
+                    excellent: 30,
+                    great: 60,
+                    good: 100,
+                    moderate: 150,
+                    poor: 300,
+                },
+                resilience: ResilienceConfig {
+                    strategy: CheckStrategy::Race,
+                    circuit_breaker_threshold: 3,
+                    circuit_breaker_cooldown_ms: 30000,
+                    num_jitter_samples: 6,
+                    jitter_threshold_percent: 0.12,
+                    stability_threshold: 55,
+                    critical_packet_loss_percent: 3.0,
+                },
+                ..base
+            },
+
+            ConfigPreset::IoT => Self {
+                check_interval_ms: 30000,
+                cache_validity_ms: 15000,
+                quality_threshold: QualityThresholds {
+                    excellent: 100,
+                    great: 250,
+                    good: 500,
+                    moderate: 1000,
+                    poor: 2000,
+                },
+                resilience: ResilienceConfig {
+                    strategy: CheckStrategy::Race,
+                    circuit_breaker_threshold: 0,
+                    circuit_breaker_cooldown_ms: 120000,
+                    num_jitter_samples: 3,
+                    jitter_threshold_percent: 0.40,
+                    stability_threshold: 25,
+                    critical_packet_loss_percent: 15.0,
+                },
+                ..base
+            },
+
+            ConfigPreset::Enterprise => Self {
+                check_interval_ms: 10000,
+                cache_validity_ms: 5000,
+                quality_threshold: QualityThresholds::default(),
+                resilience: ResilienceConfig {
+                    strategy: CheckStrategy::Consensus,
+                    circuit_breaker_threshold: 5,
+                    circuit_breaker_cooldown_ms: 90000,
+                    num_jitter_samples: 5,
+                    jitter_threshold_percent: 0.20,
+                    stability_threshold: 40,
+                    critical_packet_loss_percent: 5.0,
+                },
+                ..base
+            },
+        }
+    }
 }
 
 /// Standard production-ready configuration.
@@ -416,5 +610,57 @@ mod tests {
         assert_eq!(config.targets[1].label, LibConstants::CLOUDFLARE_NAME_HTTPS);
         assert_eq!(config.resilience.strategy, CheckStrategy::Race);
         assert!(!config.security.block_vpn);
+    }
+
+    #[test]
+    fn test_gaming_preset() {
+        let config = NetworkConfiguration::from_preset(ConfigPreset::Gaming);
+        assert_eq!(config.check_interval_ms, 2000);
+        assert_eq!(config.quality_threshold.excellent, 20);
+        assert_eq!(config.quality_threshold.poor, 200);
+        assert_eq!(config.resilience.strategy, CheckStrategy::Race);
+        assert_eq!(config.resilience.num_jitter_samples, 8);
+        assert_eq!(config.resilience.circuit_breaker_threshold, 3);
+    }
+
+    #[test]
+    fn test_streaming_preset() {
+        let config = NetworkConfiguration::from_preset(ConfigPreset::Streaming);
+        assert_eq!(config.check_interval_ms, 8000);
+        assert_eq!(config.resilience.strategy, CheckStrategy::Consensus);
+        assert_eq!(config.resilience.num_jitter_samples, 4);
+    }
+
+    #[test]
+    fn test_voip_preset() {
+        let config = NetworkConfiguration::from_preset(ConfigPreset::VoIP);
+        assert_eq!(config.check_interval_ms, 3000);
+        assert_eq!(config.quality_threshold.excellent, 30);
+        assert_eq!(config.resilience.num_jitter_samples, 6);
+    }
+
+    #[test]
+    fn test_iot_preset() {
+        let config = NetworkConfiguration::from_preset(ConfigPreset::IoT);
+        assert_eq!(config.check_interval_ms, 30000);
+        assert_eq!(config.cache_validity_ms, 15000);
+        assert_eq!(config.resilience.num_jitter_samples, 3);
+    }
+
+    #[test]
+    fn test_enterprise_preset() {
+        let config = NetworkConfiguration::from_preset(ConfigPreset::Enterprise);
+        assert_eq!(config.check_interval_ms, 10000);
+        assert_eq!(config.resilience.strategy, CheckStrategy::Consensus);
+        assert_eq!(config.resilience.circuit_breaker_threshold, 5);
+    }
+
+    #[test]
+    fn test_default_preset_matches_default() {
+        let from_preset = NetworkConfiguration::from_preset(ConfigPreset::Default);
+        let from_default = NetworkConfiguration::default();
+        assert_eq!(from_preset.check_interval_ms, from_default.check_interval_ms);
+        assert_eq!(from_preset.cache_validity_ms, from_default.cache_validity_ms);
+        assert_eq!(from_preset.targets.len(), from_default.targets.len());
     }
 }

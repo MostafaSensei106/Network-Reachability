@@ -16,44 +16,61 @@ class Connectivity {
 
   static final Connectivity _instance = Connectivity._();
 
+  // Pre-allocated constant result lists to avoid GC pressure on frequent events.
+  static const _none = [ConnectivityResult.none];
+  static const _wifi = [ConnectivityResult.wifi];
+  static const _mobile = [ConnectivityResult.mobile];
+  static const _ethernet = [ConnectivityResult.ethernet];
+  static const _vpn = [ConnectivityResult.vpn];
+  static const _bluetooth = [ConnectivityResult.bluetooth];
+  static const _other = [ConnectivityResult.other];
+
+  /// Cached transformed stream to avoid rebuilding the pipeline on every access.
+  Stream<List<ConnectivityResult>>? _cachedStream;
+
   /// Discover network connectivity types that can be used.
   Future<List<ConnectivityResult>> checkConnectivity() async {
-    final status = await NetworkReachability.instance.check();
-    final typeAndFlags =
-        await NetworkReachability.instance.detectSecurityAndNetworkType();
+    final report = await NetworkReachability.instance.check();
 
-    return _mapToConnectivityResult(typeAndFlags.$2, status.status.isConnected);
+    return _mapToConnectivityResult(
+        report.connectionType, report.status.isConnected);
   }
 
   /// Listen for active connectivity types changes.
+  ///
+  /// The stream transformation is cached so repeated access to this getter
+  /// reuses the same pipeline instead of creating new closures each time.
   Stream<List<ConnectivityResult>> get onConnectivityChanged {
-    return NetworkReachability.instance.onStatusChange
-        .asyncMap((final status) async {
-      final typeAndFlags =
-          await NetworkReachability.instance.detectSecurityAndNetworkType();
-      return _mapToConnectivityResult(typeAndFlags.$2, status.isConnected);
-    });
+    return _cachedStream ??=
+        NetworkReachability.instance.onStatusChange.asyncMap(
+      (final status) async {
+        // Reuse the cached report instead of making a redundant FFI call
+        final report = await NetworkReachability.instance.check();
+        return _mapToConnectivityResult(
+            report.connectionType, status.isConnected);
+      },
+    );
   }
 
   List<ConnectivityResult> _mapToConnectivityResult(
       final net_info.ConnectionType type, final bool isConnected) {
     if (!isConnected) {
-      return [ConnectivityResult.none];
+      return _none;
     }
     switch (type) {
       case net_info.ConnectionType.wifi:
-        return [ConnectivityResult.wifi];
+        return _wifi;
       case net_info.ConnectionType.cellular:
-        return [ConnectivityResult.mobile];
+        return _mobile;
       case net_info.ConnectionType.ethernet:
-        return [ConnectivityResult.ethernet];
+        return _ethernet;
       case net_info.ConnectionType.vpn:
-        return [ConnectivityResult.vpn];
+        return _vpn;
       case net_info.ConnectionType.bluetooth:
-        return [ConnectivityResult.bluetooth];
+        return _bluetooth;
       case net_info.ConnectionType.loopback:
       case net_info.ConnectionType.unknown:
-        return [ConnectivityResult.other];
+        return _other;
     }
   }
 }

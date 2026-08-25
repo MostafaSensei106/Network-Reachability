@@ -9,7 +9,7 @@ pub async fn detect_dns_hijacking(domain: &str) -> bool {
     use trust_dns_resolver::Resolver;
 
     // 1. Resolve using the system's default DNS. This is an async operation.
-    let system_ips = match tokio::net::lookup_host(format!("{}:443", domain)).await {
+    let system_ips = match tokio::net::lookup_host((domain, 443_u16)).await {
         Ok(addrs) => addrs.map(|a| a.ip()).collect::<Vec<_>>(),
         Err(_) => return false,
     };
@@ -18,14 +18,19 @@ pub async fn detect_dns_hijacking(domain: &str) -> bool {
     }
 
     // 2. Resolve using a trusted DoH resolver (Cloudflare).
+    // Cache the resolver to avoid re-creating sockets and parsing config on every call.
+    static DOH_RESOLVER: std::sync::OnceLock<Result<Resolver, ()>> = std::sync::OnceLock::new();
+
     let domain_for_doh = domain.to_string();
     let doh_ips_res = task::spawn_blocking(move || {
-        let config = ResolverConfig::cloudflare();
-        let doh_resolver = match Resolver::new(config, ResolverOpts::default()) {
-            Ok(r) => r,
-            Err(_) => return Err(()),
-        };
-        Ok(doh_resolver.lookup_ip(&domain_for_doh))
+        let resolver = DOH_RESOLVER.get_or_init(|| {
+            let config = ResolverConfig::cloudflare();
+            Resolver::new(config, ResolverOpts::default()).map_err(|_| ())
+        });
+        match resolver {
+            Ok(r) => Ok(r.lookup_ip(&domain_for_doh)),
+            Err(_) => Err(()),
+        }
     })
     .await;
 

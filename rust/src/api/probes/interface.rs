@@ -29,11 +29,25 @@ pub fn detect_security_and_network_type() -> (SecurityFlagsResult, ConnectionTyp
             continue;
         }
 
-        let name_lower = iface.name.to_lowercase();
-
         for &(prefixes, ref ctype) in type_map {
-            // Check if name contains prefix or matches common patterns
-            if prefixes.iter().any(|prefix| name_lower.contains(prefix)) {
+            // Case-insensitive prefix check without allocating a new String
+            let name_matches = prefixes.iter().any(|prefix| {
+                iface.name.len() >= prefix.len()
+                    && iface.name.as_bytes().iter().zip(prefix.as_bytes()).all(
+                        |(&a, &b)| a.to_ascii_lowercase() == b,
+                    )
+                    || iface
+                        .name
+                        .as_bytes()
+                        .windows(prefix.len())
+                        .any(|window| {
+                            window
+                                .iter()
+                                .zip(prefix.as_bytes())
+                                .all(|(&a, &b)| a.to_ascii_lowercase() == b)
+                        })
+            });
+            if name_matches {
                 if *ctype == ConnectionType::Vpn {
                     security_flags_res.is_vpn_detected = true;
                     security_flags_res.interface_name = iface.name.clone();

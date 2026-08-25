@@ -80,7 +80,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => 1497467800;
+  int get rustContentHash => -1512668655;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -194,6 +194,10 @@ abstract class RustLibApi extends BaseApi {
 
   Future<NetworkConfiguration>
       crateApiModelsConfigNetworkConfigurationDefault();
+
+  Future<NetworkConfiguration>
+      crateApiModelsConfigNetworkConfigurationFromPreset(
+          {required ConfigPreset preset});
 
   Future<NetworkConfiguration> crateApiModelsConfigNetworkConfigurationNew(
       {required List<NetworkTarget> targets,
@@ -1157,6 +1161,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<NetworkConfiguration>
+      crateApiModelsConfigNetworkConfigurationFromPreset(
+          {required ConfigPreset preset}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_config_preset(preset, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 33, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_network_configuration,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiModelsConfigNetworkConfigurationFromPresetConstMeta,
+      argValues: [preset],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiModelsConfigNetworkConfigurationFromPresetConstMeta =>
+          const TaskConstMeta(
+            debugName: "network_configuration_from_preset",
+            argNames: ["preset"],
+          );
+
+  @override
   Future<NetworkConfiguration> crateApiModelsConfigNetworkConfigurationNew(
       {required List<NetworkTarget> targets,
       required BigInt checkIntervalMs,
@@ -1174,7 +1206,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_security_config(security, serializer);
         sse_encode_box_autoadd_resilience_config(resilience, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 33, port: port_);
+            funcId: 34, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_network_configuration,
@@ -1217,7 +1249,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerSecurityFlagsResult(
             flags, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 34, port: port_);
+            funcId: 35, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1241,7 +1273,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 35, port: port_);
+            funcId: 36, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_quality_thresholds,
@@ -1275,7 +1307,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(moderate, serializer);
         sse_encode_u_64(poor, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 36, port: port_);
+            funcId: 37, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_quality_thresholds,
@@ -1299,7 +1331,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 37, port: port_);
+            funcId: 38, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_resilience_config,
@@ -1337,7 +1369,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_8(stabilityThreshold, serializer);
         sse_encode_f_32(criticalPacketLossPercent, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 38, port: port_);
+            funcId: 39, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_resilience_config,
@@ -1377,7 +1409,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 39, port: port_);
+            funcId: 40, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_security_config,
@@ -1401,7 +1433,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 40, port: port_);
+            funcId: 41, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_security_flags,
@@ -1576,6 +1608,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   CheckStrategy dco_decode_check_strategy(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return CheckStrategy.values[raw as int];
+  }
+
+  @protected
+  ConfigPreset dco_decode_config_preset(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ConfigPreset.values[raw as int];
   }
 
   @protected
@@ -2030,6 +2068,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
     return CheckStrategy.values[inner];
+  }
+
+  @protected
+  ConfigPreset sse_decode_config_preset(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return ConfigPreset.values[inner];
   }
 
   @protected
@@ -2519,6 +2564,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_check_strategy(CheckStrategy self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_config_preset(ConfigPreset self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
   }

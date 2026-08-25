@@ -1,0 +1,9 @@
+{
+  "name": "network_reachability",
+  "version": "0.1.0",
+  "files": [
+    "network_reachability_bg.wasm",
+    "network_reachability.js"
+  ],
+  "browser": "network_reachability.js"
+}

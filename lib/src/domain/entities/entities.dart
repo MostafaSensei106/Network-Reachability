@@ -6,7 +6,7 @@
 /// type safety and performance.
 library;
 
-export '../../../src/rust/api/models/config.dart';
-export '../../../src/rust/api/models/net_info.dart';
-export '../../../src/rust/api/models/report.dart';
-export '../../../src/rust/api/models/target.dart';
+export '../../rust/api/models/config.dart';
+export '../../rust/api/models/net_info.dart';
+export '../../rust/api/models/report.dart';
+export '../../rust/api/models/target.dart';

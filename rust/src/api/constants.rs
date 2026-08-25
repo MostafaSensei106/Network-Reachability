@@ -136,14 +136,6 @@ impl LibConstants {
         "gsm",
         "edge",
         "gprs",
-        "ccmni", // MediaTek
-        "mbim",
-        "qmi", // USB modem protocols
-        "cdc", // CDC devices
-        "hso", // Option modems
-        "qcrmnet",
-        "rmnet_data", // Qualcomm
-        "seth_lte",   // Samsung
     ];
 
     pub const LOOPBACK_PREFIXES: &'static [&'static str] = &["lo"];

@@ -6,7 +6,7 @@ import '../constants/enums.dart';
 /// in a unified way.
 abstract base class NetworkReachabilityException implements Exception {
   /// Creates a new [NetworkReachabilityException] with the given [message].
-  NetworkReachabilityException(this.message);
+  const NetworkReachabilityException(this.message);
 
   /// A human-readable description of the error.
   final String message;
@@ -24,7 +24,7 @@ abstract base class NetworkReachabilityException implements Exception {
 /// different network (e.g., from Cellular to WiFi).
 final class PoorConnectionException extends NetworkReachabilityException {
   /// Creates a new [PoorConnectionException] with the given [message].
-  PoorConnectionException(super.message);
+  const PoorConnectionException(super.message);
 }
 
 /// Exception thrown when a security policy is violated.
@@ -36,7 +36,7 @@ final class PoorConnectionException extends NetworkReachabilityException {
 /// that they need to disable their VPN to continue.
 final class SecurityException extends NetworkReachabilityException {
   /// Creates a new [SecurityException] with the given [reason] and [message].
-  SecurityException(this.reason, final String message) : super(message);
+  const SecurityException(this.reason, final String message) : super(message);
 
   /// The specific security reason why this exception was thrown.
   final SecurityAlert reason;
@@ -51,7 +51,7 @@ final class SecurityException extends NetworkReachabilityException {
 /// attempting new network requests until that time has passed.
 final class CircuitBreakerOpenException extends NetworkReachabilityException {
   /// Creates a new [CircuitBreakerOpenException] with the given [message] and [retryAfter].
-  CircuitBreakerOpenException(super.message, {this.retryAfter});
+  const CircuitBreakerOpenException(super.message, {this.retryAfter});
 
   /// The suggested duration to wait before trying again.
   final Duration? retryAfter;
@@ -60,5 +60,5 @@ final class CircuitBreakerOpenException extends NetworkReachabilityException {
 /// Exception thrown when a network probe or check exceeds its allocated time.
 final class NetworkTimeoutException extends NetworkReachabilityException {
   /// Creates a new [NetworkTimeoutException] with the given [message].
-  NetworkTimeoutException(super.message);
+  const NetworkTimeoutException(super.message);
 }
