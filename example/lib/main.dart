@@ -71,7 +71,9 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
   Future<void> _fetchReport() async {
     setState(() => _isBusy = true);
     try {
-      final report = await NetworkReachability.instance.check(forceRefresh: true);
+      final report = await NetworkReachability.instance.check(
+        forceRefresh: true,
+      );
       if (mounted) {
         setState(() {
           _report = report;
@@ -97,43 +99,43 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
       body: _report != null
           ? _buildBody()
           : _errorMessage != null
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.error_outline,
-                          color: Colors.redAccent,
-                          size: 48,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Initialization or Reachability Issue:\n$_errorMessage',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 13,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        ElevatedButton.icon(
-                          onPressed: _fetchReport,
-                          icon: const Icon(Icons.refresh),
-                          label: const Text('RETRY'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.cyanAccent,
-                            foregroundColor: Colors.black,
-                          ),
-                        ),
-                      ],
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      color: Colors.redAccent,
+                      size: 48,
                     ),
-                  ),
-                )
-              : const Center(
-                  child: CircularProgressIndicator(color: Colors.cyanAccent),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Initialization or Reachability Issue:\n$_errorMessage',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: _fetchReport,
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('RETRY'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.cyanAccent,
+                        foregroundColor: Colors.black,
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+            )
+          : const Center(
+              child: CircularProgressIndicator(color: Colors.cyanAccent),
+            ),
     );
   }
 
