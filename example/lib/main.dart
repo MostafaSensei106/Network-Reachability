@@ -4,19 +4,13 @@ import 'package:network_reachability/network_reachability.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await RustLib.init();
 
-  final defaultConfig = await NetworkConfiguration.default_();
-  final customConfig = NetworkConfiguration(
-    targets: defaultConfig.targets,
-    checkIntervalMs: BigInt.from(5000),
-    cacheValidityMs: BigInt.from(1000),
-    qualityThreshold: defaultConfig.qualityThreshold,
-    security: const SecurityConfig(blockVpn: true, detectDnsHijack: true),
-    resilience: defaultConfig.resilience,
-  );
+  try {
+    await NetworkReachability.init();
+  } catch (e, st) {
+    debugPrint('NetworkReachability.init() error: $e\n$st');
+  }
 
-  await NetworkReachability.init(config: customConfig);
   runApp(
     const MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -37,14 +31,35 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
   CaptivePortalStatus? _cpStatus;
   StreamSubscription? _statusSub;
   bool _isBusy = false;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _fetchReport();
-    _statusSub = NetworkReachability.instance.onStatusChange.listen(
-      (_) => _fetchReport(),
-    );
+    _initAndFetch();
+  }
+
+  Future<void> _initAndFetch() async {
+    setState(() => _isBusy = true);
+    try {
+      try {
+        final _ = NetworkReachability.instance;
+      } catch (_) {
+        await NetworkReachability.init();
+      }
+      _statusSub?.cancel();
+      _statusSub = NetworkReachability.instance.onStatusChange.listen(
+        (_) => _fetchReport(),
+      );
+      await _fetchReport();
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString();
+          _isBusy = false;
+        });
+      }
+    }
   }
 
   @override
@@ -54,8 +69,24 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
   }
 
   Future<void> _fetchReport() async {
-    final report = await NetworkReachability.instance.check(forceRefresh: true);
-    if (mounted) setState(() => _report = report);
+    setState(() => _isBusy = true);
+    try {
+      final report = await NetworkReachability.instance.check(forceRefresh: true);
+      if (mounted) {
+        setState(() {
+          _report = report;
+          _errorMessage = null;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString();
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _isBusy = false);
+    }
   }
 
   @override
@@ -63,11 +94,46 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
     return Scaffold(
       backgroundColor: const Color(0xFF020617),
       appBar: _buildAppBar(),
-      body: _report == null
-          ? const Center(
-              child: CircularProgressIndicator(color: Colors.cyanAccent),
-            )
-          : _buildBody(),
+      body: _report != null
+          ? _buildBody()
+          : _errorMessage != null
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          color: Colors.redAccent,
+                          size: 48,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Initialization or Reachability Issue:\n$_errorMessage',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton.icon(
+                          onPressed: _fetchReport,
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('RETRY'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.cyanAccent,
+                            foregroundColor: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(color: Colors.cyanAccent),
+                ),
     );
   }
 
@@ -89,7 +155,7 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
             ),
           ),
           Text(
-            'CORE ENGINE v0.0.1+4',
+            'CORE ENGINE v0.1.0',
             style: TextStyle(fontSize: 10, color: Colors.white38),
           ),
         ],
@@ -120,7 +186,6 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
   Widget _buildBody() {
     final status = _report!.status;
     return SingleChildScrollView(
-      controller: PageController(),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,13 +609,45 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
     );
   }
 
+  ConfigPreset _activePreset = ConfigPreset.default_;
+
   Widget _buildToolGrid() {
-    return Wrap(
-      spacing: 10,
-      runSpacing: 10,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _toolButton('GUARD: ACTION', _runGuardDemo, Icons.shield),
-        _toolButton('PORTAL CHECK', _runPortalCheck, Icons.web),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: ConfigPreset.values.map((p) {
+            final isSelected = p == _activePreset;
+            return ChoiceChip(
+              label: Text(
+                p.name.toUpperCase(),
+                style: TextStyle(
+                  color: isSelected ? Colors.black : Colors.white70,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              selected: isSelected,
+              selectedColor: Colors.cyanAccent,
+              backgroundColor: const Color(0xFF1E293B),
+              onSelected: (selected) {
+                if (selected) _switchPreset(p);
+              },
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            _toolButton('GUARD: ACTION', _runGuardDemo, Icons.shield),
+            _toolButton('OBSERVER: LISTEN', _runObserverDemo, Icons.radar),
+            _toolButton('PORTAL CHECK', _runPortalCheck, Icons.web),
+          ],
+        ),
       ],
     );
   }
@@ -586,12 +683,55 @@ class _NetworkEngineHubState extends State<NetworkEngineHub> {
 
   // --- Logic Execution ---
 
+  Future<void> _switchPreset(ConfigPreset preset) async {
+    setState(() => _isBusy = true);
+    try {
+      final config = await NetworkConfiguration.fromPreset(preset: preset);
+      await NetworkReachability.init(config: config);
+      _statusSub?.cancel();
+      _statusSub = NetworkReachability.instance.onStatusChange.listen(
+        (_) => _fetchReport(),
+      );
+      setState(() => _activePreset = preset);
+      await _fetchReport();
+      _showSnack(
+        'Switched to ${preset.name.toUpperCase()} preset',
+        Colors.cyan,
+      );
+    } catch (e) {
+      _showSnack(e.toString(), Colors.redAccent);
+    } finally {
+      setState(() => _isBusy = false);
+    }
+  }
+
+  void _runObserverDemo() {
+    final sub = NetworkReachability.instance.listenGuard(
+      minQuality: ConnectionQuality.good,
+      onHealthy: (status) {
+        _showSnack(
+          'Observer: Network is Healthy (${status.quality.name})',
+          Colors.green,
+        );
+      },
+      onDegraded: (status) {
+        _showSnack(
+          'Observer: Network Degraded (${status.quality.name})',
+          Colors.orange,
+        );
+      },
+    );
+    Future.delayed(const Duration(seconds: 10), () => sub.cancel());
+    _showSnack('Observer Pattern active for 10s', Colors.cyan);
+  }
+
   Future<void> _runGuardDemo() async {
     setState(() => _isBusy = true);
     try {
       final res = await NetworkReachability.instance.guard(
         minQuality: ConnectionQuality.good,
-        action: () async => "SUCCESS: Critical Logic Executed",
+        action: () async =>
+            "SUCCESS: Critical Logic Executed (Shared State Checked)",
       );
       _showSnack(res, Colors.green);
     } catch (e) {

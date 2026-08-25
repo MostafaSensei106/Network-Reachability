@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs
 /// Represents the operational state of the Circuit Breaker pattern.
 ///
 /// The circuit breaker is a resilience pattern that prevents an application
@@ -49,4 +50,21 @@ enum SecurityAlert {
 
   /// The active network interface is not permitted by the application policy.
   unallowedInterface,
+}
+
+/// Represents the status of the network connection, mapped for
+/// `connectivity_plus` drop-in replacement.
+enum ConnectivityResult {
+  wifi,
+  bluetooth,
+  ethernet,
+  mobile,
+  vpn,
+  satellite,
+  other,
+  none,
+}
+
+extension ConnectivityResultExtension on ConnectivityResult {
+  bool get hasConnectivity => this != ConnectivityResult.none;
 }

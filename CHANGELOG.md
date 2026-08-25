@@ -1,3 +1,30 @@
+## 0.1.0
+
+- feat(config): Introduce `ConfigPreset` for specialized application workloads
+  - Added multi-use configuration presets in Rust: `Gaming` (ultra-low latency & high jitter sensitivity), `Streaming` (high-throughput consensus & buffer friendly), `VoIP` (voice/video call jitter & loss sensitive), `IoT` (battery-saving long interval), `Enterprise` (consensus & circuit breaker protected), and `Default`.
+  - Added `NetworkConfiguration::from_preset` / `NetworkConfiguration.fromPreset` constructor exposed through FFI.
+
+- feat(api): Add Observer Pattern methods and shared state accessors
+  - Introduced `listen` and `listenGuard` methods to allow API layers and reactive widgets to observe network changes without manual polling.
+  - Added synchronous shared state accessors on `NetworkReachability`: `lastReport`, `lastStatus`, `isConnected`, and `currentQuality`.
+  - Updated `guard` method to leverage cached shared state by default and prevent redundant FFI invocations on high-frequency API calls.
+
+- feat(web): Built-in Web / WASM initialization support
+  - Added automatic WebAssembly asset loading via `loadExternalLibrary` in `NetworkReachability.init()` for web platform.
+  - Compiled and packaged release WASM binaries under `web/pkg/`.
+
+- feat(example): Interactive preset switcher and observer demo
+  - Added UI ChoiceChips to switch between all presets (`Default`, `Gaming`, `Streaming`, `VoIP`, `IoT`, `Enterprise`) in real-time.
+  - Added Observer Pattern and shared state guard demo actions.
+  - Updated example dashboard header to `CORE ENGINE v0.1.0`.
+
+- perf(core): Optimization of memory allocations and background timers
+  - Pre-allocated constant `ConnectivityResult` lists in `Connectivity` facade to eliminate GC pressure.
+  - Added stream pipeline caching to `Connectivity.onConnectivityChanged`.
+  - Implemented generation counters in `NetworkReachability` background timer loop to prevent duplicate ghost timers on app pause/resume cycles.
+  - Added `const` constructors to all `NetworkReachabilityException` subclasses.
+  - Fixed relative export paths across domain entities.
+
 ## 0.0.1+4
 
 

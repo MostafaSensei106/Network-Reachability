@@ -8,9 +8,11 @@
   Go beyond simple connectivity checks. Understand the <i>quality</i>, <i>stability</i>, and <i>security</i> of your user's network.
 </p>
 
+
 <p align="center">
   <a href="#-why-choose-network-reachability">Why?</a> •
   <a href="#-key-features">Key Features</a> •
+  <a href="#-connectivity_plus-drop-in-replacement">connectivity_plus Migration</a> •
   <a href="#-installation">Installation</a> •
   <a href="#-basic-usage">Basic Usage</a> •
   <a href="#-advanced-usage">Advanced Usage</a> •
@@ -63,9 +65,34 @@ Most network libraries tell you if you're `connected` or `disconnected`. In the 
   - **VPN/Proxy Shield**: Identify anonymized connections to protect sensitive data.
   - **Captive Portal Engine**: Specifically identifies public WiFi login pages that block internet access.
 
+- **🔌 `connectivity_plus` API Parity**: Use `Network-Reachability` as a direct drop-in replacement for `connectivity_plus`. Seamlessly migrate your app to get all advanced network insights without rewriting your existing logic!
+
 - **📈 Stability Scoring**: Not just a "Yes/No" status. We calculate a `StabilityScore` (0-100) based on jitter (latency variance) and packet loss, helping you decide if the connection is reliable enough for heavy tasks.
 
 ---
+
+## 🔌 `connectivity_plus` Drop-In Replacement
+
+If you are currently using `connectivity_plus` and want to upgrade to `Network-Reachability` without rewriting your app's logic, we provide a 1:1 API compatibility facade!
+
+```dart
+import 'package:network_reachability/network_reachability.dart';
+
+final connectivity = Connectivity();
+
+// 1. Check current connectivity
+final List<ConnectivityResult> results = await connectivity.checkConnectivity();
+if (results.contains(ConnectivityResult.mobile)) {
+  print('On Cellular Data');
+}
+
+// 2. Listen to connectivity changes
+connectivity.onConnectivityChanged.listen((List<ConnectivityResult> results) {
+  print('Connectivity changed: $results');
+});
+```
+
+You get all the advanced backend monitoring, circuit breaking, and high-performance Rust core features, while your UI layer remains untouched.
 
 ## 📦 Installation
 
@@ -271,7 +298,7 @@ Future<void> initializeWithCustomConfig() async {
       jitterThresholdPercent: 0.2,
 
       // If the calculated stability score is less than this value, the quality considered 'Unstable'.
-      stabilityThershold: 80,
+      stabilityThreshold: 80,
 
       // The packet loss percentage above which the connection is marked as 'Unstable'.
       criticalPacketLossPrecent: 5.0,
@@ -324,9 +351,19 @@ Contributions are welcome! Here’s how to get started:
 
 ---
 
-## 📜 License
+## ⚖️ License
 
-This project is licensed under the **GPL-3.0 License**.
+This project is dual-licensed:
+
+1. **Open Source License**: GPL-3.0
+   - Free to use, modify, and distribute under GPL terms.
+   - Any distributed modified version must also be GPL-3.0.
+
+2. **Commercial License**:
+   - Required for using the library in proprietary / closed-source products.
+   - Only available from the copyright holder (Mostafa Mahmoud).
+   - Contact: [mostafasensei106@gmail.com]
+
 See the [LICENSE](LICENSE) file for full details.
 
 <p align="center">

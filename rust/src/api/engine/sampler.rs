@@ -10,14 +10,13 @@ use futures::future::join_all;
 pub async fn collect_network_samples(
     config: &NetworkConfiguration,
 ) -> (Vec<u64>, Vec<TargetReport>) {
-    let mut all_sample_latencies = Vec::new();
-    let mut final_reports = Vec::new();
-
     let num_samples = if config.resilience.num_jitter_samples > 1 {
-        config.resilience.num_jitter_samples
+        config.resilience.num_jitter_samples as usize
     } else {
         1
     };
+    let mut all_sample_latencies = Vec::with_capacity(num_samples);
+    let mut final_reports = Vec::new();
 
     for sample_num in 0..num_samples {
         let futures = config.targets.iter().map(check_target);

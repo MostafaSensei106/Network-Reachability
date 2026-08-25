@@ -1,11 +1,10 @@
-import '../../../../src/rust/api/models/net_info.dart';
-import '../../../../src/rust/api/models/report.dart';
-import '../../../../src/rust/api/models/target.dart';
-import '../../../../src/rust/api/probes/captive_portal.dart'
-    as rust_captive_portal;
-import '../../../../src/rust/api/probes/dns.dart' as rust_dns;
-import '../../../../src/rust/api/probes/interface.dart' as rust_interface;
-import '../../../../src/rust/api/probes/target.dart' as rust_target;
+import '../../../rust/api/models/net_info.dart';
+import '../../../rust/api/models/report.dart';
+import '../../../rust/api/models/target.dart';
+import '../../../rust/api/probes/captive_portal.dart' as rust_captive_portal;
+import '../../../rust/api/probes/dns.dart' as rust_dns;
+import '../../../rust/api/probes/interface.dart' as rust_interface;
+import '../../../rust/api/probes/target.dart' as rust_target;
 
 /// Data source for network probes on the **Web platform**.
 ///
@@ -16,17 +15,17 @@ final class NetworkProbesSource {
   static Future<CaptivePortalStatus> checkForCaptivePortal({
     required final BigInt timeoutMs,
   }) =>
-      rust_captive_portal.checkForCaptivePortalWeb(timeoutMs: timeoutMs);
+      rust_captive_portal.checkForCaptivePortal(timeoutMs: timeoutMs);
 
   /// Always returns false as browser security restrictions (CORS/SOP)
   /// prevent low-level DNS integrity checks on the web.
   static Future<bool> detectDnsHijacking({required final String domain}) =>
-      rust_dns.detectDnsHijackingWeb(domain: domain);
+      rust_dns.detectDnsHijacking(domain: domain);
 
   /// Uses the browser's `Navigator.connection` API to determine connection type.
   static Future<(SecurityFlagsResult, ConnectionType)>
       detectSecurityAndNetworkType() =>
-          rust_interface.detectSecurityAndNetworkTypeWeb();
+          rust_interface.detectSecurityAndNetworkType();
 
   /// Performs a reachability probe using the browser's `Fetch` API.
   static Future<TargetReport> checkTarget({

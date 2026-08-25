@@ -49,6 +49,7 @@ impl From<anyhow::Error> for NetworkError {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 impl From<tokio::time::error::Elapsed> for NetworkError {
     /// Automatically converts Tokio timeout errors into [`NetworkError::TimeoutError`].
     fn from(_: tokio::time::error::Elapsed) -> Self {

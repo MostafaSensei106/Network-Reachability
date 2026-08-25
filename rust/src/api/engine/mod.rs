@@ -37,15 +37,26 @@ pub async fn check_network(config: NetworkConfiguration) -> NetworkReport {
 
     let mut quality = evaluate_network_quality(is_connected, &latency_stats, &config);
 
-    // If we're ostensibly connected, check for a captive portal to be sure.
-    if is_connected && quality != ConnectionQuality::Offline {
-        let cp_status = probes::check_for_captive_portal(1000).await;
-        if cp_status.is_captive_portal {
-            quality = ConnectionQuality::CaptivePortal;
-        }
+    // Run captive portal check, interface detection, and DNS check concurrently
+    // since they are independent I/O-bound operations.
+    let (cp_status, (mut security_flags_res, connection_type)) = futures::join!(
+        async {
+            if is_connected && quality != ConnectionQuality::Offline {
+                probes::check_for_captive_portal(1000).await
+            } else {
+                crate::api::models::CaptivePortalStatus {
+                    is_captive_portal: false,
+                    redirect_url: None,
+                }
+            }
+        },
+        async { detect_security_and_network_type() }
+    );
+
+    if cp_status.is_captive_portal {
+        quality = ConnectionQuality::CaptivePortal;
     }
 
-    let (mut security_flags_res, connection_type) = detect_security_and_network_type();
     perform_dns_security_check(&config, &mut security_flags_res).await;
 
     let winner_target = if let Some(r) = final_target_reports.iter().find(|r| r.success) {

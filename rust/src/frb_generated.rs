@@ -28,7 +28,6 @@
 
 use crate::api::models::net_info::*;
 use crate::api::models::report::*;
-use crate::api::probes::base::NetworkProbe;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
 use flutter_rust_bridge::{Handler, IntoIntoDart};
@@ -41,7 +40,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -650198572;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1512668655;
 
 // Section: executor
 
@@ -1075,62 +1074,6 @@ fn wire__crate__api__probes__captive_portal__check_for_captive_portal_impl(
         },
     )
 }
-fn wire__crate__api__probes__captive_portal__check_for_captive_portal_web_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "check_for_captive_portal_web",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_timeout_ms = <u64>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, ()>(
-                    (move || async move {
-                        let output_ok = Result::<_, ()>::Ok(
-                            crate::api::probes::captive_portal::check_for_captive_portal_web(
-                                api_timeout_ms,
-                            )
-                            .await,
-                        )?;
-                        Ok(output_ok)
-                    })()
-                    .await,
-                )
-            }
-        },
-    )
-}
-fn wire__crate__api__probes__captive_portal__check_for_captive_portal_web_manual_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "check_for_captive_portal_web_manual", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
-            let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
-            let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api__timeout_ms = <u64>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
-                    transform_result_sse::<_, ()>((move || async move {
-                         let output_ok = Result::<_,()>::Ok(crate::api::probes::captive_portal::check_for_captive_portal_web_manual(api__timeout_ms).await)?;   Ok(output_ok)
-                    })().await)
-                } })
-}
 fn wire__crate__api__engine__check_network_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1361,44 +1304,6 @@ fn wire__crate__api__probes__dns__detect_dns_hijacking_impl(
         },
     )
 }
-fn wire__crate__api__probes__dns__detect_dns_hijacking_web_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "detect_dns_hijacking_web",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api__domain = <String>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, ()>(
-                    (move || async move {
-                        let output_ok = Result::<_, ()>::Ok(
-                            crate::api::probes::dns::detect_dns_hijacking_web(&api__domain).await,
-                        )?;
-                        Ok(output_ok)
-                    })()
-                    .await,
-                )
-            }
-        },
-    )
-}
 fn wire__crate__api__probes__interface__detect_security_and_network_type_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1426,40 +1331,6 @@ fn wire__crate__api__probes__interface__detect_security_and_network_type_impl(
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Result::<_, ()>::Ok(
                         crate::api::probes::interface::detect_security_and_network_type(),
-                    )?;
-                    Ok(output_ok)
-                })())
-            }
-        },
-    )
-}
-fn wire__crate__api__probes__interface__detect_security_and_network_type_web_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "detect_security_and_network_type_web",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            deserializer.end();
-            move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::probes::interface::detect_security_and_network_type_web(),
                     )?;
                     Ok(output_ok)
                 })())
@@ -1549,47 +1420,6 @@ fn wire__crate__api__analysis__quality__evaluate_quality_impl(
         },
     )
 }
-fn wire__crate__api__probes__target__native_probe_check_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "native_probe_check",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <crate::api::probes::target::NativeProbe>::sse_decode(&mut deserializer);
-            let api_target =
-                <crate::api::models::target::NetworkTarget>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, ()>(
-                    (move || async move {
-                        let output_ok = Result::<_, ()>::Ok(
-                            crate::api::probes::target::NativeProbe::check(&api_that, &api_target)
-                                .await,
-                        )?;
-                        Ok(output_ok)
-                    })()
-                    .await,
-                )
-            }
-        },
-    )
-}
 fn wire__crate__api__models__config__network_configuration_default_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1617,6 +1447,42 @@ fn wire__crate__api__models__config__network_configuration_default_impl(
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Result::<_, ()>::Ok(
                         crate::api::models::config::NetworkConfiguration::default(),
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__models__config__network_configuration_from_preset_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "network_configuration_from_preset",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_preset =
+                <crate::api::models::config::ConfigPreset>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::models::config::NetworkConfiguration::from_preset(api_preset),
                     )?;
                     Ok(output_ok)
                 })())
@@ -1878,8 +1744,8 @@ fn wire__crate__api__models__config__resilience_config_new_impl(
             let api_circuit_breaker_cooldown_ms = <u64>::sse_decode(&mut deserializer);
             let api_num_jitter_samples = <u8>::sse_decode(&mut deserializer);
             let api_jitter_threshold_percent = <f64>::sse_decode(&mut deserializer);
-            let api_stability_thershold = <u8>::sse_decode(&mut deserializer);
-            let api_critical_packet_loss_precent = <f32>::sse_decode(&mut deserializer);
+            let api_stability_threshold = <u8>::sse_decode(&mut deserializer);
+            let api_critical_packet_loss_percent = <f32>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
@@ -1890,8 +1756,8 @@ fn wire__crate__api__models__config__resilience_config_new_impl(
                             api_circuit_breaker_cooldown_ms,
                             api_num_jitter_samples,
                             api_jitter_threshold_percent,
-                            api_stability_thershold,
-                            api_critical_packet_loss_precent,
+                            api_stability_threshold,
+                            api_critical_packet_loss_percent,
                         ))?;
                     Ok(output_ok)
                 })())
@@ -1962,47 +1828,6 @@ fn wire__crate__api__models__net_info__security_flags_default_impl(
                     )?;
                     Ok(output_ok)
                 })())
-            }
-        },
-    )
-}
-fn wire__crate__api__probes__target__web_probe_check_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "web_probe_check",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <crate::api::probes::target::WebProbe>::sse_decode(&mut deserializer);
-            let api_target =
-                <crate::api::models::target::NetworkTarget>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, ()>(
-                    (move || async move {
-                        let output_ok = Result::<_, ()>::Ok(
-                            crate::api::probes::target::WebProbe::check(&api_that, &api_target)
-                                .await,
-                        )?;
-                        Ok(output_ok)
-                    })()
-                    .await,
-                )
             }
         },
     )
@@ -2094,6 +1919,22 @@ impl SseDecode for crate::api::models::config::CheckStrategy {
             0 => crate::api::models::config::CheckStrategy::Race,
             1 => crate::api::models::config::CheckStrategy::Consensus,
             _ => unreachable!("Invalid variant for CheckStrategy: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::models::config::ConfigPreset {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::models::config::ConfigPreset::Default,
+            1 => crate::api::models::config::ConfigPreset::Gaming,
+            2 => crate::api::models::config::ConfigPreset::Streaming,
+            3 => crate::api::models::config::ConfigPreset::VoIP,
+            4 => crate::api::models::config::ConfigPreset::IoT,
+            5 => crate::api::models::config::ConfigPreset::Enterprise,
+            _ => unreachable!("Invalid variant for ConfigPreset: {}", inner),
         };
     }
 }
@@ -2225,13 +2066,6 @@ impl SseDecode for Vec<crate::api::models::report::TargetReport> {
             ));
         }
         return ans_;
-    }
-}
-
-impl SseDecode for crate::api::probes::target::NativeProbe {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        return crate::api::probes::target::NativeProbe {};
     }
 }
 
@@ -2396,16 +2230,16 @@ impl SseDecode for crate::api::models::config::ResilienceConfig {
         let mut var_circuitBreakerCooldownMs = <u64>::sse_decode(deserializer);
         let mut var_numJitterSamples = <u8>::sse_decode(deserializer);
         let mut var_jitterThresholdPercent = <f64>::sse_decode(deserializer);
-        let mut var_stabilityThershold = <u8>::sse_decode(deserializer);
-        let mut var_criticalPacketLossPrecent = <f32>::sse_decode(deserializer);
+        let mut var_stabilityThreshold = <u8>::sse_decode(deserializer);
+        let mut var_criticalPacketLossPercent = <f32>::sse_decode(deserializer);
         return crate::api::models::config::ResilienceConfig {
             strategy: var_strategy,
             circuit_breaker_threshold: var_circuitBreakerThreshold,
             circuit_breaker_cooldown_ms: var_circuitBreakerCooldownMs,
             num_jitter_samples: var_numJitterSamples,
             jitter_threshold_percent: var_jitterThresholdPercent,
-            stability_thershold: var_stabilityThershold,
-            critical_packet_loss_precent: var_criticalPacketLossPrecent,
+            stability_threshold: var_stabilityThreshold,
+            critical_packet_loss_percent: var_criticalPacketLossPercent,
         };
     }
 }
@@ -2503,13 +2337,6 @@ impl SseDecode for usize {
     }
 }
 
-impl SseDecode for crate::api::probes::target::WebProbe {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        return crate::api::probes::target::WebProbe {};
-    }
-}
-
 fn pde_ffi_dispatcher_primary_impl(
     func_id: i32,
     port: flutter_rust_bridge::for_generated::MessagePort,
@@ -2543,137 +2370,107 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        23 => wire__crate__api__probes__captive_portal__check_for_captive_portal_web_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        24 => wire__crate__api__probes__captive_portal__check_for_captive_portal_web_manual_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        25 => wire__crate__api__engine__check_network_impl(port, ptr, rust_vec_len, data_len),
-        26 => {
+        23 => wire__crate__api__engine__check_network_impl(port, ptr, rust_vec_len, data_len),
+        24 => {
             wire__crate__api__probes__target__check_target_impl(port, ptr, rust_vec_len, data_len)
         }
-        27 => wire__crate__api__engine__sampler__collect_network_samples_impl(
+        25 => wire__crate__api__engine__sampler__collect_network_samples_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        28 => wire__crate__api__analysis__stats__compute_latency_stats_impl(
+        26 => wire__crate__api__analysis__stats__compute_latency_stats_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        29 => wire__crate__api__models__net_info__connection_type_default_impl(
+        27 => wire__crate__api__models__net_info__connection_type_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        30 => wire__crate__api__probes__dns__detect_dns_hijacking_impl(
+        28 => wire__crate__api__probes__dns__detect_dns_hijacking_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        31 => wire__crate__api__probes__dns__detect_dns_hijacking_web_impl(
+        29 => wire__crate__api__probes__interface__detect_security_and_network_type_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        32 => wire__crate__api__probes__interface__detect_security_and_network_type_impl(
+        30 => wire__crate__api__analysis__quality__evaluate_network_quality_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        33 => wire__crate__api__probes__interface__detect_security_and_network_type_web_impl(
+        31 => wire__crate__api__analysis__quality__evaluate_quality_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        34 => wire__crate__api__analysis__quality__evaluate_network_quality_impl(
+        32 => wire__crate__api__models__config__network_configuration_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        35 => wire__crate__api__analysis__quality__evaluate_quality_impl(
+        33 => wire__crate__api__models__config__network_configuration_from_preset_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        36 => wire__crate__api__probes__target__native_probe_check_impl(
+        34 => wire__crate__api__models__config__network_configuration_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        37 => wire__crate__api__models__config__network_configuration_default_impl(
+        35 => wire__crate__api__engine__security__perform_dns_security_check_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        38 => wire__crate__api__models__config__network_configuration_new_impl(
+        36 => wire__crate__api__models__config__quality_thresholds_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        39 => wire__crate__api__engine__security__perform_dns_security_check_impl(
+        37 => wire__crate__api__models__config__quality_thresholds_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        40 => wire__crate__api__models__config__quality_thresholds_default_impl(
+        38 => wire__crate__api__models__config__resilience_config_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        41 => wire__crate__api__models__config__quality_thresholds_new_impl(
+        39 => wire__crate__api__models__config__resilience_config_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        42 => wire__crate__api__models__config__resilience_config_default_impl(
+        40 => wire__crate__api__models__config__security_config_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        43 => wire__crate__api__models__config__resilience_config_new_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        44 => wire__crate__api__models__config__security_config_default_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        45 => wire__crate__api__models__net_info__security_flags_default_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        46 => wire__crate__api__probes__target__web_probe_check_impl(
+        41 => wire__crate__api__models__net_info__security_flags_default_impl(
             port,
             ptr,
             rust_vec_len,
@@ -2791,6 +2588,31 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::config::CheckStrategy
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::models::config::ConfigPreset {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Default => 0.into_dart(),
+            Self::Gaming => 1.into_dart(),
+            Self::Streaming => 2.into_dart(),
+            Self::VoIP => 3.into_dart(),
+            Self::IoT => 4.into_dart(),
+            Self::Enterprise => 5.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::models::config::ConfigPreset
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::config::ConfigPreset>
+    for crate::api::models::config::ConfigPreset
+{
+    fn into_into_dart(self) -> crate::api::models::config::ConfigPreset {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::models::config::ConnectionQuality {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
@@ -2866,23 +2688,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::report::LatencyStats>
     for crate::api::models::report::LatencyStats
 {
     fn into_into_dart(self) -> crate::api::models::report::LatencyStats {
-        self
-    }
-}
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::probes::target::NativeProbe {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        Vec::<u8>::new().into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::probes::target::NativeProbe
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<crate::api::probes::target::NativeProbe>
-    for crate::api::probes::target::NativeProbe
-{
-    fn into_into_dart(self) -> crate::api::probes::target::NativeProbe {
         self
     }
 }
@@ -2995,8 +2800,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::config::ResilienceCon
                 .into_dart(),
             self.num_jitter_samples.into_into_dart().into_dart(),
             self.jitter_threshold_percent.into_into_dart().into_dart(),
-            self.stability_thershold.into_into_dart().into_dart(),
-            self.critical_packet_loss_precent
+            self.stability_threshold.into_into_dart().into_dart(),
+            self.critical_packet_loss_percent
                 .into_into_dart()
                 .into_dart(),
         ]
@@ -3105,23 +2910,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::report::TargetReport>
         self
     }
 }
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::probes::target::WebProbe {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        Vec::<u8>::new().into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::probes::target::WebProbe
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<crate::api::probes::target::WebProbe>
-    for crate::api::probes::target::WebProbe
-{
-    fn into_into_dart(self) -> crate::api::probes::target::WebProbe {
-        self
-    }
-}
 
 impl SseEncode for NetworkReport {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3188,6 +2976,26 @@ impl SseEncode for crate::api::models::config::CheckStrategy {
             match self {
                 crate::api::models::config::CheckStrategy::Race => 0,
                 crate::api::models::config::CheckStrategy::Consensus => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::models::config::ConfigPreset {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::models::config::ConfigPreset::Default => 0,
+                crate::api::models::config::ConfigPreset::Gaming => 1,
+                crate::api::models::config::ConfigPreset::Streaming => 2,
+                crate::api::models::config::ConfigPreset::VoIP => 3,
+                crate::api::models::config::ConfigPreset::IoT => 4,
+                crate::api::models::config::ConfigPreset::Enterprise => 5,
                 _ => {
                     unimplemented!("");
                 }
@@ -3314,11 +3122,6 @@ impl SseEncode for Vec<crate::api::models::report::TargetReport> {
     }
 }
 
-impl SseEncode for crate::api::probes::target::NativeProbe {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
-}
-
 impl SseEncode for crate::api::models::config::NetworkConfiguration {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3437,8 +3240,8 @@ impl SseEncode for crate::api::models::config::ResilienceConfig {
         <u64>::sse_encode(self.circuit_breaker_cooldown_ms, serializer);
         <u8>::sse_encode(self.num_jitter_samples, serializer);
         <f64>::sse_encode(self.jitter_threshold_percent, serializer);
-        <u8>::sse_encode(self.stability_thershold, serializer);
-        <f32>::sse_encode(self.critical_packet_loss_precent, serializer);
+        <u8>::sse_encode(self.stability_threshold, serializer);
+        <f32>::sse_encode(self.critical_packet_loss_percent, serializer);
     }
 }
 
@@ -3525,11 +3328,6 @@ impl SseEncode for usize {
     }
 }
 
-impl SseEncode for crate::api::probes::target::WebProbe {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
-}
-
 #[cfg(not(target_family = "wasm"))]
 mod io {
     // This file is automatically generated, so please do not edit it.
@@ -3540,7 +3338,6 @@ mod io {
     use super::*;
     use crate::api::models::net_info::*;
     use crate::api::models::report::*;
-    use crate::api::probes::base::NetworkProbe;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -3593,7 +3390,6 @@ mod web {
     use super::*;
     use crate::api::models::net_info::*;
     use crate::api::models::report::*;
-    use crate::api::probes::base::NetworkProbe;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };

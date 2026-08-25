@@ -37,7 +37,7 @@ impl LibConstants {
     /// 40%
     pub const DEFAULT_STABILITY_THRESHOLD: u8 = 40;
 
-    pub const DEFAULT_CRITICAL_PACKET_LOSS_PRECENT: f32 = 5.0;
+    pub const DEFAULT_CRITICAL_PACKET_LOSS_PERCENT: f32 = 5.0;
 
     pub const DEFAULT_MAX_TRACEROUTE_HOPS: u8 = 30;
 
@@ -136,14 +136,6 @@ impl LibConstants {
         "gsm",
         "edge",
         "gprs",
-        "ccmni", // MediaTek
-        "mbim",
-        "qmi", // USB modem protocols
-        "cdc", // CDC devices
-        "hso", // Option modems
-        "qcrmnet",
-        "rmnet_data", // Qualcomm
-        "seth_lte",   // Samsung
     ];
 
     pub const LOOPBACK_PREFIXES: &'static [&'static str] = &["lo"];
