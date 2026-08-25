@@ -8,14 +8,18 @@
   Go beyond simple connectivity checks. Understand the <i>quality</i>, <i>stability</i>, and <i>security</i> of your user's network.
 </p>
 
-
 <p align="center">
   <a href="#-why-choose-network-reachability">Why?</a> •
   <a href="#-key-features">Key Features</a> •
+  <a href="#-workload-presets">Workload Presets</a> •
   <a href="#-connectivity_plus-drop-in-replacement">connectivity_plus Migration</a> •
   <a href="#-installation">Installation</a> •
   <a href="#-basic-usage">Basic Usage</a> •
+  <a href="#-observer-pattern--shared-state">Observer Pattern</a> •
   <a href="#-advanced-usage">Advanced Usage</a> •
+  <a href="#-webassembly--web-support">Web Support</a> •
+  <a href="#-architecture">Architecture</a> •
+  <a href="#-donations--support">Support & Donate</a> •
   <a href="#-contributing">Contributing</a>
 </p>
 
@@ -32,97 +36,102 @@ Most network libraries tell you if you're `connected` or `disconnected`. In the 
 
 | Feature | `connectivity_plus` | `internet_checker` | **Network-Reachability** |
 | :--- | :---: | :---: | :--- |
-| **Connection Type** | ✅ | ❌ | **✅ WiFi, Cellular, Ethernet, etc.** |
-| **Internet Verification** | ❌ | ✅ | **✅ Deep Multi-Target Probing** |
-| **Performance Engine** | Dart/Native | Dart | **🚀 High-Perf Rust Native Core** |
-| **UI Responsiveness** | ✅ | ⚠️ | **⚡ Zero UI-Thread Blocking** |
-| **Detailed Metrics** | ❌ | ❌ | **📈 Latency, Jitter, Packet Loss** |
-| **Security Suite** | ❌ | ❌ | **🛡️ VPN, Proxy & DNS Hijack** |
-| **Resilience Logic** | ❌ | ❌ | **🔋 Circuit Breaker (Open/Half-Open)** |
+| **Connection Type** | ✅ | ❌ | **✅ WiFi, Cellular, Ethernet, VPN, Bluetooth** |
+| **Internet Verification** | ❌ | ✅ | **✅ Deep Multi-Target Probing (HTTP/TCP/DNS)** |
+| **Performance Engine** | Dart/Native | Dart | **🚀 Multi-Threaded Rust Native Engine** |
+| **UI Responsiveness** | ✅ | ⚠️ | **⚡ Zero UI-Thread Jitter / Off-Main-Thread** |
+| **Detailed Metrics** | ❌ | ❌ | **📈 Latency, Jitter (StdDev), Packet Loss** |
+| **Pre-Tuned Presets** | ❌ | ❌ | **🎮 Gaming, Streaming, VoIP, IoT, Enterprise** |
+| **Security Suite** | ❌ | ❌ | **🛡️ VPN, System Proxy & DNS Tamper Detection** |
+| **Resilience Logic** | ❌ | ❌ | **🔋 Adaptive Circuit Breaker (Closed/Open/Half-Open)** |
+| **Observer Pattern** | ❌ | ❌ | **👁️ `listen()` & `listenGuard()` Reactive Hooks** |
 | **Request Coalescing** | ❌ | ❌ | **🤝 Thundering Herd Protection** |
-| **Battery Management** | ❌ | ❌ | **🔋 Adaptive Lifecycle Polling** |
-| **Action Protection** | ❌ | ❌ | **🔒 `guard()` Smart Wrapper** |
+| **Battery Management** | ❌ | ❌ | **🔋 Adaptive Interval & Lifecycle Awareness** |
+| **Action Protection** | ❌ | ❌ | **🔒 `guard()` Smart Execution Wrapper** |
+| **Cross-Platform** | Mobile/Web/Desktop | Mobile/Desktop | **🌐 Android, iOS, macOS, Linux, Windows, Web (WASM)** |
 
 ---
 
 ## ✨ Key Features
 
-- **🚀 High-Performance Rust Core**: All heavy lifting—DNS resolution, multi-protocol pings, and quality calculations—happens in a native Rust engine. This ensures sub-millisecond precision without ever dropping a frame in your Flutter UI.
+- **🚀 High-Performance Rust Core**: All heavy lifting—multi-target probing, DNS validation, and statistical analysis—executes inside a compiled native Rust library with zero impact on Flutter frame rates.
+- **🎮 Workload Presets**: Pre-configured profiles fine-tuned for Gaming, Video Streaming, VoIP, IoT, and Enterprise applications.
+- **🔒 The `guard()` Pattern**: Wrap API calls in a smart shield that validates connection quality before execution and uses cached shared state to eliminate redundant probes.
+- **👁️ Observer Pattern & Shared State**: Subscribe to network events with `listenGuard` or read instant synchronous properties (`isConnected`, `currentQuality`, `lastReport`) without polling.
+- **🔋 Battery-Aware Intelligence**: Automatically doubles polling intervals when quality is `Excellent` and pauses monitoring when the app is in the background.
+- **🤝 Thundering Herd Protection**: Built-in request coalescing guarantees that concurrent requests within the cache window share a single underlying probe.
+- **🛡️ Enterprise Security Probes**: Detects Captive Portals (WiFi login pages), VPN configurations, proxy redirection, and DNS spoofing.
+- **🔌 `connectivity_plus` API Parity**: 1:1 drop-in replacement facade allowing instantaneous migration.
+- **🌐 Universal Web & Native Support**: Works seamlessly across mobile, desktop, and web with pre-bundled WebAssembly (WASM).
 
-- **🔒 The `guard()` Pattern**: Wrap your API calls in a smart safety net.
-  - Automatically verifies quality before execution.
-  - Prevents "Ghost Requests" on unstable networks.
-  - Built-in `CircuitBreaker` integration.
+---
 
-- **🔋 Battery-Aware Intelligence**:
-  - **Adaptive Polling**: Automatically slows down checks on `Excellent` connections to save battery, but speeds up during `Poor` phases to detect recovery instantly.
-  - **Lifecycle Aware**: Automatically pauses all network activity when the app goes to background.
+## 🎮 Workload Presets
 
-- **🤝 Thundering Herd Protection**: Built-in request coalescing ensures that if 100 widgets request a network check at the same microsecond, only **one** underlying probe is actually sent.
+Tune the entire reachability engine for your application's exact needs in one line of code:
 
-- **🛡️ Enterprise-Grade Security**:
-  - **DNS Hijack Detection**: Detects if your ISP or a malicious actor is redirecting your traffic.
-  - **VPN/Proxy Shield**: Identify anonymized connections to protect sensitive data.
-  - **Captive Portal Engine**: Specifically identifies public WiFi login pages that block internet access.
+```dart
+// Choose from 6 specialized presets:
+final config = await NetworkConfiguration.fromPreset(preset: ConfigPreset.gaming);
+await NetworkReachability.init(config: config);
+```
 
-- **🔌 `connectivity_plus` API Parity**: Use `Network-Reachability` as a direct drop-in replacement for `connectivity_plus`. Seamlessly migrate your app to get all advanced network insights without rewriting your existing logic!
-
-- **📈 Stability Scoring**: Not just a "Yes/No" status. We calculate a `StabilityScore` (0-100) based on jitter (latency variance) and packet loss, helping you decide if the connection is reliable enough for heavy tasks.
+| Preset | Target Workloads | Check Interval | Jitter Samples | Strategy | Optimization Focus |
+| :--- | :--- | :---: | :---: | :---: | :--- |
+| `ConfigPreset.gaming` | Real-time FPS, MOBA, multiplayer | **2s** | **8** | Race | Ultra-low latency, strict jitter sensitivity, fast circuit breaking |
+| `ConfigPreset.streaming` | Video / Audio streaming (YouTube, Twitch) | **8s** | **4** | Consensus | High throughput, buffer-friendly, relaxed single-target resilience |
+| `ConfigPreset.voip` | Voice & Video calls (Zoom, Discord) | **3s** | **6** | Race | Packet-loss sensitivity, voice jitter stutter prevention |
+| `ConfigPreset.iot` | Background sync, telemetry, sensors | **30s** | **3** | Race | Extreme battery & CPU savings, relaxed timeout thresholds |
+| `ConfigPreset.enterprise` | ERPs, banking apps, internal tools | **10s** | **5** | Consensus | Multi-target consensus, aggressive backend DDOS protection |
+| `ConfigPreset.default_` | Standard social, e-commerce, REST apps | **5s** | **5** | Race | Balanced general-purpose mobile & web profile |
 
 ---
 
 ## 🔌 `connectivity_plus` Drop-In Replacement
 
-If you are currently using `connectivity_plus` and want to upgrade to `Network-Reachability` without rewriting your app's logic, we provide a 1:1 API compatibility facade!
+Upgrade from `connectivity_plus` with zero UI code refactoring:
 
 ```dart
 import 'package:network_reachability/network_reachability.dart';
 
 final connectivity = Connectivity();
 
-// 1. Check current connectivity
+// 1. Check active connectivity types
 final List<ConnectivityResult> results = await connectivity.checkConnectivity();
 if (results.contains(ConnectivityResult.mobile)) {
-  print('On Cellular Data');
+  print('Connected via Cellular Network');
 }
 
-// 2. Listen to connectivity changes
+// 2. Listen to connectivity stream
 connectivity.onConnectivityChanged.listen((List<ConnectivityResult> results) {
-  print('Connectivity changed: $results');
+  print('Network status changed: $results');
 });
 ```
 
-You get all the advanced backend monitoring, circuit breaking, and high-performance Rust core features, while your UI layer remains untouched.
+---
 
 ## 📦 Installation
 
-> [!TIP]
-> **Don't worry about the "Rust Core"!**
-> Adding **Network-Reachability** to your project is designed to be as simple as adding any other Flutter package. While it uses a high-performance Rust engine, you don't need to be a Rust expert or manage complex builds manually. You just install the language once, and the library handles all the heavy lifting, compiling itself automatically for whatever platform (Android, iOS, etc.) or architecture you are targeting.
+### 1. Prerequisites (Rust Toolchain)
 
-### 1. Prerequisites (The Rust Toolchain)
-
-Since this library uses **Cargokit** to bridge Flutter and Rust, you need the Rust compiler installed on your development machine.
+Since `network_reachability` uses a compiled native Rust engine for desktop/mobile, ensure Rust is installed on your machine:
 
 - **Windows**: Download and run [rustup-init.exe](https://rustup.rs).
-- **macOS / Linux**: Run the following command in your terminal:
+- **macOS / Linux**: Run in your terminal:
   ```bash
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
   ```
 
-> [!IMPORTANT]
-> Once Rust is installed, **Cargokit** will automatically detect your Flutter build target and compile the Rust core into a high-performance native shared library  specifically for that OS and architecture. You only need to set this up once!
+### 2. Add Dependency
 
-### 2. Add the Dependency
-
-Add the package to your `pubspec.yaml`:
+Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  network_reachability: ^0.0.1
+  network_reachability: ^0.1.0
 ```
 
-Then, fetch the package:
+Then fetch packages:
 
 ```bash
 flutter pub get
@@ -130,31 +139,19 @@ flutter pub get
 
 ### 3. Platform Configuration
 
-> [!IMPORTANT]
-> You must add the following permissions to your application to allow it to monitor network status and quality. Without these, the library cannot accurately detect the network type or perform deep probes.
-
-#### **Android**
-Add these permissions to your `android/app/src/main/AndroidManifest.xml`:
-
+#### **Android** (`android/app/src/main/AndroidManifest.xml`)
 ```xml
-<manifest ...>
-    <!-- Required to make network requests -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Required to check the type of connection (WiFi, Cellular, etc.) -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    ...
 </manifest>
 ```
 
-#### **iOS**
-Standard internet checks don't require explicit permissions. 
-
-> [!CAUTION]
-> If your configuration probes **local network targets** (e.g., a local server or IoT device), you **must** add the following to your `ios/Runner/Info.plist` to avoid system blocks:
-
+#### **iOS / macOS** (`ios/Runner/Info.plist`)
+If you probe local network endpoints, add:
 ```xml
 <key>NSLocalNetworkUsageDescription</key>
-<string>This app needs access to the local network to monitor connectivity stability and quality.</string>
+<string>This app needs access to monitor local network connectivity and stability.</string>
 ```
 
 ---
@@ -163,175 +160,179 @@ Standard internet checks don't require explicit permissions.
 
 ### 1. Initialization
 
-Initialize the library in your `main()` function. 
-
-> [!IMPORTANT]
-> You **must** call `RustLib.init()` before `NetworkReachability.init()`. This ensures the native Rust engine is loaded into memory correctly.
+Initialize the engine once during app startup in `main()`:
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:network_reachability/network_reachability.dart';
-import 'package:network_reachability/core/rust/frb_generated.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize the Rust library bindings.
-  await RustLib.init();
-  // Initialize Network-Reachability with a default or custom configuration.
-  // this uses a default configuration.
+  
+  // Initializes Rust native core / WASM and starts background monitoring
   await NetworkReachability.init();
+
   runApp(const MyApp());
 }
 ```
 
 ### 2. Protecting Network Calls with `guard()`
 
-> [!TIP]
-> Using `guard()` is the best way to handle intermittent connectivity. It automatically checks the network *just before* your action runs, preventing unnecessary server hits when the connection is failing.
-
 ```dart
-Future<void> fetchSensitiveData() async {
+Future<void> submitOrder() async {
   try {
-    // Wrap your API call with the guard.
-    final data = await NetworkReachability.instance.guard(
-      // The action to perform ONLY if checks pass.
-      action: () => myApi.fetchImportantData(),
-      // Optional: Require a minimum quality for this specific action.
-      minQuality: ConnectionQuality.good,
+    final result = await NetworkReachability.instance.guard(
+      action: () => orderService.placeOrder(),
+      minQuality: ConnectionQuality.good, // Requires good or excellent connection
     );
-    print('Data fetched successfully: $data');
-
+    print('Order placed successfully: $result');
   } on PoorConnectionException catch (e) {
-    // Thrown if quality is below 'good'.
-    print('Could not fetch data: The connection is too slow or unstable. Details: ${e.message}');
-
+    print('Blocked: Connection is too slow or packet loss is too high ($e)');
   } on SecurityException catch (e) {
-    // Thrown if a security policy is violated (e.g., VPN detected).
-    print('Action blocked due to a security risk: ${e.message}');
-
+    print('Blocked: Security policy violation (e.g., untrusted network) ($e)');
   } on CircuitBreakerOpenException catch (e) {
-    // Thrown if the backend is known to be unstable.
-    print('Our servers are temporarily unavailable. Please try again later. Details: ${e.message}');
+    print('Blocked: Backend is currently in cooldown ($e)');
   }
 }
 ```
 
-> [!CAUTION]
-> If the `CircuitBreaker` opens, all subsequent `guard()` calls for that target will fail immediately with a `CircuitBreakerOpenException` until the cooldown period expires.
+---
 
-### 3. Monitoring Status Changes
+## 👁️ Observer Pattern & Shared State
+
+Avoid calling FFI probes on every action. Use reactive listeners and shared state getters:
+
+### 1. Synchronous Shared State
 
 ```dart
-void listenToNetworkChanges() {
-  final subscription = NetworkReachability.instance.onStatusChange.listen((status) {
-    // Note: The stream provides a lightweight `NetworkStatus` object.
-    // For a full report, you would call `check()` inside the listener.
-    print('Network status updated: ${status.isConnected ? 'Connected' : 'Disconnected'} - Quality: ${status.quality.name}');
-    print('Latency: ${status.latencyStats.latencyMs}ms');
-    print('Jitter: ${status.latencyStats.jitterMs}ms');
-    print('Packet Loss: ${status.latencyStats.packetLossPercent}%');
-    print('Stability Score: ${status.latencyStats.stabilityScore}/100');
-    // Update your UI based on the new status
-  });
+// Instant access to cached state (0ms latency, zero FFI overhead):
+final bool isOnline = NetworkReachability.instance.isConnected;
+final ConnectionQuality quality = NetworkReachability.instance.currentQuality;
+final NetworkReport? latestReport = NetworkReachability.instance.lastReport;
+```
 
-  // Don't forget to cancel the subscription in your widget's dispose() method.
-}
+### 2. Reactive `listenGuard` Observer
+
+Execute handlers automatically whenever network health transitions:
+
+```dart
+final subscription = NetworkReachability.instance.listenGuard(
+  minQuality: ConnectionQuality.good,
+  onHealthy: (status) {
+    print('Network is healthy: ${status.quality.name} (Latency: ${status.latencyStats.latencyMs}ms)');
+  },
+  onDegraded: (status) {
+    print('Network degraded below threshold: ${status.quality.name}');
+  },
+);
+
+// Cancel when no longer needed:
+subscription.cancel();
 ```
 
 ---
 
 ## 🔬 Advanced Usage
 
-### Custom Configuration
-
-> [!TIP]
-> You can create multiple `NetworkTarget` objects to monitor different microservices or fallback endpoints.
+### Custom Targets & Fine-Grained Resilience
 
 ```dart
-import 'package:network_reachability/network_reachability.dart';
-
-Future<void> initializeWithCustomConfig() async {
-  final config = await NetworkConfiguration.default_(); // Get the default config
-
-  final customConfig = NetworkConfiguration(
-    targets: [
-      NetworkTarget(
-        label: 'my-backend-primary',
-        host: 'api.mydomain.com',
-        port: 443,
-        protocol: TargetProtocol.http,
-        timeoutMs: BigInt.from(2000),
-        isEssential: true, // This target affects the circuit breaker if it fails the app goes offline
-        priority: 1,
-      ),
-    ],
-    checkIntervalMs: BigInt.from(15000), // 15 seconds
-    cacheValidityMs: BigInt.from(2000), // 2 seconds cache
-    // Defines the latency thresholds (in milliseconds) used to determine [ConnectionQuality].
-    qualityThreshold: QualityThresholds(
-      excellent: BigInt.from(50),
-      great: BigInt.from(100),
-      good: BigInt.from(150),
-      moderate: BigInt.from(250),
-      poor: BigInt.from(500),
+final customConfig = NetworkConfiguration(
+  targets: [
+    NetworkTarget(
+      label: 'production-api',
+      host: 'api.mycompany.com',
+      port: 443,
+      protocol: TargetProtocol.http,
+      timeoutMs: BigInt.from(2500),
+      isEssential: true, // Triggers circuit breaker on consecutive failures
+      priority: 1,
     ),
-    // Configuration for security-related checks.
-    security: SecurityConfig(
-      blockVpn: true,
-      detectDnsHijack: true,
+    NetworkTarget(
+      label: 'fallback-dns',
+      host: '1.1.1.1',
+      port: 53,
+      protocol: TargetProtocol.tcp,
+      timeoutMs: BigInt.from(1000),
+      isEssential: false,
+      priority: 2,
     ),
-    // Configuration for the circuit breaker and resilience
-    resilience: ResilienceConfig(
-      // first to respond wins
-      strategy: CheckStrategy.race,
+  ],
+  checkIntervalMs: BigInt.from(6000),
+  cacheValidityMs: BigInt.from(2000),
+  qualityThreshold: QualityThresholds(
+    excellent: BigInt.from(30),
+    great: BigInt.from(70),
+    good: BigInt.from(120),
+    moderate: BigInt.from(200),
+    poor: BigInt.from(500),
+  ),
+  security: const SecurityConfig(
+    blockVpn: false,
+    detectDnsHijack: true,
+  ),
+  resilience: const ResilienceConfig(
+    strategy: CheckStrategy.race,
+    circuitBreakerThreshold: 3,
+    circuitBreakerCooldownMs: BigInt.from(30000),
+    numJitterSamples: 6,
+    jitterThresholdPercent: 0.15,
+    stabilityThreshold: 70,
+    criticalPacketLossPercent: 4.0,
+  ),
+);
 
-      // The number of consecutive failures of essential targets before the circuit breaker opens.
-      circuitBreakerThreshold: 3,
-
-      // Cooldown period before the circuit breaker transitions to Half-Open.
-      circuitBreakerCooldownMs: BigInt.from(60000), // 1 minute
-
-      // Number of samples to take for jitter and stability analysis.
-      numJitterSamples: 5,
-
-      // The percentage of mean latency that the standard deviation must exceed to be considered high jitter.
-      jitterThresholdPercent: 0.2,
-
-      // If the calculated stability score is less than this value, the quality considered 'Unstable'.
-      stabilityThreshold: 80,
-
-      // The packet loss percentage above which the connection is marked as 'Unstable'.
-      criticalPacketLossPrecent: 5.0,
-    ),
-  );
-
-  await NetworkReachability.init(config: customConfig);
-}
+await NetworkReachability.init(config: customConfig);
 ```
 
-### Direct Probe Access
-
-> [!TIP]
-> Direct probes are useful for "pre-flight" checks, like checking for a Captive Portal before showing a login button.
+### Direct Security Probes
 
 ```dart
-// Check if the user is behind a WiFi login page
-final captiveStatus = await NetworkReachability.instance.checkForCaptivePortal(
-  timeoutMs: BigInt.from(5000),
+// Check for captive portals (hotel/airport WiFi login screens)
+final portalStatus = await NetworkReachability.instance.checkForCaptivePortal(
+  timeoutMs: BigInt.from(3000),
 );
-if (captiveStatus.isCaptivePortal) {
-  print('User may need to log in to the network at ${captiveStatus.redirectUrl}');
+if (portalStatus.isCaptivePortal) {
+  print('Captive Portal detected at: ${portalStatus.redirectUrl}');
 }
 
-// Check for DNS tampering
-final isHijacked = await NetworkReachability.instance.detectDnsHijacking(
-  domain: 'my-api.com',
+// Check for DNS hijacking / ISP tampering
+final isTampered = await NetworkReachability.instance.detectDnsHijacking(
+  domain: 'api.mycompany.com',
 );
-if (isHijacked) {
-  print('Warning: Potential DNS hijacking detected!');
-}
 ```
 
+---
+
+## 🏗️ Architecture
+
+The library follows Clean Architecture principles:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      FLUTTER UI LAYER                       │
+│     Widgets • State Managers • Connectivity Facade          │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+┌──────────────────────────────▼──────────────────────────────┐
+│                  APPLICATION SERVICE LAYER                  │
+│   NetworkReachability • guard() • listenGuard() • Caching   │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+┌──────────────────────────────▼──────────────────────────────┐
+│                    DOMAIN ENTITIES LAYER                    │
+│   NetworkReport • NetworkStatus • ConfigPreset • Models     │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+┌──────────────────────────────▼──────────────────────────────┐
+│              FLUTTER RUST BRIDGE 2.13 (FFI / WASM)          │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+┌──────────────────────────────▼──────────────────────────────┐
+│                   NATIVE RUST ENGINE                        │
+│   Multi-Target Pings • Jitter Stats • Security Probes       │
+└─────────────────────────────────────────────────────────────┘
+```
 ---
 
 ## 🤝 Contributing
